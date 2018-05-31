@@ -123,7 +123,7 @@ class TranslationInfoPanel extends React.Component {
   render () {
     const { activityVisible, glossaryVisible, glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
-      ? <Tag color="blue">{this.props.glossaryCount}</Tag>
+      ? <Tag color="#20718A">{this.props.glossaryCount}</Tag>
       : undefined
     /* Activity Panel is open as default case, but not always visible.
      * eg: when entire info panel is hidden. */
@@ -140,8 +140,8 @@ class TranslationInfoPanel extends React.Component {
               description={'Title for the Details Panel'}
               defaultMessage='Details' />
           </span>
-          <span className="s1 u-pullRight">
-            <Button className="btn-link"
+          <span className="u-pullRight">
+            <Button className="btn-link transparent"
               icon='close' onClick={this.props.close} />
           </span>
         </h1>

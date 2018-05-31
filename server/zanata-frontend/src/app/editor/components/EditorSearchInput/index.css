@@ -5,6 +5,10 @@
 
 /* Set custom styles for ant-collapse */
 
+.InputEditorSearch .ant-collapse-content {
+  padding: 0;
+  margin: 0 16px;
+}
 .InputEditorSearch {
   margin-left: 0.75rem;
   margin-right: 1rem;

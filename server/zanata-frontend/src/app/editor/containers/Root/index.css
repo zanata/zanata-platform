@@ -20,6 +20,22 @@
   --Editor-border-radius: 0.25rem;
 }
 
+/* Antd overrides */
+
+.ant-checkbox-checked .ant-checkbox-inner,
+.ant-checkbox-indeterminate .ant-checkbox-inner {
+  background-color: var(--Editor-color-bright);
+  border-color: var(--Editor-color-bright);
+}
+
+/* ------------- */
+
+.transparent {
+  border: transparent !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
 a {
   color: var(--Editor-color-bright);
 }

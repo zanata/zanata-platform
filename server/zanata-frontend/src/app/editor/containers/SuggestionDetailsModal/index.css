@@ -199,6 +199,7 @@
     white-space: normal;
     word-break: break-all;
     line-height: 1rem;
+    color: var(--brand-primary);
 }
 
 .TransUnit-details .u-listInline {

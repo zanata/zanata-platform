@@ -38,9 +38,9 @@ class LocalProjectDetailPanel extends Component {
   stateLabel (matchDetail) {
     switch (matchType(matchDetail)) {
       case MATCH_TYPE.TRANSLATED:
-        return <Tag color="green">Translated</Tag>
+        return <Tag color="#70a98b">Translated</Tag>
       case MATCH_TYPE.APPROVED:
-        return <Tag color="gray">Approved</Tag>
+        return <Tag color="#4e9fdd">Approved</Tag>
       default:
         console.error('unrecognised match type')
     }

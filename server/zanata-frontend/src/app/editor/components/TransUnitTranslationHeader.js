@@ -27,7 +27,7 @@ class TransUnitTranslationHeader extends React.Component {
   closeButtonElement = () => {
     return (
       <li className="u-sm-hidden">
-        <Button
+        <Button size="large"
           icon="close"
           className={this.buttonClass}
           title="Cancel edit"
@@ -39,7 +39,7 @@ class TransUnitTranslationHeader extends React.Component {
   undoButtonElement = () => {
     return (
       <li>
-        <Button
+        <Button size="large"
           icon="rollback"
           className={this.buttonClass}
           title="Undo edit"
