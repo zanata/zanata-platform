@@ -66,8 +66,9 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
         assertThat(project).isNotNull();
 
         List<HProjectIteration> projectTargets = project.getProjectIterations();
-        assertThat(projectTargets.size()).isEqualTo(3)
-                .as("Project should have 3 targets");
+        assertThat(projectTargets.size())
+                .as("Project should have 3 targets")
+                .isEqualTo(3);
 
         List<Long> iterationIds = Lists.transform(projectTargets,
                 input -> input.getId());

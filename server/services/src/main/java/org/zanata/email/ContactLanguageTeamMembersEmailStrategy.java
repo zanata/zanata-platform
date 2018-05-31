@@ -28,7 +28,8 @@ import javax.mail.internet.InternetAddress;
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-public class ContactLanguageTeamMembersEmailStrategy extends EmailStrategy {
+public class ContactLanguageTeamMembersEmailStrategy extends
+        VelocityEmailStrategy {
     private final String fromLoginName;
     private final String userSubject;
     private final String localeId;

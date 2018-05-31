@@ -204,14 +204,16 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .register();
 
         assertThat(signInPage.getNotificationMessage())
-                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
-                .as("Sign up is successful");
+                .as("Sign up is successful")
+                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE);
 
         return signInPage;
     }
 
     private BasePage checkEmailAndFailToActivate() {
-        WiserMessage message = hasEmailRule.getMessages().get(0);
+        List<WiserMessage> messages = hasEmailRule.getMessages();
+        assertThat(messages).as("one email message").hasSize(1);
+        WiserMessage message = messages.get(0);
         String link = EmailQuery.getLink(message, ACTIVATE);
         boolean exceptionFound = false;
         BasePage basePage = null;
@@ -220,7 +222,7 @@ public class UserEndToEndTest extends ZanataTestCase {
         } catch (RuntimeException rte) {
             exceptionFound = true;
         }
-        assertThat(exceptionFound).isTrue().as("The invalid activation ID was handled");
+        assertThat(exceptionFound).as("The invalid activation ID was handled").isTrue();
         return basePage;
     }
 
@@ -231,8 +233,8 @@ public class UserEndToEndTest extends ZanataTestCase {
         SignInPage signInPage = new BasicWorkFlow().goToUrl(link.concat("?" + dswid), SignInPage.class);
 
         assertThat(signInPage.getNotificationMessage())
-                .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
-                .as("Activation was successful");
+                .as("Activation was successful")
+                .isEqualTo(SignInPage.ACTIVATION_SUCCESS);
         return signInPage;
     }
 

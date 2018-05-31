@@ -20,20 +20,26 @@
  */
 package org.zanata.action;
 
+import static javax.faces.application.FacesMessage.SEVERITY_WARN;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getThrowableList;
+
 import java.io.Serializable;
 import java.util.List;
+
 import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
-import javax.persistence.PersistenceException;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.exception.DeleteUserConstraintException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
@@ -43,13 +49,11 @@ import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.faces.FacesMessages;
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
  *
- * @see {@link org.jboss.seam.security.management.action.UserAction}
+ * see org.jboss.seam.security.management.action.UserAction
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -110,12 +114,28 @@ public class UserAction implements Serializable {
             // exception, otherwise it would be caught by Seam.
             accountDAO.flush();
             userFilter.reset();
-        } catch (PersistenceException e) {
-            if (e.getCause() instanceof ConstraintViolationException) {
-                facesMessages.addFromResourceBundle(SEVERITY_ERROR,
-                        "jsf.UserManager.delete.constraintViolation.error");
+        } catch (Exception e) {
+            List<Throwable> causalChain = getThrowableList(e);
+            boolean hasConstraintEx = causalChain.stream()
+                    .anyMatch(t -> t instanceof ConstraintViolationException);
+            if (hasConstraintEx) {
+                throw new DeleteUserConstraintException();
+            } else {
+                throw e;
             }
+
         }
+    }
+
+    @Transactional
+    public void eraseUser(String username) {
+        HAccount account = accountDAO.getByUsername(username);
+        if (account == null) {
+            facesMessages.addGlobal(SEVERITY_WARN, "can not find user with username " + username);
+            return;
+        }
+        userAccountServiceImpl.eraseUserData(account);
+        userFilter.reset();
     }
 
     public String getEmail(String username) {

@@ -74,7 +74,8 @@ public class TranslateTextTest extends ZanataTestCase {
         File testfile = testFileGenerator.generateTestFileWithContent(
                 "basictext", ".txt",
                 "Line One\nLine Two\nLine Three");
-        zanataRestCaller.createProjectAndVersion("txt-translate", "txt", "file");
+        zanataRestCaller
+                .createProjectAndVersion("txt-translate", "txt", "file");
         EditorPage editorPage = new ProjectWorkFlow()
                 .goToProjectByName("txt-translate")
                 .gotoVersion("txt")
@@ -88,14 +89,14 @@ public class TranslateTextTest extends ZanataTestCase {
                 .translate("fr", testfile.getName());
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0))
-                .isEqualTo("Line One")
-                .as("Item 1 shows Line One");
+                .as("Item 1 shows Line One")
+                .isEqualTo("Line One");
         assertThat(editorPage.getMessageSourceAtRowIndex(1))
-                .isEqualTo("Line Two")
-                .as("Item 2 shows Line Two");
+                .as("Item 2 shows Line Two")
+                .isEqualTo("Line Two");
         assertThat(editorPage.getMessageSourceAtRowIndex(2))
-                .isEqualTo("Line Three")
-                .as("Item 3 shows Line Three");
+                .as("Item 3 shows Line Three")
+                .isEqualTo("Line Three");
 
         editorPage = editorPage.translateTargetAtRowIndex(0, "Une Ligne")
                 .approveTranslationAtRow(0)
@@ -114,13 +115,13 @@ public class TranslateTextTest extends ZanataTestCase {
 
     private void assertTranslations(EditorPage editorPage) {
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0))
-                .isEqualTo("Une Ligne")
-                .as("Item 1 shows a translation of Line One");
+                .as("Item 1 shows a translation of Line One")
+                .isEqualTo("Une Ligne");
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(1))
-                .isEqualTo("Deux Ligne")
-                .as("Item 2 shows a translation of Line Two");
+                .as("Item 2 shows a translation of Line Two")
+                .isEqualTo("Deux Ligne");
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(2))
-                .isEqualTo("Ligne Trois")
-                .as("Item 3 shows a translation of Line Three");
+                .as("Item 3 shows a translation of Line Three")
+                .isEqualTo("Ligne Trois");
     }
 }

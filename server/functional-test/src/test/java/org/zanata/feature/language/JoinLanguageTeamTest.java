@@ -59,8 +59,8 @@ public class JoinLanguageTeamTest extends ZanataTestCase {
                         LanguagePage.TeamPermission.Reviewer);
 
         assertThat(languagePage.getMemberUsernames())
-                .contains("translator")
-                .as("Translator is a listed member of the pl team");
+                .as("Translator is a listed member of the pl team")
+                .contains("translator");
         assertThat(hasEmailRule.emailsArrivedWithinTimeout(1, 30,
                 TimeUnit.SECONDS))
                 .as("The email arrived within thirty seconds")

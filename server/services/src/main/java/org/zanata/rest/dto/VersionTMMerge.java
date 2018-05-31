@@ -27,6 +27,7 @@ import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 /**
+ * TM Merge for an entire project version
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class VersionTMMerge implements HasTMMergeCriteria {

@@ -28,6 +28,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 /**
+ * TM Merge for an individual document
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransMemoryMergeRequest implements HasTMMergeCriteria {
