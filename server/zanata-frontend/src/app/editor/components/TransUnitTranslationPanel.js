@@ -31,40 +31,41 @@ registerLanguage('xml', xml)
  */
 class TransUnitTranslationPanel extends React.Component {
   static propTypes = {
+    cancelEdit: PropTypes.func.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
+    isRTL: PropTypes.bool.isRequired,
+    locale: PropTypes.string.isRequired,
+    onSelectionChange: PropTypes.func.isRequired,
     // the key of the currently open dropdown (may be undefined if none is open)
     openDropdown: PropTypes.any,
-    onSelectionChange: PropTypes.func.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired,
+    // FIXME use PropTypes.shape and include all used properties
+    phrase: PropTypes.object.isRequired,
+    saveAsMode: PropTypes.bool.isRequired,
     // the key for the save dropdown for this translation panel. Can be compared
     // with openDropdown to see whether this dropdown is open.
     saveDropdownKey: PropTypes.any.isRequired,
-    selected: PropTypes.bool.isRequired,
-    // FIXME use PropTypes.shape and include all used properties
-    phrase: PropTypes.object.isRequired,
     savePhraseWithStatus: PropTypes.func.isRequired,
-    cancelEdit: PropTypes.func.isRequired,
-    undoEdit: PropTypes.func.isRequired,
-    toggleDropdown: PropTypes.func.isRequired,
+    selected: PropTypes.bool.isRequired,
+    selectPhrasePluralIndex: PropTypes.func.isRequired,
+    showSuggestions: PropTypes.bool.isRequired,
+    suggestionCount: PropTypes.number.isRequired,
+    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
+    syntaxOn: PropTypes.bool.isRequired,
     textChanged: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
+    toggleSuggestionPanel: PropTypes.func.isRequired,
     translationLocale: PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
     }).isRequired,
-    saveAsMode: PropTypes.bool.isRequired,
-    selectPhrasePluralIndex: PropTypes.func.isRequired,
-    suggestionCount: PropTypes.number.isRequired,
-    showSuggestions: PropTypes.bool.isRequired,
-    toggleGlossary: PropTypes.func.isRequired,
-    toggleSuggestionPanel: PropTypes.func.isRequired,
-    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
-    isRTL: PropTypes.bool.isRequired,
-    syntaxOn: PropTypes.bool.isRequired,
-    validationOptions: PropTypes.any,
-    permissions: PropTypes.shape({
-      reviewer: PropTypes.bool.isRequired,
-      translator: PropTypes.bool.isRequired
-    }).isRequired
+    undoEdit: PropTypes.func.isRequired,
+    validationOptions: PropTypes.any
   }
 
   componentWillMount () {
@@ -118,6 +119,7 @@ class TransUnitTranslationPanel extends React.Component {
 
   render () {
     const {
+      locale,
       onSelectionChange,
       phrase,
       selected,
@@ -190,6 +192,7 @@ class TransUnitTranslationPanel extends React.Component {
               index={index}
               isPlural={isPlural}
               phrase={phrase}
+              locale={locale}
               onSelectionChange={onSelectionChange}
               selected={selected}
               selectedPluralIndex={selectedPluralIndex}
@@ -220,6 +223,7 @@ export class TranslationItem extends React.Component {
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     isPlural: PropTypes.bool.isRequired,
+    locale: PropTypes.string.isRequired,
     onSelectionChange: PropTypes.func.isRequired,
     phrase: PropTypes.shape({
       id: PropTypes.any.isRequired,
@@ -262,6 +266,7 @@ export class TranslationItem extends React.Component {
       dropdownIsOpen,
       index,
       isPlural,
+      locale,
       onSelectionChange,
       selected,
       selectedPluralIndex,
@@ -323,7 +328,7 @@ export class TranslationItem extends React.Component {
         <Validation
           source={phrase.sources[0]}
           target={translation}
-          localeId={'en-US'} // TODO: retrieve from Redux Store
+          localeId={locale}
           validationOptions={validationOptions} />
       </div>
     )
@@ -381,7 +386,8 @@ function mapStateToProps (state) {
     ],
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false,
-    permissions: headerData.permissions
+    permissions: headerData.permissions,
+    locale: context.lang
   }
 }
 

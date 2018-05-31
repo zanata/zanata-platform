@@ -27,5 +27,5 @@
   "tagsMissing": "Missing tags: {missing}",
   "tagsWrongOrder": "Tags in unexpected position: {unordered}",
   "xmlEntityValidatorDesc": "Check that XML entity are complete.",
-  "invalidXMLEntity": "Invalid XML C entity: {entity}"
+  "invalidXMLEntity": "Invalid XML entity: {entity}"
 }
