@@ -1219,12 +1219,6 @@
     </dependency>
 
     <dependency>
-      <groupId>net.bull.javamelody</groupId>
-      <artifactId>javamelody-core</artifactId>
-      <version>1.62.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.lowagie</groupId>
       <artifactId>itext</artifactId>
       <version>2.1.7</version>

@@ -3,6 +3,8 @@
   --Input-color-mid: #20718A;
 }
 
+/* Set custom styles for ant-collapse */
+
 .InputEditorSearch {
   margin-left: 0.75rem;
   margin-right: 1rem;
@@ -11,12 +13,43 @@
   flex: 2 0 16rem;
 }
 
+/* Hide the ant collapse header and borders */
+.InputEditorSearch .ant-collapse-header {
+  display: none;
+}
+
+.InputEditorSearch .ant-collapse {
+  border: none;
+}
+
+.InputEditorSearch .ant-collapse .ant-collapse-item {
+  border: none;
+}
+.InputEditorSearch .ant-collapse-content {
+  border: none;
+}
+
+.InputEditorSearch .ant-collapse {
+  width: 100%;
+  margin-bottom: 0.5rem !important;
+  position: absolute;
+  z-index: 1000;
+}
+
 .InputEditorSearch .EditorInputGroup-addon.btn-xs {
   padding-left: 1rem;
 }
 
 .InputEditorSearch input {
   font-size: 0.875rem;
+}
+
+.InputEditorSearch .ant-collapse-content-box {
+  background-color: var(--u-bg-color-lighter);
+}
+
+.InputEditorSearch .ant-collapse-content-box input {
+  box-shadow: var(--default-box-shadow-inset)
 }
 
 .InputEditorSearch > div {
@@ -32,21 +65,6 @@
 /* advanced search panel */
 
 /* bootstrap classes used throughout */
-
-.InputEditorSearch .panel {
-  margin-bottom: 0.5rem !important;
-  position: absolute;
-  width: 100%;
-}
-
-.InputEditorSearch .panel-body {
-  /* bootstrap panel cannot use utility class u-bgHigher directly */
-  background-color: var(--u-bg-color-lighter);
-}
-
-.InputEditorSearch .panel-body input {
-  box-shadow: var(--default-box-shadow-inset)
-}
 
 .InputEditorSearch .icon-help button {
   vertical-align: sub;
@@ -85,21 +103,6 @@ li.InlineSearch-list span {
   width: 90%;
 }
 
-.InputEditorSearch .panel.panel-default {
-  z-index: 1000 !important;
-}
-
 .flex ul.u-listHorizontal {
   z-index: 999 !important;
 }
-
-.panel {
-  border: none !important;
-}
-
-button.AdvSearch-clear {
-  color: #03A6D7;
-  padding: 0;
-  padding-top: 0.75rem;
-}
-

@@ -481,6 +481,18 @@ exports[`Frontend Storyshots Breadcrumbs default 1`] = `
 </span>
 `;
 
+exports[`Frontend Storyshots Button default 1`] = `
+<div
+  className="ant-layout"
+>
+  <Button
+    type="primary"
+  >
+    Primary style
+  </Button>
+</div>
+`;
+
 exports[`Frontend Storyshots Dropdown default 1`] = `
 <div>
   <h2>
@@ -17356,868 +17368,569 @@ exports[`Frontend Storyshots ProgressBar translation states 1`] = `
 </span>
 `;
 
-exports[`Frontend Storyshots RejectionsForm **Confirm delete criteria 1`] = `
-<div
-  className="pull-right"
->
-  <button
-    className="btn-sm btn btn-danger"
-    disabled={false}
-    onBlur={[Function]}
-    onClick={[Function]}
-    onFocus={[Function]}
-    onMouseOut={[Function]}
-    onMouseOver={[Function]}
-    type="button"
-  >
-    <span
-      className=""
-    >
-      <svg
-        className="s0 iconEdit"
-        dangerouslySetInnerHTML={
-          Object {
-            "__html": "<use xlink:href=\\"#Icon-trash\\" />",
-          }
-        }
-        style={
-          Object {
-            "fill": "currentColor",
-          }
-        }
-      />
-    </span>
-  </button>
-</div>
-`;
-
-exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
-<div
-  className="container"
->
+exports[`Frontend Storyshots Sidebar AboutPage 1`] = `
+<div>
   <div
-    className="alert alert-success"
-    role="alert"
+    className="bstrapReact"
+    id="pvSidebar"
   >
-    Rejection criteria saved.
+    <div
+      className="sidebar accordion"
+    >
+      <div
+        className="sidebar-wrapper"
+      >
+        <div
+          className="sidebar-container"
+        >
+          <div
+            className="sidebar-content"
+          >
+            <a
+              className="accordion-section-title"
+              onClick={[Function]}
+            >
+              <span
+                className="iconProject"
+              >
+                <svg
+                  className="s2"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="projtitle"
+              >
+                Zanata Server
+              </span>
+              <svg
+                className="hide-desktop down"
+              >
+                <use
+                  xlinkHref="#Icon-chevron-down"
+                />
+              </svg>
+            </a>
+            <div
+              className="accordion-section-content"
+              id="accordion-1"
+            >
+              <ul
+                className="nav nav-pills nav-stacked"
+                role={null}
+              >
+                <li
+                  className="active"
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    People
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Glossary
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    About
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Settings 
+                  </a>
+                </li>
+              </ul>
+              <div
+                className="dropdown btn-group"
+              >
+                <button
+                  aria-expanded={false}
+                  aria-haspopup={true}
+                  className="btn-sm btn-default dropdown-toggle btn btn-default"
+                  disabled={false}
+                  id="optionsDropdown"
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  role="button"
+                  type="button"
+                >
+                  Options
+                   
+                  <span
+                    className="caret"
+                  />
+                </button>
+                <ul
+                  aria-labelledby="optionsDropdown"
+                  className="dropdown-menu"
+                  role="menu"
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Merge translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy to new version
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Download config file
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Export project to TMX
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div
+                className="processing well"
+              >
+                <p
+                  className="task-title"
+                >
+                  Task title
+                </p>
+                <p>
+                  <span>
+                    Processing document 
+                    <span
+                      className="count"
+                    >
+                      1 of 10
+                    </span>
+                     
+                    <span
+                      className="count-pc"
+                    >
+                      12.50%
+                    </span>
+                  </span>
+                </p>
+                <div
+                  className="progress-striped progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={12.5}
+                    className="progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "12.5%",
+                      }
+                    }
+                  />
+                </div>
+                <Button
+                  className="btn-danger btn-sm"
+                >
+                  Stop
+                </Button>
+              </div>
+              <div
+                id="sidebarVersion"
+              >
+                <div
+                  className="sidebarVersion-inline"
+                >
+                  <span
+                    className="sidebarVersion-title"
+                  >
+                    <span
+                      className=""
+                    >
+                      <svg
+                        className="s2"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    <span
+                      className="versionHeading"
+                    >
+                      VERSION
+                    </span>
+                  </span>
+                  <div
+                    className="dropdown btn-group"
+                  >
+                    <button
+                      aria-expanded={false}
+                      aria-haspopup={true}
+                      className="btn-sm btn-default dropdown-toggle btn btn-default"
+                      disabled={false}
+                      id="version-dropdown"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="button"
+                      type="button"
+                    >
+                      master
+                       
+                      <span
+                        className="caret"
+                      />
+                    </button>
+                    <ul
+                      aria-labelledby="version-dropdown"
+                      className="dropdown-menu"
+                      role="menu"
+                    >
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          release
+                        </a>
+                      </li>
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          test-1
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p
+                  className="sidebarVersion-settings"
+                >
+                  <a
+                    href=""
+                  >
+                    Version settings
+                  </a>
+                </p>
+                <div
+                  className="sidebarVersion-percent"
+                >
+                  <p>
+                    <span
+                      className="percent"
+                    >
+                      10%
+                    </span>
+                     translated
+                  </p>
+                </div>
+                <div
+                  className="progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-success progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={7}
+                    className="progress-bar-warning progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "7%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={3}
+                    className="progress-bar-danger progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "3%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-info progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                </div>
+                <ul
+                  className="v-links nav nav-pills nav-stacked"
+                  role={null}
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Languages
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Documents
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Groups 
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <h1>
-    Reject translations settings
-  </h1>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textDanger"
-          >
-            Critical
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textWarning"
-          >
-            Major
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textWarning"
-          >
-            Major
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Style Guide & Glossary Violations"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textInfo"
-          >
-            Minor
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textInfo"
-          >
-            Minor
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Other (reason may be in comment section/history if necessary)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textDanger"
-          >
-            Critical
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
   <div
-    className="rejection-btns"
+    className="flexTab wideView"
   >
-    <button
-      className="btn-left btn btn-primary"
-      disabled={false}
-      type="button"
+    <h2>
+      About
+    </h2>
+    <p>
+      This is one rocking project version. This is the best project version ever.
+    </p>
+    <a
+      href="https://www.google.com"
     >
       <span
         className=""
       >
         <svg
-          className="s1"
+          className="n1"
           dangerouslySetInnerHTML={
             Object {
-              "__html": "<use xlink:href=\\"#Icon-plus\\" />",
+              "__html": "<use xlink:href=\\"#Icon-link\\" />",
             }
           }
           style={
@@ -18227,1118 +17940,4049 @@ exports[`Frontend Storyshots RejectionsForm **Saved criteria 1`] = `
           }
         />
       </span>
-       Add review criteria
-    </button>
+      Our awesome webpage
+    </a>
   </div>
 </div>
 `;
 
-exports[`Frontend Storyshots RejectionsForm admin screen 1`] = `
-<div
-  className="container"
->
-  <h1>
-    Reject translations settings
-  </h1>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Translation Errors (terminology, mistranslated, addition, omission, un-localized, do not translate, etc)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textDanger"
-          >
-            Critical
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Language Quality (grammar, spelling, punctuation, typo, ambiguous wording, product name, sentence structuring, readability, word choice, not natural, too literal, style and tone, etc)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textWarning"
-          >
-            Major
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Consistency (inconsistent style or vocabulary, brand inconsistency, etc.)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textWarning"
-          >
-            Major
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Style Guide & Glossary Violations"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textInfo"
-          >
-            Minor
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textInfo"
-          >
-            Minor
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
-  <form
-    className="form-inline"
-    id="rejectionsForm"
-  >
-    <div
-      className="u-flexGrow1 form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlineCriteria"
-      >
-        Criteria
-      </label>
-      <br />
-      <textarea
-        aria-label={undefined}
-        autoComplete={undefined}
-        autoFocus={undefined}
-        className="textInput"
-        id={undefined}
-        maxLength={255}
-        onBlur={undefined}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={undefined}
-        onSelect={undefined}
-        placeholder="Other (reason may be in comment section/history if necessary)"
-        readOnly={true}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        value=""
-      />
-    </div>
-    <div
-      className="form-group"
-    >
-      <label
-        className="control-label"
-        htmlFor="formInlinePriority"
-      >
-        Priority
-      </label>
-      <br />
-      <div
-        className="dropdown disabled btn-group btn-group-sm btn-group-default"
-      >
-        <button
-          aria-expanded={false}
-          aria-haspopup={true}
-          className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-          disabled={true}
-          id="review-criteriareview-criteria-dropdown-basic"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          type="button"
-        >
-          <span
-            className="u-textDanger"
-          >
-            Critical
-          </span>
-           
-          <span
-            className="caret"
-          />
-        </button>
-        <ul
-          aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-          className="dropdown-menu"
-          role="menu"
-        >
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textInfo"
-              >
-                Minor
-              </span>
-            </a>
-          </li>
-          <li
-            className=""
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textWarning"
-              >
-                Major
-              </span>
-            </a>
-          </li>
-          <li
-            className="active"
-            role="presentation"
-            style={undefined}
-          >
-            <a
-              href="#"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="-1"
-            >
-              <span
-                className="u-textDanger"
-              >
-                Critical
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </form>
+exports[`Frontend Storyshots Sidebar DocumentsPage 1`] = `
+<div>
   <div
-    className="rejection-btns"
+    className="bstrapReact"
+    id="pvSidebar"
   >
-    <button
-      className="btn-left btn btn-primary"
-      disabled={false}
-      type="button"
+    <div
+      className="sidebar accordion"
     >
-      <span
-        className=""
+      <div
+        className="sidebar-wrapper"
       >
-        <svg
-          className="s1"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-plus\\" />",
-            }
-          }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
-          }
-        />
-      </span>
-       Add review criteria
-    </button>
+        <div
+          className="sidebar-container"
+        >
+          <div
+            className="sidebar-content"
+          >
+            <a
+              className="accordion-section-title"
+              onClick={[Function]}
+            >
+              <span
+                className="iconProject"
+              >
+                <svg
+                  className="s2"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="projtitle"
+              >
+                Zanata Server
+              </span>
+              <svg
+                className="hide-desktop down"
+              >
+                <use
+                  xlinkHref="#Icon-chevron-down"
+                />
+              </svg>
+            </a>
+            <div
+              className="accordion-section-content"
+              id="accordion-1"
+            >
+              <ul
+                className="nav nav-pills nav-stacked"
+                role={null}
+              >
+                <li
+                  className="active"
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    People
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Glossary
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    About
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Settings 
+                  </a>
+                </li>
+              </ul>
+              <div
+                className="dropdown btn-group"
+              >
+                <button
+                  aria-expanded={false}
+                  aria-haspopup={true}
+                  className="btn-sm btn-default dropdown-toggle btn btn-default"
+                  disabled={false}
+                  id="optionsDropdown"
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  role="button"
+                  type="button"
+                >
+                  Options
+                   
+                  <span
+                    className="caret"
+                  />
+                </button>
+                <ul
+                  aria-labelledby="optionsDropdown"
+                  className="dropdown-menu"
+                  role="menu"
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Merge translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy to new version
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Download config file
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Export project to TMX
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div
+                className="processing well"
+              >
+                <p
+                  className="task-title"
+                >
+                  Task title
+                </p>
+                <p>
+                  <span>
+                    Processing document 
+                    <span
+                      className="count"
+                    >
+                      1 of 10
+                    </span>
+                     
+                    <span
+                      className="count-pc"
+                    >
+                      12.50%
+                    </span>
+                  </span>
+                </p>
+                <div
+                  className="progress-striped progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={12.5}
+                    className="progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "12.5%",
+                      }
+                    }
+                  />
+                </div>
+                <Button
+                  className="btn-danger btn-sm"
+                >
+                  Stop
+                </Button>
+              </div>
+              <div
+                id="sidebarVersion"
+              >
+                <div
+                  className="sidebarVersion-inline"
+                >
+                  <span
+                    className="sidebarVersion-title"
+                  >
+                    <span
+                      className=""
+                    >
+                      <svg
+                        className="s2"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    <span
+                      className="versionHeading"
+                    >
+                      VERSION
+                    </span>
+                  </span>
+                  <div
+                    className="dropdown btn-group"
+                  >
+                    <button
+                      aria-expanded={false}
+                      aria-haspopup={true}
+                      className="btn-sm btn-default dropdown-toggle btn btn-default"
+                      disabled={false}
+                      id="version-dropdown"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="button"
+                      type="button"
+                    >
+                      master
+                       
+                      <span
+                        className="caret"
+                      />
+                    </button>
+                    <ul
+                      aria-labelledby="version-dropdown"
+                      className="dropdown-menu"
+                      role="menu"
+                    >
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          release
+                        </a>
+                      </li>
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          test-1
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p
+                  className="sidebarVersion-settings"
+                >
+                  <a
+                    href=""
+                  >
+                    Version settings
+                  </a>
+                </p>
+                <div
+                  className="sidebarVersion-percent"
+                >
+                  <p>
+                    <span
+                      className="percent"
+                    >
+                      10%
+                    </span>
+                     translated
+                  </p>
+                </div>
+                <div
+                  className="progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-success progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={7}
+                    className="progress-bar-warning progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "7%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={3}
+                    className="progress-bar-danger progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "3%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-info progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                </div>
+                <ul
+                  className="v-links nav nav-pills nav-stacked"
+                  role={null}
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Languages
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Documents
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Groups 
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="flexTab wideView"
+  >
+    <h2>
+      Documents
+    </h2>
+    <div
+      className="toolbar"
+    >
+      <div
+        className="searchBox form-group"
+      >
+        <span
+          className="input-group"
+        >
+          <input
+            className="form-control"
+            id={undefined}
+            type="text"
+            value="Search documents"
+          />
+          <span
+            className="input-group-addon"
+          >
+            <span
+              className=""
+              title="search"
+            >
+              <svg
+                className="s1"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-search\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+          </span>
+        </span>
+      </div>
+      <div
+        className="sortItems"
+      >
+        <select
+          className="form-control"
+          id="sort-options"
+          type={undefined}
+        >
+          return
+          <option>
+            Last modified
+          </option>
+          <option>
+            Alphabetical
+          </option>
+        </select>
+      </div>
+      <div
+        className="showItems u-pullRight"
+      >
+        <span>
+          Show
+        </span>
+        <select
+          className="form-control"
+          id="page-size-options"
+          type={undefined}
+        >
+          return
+          <option>
+            10
+          </option>
+          <option>
+            25
+          </option>
+          <option>
+            50
+          </option>
+          <option>
+            100
+          </option>
+        </select>
+      </div>
+      <div
+        className="pageCount col-xs-7 col-sm-8 col-md-12"
+      >
+        <ul
+          className="pagination pagination-md"
+        >
+          <li
+            className="disabled"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}
+            >
+              <span
+                aria-label="Previous"
+              >
+                ‹
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              1
+            </a>
+          </li>
+          <li
+            className="disabled"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}
+            >
+              <span
+                aria-label="Next"
+              >
+                ›
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <table
+      className="table table-striped table-hover"
+    >
+      <thead>
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Translated
+          </th>
+          <th>
+            Last modified
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <a
+              href=""
+            >
+              MobyDick.txt
+            </a>
+          </td>
+          <td>
+            100%
+          </td>
+          <td>
+            3 days ago
+          </td>
+        </tr>
+        <tr>
+          <td
+            className="progRow"
+            colSpan="3"
+          >
+            <div
+              className="progress"
+            >
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={100}
+                className="progress-bar-success progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "100%",
+                  }
+                }
+              />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a
+              href=""
+            >
+              A-really-long-filename-to-test.txt
+            </a>
+          </td>
+          <td>
+            33%
+          </td>
+          <td>
+            5 days ago
+          </td>
+        </tr>
+        <tr>
+          <td
+            className="progRow"
+            colSpan="3"
+          >
+            <div
+              className="progress"
+            >
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={33}
+                className="progress-bar-success progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "33%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={7}
+                className="progress-bar-warning progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "7%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={3}
+                className="progress-bar-danger progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "3%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={10}
+                className="progress-bar-info progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "10%",
+                  }
+                }
+              />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a
+              href=""
+            >
+              Day Of The Triffids.txt
+            </a>
+          </td>
+          <td>
+            10%
+          </td>
+          <td>
+            12 days ago
+          </td>
+        </tr>
+        <tr>
+          <td
+            className="progRow"
+            colSpan="3"
+          >
+            <div
+              className="progress"
+            >
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={10}
+                className="progress-bar-success progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "10%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={7}
+                className="progress-bar-warning progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "7%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={33}
+                className="progress-bar-danger progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "33%",
+                  }
+                }
+              />
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 `;
 
-exports[`Frontend Storyshots RejectionsForm editable 1`] = `
-<form
-  className="form-inline"
-  id="rejectionsForm"
->
+exports[`Frontend Storyshots Sidebar GroupsPage 1`] = `
+<div>
   <div
-    className="u-flexGrow1 form-group"
+    className="bstrapReact"
+    id="pvSidebar"
   >
-    <label
-      className="control-label"
-      htmlFor="formInlineCriteria"
-    >
-      Criteria
-    </label>
-    <br />
-    <textarea
-      aria-label={undefined}
-      autoComplete={undefined}
-      autoFocus={undefined}
-      className="textInput"
-      id={undefined}
-      maxLength={255}
-      onBlur={undefined}
-      onChange={[Function]}
-      onFocus={[Function]}
-      onKeyDown={undefined}
-      onSelect={undefined}
-      placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-      readOnly={true}
-      style={
-        Object {
-          "height": 0,
-        }
-      }
-      value=""
-    />
-  </div>
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formInlinePriority"
-    >
-      Priority
-    </label>
-    <br />
     <div
-      className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      className="sidebar accordion"
     >
-      <button
-        aria-expanded={false}
-        aria-haspopup={true}
-        className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-        disabled={true}
-        id="review-criteriareview-criteria-dropdown-basic"
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        role="button"
-        type="button"
+      <div
+        className="sidebar-wrapper"
       >
-        <span
-          className="u-textInfo"
+        <div
+          className="sidebar-container"
         >
-          Minor
-        </span>
-         
-        <span
-          className="caret"
-        />
-      </button>
-      <ul
-        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-        className="dropdown-menu"
-        role="menu"
-      >
-        <li
-          className="active"
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
+          <div
+            className="sidebar-content"
           >
-            <span
-              className="u-textInfo"
+            <a
+              className="accordion-section-title"
+              onClick={[Function]}
             >
-              Minor
-            </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textWarning"
+              <span
+                className="iconProject"
+              >
+                <svg
+                  className="s2"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="projtitle"
+              >
+                Zanata Server
+              </span>
+              <svg
+                className="hide-desktop down"
+              >
+                <use
+                  xlinkHref="#Icon-chevron-down"
+                />
+              </svg>
+            </a>
+            <div
+              className="accordion-section-content"
+              id="accordion-1"
             >
-              Major
-            </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
-        >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textDanger"
-            >
-              Critical
-            </span>
-          </a>
-        </li>
-      </ul>
+              <ul
+                className="nav nav-pills nav-stacked"
+                role={null}
+              >
+                <li
+                  className="active"
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    People
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Glossary
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    About
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Settings 
+                  </a>
+                </li>
+              </ul>
+              <div
+                className="dropdown btn-group"
+              >
+                <button
+                  aria-expanded={false}
+                  aria-haspopup={true}
+                  className="btn-sm btn-default dropdown-toggle btn btn-default"
+                  disabled={false}
+                  id="optionsDropdown"
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  role="button"
+                  type="button"
+                >
+                  Options
+                   
+                  <span
+                    className="caret"
+                  />
+                </button>
+                <ul
+                  aria-labelledby="optionsDropdown"
+                  className="dropdown-menu"
+                  role="menu"
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Merge translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy to new version
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Download config file
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Export project to TMX
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div
+                className="processing well"
+              >
+                <p
+                  className="task-title"
+                >
+                  Task title
+                </p>
+                <p>
+                  <span>
+                    Processing document 
+                    <span
+                      className="count"
+                    >
+                      1 of 10
+                    </span>
+                     
+                    <span
+                      className="count-pc"
+                    >
+                      12.50%
+                    </span>
+                  </span>
+                </p>
+                <div
+                  className="progress-striped progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={12.5}
+                    className="progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "12.5%",
+                      }
+                    }
+                  />
+                </div>
+                <Button
+                  className="btn-danger btn-sm"
+                >
+                  Stop
+                </Button>
+              </div>
+              <div
+                id="sidebarVersion"
+              >
+                <div
+                  className="sidebarVersion-inline"
+                >
+                  <span
+                    className="sidebarVersion-title"
+                  >
+                    <span
+                      className=""
+                    >
+                      <svg
+                        className="s2"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    <span
+                      className="versionHeading"
+                    >
+                      VERSION
+                    </span>
+                  </span>
+                  <div
+                    className="dropdown btn-group"
+                  >
+                    <button
+                      aria-expanded={false}
+                      aria-haspopup={true}
+                      className="btn-sm btn-default dropdown-toggle btn btn-default"
+                      disabled={false}
+                      id="version-dropdown"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="button"
+                      type="button"
+                    >
+                      master
+                       
+                      <span
+                        className="caret"
+                      />
+                    </button>
+                    <ul
+                      aria-labelledby="version-dropdown"
+                      className="dropdown-menu"
+                      role="menu"
+                    >
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          release
+                        </a>
+                      </li>
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          test-1
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p
+                  className="sidebarVersion-settings"
+                >
+                  <a
+                    href=""
+                  >
+                    Version settings
+                  </a>
+                </p>
+                <div
+                  className="sidebarVersion-percent"
+                >
+                  <p>
+                    <span
+                      className="percent"
+                    >
+                      10%
+                    </span>
+                     translated
+                  </p>
+                </div>
+                <div
+                  className="progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-success progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={7}
+                    className="progress-bar-warning progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "7%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={3}
+                    className="progress-bar-danger progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "3%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-info progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                </div>
+                <ul
+                  className="v-links nav nav-pills nav-stacked"
+                  role={null}
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Languages
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Documents
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Groups 
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</form>
+  <div
+    className="flexTab wideView"
+  >
+    <h2>
+      Groups
+    </h2>
+    <div
+      className="toolbar"
+    >
+      <div
+        className="searchBox form-group"
+      >
+        <span
+          className="input-group"
+        >
+          <input
+            className="form-control"
+            id={undefined}
+            type="text"
+            value="Search groups"
+          />
+          <span
+            className="input-group-addon"
+          >
+            <span
+              className=""
+              title="search"
+            >
+              <svg
+                className="s1"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-search\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+          </span>
+        </span>
+      </div>
+      <div
+        className="sortItems"
+      >
+        <select
+          className="form-control"
+          id="sort-options"
+          type={undefined}
+        >
+          return
+          <option>
+            Last active
+          </option>
+          <option>
+            Alphabetical
+          </option>
+        </select>
+      </div>
+      <div
+        className="showItems u-pullRight"
+      >
+        <span>
+          Show
+        </span>
+        <select
+          className="form-control"
+          id="page-size-options"
+          type={undefined}
+        >
+          return
+          <option>
+            10
+          </option>
+          <option>
+            25
+          </option>
+          <option>
+            50
+          </option>
+          <option>
+            100
+          </option>
+        </select>
+      </div>
+      <div
+        className="pageCount col-xs-7 col-sm-8 col-md-12"
+      >
+        <ul
+          className="pagination pagination-md"
+        >
+          <li
+            className="disabled"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}
+            >
+              <span
+                aria-label="Previous"
+              >
+                ‹
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              1
+            </a>
+          </li>
+          <li
+            className="disabled"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}
+            >
+              <span
+                aria-label="Next"
+              >
+                ›
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <table
+      className="table table-striped table-hover"
+    >
+      <thead>
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Members
+          </th>
+          <th>
+            Last active
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Zanata fanatics
+          </td>
+          <td>
+            320
+          </td>
+          <td>
+            3 days ago
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Japanese translator
+          </td>
+          <td>
+            17
+          </td>
+          <td>
+            5 days ago
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Word nerds
+          </td>
+          <td>
+            58
+          </td>
+          <td>
+            12 days ago
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 `;
 
-exports[`Frontend Storyshots RejectionsForm read only 1`] = `
-<form
-  className="form-inline"
-  id="rejectionsForm"
->
+exports[`Frontend Storyshots Sidebar LanguagesPage 1`] = `
+<div>
   <div
-    className="u-flexGrow1 form-group"
+    className="bstrapReact"
+    id="pvSidebar"
   >
-    <label
-      className="control-label"
-      htmlFor="formInlineCriteria"
+    <div
+      className="sidebar accordion"
     >
-      Criteria
-    </label>
-    <br />
-    <textarea
-      aria-label={undefined}
-      autoComplete={undefined}
-      autoFocus={undefined}
-      className="textInput"
-      id={undefined}
-      maxLength={255}
-      onBlur={undefined}
-      onChange={[Function]}
-      onFocus={[Function]}
-      onKeyDown={undefined}
-      onSelect={undefined}
-      placeholder="Format (mismatches, white-spaces, tag error or missing, special character, numeric format, truncated, etc.)"
-      readOnly={true}
-      style={
-        Object {
-          "height": 0,
-        }
-      }
-      value=""
-    />
+      <div
+        className="sidebar-wrapper"
+      >
+        <div
+          className="sidebar-container"
+        >
+          <div
+            className="sidebar-content"
+          >
+            <a
+              className="accordion-section-title"
+              onClick={[Function]}
+            >
+              <span
+                className="iconProject"
+              >
+                <svg
+                  className="s2"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="projtitle"
+              >
+                Zanata Server
+              </span>
+              <svg
+                className="hide-desktop down"
+              >
+                <use
+                  xlinkHref="#Icon-chevron-down"
+                />
+              </svg>
+            </a>
+            <div
+              className="accordion-section-content"
+              id="accordion-1"
+            >
+              <ul
+                className="nav nav-pills nav-stacked"
+                role={null}
+              >
+                <li
+                  className="active"
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    People
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Glossary
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    About
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Settings 
+                  </a>
+                </li>
+              </ul>
+              <div
+                className="dropdown btn-group"
+              >
+                <button
+                  aria-expanded={false}
+                  aria-haspopup={true}
+                  className="btn-sm btn-default dropdown-toggle btn btn-default"
+                  disabled={false}
+                  id="optionsDropdown"
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  role="button"
+                  type="button"
+                >
+                  Options
+                   
+                  <span
+                    className="caret"
+                  />
+                </button>
+                <ul
+                  aria-labelledby="optionsDropdown"
+                  className="dropdown-menu"
+                  role="menu"
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Merge translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy to new version
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Download config file
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Export project to TMX
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div
+                className="processing well"
+              >
+                <p
+                  className="task-title"
+                >
+                  Task title
+                </p>
+                <p>
+                  <span>
+                    Processing document 
+                    <span
+                      className="count"
+                    >
+                      1 of 10
+                    </span>
+                     
+                    <span
+                      className="count-pc"
+                    >
+                      12.50%
+                    </span>
+                  </span>
+                </p>
+                <div
+                  className="progress-striped progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={12.5}
+                    className="progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "12.5%",
+                      }
+                    }
+                  />
+                </div>
+                <Button
+                  className="btn-danger btn-sm"
+                >
+                  Stop
+                </Button>
+              </div>
+              <div
+                id="sidebarVersion"
+              >
+                <div
+                  className="sidebarVersion-inline"
+                >
+                  <span
+                    className="sidebarVersion-title"
+                  >
+                    <span
+                      className=""
+                    >
+                      <svg
+                        className="s2"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    <span
+                      className="versionHeading"
+                    >
+                      VERSION
+                    </span>
+                  </span>
+                  <div
+                    className="dropdown btn-group"
+                  >
+                    <button
+                      aria-expanded={false}
+                      aria-haspopup={true}
+                      className="btn-sm btn-default dropdown-toggle btn btn-default"
+                      disabled={false}
+                      id="version-dropdown"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="button"
+                      type="button"
+                    >
+                      master
+                       
+                      <span
+                        className="caret"
+                      />
+                    </button>
+                    <ul
+                      aria-labelledby="version-dropdown"
+                      className="dropdown-menu"
+                      role="menu"
+                    >
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          release
+                        </a>
+                      </li>
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          test-1
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p
+                  className="sidebarVersion-settings"
+                >
+                  <a
+                    href=""
+                  >
+                    Version settings
+                  </a>
+                </p>
+                <div
+                  className="sidebarVersion-percent"
+                >
+                  <p>
+                    <span
+                      className="percent"
+                    >
+                      10%
+                    </span>
+                     translated
+                  </p>
+                </div>
+                <div
+                  className="progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-success progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={7}
+                    className="progress-bar-warning progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "7%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={3}
+                    className="progress-bar-danger progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "3%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-info progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                </div>
+                <ul
+                  className="v-links nav nav-pills nav-stacked"
+                  role={null}
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Languages
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Documents
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Groups 
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div
-    className="form-group"
+    className="flexTab wideView"
   >
-    <label
-      className="control-label"
-      htmlFor="formInlinePriority"
-    >
-      Priority
-    </label>
-    <br />
+    <h2>
+      Languages
+    </h2>
     <div
-      className="dropdown disabled btn-group btn-group-sm btn-group-default"
+      className="toolbar"
     >
+      <div
+        className="searchBox form-group"
+      >
+        <span
+          className="input-group"
+        >
+          <input
+            className="form-control"
+            id={undefined}
+            type="text"
+            value="Search languages"
+          />
+          <span
+            className="input-group-addon"
+          >
+            <span
+              className=""
+              title="search"
+            >
+              <svg
+                className="s1"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-search\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+          </span>
+        </span>
+      </div>
+      <div
+        className="sortItems"
+      >
+        <select
+          className="form-control"
+          id="sort-options"
+          type={undefined}
+        >
+          return
+          <option>
+            Last active
+          </option>
+          <option>
+            Alphabetical
+          </option>
+        </select>
+      </div>
+      <div
+        className="showItems u-pullRight"
+      >
+        <span>
+          Show
+        </span>
+        <select
+          className="form-control"
+          id="page-size-options"
+          type={undefined}
+        >
+          return
+          <option>
+            10
+          </option>
+          <option>
+            25
+          </option>
+          <option>
+            50
+          </option>
+          <option>
+            100
+          </option>
+        </select>
+      </div>
+      <div
+        className="pageCount col-xs-7 col-sm-8 col-md-12"
+      >
+        <ul
+          className="pagination pagination-md"
+        >
+          <li
+            className="disabled"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}
+            >
+              <span
+                aria-label="Previous"
+              >
+                ‹
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              1
+            </a>
+          </li>
+          <li
+            className="disabled"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}
+            >
+              <span
+                aria-label="Next"
+              >
+                ›
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <table
+      className="table table-striped table-hover"
+    >
+      <thead>
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Translated
+          </th>
+          <th>
+            Last modified
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Assamese
+          </td>
+          <td>
+            100%
+          </td>
+          <td>
+            3 days ago
+          </td>
+        </tr>
+        <tr>
+          <td
+            className="progRow"
+            colSpan="3"
+          >
+            <div
+              className="progress"
+            >
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={100}
+                className="progress-bar-success progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "100%",
+                  }
+                }
+              />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            French
+          </td>
+          <td>
+            33%
+          </td>
+          <td>
+            5 days ago
+          </td>
+        </tr>
+        <tr>
+          <td
+            className="progRow"
+            colSpan="3"
+          >
+            <div
+              className="progress"
+            >
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={33}
+                className="progress-bar-success progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "33%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={7}
+                className="progress-bar-warning progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "7%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={3}
+                className="progress-bar-danger progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "3%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={10}
+                className="progress-bar-info progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "10%",
+                  }
+                }
+              />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            German
+          </td>
+          <td>
+            10%
+          </td>
+          <td>
+            12 days ago
+          </td>
+        </tr>
+        <tr>
+          <td
+            className="progRow"
+            colSpan="3"
+          >
+            <div
+              className="progress"
+            >
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={10}
+                className="progress-bar-success progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "10%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={7}
+                className="progress-bar-warning progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "7%",
+                  }
+                }
+              />
+              <div
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={33}
+                className="progress-bar-danger progress-bar"
+                role="progressbar"
+                style={
+                  Object {
+                    "width": "33%",
+                  }
+                }
+              />
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar PeoplePage 1`] = `
+<div>
+  <div
+    className="bstrapReact"
+    id="pvSidebar"
+  >
+    <div
+      className="sidebar accordion"
+    >
+      <div
+        className="sidebar-wrapper"
+      >
+        <div
+          className="sidebar-container"
+        >
+          <div
+            className="sidebar-content"
+          >
+            <a
+              className="accordion-section-title"
+              onClick={[Function]}
+            >
+              <span
+                className="iconProject"
+              >
+                <svg
+                  className="s2"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="projtitle"
+              >
+                Zanata Server
+              </span>
+              <svg
+                className="hide-desktop down"
+              >
+                <use
+                  xlinkHref="#Icon-chevron-down"
+                />
+              </svg>
+            </a>
+            <div
+              className="accordion-section-content"
+              id="accordion-1"
+            >
+              <ul
+                className="nav nav-pills nav-stacked"
+                role={null}
+              >
+                <li
+                  className="active"
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    People
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Glossary
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    About
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Settings 
+                  </a>
+                </li>
+              </ul>
+              <div
+                className="dropdown btn-group"
+              >
+                <button
+                  aria-expanded={false}
+                  aria-haspopup={true}
+                  className="btn-sm btn-default dropdown-toggle btn btn-default"
+                  disabled={false}
+                  id="optionsDropdown"
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  role="button"
+                  type="button"
+                >
+                  Options
+                   
+                  <span
+                    className="caret"
+                  />
+                </button>
+                <ul
+                  aria-labelledby="optionsDropdown"
+                  className="dropdown-menu"
+                  role="menu"
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Merge translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy to new version
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Download config file
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Export project to TMX
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div
+                className="processing well"
+              >
+                <p
+                  className="task-title"
+                >
+                  Task title
+                </p>
+                <p>
+                  <span>
+                    Processing document 
+                    <span
+                      className="count"
+                    >
+                      1 of 10
+                    </span>
+                     
+                    <span
+                      className="count-pc"
+                    >
+                      12.50%
+                    </span>
+                  </span>
+                </p>
+                <div
+                  className="progress-striped progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={12.5}
+                    className="progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "12.5%",
+                      }
+                    }
+                  />
+                </div>
+                <Button
+                  className="btn-danger btn-sm"
+                >
+                  Stop
+                </Button>
+              </div>
+              <div
+                id="sidebarVersion"
+              >
+                <div
+                  className="sidebarVersion-inline"
+                >
+                  <span
+                    className="sidebarVersion-title"
+                  >
+                    <span
+                      className=""
+                    >
+                      <svg
+                        className="s2"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    <span
+                      className="versionHeading"
+                    >
+                      VERSION
+                    </span>
+                  </span>
+                  <div
+                    className="dropdown btn-group"
+                  >
+                    <button
+                      aria-expanded={false}
+                      aria-haspopup={true}
+                      className="btn-sm btn-default dropdown-toggle btn btn-default"
+                      disabled={false}
+                      id="version-dropdown"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="button"
+                      type="button"
+                    >
+                      master
+                       
+                      <span
+                        className="caret"
+                      />
+                    </button>
+                    <ul
+                      aria-labelledby="version-dropdown"
+                      className="dropdown-menu"
+                      role="menu"
+                    >
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          release
+                        </a>
+                      </li>
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          test-1
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p
+                  className="sidebarVersion-settings"
+                >
+                  <a
+                    href=""
+                  >
+                    Version settings
+                  </a>
+                </p>
+                <div
+                  className="sidebarVersion-percent"
+                >
+                  <p>
+                    <span
+                      className="percent"
+                    >
+                      10%
+                    </span>
+                     translated
+                  </p>
+                </div>
+                <div
+                  className="progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-success progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={7}
+                    className="progress-bar-warning progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "7%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={3}
+                    className="progress-bar-danger progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "3%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-info progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                </div>
+                <ul
+                  className="v-links nav nav-pills nav-stacked"
+                  role={null}
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Languages
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Documents
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Groups 
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="flexTab wideView"
+  >
+    <h2>
+      People
+    </h2>
+    <div>
       <button
-        aria-expanded={false}
-        aria-haspopup={true}
-        className="bstrapReact dropdown-toggle btn btn-sm btn-default"
-        disabled={true}
-        id="review-criteriareview-criteria-dropdown-basic"
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        role="button"
+        className="btn btn-primary"
+        disabled={false}
+        id="btn-people-add-new"
         type="button"
       >
         <span
-          className="u-textInfo"
+          className="plusicon"
+          title="plus"
         >
-          Minor
+          <svg
+            className="n1"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-plus\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
         </span>
-         
-        <span
-          className="caret"
-        />
+          Add someone
       </button>
-      <ul
-        aria-labelledby="review-criteriareview-criteria-dropdown-basic"
-        className="dropdown-menu"
-        role="menu"
+    </div>
+    <div
+      className="toolbar"
+    >
+      <div
+        className="searchBox form-group"
       >
-        <li
-          className="active"
-          role="presentation"
-          style={undefined}
+        <span
+          className="input-group"
         >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
+          <input
+            className="form-control"
+            id={undefined}
+            type="text"
+            value="Search people"
+          />
+          <span
+            className="input-group-addon"
           >
             <span
-              className="u-textInfo"
+              className=""
+              title="search"
             >
-              Minor
+              <svg
+                className="s1"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-search\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
             </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
+          </span>
+        </span>
+      </div>
+      <div
+        className="sortItems"
+      >
+        <select
+          className="form-control"
+          id="sort-options"
+          type={undefined}
         >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
-          >
-            <span
-              className="u-textWarning"
-            >
-              Major
-            </span>
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-          style={undefined}
+          return
+          <option>
+            Last active
+          </option>
+          <option>
+            Alphabetical
+          </option>
+        </select>
+      </div>
+      <div
+        className="showItems u-pullRight"
+      >
+        <span>
+          Show
+        </span>
+        <select
+          className="form-control"
+          id="page-size-options"
+          type={undefined}
         >
-          <a
-            href="#"
-            onClick={[Function]}
-            role="menuitem"
-            tabIndex="-1"
+          return
+          <option>
+            10
+          </option>
+          <option>
+            25
+          </option>
+          <option>
+            50
+          </option>
+          <option>
+            100
+          </option>
+        </select>
+      </div>
+      <div
+        className="pageCount col-xs-7 col-sm-8 col-md-12"
+      >
+        <ul
+          className="pagination pagination-md"
+        >
+          <li
+            className="disabled"
+            style={undefined}
           >
-            <span
-              className="u-textDanger"
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}
             >
-              Critical
-            </span>
-          </a>
-        </li>
-      </ul>
+              <span
+                aria-label="Previous"
+              >
+                ‹
+              </span>
+            </a>
+          </li>
+          <li
+            className="active"
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              1
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              2
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              3
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              4
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              5
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              6
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              7
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              8
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              9
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              10
+            </a>
+          </li>
+          <li
+            className=""
+            style={undefined}
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+            >
+              <span
+                aria-label="Next"
+              >
+                ›
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <table
+      className="table table-striped table-hover"
+    >
+      <thead>
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Role
+          </th>
+          <th>
+             
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Admin
+          </td>
+          <td>
+            Maintainer
+          </td>
+          <td>
+            <button
+              className="btn btn-default"
+              disabled={false}
+              type="button"
+            >
+              <span
+                className=""
+              >
+                <svg
+                  className="s0"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              Manage permissions
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tux
+          </td>
+          <td>
+            Reviewer
+          </td>
+          <td>
+            <button
+              className="btn btn-default"
+              disabled={false}
+              type="button"
+            >
+              <span
+                className=""
+              >
+                <svg
+                  className="s0"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              Manage permissions
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Alix
+          </td>
+          <td>
+            Translator
+          </td>
+          <td>
+            <button
+              className="btn btn-default"
+              disabled={false}
+              type="button"
+            >
+              <span
+                className=""
+              >
+                <svg
+                  className="s0"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              Manage permissions
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar default 1`] = `
+<div>
+  <div
+    className="bstrapReact"
+    id="pvSidebar"
+  >
+    <div
+      className="sidebar accordion"
+    >
+      <div
+        className="sidebar-wrapper"
+      >
+        <div
+          className="sidebar-container"
+        >
+          <div
+            className="sidebar-content"
+          >
+            <a
+              className="accordion-section-title"
+              onClick={[Function]}
+            >
+              <span
+                className="iconProject"
+              >
+                <svg
+                  className="s2"
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                    }
+                  }
+                  style={
+                    Object {
+                      "fill": "currentColor",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="projtitle"
+              >
+                Zanata Server
+              </span>
+              <svg
+                className="hide-desktop down"
+              >
+                <use
+                  xlinkHref="#Icon-chevron-down"
+                />
+              </svg>
+            </a>
+            <div
+              className="accordion-section-content"
+              id="accordion-1"
+            >
+              <ul
+                className="nav nav-pills nav-stacked"
+                role={null}
+              >
+                <li
+                  className="active"
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-users\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    People
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Glossary
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-info\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    About
+                  </a>
+                </li>
+                <li
+                  className=""
+                  role="presentation"
+                  style={undefined}
+                >
+                  <a
+                    href="#"
+                    onClick={[Function]}
+                    role="button"
+                  >
+                    <span
+                      className="iconSidebar"
+                    >
+                      <svg
+                        className="s1"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-settings\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    Settings 
+                  </a>
+                </li>
+              </ul>
+              <div
+                className="dropdown btn-group"
+              >
+                <button
+                  aria-expanded={false}
+                  aria-haspopup={true}
+                  className="btn-sm btn-default dropdown-toggle btn btn-default"
+                  disabled={false}
+                  id="optionsDropdown"
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  role="button"
+                  type="button"
+                >
+                  Options
+                   
+                  <span
+                    className="caret"
+                  />
+                </button>
+                <ul
+                  aria-labelledby="optionsDropdown"
+                  className="dropdown-menu"
+                  role="menu"
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Merge translations
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Copy to new version
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Download config file
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="menuitem"
+                      tabIndex="-1"
+                    >
+                      Export project to TMX
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div
+                className="processing well"
+              >
+                <p
+                  className="task-title"
+                >
+                  Task title
+                </p>
+                <p>
+                  <span>
+                    Processing document 
+                    <span
+                      className="count"
+                    >
+                      1 of 10
+                    </span>
+                     
+                    <span
+                      className="count-pc"
+                    >
+                      12.50%
+                    </span>
+                  </span>
+                </p>
+                <div
+                  className="progress-striped progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={12.5}
+                    className="progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "12.5%",
+                      }
+                    }
+                  />
+                </div>
+                <Button
+                  className="btn-danger btn-sm"
+                >
+                  Stop
+                </Button>
+              </div>
+              <div
+                id="sidebarVersion"
+              >
+                <div
+                  className="sidebarVersion-inline"
+                >
+                  <span
+                    className="sidebarVersion-title"
+                  >
+                    <span
+                      className=""
+                    >
+                      <svg
+                        className="s2"
+                        dangerouslySetInnerHTML={
+                          Object {
+                            "__html": "<use xlink:href=\\"#Icon-version\\" />",
+                          }
+                        }
+                        style={
+                          Object {
+                            "fill": "currentColor",
+                          }
+                        }
+                      />
+                    </span>
+                    <span
+                      className="versionHeading"
+                    >
+                      VERSION
+                    </span>
+                  </span>
+                  <div
+                    className="dropdown btn-group"
+                  >
+                    <button
+                      aria-expanded={false}
+                      aria-haspopup={true}
+                      className="btn-sm btn-default dropdown-toggle btn btn-default"
+                      disabled={false}
+                      id="version-dropdown"
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="button"
+                      type="button"
+                    >
+                      master
+                       
+                      <span
+                        className="caret"
+                      />
+                    </button>
+                    <ul
+                      aria-labelledby="version-dropdown"
+                      className="dropdown-menu"
+                      role="menu"
+                    >
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          release
+                        </a>
+                      </li>
+                      <li
+                        className=""
+                        role="presentation"
+                        style={undefined}
+                      >
+                        <a
+                          href="#"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          test-1
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p
+                  className="sidebarVersion-settings"
+                >
+                  <a
+                    href=""
+                  >
+                    Version settings
+                  </a>
+                </p>
+                <div
+                  className="sidebarVersion-percent"
+                >
+                  <p>
+                    <span
+                      className="percent"
+                    >
+                      10%
+                    </span>
+                     translated
+                  </p>
+                </div>
+                <div
+                  className="progress"
+                >
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-success progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={7}
+                    className="progress-bar-warning progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "7%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={3}
+                    className="progress-bar-danger progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "3%",
+                      }
+                    }
+                  />
+                  <div
+                    aria-valuemax={100}
+                    aria-valuemin={0}
+                    aria-valuenow={10}
+                    className="progress-bar-info progress-bar"
+                    role="progressbar"
+                    style={
+                      Object {
+                        "width": "10%",
+                      }
+                    }
+                  />
+                </div>
+                <ul
+                  className="v-links nav nav-pills nav-stacked"
+                  role={null}
+                >
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Languages
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Documents
+                    </a>
+                  </li>
+                  <li
+                    className=""
+                    role="presentation"
+                    style={undefined}
+                  >
+                    <a
+                      href="#"
+                      onClick={[Function]}
+                      role="button"
+                    >
+                      Groups 
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</form>
+  <div
+    className="flexTab"
+  >
+    <p>
+      This sidebar example has the active tag applied to both the People and Languages pages to provide examples of how this design handles sidebar links.
+    </p>
+    <p>
+      The sidebar nav has been implemented using  
+      <a
+        href="https://react-bootstrap.github.io/components.html#navs"
+      >
+        react bootstrap components
+      </a>
+      .
+    </p>
+  </div>
+</div>
 `;
 
 exports[`Frontend Storyshots Table default 1`] = `
@@ -19839,6 +22483,58 @@ exports[`Frontend Storyshots TextInput default 1`] = `
     type={undefined}
     value={undefined}
   />
+</span>
+`;
+
+exports[`Frontend Storyshots Tooltip default 1`] = `
+<span>
+  <div
+    className="ant-layout"
+  >
+    <h2>
+      <img
+        src="https://i.imgur.com/v4qLk4p.png"
+        width="42px"
+      />
+      Tooltip
+    </h2>
+    <div
+      className="well well-lg"
+    >
+      Tooltip component for a more stylish alternative to that anchor tag 
+      <code>
+        title
+      </code>
+       attribute. Attach and position tooltips with 
+      <code>
+        OverlayTrigger
+      </code>
+      .
+      <hr />
+      <ul>
+        <li>
+          <a
+            href="https://react-bootstrap.github.io/components.html#tooltips-props"
+          >
+            Props for react-bootstrap Tooltips
+          </a>
+        </li>
+      </ul>
+    </div>
+    <Button
+      className="btn-default"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+    >
+      Holy guacamole!
+    </Button>
+  </div>
 </span>
 `;
 

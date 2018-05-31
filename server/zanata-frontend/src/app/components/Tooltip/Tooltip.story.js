@@ -6,7 +6,7 @@ import { Button, Tooltip, Layout } from 'antd'
 const tooltip = <span id='tooltip'><strong>Tooltip ahoy!</strong></span>;
 
 storiesOf('Tooltip', module)
-    .add('default (no test)', () => (
+    .add('default', () => (
         <span>
           <Layout>
           <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Tooltip</h2>

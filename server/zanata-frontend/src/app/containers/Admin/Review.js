@@ -20,7 +20,7 @@ import Card from 'antd/lib/card'
 import 'antd/lib/card/style/css'
 
 const DO_NOT_RENDER = undefined
-/* eslint-enable max-len */
+ /* eslint-disable max-len */
 
 class AdminReview extends Component {
   static propTypes = {
@@ -41,6 +41,7 @@ class AdminReview extends Component {
       showNewEntryForm: false
     }
   }
+
   componentDidMount () {
     this.props.fetchAllCriteria()
   }
@@ -54,25 +55,27 @@ class AdminReview extends Component {
   }
   render () {
     const {criteria, deleteEntry, editEntry, notification} = this.props
-    const criteriaList = criteria.map((c, i) => <RejectionsForm key={i}
-      commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
-      criteriaPlaceholder={c.description} isAdminMode displayDelete
-      onSave={editEntry} description={c.description}
-      priority={c.priority} />)
+    const criteriaList = (criteria.length > 0)
+      ? criteria.map((c, i) => <RejectionsForm key={i}
+        commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
+        criteriaPlaceholder={c.description} isAdminMode displayDelete
+        onSave={editEntry} description={c.description}
+        priority={c.priority} />)
+      : null
     const newEntryForm = this.state.showNewEntryForm ? (
       <span className='mb2'>
         <Card title='Add new entry'>
           <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
             criteriaPlaceholder='fill in criteria'
             onSave={this.saveNewEntry} />
-        </Card></span>) : DO_NOT_RENDER
 
+        </Card></span>) : DO_NOT_RENDER
     const notificationBar = notification &&
       <Alert bsStyle='danger'>{notification}</Alert>
     return <div className='container centerWrapper' id='admin-review'>
       <Layout>
         <Breadcrumb>
-          <Breadcrumb.Item>
+          <Breadcrumb.Item href='home'>
             <a href='home'>Administration</a>
           </Breadcrumb.Item>
         </Breadcrumb>
