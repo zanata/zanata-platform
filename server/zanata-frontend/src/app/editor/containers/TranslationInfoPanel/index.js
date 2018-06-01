@@ -21,8 +21,8 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 
 /* React Bootstrap Tab keys for tracking active Tab */
-const activityTabKey = 1
-const glossaryTabKey = 2
+const activityTabKey = '1'
+const glossaryTabKey = '2'
 const { TextArea } = Input
 const TabPane = Tabs.TabPane
 
@@ -152,9 +152,10 @@ class TranslationInfoPanel extends React.Component {
             selectedPhrase={this.props.selectedPhrase}
             isRTL={this.props.isRTL} />
         </div>
-        <Tabs defaultActiveKey={activePanelKey}
-          onChange={this.handleSelectTab}>
-          <span id="SidebarEditor-tabsPane1">
+
+        <span id="SidebarEditor-tabsPane1">
+          <Tabs defaultActiveKey={activePanelKey}
+            onTabClick={this.handleSelectTab}>
             <TabPane key={activityTabKey} tab={
               <span>
                 <Icon name="clock" className="s1 gloss-tab-svg" />
@@ -174,7 +175,7 @@ class TranslationInfoPanel extends React.Component {
                 postComment={this.postComment} />
             </TabPane>
             <TabPane key={glossaryTabKey} tab={
-              <span><Icon name="glossary" />
+              <span><Icon name="glossary" className="s1 gloss-tab-svg" />
                 <span className="hide-md">
                   <FormattedMessage id='TranslationInfoPanel.glossaryTitle'
                     description={'Title for the Glossary Panel'}
@@ -186,8 +187,8 @@ class TranslationInfoPanel extends React.Component {
                 // @ts-ignore
                 activeKey={this.state.key} />
             </TabPane>
-          </span>
-        </Tabs>
+          </Tabs>
+        </span>
       </div>
     )
   }
