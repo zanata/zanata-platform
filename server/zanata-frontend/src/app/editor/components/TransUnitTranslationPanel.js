@@ -6,7 +6,7 @@ import Textarea from 'react-textarea-autosize'
 import TransUnitTranslationHeader from './TransUnitTranslationHeader'
 import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { LoaderText } from '../../components'
-import { pick } from 'lodash'
+import { pick, isEmpty } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
 import {
   getSyntaxHighlighting,
@@ -25,6 +25,8 @@ import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
 registerLanguage('xml', xml)
+
+const DO_NOT_RENDER = undefined
 
 /**
  * Panel to display and edit translations of a phrase.
@@ -302,7 +304,13 @@ export class TranslationItem extends React.Component {
         lineStyle={syntaxStyle}>
         {translation}
       </SyntaxHighlighter>
-      : ''
+      : DO_NOT_RENDER
+    const validation = (isEmpty(translation))
+    ? DO_NOT_RENDER
+    : <Validation
+      source={phrase.sources[0]}
+      target={translation}
+      validationOptions={validationOptions} />
     const cantEditTranslation = !permissions.translator || dropdownIsOpen
     return (
       <div className="TransUnit-item" key={index}>
@@ -320,10 +328,7 @@ export class TranslationItem extends React.Component {
           onChange={this._onChange}
           onSelect={onSelectionChange} />
         {syntaxHighlighter}
-        <Validation
-          source={phrase.sources[0]}
-          target={translation}
-          validationOptions={validationOptions} />
+        {validation}
       </div>
     )
   }
