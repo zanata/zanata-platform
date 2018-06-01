@@ -1,4 +1,4 @@
-
+/* global describe it expect */
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Icon } from '../../../components'
@@ -16,7 +16,7 @@ describe('SuggestionDetailsSummaryTest', () => {
               transMemorySlug: 'champagne'
             }
           ]
-        }}/>
+        }} />
     )
     // Note: slug wrapped as a string here to work around assertion
     //       library, which considers ' champagne' different from
@@ -25,7 +25,7 @@ describe('SuggestionDetailsSummaryTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
-            <Icon name="import" className="n1"/> {'champagne'}
+            <Icon name="import" className="n1" /> {'champagne'}
           </li>
         </ul>
       </div>
@@ -47,20 +47,20 @@ describe('SuggestionDetailsSummaryTest', () => {
               documentName: 'i-rote-this.txt'
             }
           ]
-        }}/>
+        }} />
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li title="sausages">
-            <Icon name="project" className="n1"/> {'Sausages'}
+            <Icon name="project" className="n1" /> {'Sausages'}
           </li>
           <li>
-            <Icon name="version" className="n1"/> {'the-wurst-version'}
+            <Icon name="version" className="n1" /> {'the-wurst-version'}
           </li>
           <li className="DocName" title="what-a-brat/i-rote-this.txt">
-            <Icon name="document" className="n1"/>
+            <Icon name="document" className="n1" />
             <span className="ellipsis">{'i-rote-this.txt'}</span>
           </li>
         </ul>
@@ -93,7 +93,7 @@ describe('SuggestionDetailsSummaryTest', () => {
             remainingMatch,
             remainingMatch
           ]
-        }}/>
+        }} />
     )
 
     // Note: some of the expected text output must be wrapped in
@@ -104,15 +104,11 @@ describe('SuggestionDetailsSummaryTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
-            <Row>
-              <Icon name="import" className="n1"/> {'champagne'}
-            </Row>
+            <Icon name="import" className="n1" /> {'champagne'}
           </li>
           <li>
-            <Row>
-              <Icon name="translate" className="n1"
-              /> {3}{' more occurrences'}
-            </Row>
+            <Icon name="translate" className="n1"
+            /> {3}{' more occurrences'}
           </li>
         </ul>
       </div>

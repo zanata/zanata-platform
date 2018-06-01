@@ -6,8 +6,6 @@ import * as TestUtils from 'react-dom/test-utils'
 import { PhraseStatusFilter } from '.'
 import FilterToggle from '../FilterToggle'
 import { Icon } from '../../../components'
-import Row from 'antd/lib/row'
-import 'antd/lib/row/style/css'
 import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
 
 const callback = () => {}
@@ -34,10 +32,10 @@ describe('PhraseStatusFilterTest', () => {
         <span className="Toggle-fakeCheckbox" />
         <label className="Toggle-label"
           htmlFor="government-issued"
-          title="titalic"><Row>
+          title="titalic">
           <Icon name="dot" className="n1" />
           12
-          <span className="u-hiddenVisually">titalic</span></Row>
+          <span className="u-hiddenVisually">titalic</span>
         </label>
       </div>
     )
@@ -65,9 +63,9 @@ describe('PhraseStatusFilterTest', () => {
         <span className="Toggle-fakeCheckbox" />
         <label className="Toggle-label"
           htmlFor="government-issued"
-          title="titalic"><Row>
+          title="titalic">
           17
-          <span className="u-hiddenVisually">titalic</span></Row>
+          <span className="u-hiddenVisually">titalic</span>
         </label>
       </div>
     )

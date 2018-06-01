@@ -868,14 +868,13 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
 
 exports[`Editor Storyshots ActivitySelectList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -896,12 +895,11 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -922,12 +920,11 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -948,7 +945,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
@@ -5639,51 +5636,42 @@ exports[`Editor Storyshots CommentBox default 1`] = `
 <div
   className="TransUnit-commentBox"
 >
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formControlsTextarea"
+  <span>
+    <span
+      className=""
     >
-      <span
-        className=""
-      >
-        <svg
-          className="s0"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-comment\\" />",
-            }
+      <svg
+        className="s0"
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-comment\\" />",
           }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
           }
-        />
-      </span>
-       Post a comment
-    </label>
-    <br />
-    <textarea
-      className="form-control"
-      id="formControlsTextarea"
-      maxLength={undefined}
-      onChange={[Function]}
-      placeholder="..."
-      type={undefined}
-      value=""
-    />
-  </div>
-  <button
-    className="EditorButton Button--small u-rounded Button--primary u-pullRight btn btn-default"
+        }
+      />
+    </span>
+     Post a comment
+  </span>
+  <br />
+  <textarea
+    className="ant-input"
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="..."
+    style={Object {}}
+    value=""
+  />
+  <Button
+    className="EditorButton Button--small u-rounded Button--primary u-pullRight"
     disabled={true}
     onClick={[Function]}
-    type="button"
   >
     Post comment
-  </button>
+  </Button>
 </div>
 `;
 
@@ -5734,18 +5722,14 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
     TransUnit items
   </h1>
   <img
-    className="img-responsive"
     src="https://i.imgur.com/yQWlJaH.png"
   />
   <h2>
     Concurrent user notice
   </h2>
-  <button
-    className="EditorButton Button--link Button--small Button--concurrent btn btn-default"
-    disabled={false}
+  <Button
+    className="EditorButton Button--link Button--small Button--concurrent"
     onClick={[Function]}
-    title="Click should trigger onClick action"
-    type="button"
   >
     <span
       className=""
@@ -5765,19 +5749,16 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
       />
     </span>
      username
-  </button>
+  </Button>
   <h2>
     Resolve merge conflict button
   </h2>
-  <button
-    className="EditorButton Button--secondary u-rounded btn btn-default"
-    disabled={false}
+  <Button
+    className="EditorButton Button--secondary u-rounded"
     onClick={[Function]}
-    title="Click should trigger onClick action"
-    type="button"
   >
     Resolve conflict
-  </button>
+  </Button>
 </span>
 `;
 
@@ -6062,9 +6043,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
-<table
-  className="table"
->
+<table>
   <thead>
     <tr>
       <th>
@@ -6087,15 +6066,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6109,21 +6089,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6139,48 +6120,29 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
+        <Button
           className="Button--link s1"
-          disabled={false}
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6188,15 +6150,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6210,21 +6173,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Hospital
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6240,48 +6204,29 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
+        <Button
           className="Button--link s1"
-          disabled={false}
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6289,15 +6234,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6311,21 +6257,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Doctor
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6341,48 +6288,29 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
+        <Button
           className="Button--link s1"
-          disabled={false}
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
   </tbody>
@@ -6390,9 +6318,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
-<table
-  className="table"
->
+<table>
   <thead>
     <tr>
       <th>
@@ -6415,15 +6341,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6437,21 +6364,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6467,48 +6395,29 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Krankenwagen
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
+        <Button
           className="Button--link s1"
-          disabled={false}
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6516,15 +6425,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6538,21 +6448,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Hospital
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6568,48 +6479,29 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Krankenhaus
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
+        <Button
           className="Button--link s1"
-          disabled={false}
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6617,15 +6509,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6639,21 +6532,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Doctor
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6669,48 +6563,29 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Arzt
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
+        <Button
           className="Button--link s1"
-          disabled={false}
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
   </tbody>
@@ -6718,24 +6593,23 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
-<table
-  className="table"
->
+<table>
   <tbody>
     <tr>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6749,21 +6623,22 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6779,48 +6654,29 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
               Krankenwagen
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
+        <Button
           className="Button--link s1"
-          disabled={false}
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
   </tbody>
@@ -6991,14 +6847,13 @@ exports[`Editor Storyshots GlossaryTermModal with 3 detail items 1`] = `
 
 exports[`Editor Storyshots LanguageSelectList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--primary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--primary is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7019,12 +6874,11 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     Current
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--primary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--primary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7045,12 +6899,11 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--primary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--primary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7071,7 +6924,7 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     Source
-  </button>
+  </Button>
 </div>
 `;
 
@@ -7340,11 +7193,10 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
 `;
 
 exports[`Editor Storyshots SelectButton active 1`] = `
-<button
-  className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-  disabled={false}
+<Button
+  className="Button Button--small u-rounded Button--secondary is-active"
   onClick={[Function]}
-  type="button"
+  size="small"
 >
   <span
     className=""
@@ -7365,15 +7217,14 @@ exports[`Editor Storyshots SelectButton active 1`] = `
   </span>
    
   All
-</button>
+</Button>
 `;
 
 exports[`Editor Storyshots SelectButton default 1`] = `
-<button
-  className="Button Button--small u-rounded Button--secondary btn btn-default"
-  disabled={false}
+<Button
+  className="Button Button--small u-rounded Button--secondary"
   onClick={[Function]}
-  type="button"
+  size="small"
 >
   <span
     className=""
@@ -7394,19 +7245,18 @@ exports[`Editor Storyshots SelectButton default 1`] = `
   </span>
    
   All
-</button>
+</Button>
 `;
 
 exports[`Editor Storyshots SelectButtonList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7427,12 +7277,11 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7453,12 +7302,11 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7479,20 +7327,19 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
 exports[`Editor Storyshots SelectButtonList first button active 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7513,12 +7360,11 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7539,12 +7385,11 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7565,7 +7410,7 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 

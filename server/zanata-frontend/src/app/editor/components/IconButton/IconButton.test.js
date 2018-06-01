@@ -1,3 +1,4 @@
+/* global describe expect it */
 // @ts-nocheck
 import React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -18,9 +19,10 @@ describe('IconButtonTest', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <button
-        className="push-me"
-        onClick={clickFun}
-        title="Mozart">
+        title="Mozart"
+        type="button"
+        className="ant-btn push-me"
+        onClick={clickFun}>
         <Icon
           name="classical" title="Mozart"
           className="s1" />
@@ -35,15 +37,16 @@ describe('IconButtonTest', () => {
       icon="tea"
       title="Tea"
       onClick={clickFun}
-      className="drink-me"
-      disabled={true}/>)
+      disabled
+      className="drink-me" />)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <button
-        className="drink-me is-disabled"
         disabled="true"
-        onClick={clickFun}
-        title="Tea">
+        title="Tea"
+        type="button"
+        className="ant-btn drink-me"
+        onClick={clickFun}>
         <Icon
           name="tea"
           title="Tea"
@@ -63,7 +66,7 @@ describe('IconButtonTest', () => {
       <IconButton
         icon="iced-tea"
         title="Iced Tea"
-        onClick={clickFun}/>
+        onClick={clickFun} />
     )
     // simulate click event
     TestUtils.Simulate.click(
@@ -80,10 +83,10 @@ describe('IconButtonTest', () => {
 
     const refreshButton = TestUtils.renderIntoDocument(
       <IconButton
+        disabled
         icon="iced-tea"
         title="Iced Tea"
-        onClick={clickFun}
-        disabled={true}/>
+        onClick={clickFun} />
     )
     // throws if onClick is not bound
     try {
