@@ -371,4 +371,9 @@ public class TSAdapter extends OkapiFilterAdapter {
         return startGroup.getName() == null ? ""
                 : event.getStartGroup().getName();
     }
+
+    @Override
+    public boolean rawTranslationUploadAvailable() {
+        return true;
+    }
 }

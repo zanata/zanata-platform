@@ -395,16 +395,27 @@
                           </h:outputLink>
                         </li>
                       </ui:fragment>
-                      <ui:fragment
-                        rendered="#{versionHomeAction.isFileUploadAllowed(versionHomeAction.selectedLocale) and versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)}">
+                      <ui:fragment rendered="#{versionHomeAction.isUserAllowedToTranslateOrReview(selectedLocale) and versionHomeAction.isFileUploadAllowed(selectedLocale)}">
                         <li>
                           <a href="#" class="i__item--right"
-                            data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
-                            data-target="#uploadTranslationDialog">
-                            #{msgs['jsf.Upload.Label']}
+                             data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
+                             data-target="#uploadTranslationDialog"
+                             title="#{msgs['jsf.Upload.Description']}">
+                            #{msgs.format('jsf.Upload.Label', versionHomeAction.isPoDocument(document.docId) ? '.po' : 'offline .po')}
                             <i class="i i--import i__item__icon"></i>
                           </a>
                         </li>
+                        <ui:fragment rendered="#{versionHomeAction.canUploadRawFileTranslation(document.path, document.name)}">
+                          <li>
+                            <a href="#" class="i__item--right"
+                               data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
+                               data-target="#uploadTranslationDialog"
+                               title="#{msgs['jsf.Upload.Description.File']}">
+                              #{msgs.format('jsf.Upload.Label.File', versionHomeAction.translationExtensionOf(document.path, document.name).concat('*'))}
+                              <i class="i i--import i__item__icon"></i>
+                            </a>
+                          </li>
+                        </ui:fragment>
                       </ui:fragment>
                     </ul>
                   </div>

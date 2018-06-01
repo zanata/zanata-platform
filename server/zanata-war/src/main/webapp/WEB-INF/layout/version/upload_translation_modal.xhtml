@@ -103,7 +103,7 @@
 
       <div class="modal__content l--pad-all-quarter l--push-h-half">
         <div class="l--pad-top-quarter form__item txt--understated" id="uploadPanelMsg"></div>
-
+        <h:outputLabel>#{msgs['jsf.Upload.Description.File']}</h:outputLabel>
         <div class="form__item">
           <a4j:jsFunction name="clearTransFileUpload" action="#{versionHomeAction.clearTransFileUpload}"/>
           <rich:fileUpload id="upload-file"
