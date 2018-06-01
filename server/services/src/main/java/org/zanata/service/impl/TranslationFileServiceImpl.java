@@ -144,15 +144,17 @@ public class TranslationFileServiceImpl implements TranslationFileService {
             throw new ZanataServiceException("Project version not found: "
                     + projectSlug + " " + iterationSlug);
         }
-        if (version.getProjectType() == ProjectType.File) {
+        if (fileName.endsWith(".po")) {
+            // Always process a standard translation file
+            return parsePoFile(fileContents, projectSlug, iterationSlug, docId);
+        } else if (version.getProjectType() == ProjectType.File) {
+            // Attempt to equivalent file-type-translate
             File tempFile = persistToTempFile(fileContents);
             TranslationsResource transRes = parseAdapterTranslationFile(
                     tempFile, projectSlug, iterationSlug, docId, localeId,
                     fileName, documentType);
             removeTempFile(tempFile);
             return transRes;
-        } else if (fileName.endsWith(".po")) {
-            return parsePoFile(fileContents, projectSlug, iterationSlug, docId);
         } else {
             throw new ZanataServiceException(
                     "Unsupported Translation file: " + fileName);
