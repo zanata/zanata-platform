@@ -89,6 +89,9 @@ public class LocaleServiceImpl implements LocaleService {
     public static Map<LocaleId, String>
             getLocaleAliasesByIteration(HProjectIteration iteration) {
         Map<LocaleId, String> localeAliases;
+        if (iteration == null || iteration.getProject() == null) {
+            return Collections.EMPTY_MAP;
+        }
         if (iteration.isOverrideLocales()) {
             localeAliases = iteration.getLocaleAliases();
         } else {

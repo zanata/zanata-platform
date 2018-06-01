@@ -191,8 +191,9 @@ public class SecurityFunctions extends PermissionProvider {
      */
     @GrantsPermission(actions = "read")
     public boolean canReadProjectIteration(HProjectIteration target) {
-        return !target.getProject().isPrivateProject() ||
-                isProjectMember(target.getProject());
+        return target.getProject() != null &&
+                (!target.getProject().isPrivateProject() ||
+                isProjectMember(target.getProject()));
     }
     /*
      * Project maintainers may edit (but not delete) a project, or add an
