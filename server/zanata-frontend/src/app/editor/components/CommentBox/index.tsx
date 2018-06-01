@@ -52,10 +52,11 @@ class CommentBox extends React.Component<Props, State> {
           <span>
             <Icon name='comment' className='s0' /> Post a comment
           </span><br />
-          <TextArea autosize={{ minRows: 2, maxRows: 6 }}
-            value={this.state.commentText}
+          <TextArea
+            autosize={{ minRows: 2, maxRows: 6 }}
+            onChange={this.setCommentText}
             placeholder='...'
-            onPressEnter={this.setCommentText}
+            value={this.state.commentText}
           />
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
