@@ -108,7 +108,9 @@
             <!-- Fedora <= 27 still uses maven-javadoc-plugin version 2.9.1 -->
             <version>3.0.0</version>
             <configuration>
+              <!-- for maven-javadoc-plugin 2.x -->
               <additionalparam>-Xdoclint:none</additionalparam>
+              <!-- for maven-javadoc-plugin 3.x -->
               <doclint>none</doclint>
             </configuration>
             <executions>
