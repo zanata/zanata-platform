@@ -23,11 +23,11 @@ package org.zanata.email;
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import javax.mail.internet.InternetAddress;
 import java.util.Collection;
 import static org.zanata.email.Addresses.getReplyTo;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Sean Flanigan
@@ -41,7 +41,7 @@ public class RequestToJoinVersionGroupEmailStrategy extends
     private final String groupName;
     private final String groupSlug;
     private final Collection<ProjectIterationId> projectIterationIds;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getBodyResourceName() {
@@ -63,28 +63,27 @@ public class RequestToJoinVersionGroupEmailStrategy extends
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("groupName", groupName).put("versionGroupSlug", groupSlug)
                 .put("projectIterationIds", projectIterationIds)
-                .put("htmlMessage", safeHTML);
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
             "replyEmail", "groupName", "groupSlug", "projectIterationIds",
-            "htmlMessage" })
+            "userMessage" })
     public RequestToJoinVersionGroupEmailStrategy(final String fromLoginName,
             final String fromName, final String replyEmail,
             final String groupName, final String groupSlug,
             final Collection<ProjectIterationId> projectIterationIds,
-            final String htmlMessage) {
+            final String userMessage) {
         this.fromLoginName = fromLoginName;
         this.fromName = fromName;
         this.replyEmail = replyEmail;
         this.groupName = groupName;
         this.groupSlug = groupSlug;
         this.projectIterationIds = projectIterationIds;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }

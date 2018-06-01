@@ -25,7 +25,7 @@
 
   <HIterationGroup id="1" versionNum="1" creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" slug="group1"
-    description="Group1 description" name="Group1" status="A" />
+    description="Group1 description" name="Group1" />
 
   <HIterationGroup_Maintainer iterationGroupId="1" personId="1" />
 

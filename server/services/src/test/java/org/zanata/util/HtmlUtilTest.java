@@ -72,4 +72,15 @@ public class HtmlUtilTest {
                 "contain a link <http://example.com/> .");
     }
 
+    @Test
+    public void testTextToSafeHtml() {
+        String input = "<p>This is <b>meant</b> to <br/>contain a " +
+                "<a href='http://example.com/'>link</a>.</p>";
+        String actual = textToSafeHtml(input);
+        assertThat(actual).isEqualTo(
+                "&lt;p&gt;This is &lt;b&gt;meant&lt;/b&gt; to " +
+                "&lt;br/&gt;contain a &lt;a href&#61;&#39;" +
+                "http://example.com/&#39;&gt;link&lt;/a&gt;.&lt;/p&gt;");
+    }
+
 }
