@@ -21,6 +21,7 @@
 package org.zanata.util;
 
 import net.htmlparser.jericho.*;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
@@ -60,5 +61,9 @@ public class HtmlUtil {
         Segment htmlSeg = new Segment(htmlSource, 0, htmlSource.length());
         Renderer htmlRend = new Renderer(htmlSeg);
         return htmlRend.toString();
+    }
+
+    public static String textToSafeHtml(String text) {
+        return SANITIZER.sanitize(StringEscapeUtils.escapeHtml(text));
     }
 }

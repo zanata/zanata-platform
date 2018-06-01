@@ -104,7 +104,8 @@ public class VelocityEmailStrategyTest {
     String userSubject = "USER_SUBJECT[测试]";
     String localeId = "LOCALE_ID";
     String localeNativeName = "LOCALE_NAME[测试]";
-    String htmlMessage = "some <b>HTML</b>";
+    private String userMessage = "some <b>HTML</b>";
+    private String expectedUserMessage = "some &lt;b&gt;HTML&lt;/b&gt;";
 
     public VelocityEmailStrategyTest() throws UnsupportedEncodingException {
         toAddr = Addresses.getAddress(toAddress, toName);
@@ -185,7 +186,7 @@ public class VelocityEmailStrategyTest {
         VelocityEmailStrategy strategy =
                 new ContactAdminEmailStrategy(
                         fromLoginName, fromName, replyEmail, userSubject,
-                        htmlMessage);
+                        userMessage);
 
         builder.buildMessage(message, strategy, toAddresses, Lists.newArrayList("contactAdmin test"));
 
@@ -199,15 +200,14 @@ public class VelocityEmailStrategyTest {
 
         assertThat(html).contains(msgs.format(
             "jsf.email.admin.UserMessageIntro", fromName, fromLoginName));
-        assertThat(html).contains(
-                htmlMessage);
+        assertThat(html).contains(expectedUserMessage);
     }
 
     @Test
     public void contactAdminAnonymous() throws Exception {
         String ipAddress = "101.20.30.40";
         VelocityEmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
-                ipAddress, userSubject, htmlMessage);
+                ipAddress, userSubject, userMessage);
 
         builder.buildMessage(message, strategy, toAddresses,
                 Lists.newArrayList("contactAdminAnonymous test"));
@@ -221,7 +221,7 @@ public class VelocityEmailStrategyTest {
 
         assertThat(html).contains(msgs.format(
                 "jsf.email.admin.AnonymousUserMessageIntro", ipAddress));
-        assertThat(html).contains(htmlMessage);
+        assertThat(html).contains(expectedUserMessage);
     }
 
     @Test
@@ -233,7 +233,7 @@ public class VelocityEmailStrategyTest {
         VelocityEmailStrategy strategy =
             new DeclineLanguageRequestEmailStrategy(
                 toName, roles, contactCoordinatorLink, localeDisplayName,
-                htmlMessage);
+                    userMessage);
 
         builder.buildMessage(message, strategy, toAddresses,
             Lists.newArrayList("declineLanguageRequest test"));
@@ -247,7 +247,7 @@ public class VelocityEmailStrategyTest {
 
         assertThat(html).contains(msgs.format(
             "jsf.email.languageteam.request.reject.message", roles, localeDisplayName));
-        assertThat(html).contains(htmlMessage);
+        assertThat(html).contains(expectedUserMessage);
     }
 
     @Test
@@ -255,7 +255,7 @@ public class VelocityEmailStrategyTest {
         VelocityEmailStrategy strategy =
                 new ContactLanguageCoordinatorEmailStrategy(receiver,
                         fromLoginName, fromName, replyEmail, userSubject,
-                        localeId, localeNativeName, htmlMessage);
+                        localeId, localeNativeName, userMessage);
 
         builder.buildMessage(message, strategy, toAddresses,
             Lists.newArrayList("contactLanguageCoordinator test"));
@@ -272,8 +272,7 @@ public class VelocityEmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.coordinator.UserMessageIntro",
                 fromName, fromLoginName, localeId, localeNativeName));
-        assertThat(html).contains(
-                htmlMessage);
+        assertThat(html).contains(expectedUserMessage);
         assertThat(html).contains(
                 testServerPath + "/language/view/" + localeId);
     }
@@ -326,7 +325,7 @@ public class VelocityEmailStrategyTest {
         VelocityEmailStrategy strategy =
                 new RequestToJoinLanguageEmailStrategy(
                         fromLoginName, fromName, replyEmail,
-                        localeId, localeNativeName, htmlMessage,
+                        localeId, localeNativeName, userMessage,
                         true, true, true);
 
         builder.buildMessage(message, strategy, toAddresses,
@@ -342,7 +341,7 @@ public class VelocityEmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.joinrequest.UserRequestingToJoin",
                 fromName, fromLoginName, localeId, localeNativeName));
-        assertThat(html).contains(htmlMessage);
+        assertThat(html).contains(expectedUserMessage);
         assertThat(html).contains(
                 testServerPath + "/language/view/" + localeId);
     }
@@ -353,7 +352,7 @@ public class VelocityEmailStrategyTest {
         String contactAdminLink = "link";
         VelocityEmailStrategy strategy =
             new ContactLanguageTeamMembersEmailStrategy(
-                fromLoginName, subject, localeId, localeNativeName, htmlMessage,
+                fromLoginName, subject, localeId, localeNativeName, userMessage,
                 contactAdminLink);
 
         builder.buildMessage(message, strategy, toAddresses,
@@ -366,7 +365,7 @@ public class VelocityEmailStrategyTest {
         String html = extractHtmlPart(message);
         checkGenericTemplate(html);
 
-        assertThat(html).contains(htmlMessage);
+        assertThat(html).contains(expectedUserMessage);
         assertThat(html).contains(contactAdminLink);
     }
 
@@ -383,7 +382,7 @@ public class VelocityEmailStrategyTest {
                 new RequestToJoinVersionGroupEmailStrategy(
                         fromLoginName, fromName, replyEmail,
                         versionGroupName, versionGroupSlug,
-                        projectIterIds, htmlMessage);
+                        projectIterIds, userMessage);
 
         builder.buildMessage(message, strategy, toAddresses,
             Lists.newArrayList("requestToJoinVersionGroup test"));
@@ -398,8 +397,7 @@ public class VelocityEmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.joingrouprequest.RequestingToJoinGroup",
                 fromName, fromLoginName, versionGroupName));
-        assertThat(html).contains(
-                htmlMessage);
+        assertThat(html).contains("some &lt;b&gt;HTML&lt;/b&gt;");
         assertThat(html).contains(
                 testServerPath + "/version-group/view/" + versionGroupSlug);
     }

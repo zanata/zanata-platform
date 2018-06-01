@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>Remove obsolete HIterationGroup and related record</comment>
+    <delete tableName="HIterationGroup_Maintainer">
+      <where>
+        iterationGroupId in
+        (
+          select id from HIterationGroup where status = 'O'
+        )
+      </where>
+    </delete>
+    <delete tableName="HIterationGroup_ProjectIteration">
+      <where>
+        iterationGroupId in
+        (
+        select id from HIterationGroup where status = 'O'
+        )
+      </where>
+    </delete>
+    <delete tableName="IterationGroup_Locale">
+      <where>
+        iteration_group_id in
+        (
+        select id from HIterationGroup where status = 'O'
+        )
+      </where>
+    </delete>
+    <delete tableName="HIterationGroup">
+      <where>
+        status = 'O' or status = 'R'
+      </where>
+    </delete>
+  </changeSet>
+
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Remove status column in HIterationGroup</comment>
+    <dropColumn tableName="HIterationGroup" columnName="status" />
+  </changeSet>
+
+
+</databaseChangeLog>
