@@ -191,6 +191,7 @@
     <required.jvm>1.8</required.jvm>
     <maven.compiler.target>${required.jvm}</maven.compiler.target>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!--
       Version of Java used for API compatibility checking. Should
@@ -218,11 +219,12 @@
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
     <jaxb.api.version>2.2.12</jaxb.api.version>
-    <maven.javadoc.version>2.9.1</maven.javadoc.version>
+    <!-- Fedora <= 27 still uses maven-javadoc-plugin version 2.9.1 -->
+    <maven.javadoc.version>3.0.0</maven.javadoc.version>
     <maven.jxr.version>2.5</maven.jxr.version>
-    <resteasy.version>3.0.13.Final</resteasy.version>
-    <surefire.version>2.18.1</surefire.version>
-    <maven.source.version>2.2.1</maven.source.version>
+    <resteasy.version>3.0.19.Final</resteasy.version>
+    <surefire.version>2.21.0</surefire.version>
+    <maven.source.version>3.0.1</maven.source.version>
     <site-maven-plugin.version>0.12</site-maven-plugin.version>
 
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
@@ -708,7 +710,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
+          <version>3.7.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -735,7 +737,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.6</version>
+          <version>3.0.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
@@ -751,7 +753,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
@@ -871,9 +873,19 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
+              <!-- for maven-javadoc-plugin 2.x -->
               <additionalparam>${javadoc.opts}</additionalparam>
+              <!-- for maven-javadoc-plugin 3.x -->
+              <doclint>none</doclint>
             </configuration>
             <executions>
+              <execution>
+                <id>aggregate</id>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+                <phase>prepare-package</phase>
+              </execution>
               <execution>
                 <id>attach-javadocs</id>
                 <goals>
@@ -1447,7 +1459,7 @@
       </dependency>
 
       <!-- RestEasy dependencies -->
-      <!-- We still need RestEasy, as zanata-common-api need it -->
+      <!-- zanata-common-api, client and server/services need them -->
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-bom</artifactId>
@@ -1455,7 +1467,16 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxb-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
@@ -1471,7 +1492,11 @@
           </exclusion>
         </exclusions>
       </dependency>
-
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-multipart-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
@@ -1502,7 +1527,7 @@
       <dependency>
         <groupId>org.fedorahosted.openprops</groupId>
         <artifactId>openprops</artifactId>
-        <version>0.7.1</version>
+        <version>0.8.5</version>
       </dependency>
       <dependency>
         <groupId>org.infinitest</groupId>

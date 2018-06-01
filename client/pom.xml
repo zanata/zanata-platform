@@ -35,7 +35,6 @@
 
   <properties>
     <powermock.version>1.6.2</powermock.version>
-    <resteasy.version>3.0.13.Final</resteasy.version>
   </properties>
 
   <build>
