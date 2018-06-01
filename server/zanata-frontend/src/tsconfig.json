@@ -21,6 +21,7 @@
             "dom", "es6", "dom.iterable", "scripthost"
         ],
         "module": "commonjs",
+        "resolveJsonModule": true,
         // webpack/jest deal with the output themselves.
         // This helps to avoid confusing jest with extra copies of mocks.
         "noEmit": true,

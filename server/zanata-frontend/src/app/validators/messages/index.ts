@@ -1,7 +1,7 @@
 /* tslint:disable:max-line-length */
 
-import * as en from './en.json'
-import * as ja from './ja.json'
+import en from './en.json'
+import ja from './ja.json'
 
 /**
  * Aliases for message JSON files
