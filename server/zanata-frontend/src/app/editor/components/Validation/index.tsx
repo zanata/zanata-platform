@@ -142,16 +142,30 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
   const ErrorMessageList = messageList(errorMessages)
   const warningCount = warningMessages.length
   const errorCount = errorMessages.length
-
-  const header = (
-    <FormattedMessage
-      tagName = 'option'
-      id = 'Validator.header'
-      description = 'Indicator of the number of validation warnings and errors.'
-      defaultMessage= 'Warnings: {warningCount}, Errors: {errorCount}'
-      values={{ warningCount, errorCount }
+  const warningsMessage = warningCount > 0
+    ? <FormattedMessage
+      tagName='option'
+      id='Validator.header.warnings'
+      description='Indicator of the number of validation warnings.'
+      defaultMessage='Warnings: {warningCount}'
+      values={{ warningCount }
       }
     />
+    : undefined
+  const errorsMessage = errorCount > 0
+    ? <FormattedMessage
+      tagName='option'
+      id='Validator.header.errors'
+      description='Indicator of the number of validation errors.'
+      defaultMessage='Errors: {errorCount}'
+      values={{ errorCount }
+      }
+    />
+    : undefined
+  const header = (
+    <span>
+      {warningsMessage} {errorsMessage}
+    </span>
   )
   // Only render if warnings or errors found
   return (warningMessages.length > 0 || errorMessages.length > 0)

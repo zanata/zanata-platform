@@ -7597,7 +7597,12 @@ exports[`Editor Storyshots Validation All Validators 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 0, Errors: 1
+          <span>
+             
+            <option>
+              Errors: 1
+            </option>
+          </span>
         </div>
       </div>
     </div>
@@ -7641,7 +7646,12 @@ exports[`Editor Storyshots Validation All Validators 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 1, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
@@ -7686,7 +7696,12 @@ Testing string with leading new line"
           <i
             className="arrow"
           />
-          Warnings: 1, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
@@ -7730,7 +7745,12 @@ Testing string with leading new line"
           <i
             className="arrow"
           />
-          Warnings: 2, Errors: 0
+          <span>
+            <option>
+              Warnings: 2
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
@@ -7774,7 +7794,12 @@ Testing string with leading new line"
           <i
             className="arrow"
           />
-          Warnings: 2, Errors: 0
+          <span>
+            <option>
+              Warnings: 2
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
@@ -7818,7 +7843,12 @@ Testing string with leading new line"
           <i
             className="arrow"
           />
-          Warnings: 1, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
@@ -7862,7 +7892,12 @@ Testing string with leading new line"
           <i
             className="arrow"
           />
-          Warnings: 1, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>

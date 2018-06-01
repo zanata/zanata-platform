@@ -90,7 +90,6 @@ storiesOf('Validation', module)
       <Validation
         source={HXTSource}
         target={HXTTarget}
-        localeId={'en-US'}
         validationOptions={validations} />
       <h2>Validation Messages for JavaVariablesValidation</h2>
       <p>source: <input value={JavaSource} /> </p>
@@ -98,7 +97,6 @@ storiesOf('Validation', module)
       <Validation
         source={JavaSource}
         target={JavaTarget}
-        localeId={'en-US'}
         validationOptions={validations} />
       <h2>Validation Messages for NewLineLeadTrailValidation</h2>
       <p>source: <input value={NLSource} /> </p>
@@ -106,7 +104,6 @@ storiesOf('Validation', module)
       <Validation
         source={NLSource}
         target={NLTarget}
-        localeId={'en-US'}
         validationOptions={validations} />
       <h2>Validation Messages for PrintfVariablesValidation</h2>
       <p>source: <input value={PFsource} /> </p>
@@ -114,7 +111,6 @@ storiesOf('Validation', module)
       <Validation
         source={PFsource}
         target={PFtarget}
-        localeId={'en-US'}
         validationOptions={validations} />
       <h2>Validation Messages for PrintXSIExtensionValidation</h2>
       <p>source: <input value={PXIsource} /> </p>
@@ -122,7 +118,6 @@ storiesOf('Validation', module)
       <Validation
         source={PXIsource}
         target={PXItarget}
-        localeId={'en-US'}
         validationOptions={validations} />
       <h2>Validation Messages for TabValidation</h2>
       <p>source: <input value={tabSource} /> </p>
@@ -130,7 +125,6 @@ storiesOf('Validation', module)
       <Validation
         source={tabSource}
         target={tabTarget}
-        localeId={'en-US'}
         validationOptions={validations} />
       <h2>Validation Messages for XMLEnitityValidation</h2>
       <p>source: <input value={XMLsource} /> </p>
@@ -138,7 +132,6 @@ storiesOf('Validation', module)
       <Validation
         source={XMLsource}
         target={XMLtarget}
-        localeId={'en-US'}
         validationOptions={validations} />
     </div>
   ))

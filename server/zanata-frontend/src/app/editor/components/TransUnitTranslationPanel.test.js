@@ -1,3 +1,4 @@
+/* global jest */
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { TranslationItem } from './TransUnitTranslationPanel'
@@ -7,6 +8,8 @@ import SyntaxHighlighter, { registerLanguage }
 import Validation from './Validation'
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
+
+jest.mock('./Validation')
 
 registerLanguage('xml', xml)
 
@@ -116,7 +119,6 @@ describe('TransUnitTranslationPanel', () => {
         <Validation
           source={phrase.sources[0]}
           target={'Je ne parle pas français'}
-          localeId={'en-US'}
           validationOptions={validations} />
       </div>
     )
@@ -158,7 +160,6 @@ describe('TransUnitTranslationPanel', () => {
         <Validation
           source={phrase.sources[0]}
           target={'Je ne parle pas français'}
-          localeId={'en-US'}
           validationOptions={validations} />
       </div>
     )
@@ -199,7 +200,6 @@ describe('TransUnitTranslationPanel', () => {
         <Validation
           source={phrase.sources[0]}
           target={'Je ne parle pas français'}
-          localeId={'en-US'}
           validationOptions={validations} />
       </div>
     )
