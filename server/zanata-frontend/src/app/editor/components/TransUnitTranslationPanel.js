@@ -35,7 +35,6 @@ class TransUnitTranslationPanel extends React.Component {
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     isRTL: PropTypes.bool.isRequired,
-    locale: PropTypes.string.isRequired,
     onSelectionChange: PropTypes.func.isRequired,
     // the key of the currently open dropdown (may be undefined if none is open)
     openDropdown: PropTypes.any,
@@ -119,7 +118,6 @@ class TransUnitTranslationPanel extends React.Component {
 
   render () {
     const {
-      locale,
       onSelectionChange,
       phrase,
       selected,
@@ -192,7 +190,6 @@ class TransUnitTranslationPanel extends React.Component {
               index={index}
               isPlural={isPlural}
               phrase={phrase}
-              locale={locale}
               onSelectionChange={onSelectionChange}
               selected={selected}
               selectedPluralIndex={selectedPluralIndex}
@@ -223,7 +220,6 @@ export class TranslationItem extends React.Component {
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     isPlural: PropTypes.bool.isRequired,
-    locale: PropTypes.string.isRequired,
     onSelectionChange: PropTypes.func.isRequired,
     phrase: PropTypes.shape({
       id: PropTypes.any.isRequired,
@@ -266,7 +262,6 @@ export class TranslationItem extends React.Component {
       dropdownIsOpen,
       index,
       isPlural,
-      locale,
       onSelectionChange,
       selected,
       selectedPluralIndex,
@@ -328,7 +323,6 @@ export class TranslationItem extends React.Component {
         <Validation
           source={phrase.sources[0]}
           target={translation}
-          localeId={locale}
           validationOptions={validationOptions} />
       </div>
     )
@@ -386,8 +380,7 @@ function mapStateToProps (state) {
     ],
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false,
-    permissions: headerData.permissions,
-    locale: context.lang
+    permissions: headerData.permissions
   }
 }
 
