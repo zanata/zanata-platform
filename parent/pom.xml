@@ -377,11 +377,12 @@
         <configuration>
           <failOnWarning>false</failOnWarning>
           <outputXML>true</outputXML>
-          <usedDependencies combine.children="append">
+          <ignoredDependencies combine.children="append">
             <!-- runtime-only dependencies which maven-dependency-analyzer misses  -->
-            <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
-            <usedDependency>org.slf4j:jcl-over-slf4j</usedDependency>
-          </usedDependencies>
+            <ignoredDependency>org.slf4j:slf4j-log4j12</ignoredDependency>
+            <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+            <ignoredDependency>org.slf4j:jcl-over-slf4j</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
 
@@ -1604,11 +1605,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <reporting>
