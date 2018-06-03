@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service.raw;
 
-import com.google.common.base.Strings;
 import org.apache.commons.codec.binary.Hex;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -161,12 +160,38 @@ public class FileRawRestITCase extends RestTest {
     @RunAsClient
     public void downloadXliff11Translation() throws Exception {
         String filename = "test-xliff.xlf";
+
         uploadSourceFile(filename, DOCTYPE_XLIFF);
+
+        uploadTranslationFile("test-xliff-es.xlf", "test-xliff.xlf",
+                DOCTYPE_XLIFF, "es");
+
         String downloadedXliffContent = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
                 filename, false, filename);
 
         assertThat(downloadedXliffContent).isNotEmpty();
-        // TODO check contents
+
+        File translatedFile = getTestFile("test-xliff-es.xlf");
+        assertThat(downloadedXliffContent).isXmlEqualToContentOf(translatedFile);
+    }
+
+    @Test
+    @RunAsClient
+    public void downloadXliff11TranslationApprovedOnly() throws Exception {
+        String filename = "test-xliff.xlf";
+
+        uploadSourceFile(filename, DOCTYPE_XLIFF);
+
+        uploadTranslationFile("test-xliff-es.xlf", "test-xliff.xlf",
+                DOCTYPE_XLIFF, "es");
+
+        String downloadedXliffContent = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+                filename, false, filename);
+
+        assertThat(downloadedXliffContent).isNotEmpty();
+
+        File translatedFile = getTestFile("test-xliff-es.xlf");
+        assertThat(downloadedXliffContent).isXmlEqualToContentOf(translatedFile);
     }
 
     @Test

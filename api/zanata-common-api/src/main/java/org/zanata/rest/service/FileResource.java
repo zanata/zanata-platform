@@ -235,7 +235,7 @@ public interface FileResource {
      * @param docId
      *            Document identifier to fetch translations for.
      * @param approvedOnly
-     *            Minimum content state.
+     *            If true, only include Approved translations (not Translated, Fuzzy or New).
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - A translation file in the requested format with

@@ -151,7 +151,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     public void publishTranslations() {
         createResourceWithContentUsingPut();
 
-        TranslationsResource entity = getTranslationsResource();
+        TranslationsResource entity = createTranslationsResource();
 
         LocaleId de_DE = new LocaleId("de");
         Response response =
@@ -202,7 +202,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     public void publishOnlyOneTranslation() {
         createResourceWithTwoTextFlows();
 
-        TranslationsResource entity = getTranslationsResource();
+        TranslationsResource entity = createTranslationsResource();
 
         LocaleId de_DE = new LocaleId("de");
 
@@ -217,23 +217,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         assertThat(entity2.getTextFlowTargets().size()).isEqualTo(1);
     }
 
-    @NotNull
-    private TranslationsResource getTranslationsResource() {
-        TranslationsResource entity = new TranslationsResource();
-        TextFlowTarget target = new TextFlowTarget();
-        target.setResId("tf1");
-        target.setContents("hello world");
-        target.setState(ContentState.Translated);
-        entity.getTextFlowTargets().add(target);
-        return entity;
-    }
-
     @Test
     @RunAsClient
-    public void publishTranslationsGetApproved() {
+    public void publishTranslationsGetApprovedOnly() {
         createResourceWithContentUsingPut();
 
-        TranslationsResource entity = getTranslationsResource();
+        TranslationsResource entity = createTranslationsResource();
 
         LocaleId de_DE = new LocaleId("de");
         Response response =
@@ -261,6 +250,17 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         .getTranslationsWithDocId(de_DE, "my.txt", null, false, false,
                                 null);
         assertResponseStatusEqualOK(getResponse);
+    }
+
+    @NotNull
+    private TranslationsResource createTranslationsResource() {
+        TranslationsResource entity = new TranslationsResource();
+        TextFlowTarget target = new TextFlowTarget();
+        target.setResId("tf1");
+        target.setContents("hello world");
+        target.setState(ContentState.Translated);
+        entity.getTextFlowTargets().add(target);
+        return entity;
     }
 
     private TranslationsResource getTranslationsResource(LocaleId de_DE, String s, boolean markTranslatedAsApproved) {
