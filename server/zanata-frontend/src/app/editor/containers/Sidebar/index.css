@@ -38,7 +38,7 @@ const margin = this.props.headerOpen ? '6rem' : '3rem' */
 
 .sidebar-editor-contract {
   height: 91% !important;
-  margin-top: 8.5rem !important;
+  margin-top: 8.4rem !important;
 }
 
 .sidebar-editor-expand {
@@ -464,6 +464,10 @@ select.SettingsSelect {
   padding-top: 0.5rem;
 }
 
+h1.SidebarEditor-heading {
+  font-size: 1rem;
+}
+
 h1.SidebarEditor-heading button svg {
   fill: var(--Sidebar-panel-dark) !important;
 }
@@ -632,12 +636,12 @@ h3.SettingsHeading {
 
 @media (min-width:609px) {
  .sidebar-editor-contract {
-   margin-top: 6rem !important;
+   margin-top: 5.4rem !important;
  }
 }
 
 @media (min-width:960px) and (max-width: 995px) {
   .sidebar-editor-contract {
-    margin-top: 8.5rem !important;
+    margin-top: 8.4rem !important;
   }
 }
