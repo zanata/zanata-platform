@@ -588,6 +588,22 @@ h3.SettingsHeading {
   vertical-align: sub;
 }
 
+.ant-tabs {
+  color: var(--Sidebar-panel-dark);
+}
+
+.ant-tabs-nav .ant-tabs-tab-active {
+  color: var(--Sidebar-color-text);
+}
+
+.ant-tabs-nav .ant-tabs-tab-hover {
+  color: var(--Sidebar-color-highlight) !important;
+}
+
+.ant-tabs-ink-bar {
+  background-color: var(--Sidebar-color-text);
+}
+
 /* Media queries */
 
 @media (max-width: 740px) {
