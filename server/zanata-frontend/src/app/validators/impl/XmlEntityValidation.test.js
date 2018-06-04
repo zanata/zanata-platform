@@ -7,10 +7,9 @@ import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
 const id = ValidationId.XML_ENTITY
-const description = ''
 
 const XmlEntityValidator =
-  new XmlEntityValidation(id, description, Messages[locale], locale)
+  new XmlEntityValidation(id, Messages[locale], locale)
 
 const noErrors = []
 

@@ -7,9 +7,8 @@ import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
 const id = ValidationId.XML_ENTITY
-const description = ''
 const PrintfXSIExtensionValidator =
-  new PrintfXSIExtensionValidation(id, description, Messages[locale], locale)
+  new PrintfXSIExtensionValidation(id, Messages[locale], locale)
 
 const noErrors = []
 

@@ -9,10 +9,9 @@ import Messages from '../messages'
 const locale = 'en-US'
 
 const id = ValidationId.HTML_XML
-const description = ''
 
 const HtmlXmlTagValidator =
-  new HtmlXmlTagValidation(id, description, Messages[locale], locale)
+  new HtmlXmlTagValidation(id, Messages[locale], locale)
 
 const noErrors = []
 

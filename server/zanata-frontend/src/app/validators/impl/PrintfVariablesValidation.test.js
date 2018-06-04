@@ -7,9 +7,8 @@ import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
 const id = ValidationId.XML_ENTITY
-const description = ''
 const PrintfVariablesValidator =
-  new PrintfVariablesValidation(id, description, Messages[locale], locale)
+  new PrintfVariablesValidation(id, Messages[locale], locale)
 
 const noErrors = []
 

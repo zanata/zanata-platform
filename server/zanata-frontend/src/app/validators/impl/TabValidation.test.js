@@ -7,10 +7,9 @@ import Messages from '../messages'
 const locale = 'en-US'
 
 const id = ValidationId.TAB
-const description = ''
 
 const TabValidator =
-  new TabValidation(id, description, Messages[locale], locale)
+  new TabValidation(id, Messages[locale], locale)
 
 const noErrors = []
 

@@ -3,12 +3,11 @@
 import NewlineLeadTrailValidation from './NewlineLeadTrailValidation'
 import ValidationId from '../ValidationId'
 import Messages from '../messages'
+const locale = 'en-US'
 
 const id = ValidationId.XML_ENTITY
-const description = ''
-const messageData = Messages['en-US']
 const NewlineLeadTrailValidator =
-  new NewlineLeadTrailValidation(id, description, messageData)
+  new NewlineLeadTrailValidation(id, Messages[locale], locale)
 
 const noErrors = []
 
@@ -29,7 +28,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = '\nTesting string with leading new line'
     const target = 'Different string with the newline removed'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = messageData.leadingNewlineMissing
+    const errorMessages = Messages[locale].leadingNewlineMissing
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
@@ -37,7 +36,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'Testing string without a leading new line'
     const target = '\nDifferent string with a leading newline added'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = messageData.leadingNewlineAdded
+    const errorMessages = Messages[locale].leadingNewlineAdded
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
@@ -45,7 +44,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'Testing string with trailing new line\n'
     const target = 'Different string with the newline removed'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = messageData.trailingNewlineMissing
+    const errorMessages = Messages[locale].trailingNewlineMissing
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
@@ -53,7 +52,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'Testing string without a trailing new line'
     const target = 'Different string with a trailing newline added\n'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = messageData.trailingNewlineAdded
+    const errorMessages = Messages[locale].trailingNewlineAdded
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
   })
@@ -62,7 +61,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'Testing string with no newlines'
     const target = '\nDifferent string with both added\n'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = [messageData.leadingNewlineAdded, messageData.trailingNewlineAdded]
+    const errorMessages = [Messages[locale].leadingNewlineAdded, Messages[locale].trailingNewlineAdded]
     expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
@@ -71,7 +70,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = '\nString with both newlines\n'
     const target = 'Other string with no newlines'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = [messageData.leadingNewlineMissing, messageData.trailingNewlineMissing]
+    const errorMessages = [Messages[locale].leadingNewlineMissing, Messages[locale].trailingNewlineMissing]
     expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
@@ -80,7 +79,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = '\nString with only leading newline'
     const target = 'Other string with newline trailing\n'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = [messageData.leadingNewlineMissing, messageData.trailingNewlineAdded]
+    const errorMessages = [Messages[locale].leadingNewlineMissing, Messages[locale].trailingNewlineAdded]
     expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })
@@ -89,7 +88,7 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'String with trailing newline\n'
     const target = '\nOther string with newline leading'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
-    const errorMessages = [messageData.leadingNewlineAdded, messageData.trailingNewlineMissing]
+    const errorMessages = [Messages[locale].leadingNewlineAdded, Messages[locale].trailingNewlineMissing]
     expect(errorList).toEqual(errorMessages)
     expect(errorList.length).toEqual(2)
   })

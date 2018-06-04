@@ -29,9 +29,8 @@ import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
 const id = ValidationId.JAVA_VARIABLES
-const description = ''
 const JavaVariablesValidator =
-  new JavaVariablesValidation(id, description, Messages[locale], locale)
+  new JavaVariablesValidation(id, Messages[locale], locale)
 
 const noErrors = []
 
