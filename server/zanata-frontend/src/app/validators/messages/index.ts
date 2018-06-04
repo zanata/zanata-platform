@@ -1,5 +1,8 @@
-/* tslint:disable:max-line-length */
-
+/**
+ * Translated Messages for the validators module only.
+ * Separate from the frontend src/messages files, these files are formatted with the
+ * intl-messageformat library: https://github.com/yahoo/intl-messageformat
+ */
 import en from './en.json'
 import ja from './ja.json'
 

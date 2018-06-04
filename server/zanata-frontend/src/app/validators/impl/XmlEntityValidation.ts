@@ -33,6 +33,7 @@ class XmlEntityValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public label: string
   public locale: string
 
   public _sourceExample: string
@@ -57,8 +58,10 @@ class XmlEntityValidation extends AbstractValidationAction {
 
   private ENTITY_START_CHAR = "&"
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
-    super(id, description, messages, locale)
+  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
+    super(id, messages, locale)
+    this.description = messages.xmlEntityValidatorDesc
+    this.label = messages[id]
   }
 
   public doValidate(_source: string, target: string): string[] {

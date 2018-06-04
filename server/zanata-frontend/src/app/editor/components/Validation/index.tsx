@@ -22,70 +22,40 @@ const Panel = Collapse.Panel
 
 // TODO: only instantiate enabled validators (warning/error)
 function validatorFactory(_validationOptions: ValidationOption[], locale: string): any {
+  // The Validator intl messages are standalone to the Validators module
+  // Default to en locale if intl messages unavailable
+  const resolvedLocale = Messages[locale]
+    ? locale
+    : 'en'
   const validators = []
   validators.push(
-    new HtmlXmlTagValidation(ValidationId.HTML_XML, '', Messages[locale], locale))
+    new HtmlXmlTagValidation(ValidationId.HTML_XML, Messages[resolvedLocale], resolvedLocale))
   validators.push(
-    new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, '', Messages[locale], locale))
+    new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, Messages[resolvedLocale], resolvedLocale))
   validators.push(
-    new NewlineLeadTrailValidation(ValidationId.NEW_LINE, '', Messages[locale], locale))
+    new NewlineLeadTrailValidation(ValidationId.NEW_LINE, Messages[resolvedLocale], resolvedLocale))
   validators.push(
-    new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, '', Messages[locale], locale))
+    new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, Messages[resolvedLocale], resolvedLocale))
   validators.push(
-    new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, '', Messages[locale]))
+    new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, Messages[resolvedLocale]))
   validators.push(
-    new TabValidation(ValidationId.TAB, '', Messages[locale], locale))
+    new TabValidation(ValidationId.TAB, Messages[resolvedLocale], resolvedLocale))
   validators.push(
-    new XmlEntityValidation(ValidationId.XML_ENTITY, '', Messages[locale], locale))
+    new XmlEntityValidation(ValidationId.XML_ENTITY, Messages[resolvedLocale], resolvedLocale))
   return validators
-}
-
-const validationLabels = {
-  'HTML/XML tags': 'HTML_XML',
-  'Leading/trailing newline (\\n)': 'NEW_LINE',
-  'Tab characters (\\t)': 'TAB',
-  'Java variables': 'JAVA_VARIABLES',
-  'XML entity reference': 'XML_ENTITY',
-  'Printf variables': 'PRINTF_VARIABLES',
-  'Positional printf (XSI extension)': 'PRINTF_XSI_EXTENSION'
-}
-
-// react-intl message titles for validators
-const validationIntlMessages = {
-  HTML_XML: <FormattedMessage
-    id='Validator.HTML_XML.title'
-    defaultMessage='HTML/XML tags' />,
-  NEW_LINE: <FormattedMessage
-    id='Validator.NEW_LINE.title'
-    defaultMessage='Leading/trailing newline (\\n)' />,
-  TAB: <FormattedMessage
-    id='Validator.TAB.title'
-    defaultMessage='Tab characters (\\t)' />,
-  JAVA_VARIABLES: <FormattedMessage
-    id='Validator.JAVA_VARIABLES.title'
-    defaultMessage='Java variables' />,
-  XML_ENTITY: <FormattedMessage
-    id='Validator.XML_ENTITY.title'
-    defaultMessage='XML entity reference' />,
-  PRINTF_VARIABLES: <FormattedMessage
-    id='Validator.PRINTF_VARIABLES.title'
-    defaultMessage='Printf variables' />,
-  PRINTF_XSI_EXTENSION: <FormattedMessage
-    id='Validator.PRINTF_XSI_EXTENSION.title'
-    defaultMessage='Positional printf (XSI extension)' />,
 }
 
 const messageList = (messages) => {
   return messages.map((m, index) => {
     // If description exists, display in Tooltip
-    const messageBody = m.description
-      ? <Tooltip placement='topRight' title={m.description}>
-        {m.defaultMessage}
+    const messageLabel = m.description
+      ? <Tooltip placement='topLeft' title={m.description}>
+        {m.label}
       </Tooltip>
-      : m.defaultMessage
+      : m.label
     return (
       <div key={index}>
-        {validationIntlMessages[m.id]}: {messageBody}
+        {messageLabel}: {m.defaultMessage}
       </div>
     )
   })
@@ -116,9 +86,9 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
   warningProducers.forEach(validator => {
     const msgs = validator.doValidate(source, target).map(message => {
       return {
-        id: validationLabels[validator.id],
-        label: validator.id,
-        description: '',
+        id: validator.id,
+        label: validator.label,
+        description: validator.description,
         defaultMessage: message
       }
     })
@@ -129,8 +99,8 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
   errorProducers.forEach(validator => {
     const msgs = (validator.doValidate(source, target).map(message => {
       return {
-        id: validationLabels[validator.id],
-        label: validator.id,
+        id: validator.id,
+        label: validator.label,
         description: '',
         defaultMessage: message
       }

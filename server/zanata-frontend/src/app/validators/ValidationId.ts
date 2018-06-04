@@ -1,11 +1,11 @@
 enum ValidationId {
-    HTML_XML = "HTML/XML tags",
-    NEW_LINE = "Leading/trailing newline (\\n)",
-    TAB = "Tab characters (\\t)",
-    JAVA_VARIABLES = "Java variables",
-    XML_ENTITY = "XML entity reference",
-    PRINTF_VARIABLES = "Printf variables",
-    PRINTF_XSI_EXTENSION = "Positional printf (XSI extension)"
+    HTML_XML = "HTML_XML",
+    NEW_LINE = "NEW_LINE",
+    TAB = "TAB",
+    JAVA_VARIABLES = "JAVA_VARIABLES",
+    XML_ENTITY = "XML_ENTITY",
+    PRINTF_VARIABLES = "PRINTF_VARIABLES",
+    PRINTF_XSI_EXTENSION = "PRINTF_XSI_EXTENSION"
 }
 
 export default ValidationId

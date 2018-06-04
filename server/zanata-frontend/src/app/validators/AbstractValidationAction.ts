@@ -23,7 +23,6 @@ import ValidationMessages from './ValidationMessages'
  */
 abstract class AbstractValidationAction implements ValidationAction {
   public readonly id: ValidationId
-  public readonly description: string
   public readonly messages: ValidationMessages
   public readonly locale: string
   public readonly sourceExample: string
@@ -43,9 +42,8 @@ abstract class AbstractValidationAction implements ValidationAction {
     return this.exclusiveVals
   }
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
+  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
     this.id = id
-    this.description = description
     this.messages = messages
     this.locale = locale ? locale : 'en-US' // default to en-US locale
     this.rules = new ValidationDisplayRules(this.state)

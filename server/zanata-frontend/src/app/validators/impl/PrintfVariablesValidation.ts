@@ -35,6 +35,7 @@ abstract class PrintfVariablesValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public label: string
   public locale: string
 
   public _sourceExample: string
@@ -52,8 +53,10 @@ abstract class PrintfVariablesValidation extends AbstractValidationAction {
   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
   private VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])"
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
-    super(id, description, messages, locale)
+  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
+    super(id, messages, locale)
+    this.description = messages.printfVariablesValidatorDesc
+    this.label = messages[id]
   }
 
   public doValidate(source: string, target: string): string[] {

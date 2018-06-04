@@ -35,6 +35,7 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public label: string
   public locale: string
 
   public _sourceExample: string
@@ -48,8 +49,10 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
 
   private POSITIONAL_REG_EXP = new RegExp("%(\\d+\\$).+")
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
-    super(id, description, messages, locale)
+  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
+    super(id, messages, locale)
+    this.description = messages.xmlEntityValidatorDesc
+    this.label = messages[id]
   }
 
   public doValidate(source: string, target: string): string[] {

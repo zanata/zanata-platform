@@ -33,6 +33,7 @@ class TabValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public label: string
   public locale: string
 
   public _sourceExample: string
@@ -44,8 +45,10 @@ class TabValidation extends AbstractValidationAction {
     return "<span class='js-example__target txt--warning'>missing tab char (\\t)</span> hello world";
   }
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
-    super(id, description, messages, locale)
+  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
+    super(id, messages, locale)
+    this.description = messages.xmlEntityValidatorDesc
+    this.label = messages[id]
   }
 
   public doValidate(source: string, target: string): string[] {

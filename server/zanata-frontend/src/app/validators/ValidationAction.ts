@@ -8,7 +8,6 @@ export enum State {
 export interface ValidationAction {
     readonly rules: ValidationDisplayRules
     readonly id: ValidationId
-    readonly description: string
     state: State
     readonly sourceExample: string
     readonly targetExample: string

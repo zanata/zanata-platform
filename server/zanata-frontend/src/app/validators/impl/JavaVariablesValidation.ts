@@ -41,6 +41,7 @@ class JavaVariablesValidation extends AbstractValidationAction {
   public id: ValidationId
   public description: string
   public messages: ValidationMessages
+  public label: string
   public locale: string
 
   public _sourceExample: string
@@ -52,8 +53,10 @@ class JavaVariablesValidation extends AbstractValidationAction {
     return "value must be between {0} and <span class='js-example__target txt--warning'>{2}</span>"
   }
 
-  constructor(id: ValidationId, description: string, messages: ValidationMessages, locale?: string) {
-    super(id, description, messages, locale)
+  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
+    super(id, messages, locale)
+    this.description = messages.javaVariablesValidatorDesc
+    this.label = messages[id]
   }
 
   public doValidate(source: string, target: string): string[] {
