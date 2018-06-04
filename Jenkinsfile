@@ -296,15 +296,17 @@ timestamps {
           step([$class: 'WarningsPublisher',
                 consoleParsers: [
                         [parserName: 'Java Compiler (javac)'],
-                        [parserName: 'kotlin'],
-//                        [parserName: 'JavaDoc'],
-//                        [parserName: 'Maven'], // ~279 warnings, but too variable
+
+                        // we use arg -Werror instead
+                        // [parserName: 'kotlin'],
+                        [parserName: 'JavaDoc'],
+                        [parserName: 'Maven'], // ~279 warnings, but too variable
                         // TODO check integration test warnings (EAP and WildFly)
-                        //[parserName: 'appserver log messages'], // 119 warnings
-                        //[parserName: 'browser warnings'],       // 0 warnings
+                        [parserName: 'appserver log messages'], // 119 warnings
+                        [parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '0',
-                unstableTotalHigh: '0',
+//                unstableTotalAll: '0',
+//                unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
 //          step([$class: 'WarningsPublisher',
