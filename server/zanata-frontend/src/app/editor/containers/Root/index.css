@@ -301,7 +301,7 @@ li.DocName span.ellipsis {
   background-repeat: no-repeat;
   background-size: var(--rhythm) 100%;
   min-height: 100%;
-  padding: calc(var(--Editor-rhythm) * 2) 0;
+  padding: 4rem 0;
 }
 
 .Editor-currentDoc {
@@ -1183,4 +1183,10 @@ label span.n1 {
 
 .TransUnit-panelFooter ul.EditorDropdown-content {
   background-color: transparent !important;
+}
+
+@media (min-width:609px) {
+  .Editor-translations {
+    padding: 2rem 0;
+  }
 }
