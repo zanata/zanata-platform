@@ -872,7 +872,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
   style={undefined}
 >
   <Button
-    className="Button Button--small u-rounded Button--secondary is-active"
+    className="Button Button--small u-rounded Button--secondary mr2 mb2 is-active"
     onClick={[Function]}
     size="small"
   >
@@ -897,7 +897,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     All
   </Button>
   <Button
-    className="Button Button--small u-rounded Button--secondary"
+    className="Button Button--small u-rounded Button--secondary mr2 mb2"
     onClick={[Function]}
     size="small"
   >
@@ -922,7 +922,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     Comments
   </Button>
   <Button
-    className="Button Button--small u-rounded Button--secondary"
+    className="Button Button--small u-rounded Button--secondary mr2 mb2"
     onClick={[Function]}
     size="small"
   >
@@ -5666,7 +5666,7 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     value=""
   />
   <Button
-    className="EditorButton Button--small u-rounded Button--primary u-pullRight"
+    className="EditorButton Button--small u-rounded Button--primary u-pullRight mb4 mt2"
     disabled={true}
     onClick={[Function]}
   >

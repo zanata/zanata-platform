@@ -140,9 +140,10 @@ class TranslationInfoPanel extends React.Component {
               description={'Title for the Details Panel'}
               defaultMessage='Details' />
           </span>
-          <span className="u-pullRight">
-            <Button className="btn-link transparent"
-              icon='close' onClick={this.props.close} />
+          <span className="u-pullRight s1">
+            <Button className="btn-link transparent" onClick={this.props.close}>
+              <Icon name='cross' />
+            </Button>
           </span>
         </h1>
         <div className="SidebarEditor-wrapper">

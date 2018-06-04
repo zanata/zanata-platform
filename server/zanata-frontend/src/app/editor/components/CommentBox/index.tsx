@@ -48,7 +48,7 @@ class CommentBox extends React.Component<Props, State> {
   public render () {
     const { TextArea } = Input
     return (
-      <div className='TransUnit-commentBox'>
+      <div className='TransUnit-commentBox mb4'>
           <span>
             <Icon name='comment' className='s0' /> Post a comment
           </span><br />
