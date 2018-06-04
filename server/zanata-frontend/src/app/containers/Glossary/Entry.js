@@ -8,6 +8,7 @@ import DeleteEntryModal from './DeleteEntryModal'
 import { EditableText, LoaderText } from '../../components'
 import { Row, Table } from 'react-bootstrap'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 /**
  * Component to display a GlossaryEntry
  */
@@ -167,8 +168,9 @@ class Entry extends Component {
               {termsLoading
                 ? loadingDiv
                 : (<Row className='entry-row'>
-                  <Button icon="info" aria-label='button'
-                    className="btn-link-end btn-link iconInfo-noMargin"
+                  <Button icon='info-circle-o' shape='circle'
+                    className='btn-link'
+                    title='Glossary entry details'
                     disabled={isDeleting}
                     onClick={() => this.setShowingEntryModal(true)} />
                   <EntryModal entry={entry}

@@ -262,10 +262,12 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 .using("slug", getProjectSlug()).load();
         validateProjectState(project);
         if (versionId == null) {
+            HProject targetProject = projectDAO.getBySlug(getProjectSlug());
+            validateProjectState(targetProject);
             HProjectIteration iteration = (HProjectIteration) session
                     .byNaturalId(HProjectIteration.class)
                     .using("slug", getSlug())
-                    .using("project", projectDAO.getBySlug(getProjectSlug()))
+                    .using("project", targetProject)
                     .load();
             validateIterationState(iteration);
             versionId = iteration.getId();

@@ -30,7 +30,6 @@
     <kotlin.compiler.languageVersion>1.2</kotlin.compiler.languageVersion>
     <kotlin.compiler.apiVersion>1.2</kotlin.compiler.apiVersion>
 -->
-    <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
@@ -2463,6 +2462,15 @@
                 <phase>test</phase>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <configuration>
+              <args>
+                <arg>-Werror</arg>
+              </args>
+            </configuration>
           </plugin>
         </plugins>
       </build>
