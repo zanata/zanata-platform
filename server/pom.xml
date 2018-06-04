@@ -2307,7 +2307,10 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven.javadoc.version}</version>
           <configuration>
+            <!-- for maven-javadoc-plugin 2.x -->
             <additionalparam>${javadoc.opts}</additionalparam>
+            <!-- for maven-javadoc-plugin 3.x -->
+            <doclint>none</doclint>
           </configuration>
         </plugin>
         <plugin>
