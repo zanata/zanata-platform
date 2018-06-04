@@ -27,6 +27,7 @@ bin/
 /*/target/
 /*/*/target/
 *.orig
+*.versionsBackup
 .pages.xml.spdia
 # eclipse scrapbook page:
 *.jpage
