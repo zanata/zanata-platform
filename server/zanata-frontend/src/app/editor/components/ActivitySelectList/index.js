@@ -16,7 +16,7 @@ class ActivitySelectList extends React.Component {
   render () {
     return (
       <SelectButtonList items={filterButtons}
-        className="Button--secondary" selected={this.props.selected}
+        className="Button--secondary mr2" selected={this.props.selected}
         selectItem={this.props.selectItem}
       />
     )

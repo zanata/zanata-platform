@@ -60,7 +60,7 @@ class CommentBox extends React.Component<Props, State> {
           />
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
-          className='EditorButton Button--small u-rounded Button--primary u-pullRight'>
+          className='EditorButton Button--small u-rounded Button--primary u-pullRight mt2'>
          Post comment
         </Button>
       </div>
