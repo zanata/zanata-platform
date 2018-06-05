@@ -1,0 +1,8 @@
+hudson
+org.zanata.common
+org.zanata.rest.service
+org.zanata.rest.dto
+org.zanata.rest.dto.stats
+org.zanata.rest.dto.stats.contribution
+org.zanata.rest.dto.v1
+org.zanata.rest.dto.resource

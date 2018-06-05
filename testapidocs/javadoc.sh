@@ -1,0 +1,1 @@
+/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-4.b10.fc28.x86_64/jre/../bin/javadoc @options @packages @argfile
