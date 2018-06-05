@@ -173,11 +173,11 @@ public class FileRawRestITCase extends RestTest {
                 DOCTYPE_XLIFF, "es");
 
         String downloadedXliffContent = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
-                filename, true, filename);
+                filename, false, filename);
 
         assertThat(downloadedXliffContent).isNotEmpty();
 
-        File translatedFile = getTestFile("test-xliff-es-approvedOnly.xlf");
+        File translatedFile = getTestFile("test-xliff-es.xlf");
         assertThat(downloadedXliffContent).isXmlEqualToContentOf(translatedFile);
     }
 
