@@ -29,13 +29,14 @@ import ValidationMessages from '../ValidationMessages'
 class NewlineLeadTrailValidation extends AbstractValidationAction {
   public readonly id = 'NEW_LINE'
   public readonly description: string
-  public messages: ValidationMessages
   public readonly label: string
 
   public readonly sourceExample =
     "\\n hello world with lead new line"
   public readonly targetExample =
     "<span class='js-example__target txt--warning'>missing \\n</span> hello world with lead new line"
+
+  protected readonly messages: ValidationMessages
 
   private leadNewlineRegex = "^\n";
   private endNewlineRegex = "\n$";

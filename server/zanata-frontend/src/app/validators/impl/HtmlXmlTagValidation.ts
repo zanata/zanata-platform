@@ -33,13 +33,14 @@ import MessageFormat from 'intl-messageformat'
 class HtmlXmlTagValidation extends AbstractValidationAction {
   public readonly id = 'HTML_XML'
   public readonly description: string
-  public messages: ValidationMessages
   public readonly label: string
 
   public readonly sourceExample =
-    "&lt;p&gt;&lt;strong&gt;Hello world&lt;/strong&gt;&lt;/p&gt;"
+  "&lt;p&gt;&lt;strong&gt;Hello world&lt;/strong&gt;&lt;/p&gt;"
   public readonly targetExample =
-    "&lt;p&gt;&lt;strong&gt;Hello world<span class='js-example__target txt--warning'>&lt;/stong&gt;</span>&lt;/p&gt;"
+  "&lt;p&gt;&lt;strong&gt;Hello world<span class='js-example__target txt--warning'>&lt;/stong&gt;</span>&lt;/p&gt;"
+
+  protected readonly messages: ValidationMessages
 
   private tagRegex = "<[^>]+>"
 
@@ -64,18 +65,19 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
         .format({ added: foundErrors })
       errors.push(tagsAdded)
     }
-    if (errors.length <= 0) {
+    // If there are no missing tags, check the tag order
+    if (errors.length === 0) {
       const sourceTags = this.getTagList(source)
       const targetTags = this.getTagList(target)
-      // const outOfOrder = this.orderValidation(sourceTags, targetTags)
+      // const outOfOrder = this.checkTagOrder(sourceTags, targetTags)
       if (sourceTags && targetTags) {
-        errors = errors.concat(this.orderValidation(sourceTags, targetTags))
+        errors = this.checkTagOrder(sourceTags, targetTags)
       }
     }
     return errors
   }
 
-  private orderValidation(srcTags: string[], trgTags: string[]): string[] {
+  private checkTagOrder(srcTags: string[], trgTags: string[]): string[] {
     let errors: string[] = []
 
     let longestRun: string[] | null = null

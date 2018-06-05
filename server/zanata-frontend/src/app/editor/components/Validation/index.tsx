@@ -6,7 +6,7 @@ import 'antd/lib/collapse/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
 import './index.css'
-import validatorFactory from '../../../validators'
+import createValidators from '../../../validators'
 
 const Panel = Collapse.Panel
 
@@ -35,7 +35,7 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
 
-  const validators = validatorFactory(intl.locale)
+  const validators = createValidators(intl.locale)
 
   const warningProducers = warningValidators.map((warningOpt) => {
     return validators.find((validator) => {

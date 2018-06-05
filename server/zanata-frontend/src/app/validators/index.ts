@@ -16,7 +16,7 @@ import ValidationMessages from './ValidationMessages'
  * @param locale intl messages locale
  * @returns Instantiated Validator class array
  */
-function validatorFactory(locale: string): ValidationAction[] {
+function createValidators(locale: string): ValidationAction[] {
   // Default to en locale if intl messages unavailable
   const resolvedLocale = Messages[locale]
     ? locale
@@ -35,6 +35,6 @@ function validatorFactory(locale: string): ValidationAction[] {
 
 // // Window bind export method
 // declare let window: any
-// window.validatorFactory = validatorFactory
+// window.createValidators = createValidators
 
-export default validatorFactory
+export default createValidators

@@ -30,6 +30,8 @@ const locale = 'en-US'
 const JavaVariablesValidator =
   new JavaVariablesValidation(Messages[locale], locale)
 
+const messages = Messages[locale]
+
 const noErrors = []
 
 describe('TabValidation', () => {
@@ -87,7 +89,7 @@ describe('TabValidation', () => {
     const target = "Testing string with no variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: '{0}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -98,7 +100,7 @@ describe('TabValidation', () => {
     const target = "Testing string with no variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: '{0},{1},{2}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -109,7 +111,7 @@ describe('TabValidation', () => {
     const target = "Testing string with variable {0}"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: '{0}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -120,7 +122,7 @@ describe('TabValidation', () => {
     const target = "{0} variables in all parts {1} of the string {2}"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: '{0},{1},{2}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -131,10 +133,10 @@ describe('TabValidation', () => {
     const target = "String with {1} and {2}, not 0"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const msg1 =
-      new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: '{0}' })
     const msg2 =
-      new MessageFormat(JavaVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: '{2}' })
     expect(errorList).toEqual([msg1, msg2])
     expect(errorList.length).toEqual(2)
@@ -145,7 +147,7 @@ describe('TabValidation', () => {
     const target = "At time on date, there was a disturbance in the force on planet Earth"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: '{0},{1},{2}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -156,7 +158,7 @@ describe('TabValidation', () => {
     const target = "The disk contains some files"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: '{0},{1}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -167,7 +169,7 @@ describe('TabValidation', () => {
     const target = "This string does not contain java style variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: '{0}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -178,7 +180,7 @@ describe('TabValidation', () => {
     const target = "There are 0 files"
     const errorList = JavaVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(JavaVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: '{0}' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)

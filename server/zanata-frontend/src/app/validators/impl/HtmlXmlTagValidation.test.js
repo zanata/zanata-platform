@@ -10,6 +10,8 @@ const locale = 'en-US'
 const HtmlXmlTagValidator =
   new HtmlXmlTagValidation(Messages[locale], locale)
 
+const messages = Messages[locale]
+
 const noErrors = []
 
 describe('HtmlXmlTagValidation', () => {
@@ -36,7 +38,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<group><users><user>1</user></users><foo></group>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsAdded, locale)
+      new MessageFormat(messages.tagsAdded, locale)
         .format({ added: '<foo>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -46,7 +48,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<foo><group><users><bar><user>1</user></users></group><moo>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsAdded, locale)
+      new MessageFormat(messages.tagsAdded, locale)
         .format({ added: '<foo>,<bar>,<moo>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -56,7 +58,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsMissing, locale)
+      new MessageFormat(messages.tagsMissing, locale)
         .format({ missing: '<foo>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -66,7 +68,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<title>HTML TAG Test</title><table><tr><td>column 1 row 1</td></tr></table>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsMissing, locale)
+      new MessageFormat(messages.tagsMissing, locale)
         .format({ missing: '<html>,<p>,</html>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -76,10 +78,10 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<two></five></four><three><six>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const msg1 =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsMissing, locale)
+      new MessageFormat(messages.tagsMissing, locale)
         .format({ missing: '<one>' })
     const msg2 =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsAdded, locale)
+      new MessageFormat(messages.tagsAdded, locale)
         .format({ added: '<six>' })
     expect(errorList).toEqual([msg1, msg2])
     expect(errorList.length).toEqual(2)
@@ -89,7 +91,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<six><one><two><three></four></five>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsWrongOrder, locale)
+      new MessageFormat(messages.tagsWrongOrder, locale)
         .format({ unordered: '<six>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -99,7 +101,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<two><three></four></five><six><one>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsWrongOrder, locale)
+      new MessageFormat(messages.tagsWrongOrder, locale)
         .format({ unordered: '<one>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -109,7 +111,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<two><three><one></four></five><six>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsWrongOrder, locale)
+      new MessageFormat(messages.tagsWrongOrder, locale)
         .format({ unordered: '<one>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -119,7 +121,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<six></five></four><three><two><one>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsWrongOrder, locale)
+      new MessageFormat(messages.tagsWrongOrder, locale)
         .format({ unordered: '<two>,<three>,</four>,</five>,<six>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -129,7 +131,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '</four></five><six><one><two><three>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsWrongOrder, locale)
+      new MessageFormat(messages.tagsWrongOrder, locale)
         .format({ unordered: '</four>,</five>,<six>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -139,7 +141,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<six></four></five><one><two><three>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsWrongOrder, locale)
+      new MessageFormat(messages.tagsWrongOrder, locale)
         .format({ unordered: '</four>,</five>,<six>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -149,7 +151,7 @@ describe('HtmlXmlTagValidation', () => {
     const target = '<one><two></two><four></three><three></four></one>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(HtmlXmlTagValidator.messages.tagsWrongOrder, locale)
+      new MessageFormat(messages.tagsWrongOrder, locale)
         .format({ unordered: '<three>,</three>' })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)

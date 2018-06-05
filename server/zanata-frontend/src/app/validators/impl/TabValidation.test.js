@@ -5,8 +5,10 @@ import MessageFormat from 'intl-messageformat'
 import Messages from '../messages'
 const locale = 'en-US'
 
+const messages = Messages[locale]
+
 const TabValidator =
-  new TabValidation(Messages[locale], locale)
+  new TabValidation(messages, locale)
 
 const noErrors = []
 
@@ -28,7 +30,7 @@ describe('TabValidation', () => {
     const target = 'Target without tab'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(TabValidator.messages.targetHasFewerTabs, locale)
+      new MessageFormat(messages.targetHasFewerTabs, locale)
       .format({ sourceTabs: 1, targetTabs: 0 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -38,7 +40,7 @@ describe('TabValidation', () => {
     const target = 'Target with\ttab'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(TabValidator.messages.targetHasMoreTabs, locale)
+      new MessageFormat(messages.targetHasMoreTabs, locale)
         .format({ sourceTabs: 0, targetTabs: 1 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -48,7 +50,7 @@ describe('TabValidation', () => {
     const target = 'Target with one\ttab'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(TabValidator.messages.targetHasFewerTabs, locale)
+      new MessageFormat(messages.targetHasFewerTabs, locale)
         .format({ sourceTabs: 2, targetTabs: 1 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -58,7 +60,7 @@ describe('TabValidation', () => {
     const target = 'Target with two\t\ttabs'
     const errorList = TabValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(TabValidator.messages.targetHasMoreTabs, locale)
+      new MessageFormat(messages.targetHasMoreTabs, locale)
         .format({ sourceTabs: 1, targetTabs: 2 })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)

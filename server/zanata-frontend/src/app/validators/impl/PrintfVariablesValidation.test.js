@@ -5,8 +5,10 @@ import Messages from '../messages'
 import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
+const messages = Messages[locale]
+
 const PrintfVariablesValidator =
-  new PrintfVariablesValidation(Messages[locale], locale)
+  new PrintfVariablesValidation(messages, locale)
 
 const noErrors = []
 
@@ -22,7 +24,7 @@ describe('PrintfVariablesValidation', () => {
     const target = 'Testing string with no variables'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: ['%1v'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -33,7 +35,7 @@ describe('PrintfVariablesValidation', () => {
     const target = 'Testing string with no variables'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: ['%a', '%b', '%c'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -43,7 +45,7 @@ describe('PrintfVariablesValidation', () => {
     const target = 'Testing string with variable %2$#x'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: ['%2$#x'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -54,7 +56,7 @@ describe('PrintfVariablesValidation', () => {
       '%1$-0lls variables in all parts %2$-0hs of the string %3$-0ls'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: ['%1$-0lls', '%2$-0hs', '%3$-0ls'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -65,10 +67,10 @@ describe('PrintfVariablesValidation', () => {
     const target = 'String with %y and %z, not x'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const msg1 =
-      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: ['%x'] })
     const msg2 =
-      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: ['%z'] })
     const errorMessages = [msg1, msg2]
     expect(errorList).toEqual(errorMessages)
@@ -80,7 +82,7 @@ describe('PrintfVariablesValidation', () => {
     const target = '%l %ll'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: ['%l'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -91,7 +93,7 @@ describe('PrintfVariablesValidation', () => {
     const target = '%ll'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: ['%l'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -102,10 +104,10 @@ describe('PrintfVariablesValidation', () => {
     const target = '%zz'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const msg1 =
-      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({ missing: ['%z'] })
     const msg2 =
-      new MessageFormat(PrintfVariablesValidator.messages.varsAdded, locale)
+      new MessageFormat(messages.varsAdded, locale)
         .format({ added: ['%zz'] })
     const errorMessages = [msg1, msg2]
     expect(errorList).toEqual(errorMessages)
@@ -117,7 +119,7 @@ describe('PrintfVariablesValidation', () => {
     const target = 'no variables'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(PrintfVariablesValidator.messages.varsMissing, locale)
+      new MessageFormat(messages.varsMissing, locale)
         .format({
           missing: ['%s', '%d', '%-25s', '%r'] })
     expect(errorList).toEqual([errorMessages])

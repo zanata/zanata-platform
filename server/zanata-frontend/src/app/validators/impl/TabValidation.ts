@@ -31,13 +31,14 @@ import MessageFormat from 'intl-messageformat'
 class TabValidation extends AbstractValidationAction {
   public readonly id = 'TAB'
   public readonly  description: string
-  public readonly messages: ValidationMessages
   public readonly label: string
 
   public readonly sourceExample =
-    "\\t hello world"
+  "\\t hello world"
   public readonly targetExample =
-    "<span class='js-example__target txt--warning'>missing tab char (\\t)</span> hello world"
+  "<span class='js-example__target txt--warning'>missing tab char (\\t)</span> hello world"
+
+  protected readonly messages: ValidationMessages
 
   constructor(messages: ValidationMessages, locale: string) {
     super(locale)

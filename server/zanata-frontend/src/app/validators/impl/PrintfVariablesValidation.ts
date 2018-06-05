@@ -33,13 +33,14 @@ import MessageFormat from 'intl-messageformat'
 class PrintfVariablesValidation extends AbstractValidationAction {
   public id = 'PRINTF_VARIABLES'
   public readonly description: string
-  public readonly messages: ValidationMessages
   public readonly label: string
 
   public sourceExample =
     "value must be between %x and %y"
   public targetExample =
     "value must be between %x and <span class='js-example__target txt--warning'>%z</span>";
+
+  protected readonly messages: ValidationMessages
 
   private GLOBAL_FLAG = "g";
 

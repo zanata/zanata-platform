@@ -5,8 +5,10 @@ import Messages from '../messages'
 import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
+const messages = Messages[locale]
+
 const XmlEntityValidator =
-  new XmlEntityValidation(Messages[locale], locale)
+  new XmlEntityValidation(messages, locale)
 
 const noErrors = []
 
@@ -28,7 +30,7 @@ describe('XmlEntityValidation', () => {
     const target = 'Target string: bla bla &test'
     const errorList = XmlEntityValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(XmlEntityValidator.messages.invalidXMLEntity, locale)
+      new MessageFormat(messages.invalidXMLEntity, locale)
         .format({ entity: ['&test'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -38,7 +40,7 @@ describe('XmlEntityValidation', () => {
     const target = 'Target string: &#1234 bla bla &#BC;'
     const errorList = XmlEntityValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(XmlEntityValidator.messages.invalidXMLEntity, locale)
+      new MessageFormat(messages.invalidXMLEntity, locale)
         .format({ entity: ['&#1234', '&#BC;'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)
@@ -48,7 +50,7 @@ describe('XmlEntityValidation', () => {
     const target = 'Target string: &#x1234 bla bla &#x09Z'
     const errorList = XmlEntityValidator.doValidate(source, target)
     const errorMessages =
-      new MessageFormat(XmlEntityValidator.messages.invalidXMLEntity, locale)
+      new MessageFormat(messages.invalidXMLEntity, locale)
         .format({ entity: ['&#x1234', '&#x09Z'] })
     expect(errorList).toEqual([errorMessages])
     expect(errorList.length).toEqual(1)

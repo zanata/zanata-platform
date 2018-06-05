@@ -22,7 +22,6 @@ import ValidationMessages from './ValidationMessages'
  */
 abstract class AbstractValidationAction implements ValidationAction {
   public readonly locale: string
-  public abstract messages: ValidationMessages
   public abstract readonly id: string
   public abstract readonly label: string
   public abstract readonly description: string
@@ -30,6 +29,7 @@ abstract class AbstractValidationAction implements ValidationAction {
   public abstract readonly targetExample: string
 
   public readonly rules: ValidationDisplayRules
+  protected abstract messages: ValidationMessages
 
   private _state: State = State.Warning
   public get state() {return this._state}

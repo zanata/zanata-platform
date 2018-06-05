@@ -31,13 +31,13 @@ import MessageFormat from 'intl-messageformat'
 class XmlEntityValidation extends AbstractValidationAction {
   public readonly id = 'XML_ENTITY'
   public readonly description: string
-  public readonly messages: ValidationMessages
   public readonly label: string
 
   public readonly sourceExample =
-    "Pepper &amp;amp; salt"
+  "Pepper &amp;amp; salt"
   public readonly targetExample =
-    "Pepper amp<span class='js-example__target txt--warning'> incomplete entity, missing '& and ;'</span> salt"
+  "Pepper amp<span class='js-example__target txt--warning'> incomplete entity, missing '& and ;'</span> salt"
+  protected readonly messages: ValidationMessages
   // &amp;, &quot;
   private charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;"
   private charRefExp = new RegExp(this.charRefRegex)

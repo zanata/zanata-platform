@@ -39,13 +39,14 @@ import MessageFormat from 'intl-messageformat'
 class JavaVariablesValidation extends AbstractValidationAction {
   public readonly  id = 'JAVA_VARIABLES'
   public readonly description: string
-  public messages: ValidationMessages
   public readonly label: string
 
   public readonly sourceExample =
     "value must be between {0} and {1}"
   public readonly targetExample =
     "value must be between {0} and <span class='js-example__target txt--warning'>{2}</span>"
+
+  protected readonly messages: ValidationMessages
 
   constructor(messages: ValidationMessages, locale: string) {
     super(locale)
