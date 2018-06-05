@@ -22,7 +22,6 @@
 /* tslint:disable:max-line-length */
 
 import AbstractValidationAction from '../AbstractValidationAction'
-import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
 import MessageFormat from 'intl-messageformat'
@@ -32,7 +31,7 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class HtmlXmlTagValidation extends AbstractValidationAction {
-  public id: ValidationId
+  public id = 'HTML_XML'
   public description: string
   public messages: ValidationMessages
   public label: string
@@ -49,10 +48,10 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
 
   private tagRegex = "<[^>]+>"
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    super(id, messages, locale)
+  constructor(messages: ValidationMessages, locale?: string) {
+    super(messages, locale)
     this.description = messages.xmlEntityValidatorDesc
-    this.label = messages[id]
+    this.label = messages[this.id]
   }
 
   public doValidate(source: string, target: string): string[] {

@@ -1,15 +1,12 @@
 /* global describe it expect */
 
 import TabValidation from './TabValidation'
-import ValidationId from '../ValidationId'
 import MessageFormat from 'intl-messageformat'
 import Messages from '../messages'
 const locale = 'en-US'
 
-const id = ValidationId.TAB
-
 const TabValidator =
-  new TabValidation(id, Messages[locale], locale)
+  new TabValidation(Messages[locale], locale)
 
 const noErrors = []
 

@@ -143,9 +143,7 @@ describe('Validation', () => {
           validationOptions={validations}
         />
       </IntlProvider>)
-    const expected = ReactDOMServer.renderToStaticMarkup(
-      <span></span>
-    )
+    const expected = ''
     expect(actual).toEqual(expected)
   })
 })

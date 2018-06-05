@@ -20,7 +20,6 @@
  */
 
 import AbstractValidationAction from '../AbstractValidationAction'
-import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
 /**
@@ -28,7 +27,7 @@ import ValidationMessages from '../ValidationMessages'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class NewlineLeadTrailValidation extends AbstractValidationAction {
-  public id: ValidationId
+  public id = 'NEW_LINE'
   public description: string
   public messages: ValidationMessages
   public label: string
@@ -49,10 +48,10 @@ class NewlineLeadTrailValidation extends AbstractValidationAction {
   private leadRegExp = new RegExp(this.leadNewlineRegex);
   private endRegExp = new RegExp(this.endNewlineRegex);
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    super(id, messages, locale)
+  constructor(messages: ValidationMessages, locale?: string) {
+    super(messages, locale)
     this.description = messages.newLineValidatorDesc
-    this.label = messages[id]
+    this.label = messages[this.id]
   }
 
   public doValidate(source: string, target: string): string[] {

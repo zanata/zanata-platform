@@ -22,7 +22,6 @@
 /* tslint:disable:member-ordering */
 
 import AbstractValidationAction from '../AbstractValidationAction'
-import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
 import MessageFormat from 'intl-messageformat'
@@ -38,7 +37,7 @@ import MessageFormat from 'intl-messageformat'
   * @see http://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html
   */
 class JavaVariablesValidation extends AbstractValidationAction {
-  public id: ValidationId
+  public id = 'JAVA_VARIABLES'
   public description: string
   public messages: ValidationMessages
   public label: string
@@ -53,10 +52,10 @@ class JavaVariablesValidation extends AbstractValidationAction {
     return "value must be between {0} and <span class='js-example__target txt--warning'>{2}</span>"
   }
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    super(id, messages, locale)
+  constructor(messages: ValidationMessages, locale?: string) {
+    super(messages, locale)
     this.description = messages.javaVariablesValidatorDesc
-    this.label = messages[id]
+    this.label = messages[this.id]
   }
 
   public doValidate(source: string, target: string): string[] {

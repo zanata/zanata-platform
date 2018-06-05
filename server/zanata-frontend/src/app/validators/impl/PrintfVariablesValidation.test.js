@@ -1,14 +1,12 @@
 /* global describe it expect */
 
 import PrintfVariablesValidation from './PrintfVariablesValidation'
-import ValidationId from '../ValidationId'
 import Messages from '../messages'
 import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
-const id = ValidationId.XML_ENTITY
 const PrintfVariablesValidator =
-  new PrintfVariablesValidation(id, Messages[locale], locale)
+  new PrintfVariablesValidation(Messages[locale], locale)
 
 const noErrors = []
 

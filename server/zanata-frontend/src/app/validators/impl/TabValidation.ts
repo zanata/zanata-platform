@@ -20,7 +20,6 @@
  */
 
 import AbstractValidationAction from '../AbstractValidationAction'
-import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
 import MessageFormat from 'intl-messageformat'
@@ -30,7 +29,7 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class TabValidation extends AbstractValidationAction {
-  public id: ValidationId
+  public id = 'TAB'
   public description: string
   public messages: ValidationMessages
   public label: string
@@ -45,10 +44,10 @@ class TabValidation extends AbstractValidationAction {
     return "<span class='js-example__target txt--warning'>missing tab char (\\t)</span> hello world";
   }
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    super(id, messages, locale)
+  constructor(messages: ValidationMessages, locale?: string) {
+    super(messages, locale)
     this.description = messages.xmlEntityValidatorDesc
-    this.label = messages[id]
+    this.label = messages[this.id]
   }
 
   public doValidate(source: string, target: string): string[] {

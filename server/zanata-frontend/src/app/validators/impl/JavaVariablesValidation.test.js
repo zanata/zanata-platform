@@ -23,14 +23,12 @@
 /* eslint-disable quotes, max-len */
 
 import JavaVariablesValidation from './JavaVariablesValidation'
-import ValidationId from '../ValidationId'
 import Messages from '../messages'
 import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
-const id = ValidationId.JAVA_VARIABLES
 const JavaVariablesValidator =
-  new JavaVariablesValidation(id, Messages[locale], locale)
+  new JavaVariablesValidation(Messages[locale], locale)
 
 const noErrors = []
 

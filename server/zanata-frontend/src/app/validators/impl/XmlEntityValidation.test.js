@@ -1,15 +1,12 @@
 /* global describe expect it */
 
 import XmlEntityValidation from './XmlEntityValidation'
-import ValidationId from '../ValidationId'
 import Messages from '../messages'
 import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
-const id = ValidationId.XML_ENTITY
-
 const XmlEntityValidator =
-  new XmlEntityValidation(id, Messages[locale], locale)
+  new XmlEntityValidation(Messages[locale], locale)
 
 const noErrors = []
 

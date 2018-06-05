@@ -1,14 +1,12 @@
 /* global describe it expect */
 /* eslint-disable max-len */
 import PrintfXSIExtensionValidation from './PrintfXSIExtensionValidation'
-import ValidationId from '../ValidationId'
 import Messages from '../messages'
 import MessageFormat from 'intl-messageformat'
 const locale = 'en-US'
 
-const id = ValidationId.XML_ENTITY
 const PrintfXSIExtensionValidator =
-  new PrintfXSIExtensionValidation(id, Messages[locale], locale)
+  new PrintfXSIExtensionValidation(Messages[locale], locale)
 
 const noErrors = []
 

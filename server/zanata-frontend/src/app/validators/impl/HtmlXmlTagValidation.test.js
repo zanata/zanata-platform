@@ -3,15 +3,12 @@
 /* eslint-disable max-len */
 
 import HtmlXmlTagValidation from './HtmlXmlTagValidation'
-import ValidationId from '../ValidationId'
 import MessageFormat from 'intl-messageformat'
 import Messages from '../messages'
 const locale = 'en-US'
 
-const id = ValidationId.HTML_XML
-
 const HtmlXmlTagValidator =
-  new HtmlXmlTagValidation(id, Messages[locale], locale)
+  new HtmlXmlTagValidation(Messages[locale], locale)
 
 const noErrors = []
 

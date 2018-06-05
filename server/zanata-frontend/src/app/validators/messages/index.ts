@@ -5,6 +5,13 @@
  */
 import en from './en.json'
 import ja from './ja.json'
+import fr from './fr.json'
+import ValidationMessages from '../ValidationMessages'
+
+// Shallow extention of translations
+// Untranslated messages default to english
+const jaExtend: ValidationMessages = { ...en, ...ja }
+const frExtend: ValidationMessages = { ...en, ...fr }
 
 /**
  * Aliases for message JSON files
@@ -12,10 +19,11 @@ import ja from './ja.json'
  * invalidXMLEntity: "Invalid XML {COUNT, plural, =0 {entity: } =1 {entity: } other {entities: } } {ENTITY}"
  */
 const Messages = {
-  'en': en,
-  'en-US': en,
-  'ja': ja,
-  'ja-JP': ja
+  'en': en as ValidationMessages,
+  'en-US': en as ValidationMessages,
+  'ja': jaExtend,
+  'ja-JP': jaExtend,
+  'fr': frExtend
 }
 
 export default Messages

@@ -22,7 +22,6 @@
  /* tslint:disable:max-line-length*/
 
 import AbstractValidationAction from '../AbstractValidationAction'
-import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
 import MessageFormat from 'intl-messageformat'
@@ -32,7 +31,7 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 abstract class PrintfVariablesValidation extends AbstractValidationAction {
-  public id: ValidationId
+  public id = 'PRINTF_VARIABLES'
   public description: string
   public messages: ValidationMessages
   public label: string
@@ -53,10 +52,10 @@ abstract class PrintfVariablesValidation extends AbstractValidationAction {
   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
   private VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])"
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    super(id, messages, locale)
+  constructor(messages: ValidationMessages, locale?: string) {
+    super(messages, locale)
     this.description = messages.printfVariablesValidatorDesc
-    this.label = messages[id]
+    this.label = messages[this.id]
   }
 
   public doValidate(source: string, target: string): string[] {

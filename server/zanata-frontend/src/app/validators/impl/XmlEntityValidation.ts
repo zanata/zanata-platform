@@ -20,7 +20,6 @@
  */
 
 import AbstractValidationAction from '../AbstractValidationAction'
-import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
 import MessageFormat from 'intl-messageformat'
@@ -30,7 +29,7 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class XmlEntityValidation extends AbstractValidationAction {
-  public id: ValidationId
+  public id = 'XML_ENTITY'
   public description: string
   public messages: ValidationMessages
   public label: string
@@ -58,10 +57,10 @@ class XmlEntityValidation extends AbstractValidationAction {
 
   private ENTITY_START_CHAR = "&"
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    super(id, messages, locale)
+  constructor(messages: ValidationMessages, locale?: string) {
+    super(messages, locale)
     this.description = messages.xmlEntityValidatorDesc
-    this.label = messages[id]
+    this.label = messages[this.id]
   }
 
   public doValidate(_source: string, target: string): string[] {

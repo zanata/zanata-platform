@@ -1,13 +1,11 @@
 /* global describe it expect */
 
 import NewlineLeadTrailValidation from './NewlineLeadTrailValidation'
-import ValidationId from '../ValidationId'
 import Messages from '../messages'
 const locale = 'en-US'
 
-const id = ValidationId.XML_ENTITY
 const NewlineLeadTrailValidator =
-  new NewlineLeadTrailValidation(id, Messages[locale], locale)
+  new NewlineLeadTrailValidation(Messages[locale], locale)
 
 const noErrors = []
 

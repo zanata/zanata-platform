@@ -1,0 +1,9 @@
+{
+  "notifyValidationError": "Erreur de validation - Voir le message de validation",
+  "NEW_LINE": "Nouvelle ligne de début / fin (\\\\n)",
+  "newLineValidatorDesc": "Vérification de la nouvelle ligne de début et de fin cohérente (\\n).",
+  "leadingNewlineMissing": "Le nouveau saut de ligne (\\n) est manquant",
+  "leadingNewlineAdded": "Ligne de retour inattendue (\\n)",
+  "trailingNewlineMissing": "Trailing newline (\\n) est manquant",
+  "trailingNewlineAdded": "Nouvelle ligne de fin inattendue (\\n)"
+}

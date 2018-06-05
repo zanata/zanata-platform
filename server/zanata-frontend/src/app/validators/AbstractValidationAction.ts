@@ -1,6 +1,5 @@
-import { ValidationAction, State } from './ValidationAction'
+import ValidationAction, { State } from './ValidationAction'
 import ValidationDisplayRules from './ValidationDisplayRules'
-import ValidationId from './ValidationId'
 import ValidationMessages from './ValidationMessages'
 
 /**
@@ -22,9 +21,11 @@ import ValidationMessages from './ValidationMessages'
  * @see XmlEntityValidation
  */
 abstract class AbstractValidationAction implements ValidationAction {
-  public readonly id: ValidationId
+  public readonly id: string
   public readonly messages: ValidationMessages
+  public readonly label: string
   public readonly locale: string
+  public readonly description: string
   public readonly sourceExample: string
   public readonly targetExample: string
 
@@ -42,8 +43,7 @@ abstract class AbstractValidationAction implements ValidationAction {
     return this.exclusiveVals
   }
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    this.id = id
+  constructor(messages: ValidationMessages, locale?: string) {
     this.messages = messages
     this.locale = locale ? locale : 'en-US' // default to en-US locale
     this.rules = new ValidationDisplayRules(this.state)
@@ -60,8 +60,7 @@ abstract class AbstractValidationAction implements ValidationAction {
   public mutuallyExclusive(...exclusiveValidations: ValidationAction[]) {
     this.exclusiveVals = exclusiveValidations
   }
-
-  protected abstract doValidate(source: string, target: string): string[]
+  public abstract doValidate(source: string, target: string): string[]
 }
 
 export default AbstractValidationAction

@@ -22,7 +22,6 @@
 /* tslint:disable:max-line-length*/
 
 import PrintfVariablesValidation from './PrintfVariablesValidation'
-import ValidationId from '../ValidationId'
 import ValidationMessages from '../ValidationMessages'
 
 import MessageFormat from 'intl-messageformat'
@@ -32,7 +31,7 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
-  public id: ValidationId
+  public id = 'PRINTF_XSI_EXTENSION'
   public description: string
   public messages: ValidationMessages
   public label: string
@@ -49,10 +48,10 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
 
   private POSITIONAL_REG_EXP = new RegExp("%(\\d+\\$).+")
 
-  constructor(id: ValidationId, messages: ValidationMessages, locale?: string) {
-    super(id, messages, locale)
+  constructor(messages: ValidationMessages, locale?: string) {
+    super(messages, locale)
     this.description = messages.xmlEntityValidatorDesc
-    this.label = messages[id]
+    this.label = messages[this.id]
   }
 
   public doValidate(source: string, target: string): string[] {

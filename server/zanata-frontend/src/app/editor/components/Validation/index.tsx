@@ -6,44 +6,11 @@ import 'antd/lib/collapse/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
 import './index.css'
-import {
-  Messages,
-  ValidationId,
-  HtmlXmlTagValidation,
-  JavaVariablesValidation,
-  NewlineLeadTrailValidation,
-  PrintfVariablesValidation,
-  PrintfXSIExtensionValidation,
-  TabValidation,
-  XmlEntityValidation
-} from '../../../validators'
+import validatorFactory from '../../../validators'
 
 const Panel = Collapse.Panel
 
-// TODO: only instantiate enabled validators (warning/error)
-function validatorFactory(_validationOptions: ValidationOption[], locale: string): any {
-  // The Validator intl messages are standalone to the Validators module
-  // Default to en locale if intl messages unavailable
-  const resolvedLocale = Messages[locale]
-    ? locale
-    : 'en'
-  const validators = []
-  validators.push(
-    new HtmlXmlTagValidation(ValidationId.HTML_XML, Messages[resolvedLocale], resolvedLocale))
-  validators.push(
-    new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, Messages[resolvedLocale], resolvedLocale))
-  validators.push(
-    new NewlineLeadTrailValidation(ValidationId.NEW_LINE, Messages[resolvedLocale], resolvedLocale))
-  validators.push(
-    new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, Messages[resolvedLocale], resolvedLocale))
-  validators.push(
-    new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, Messages[resolvedLocale]))
-  validators.push(
-    new TabValidation(ValidationId.TAB, Messages[resolvedLocale], resolvedLocale))
-  validators.push(
-    new XmlEntityValidation(ValidationId.XML_ENTITY, Messages[resolvedLocale], resolvedLocale))
-  return validators
-}
+const DO_NOT_RENDER: null = null
 
 const messageList = (messages) => {
   return messages.map((m, index) => {
@@ -68,17 +35,17 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
 
-  const validators = validatorFactory(validationOptions, intl.locale)
+  const validators = validatorFactory(intl.locale)
 
   const warningProducers = warningValidators.map((warningOpt) => {
     return validators.find((validator) => {
-      return validator.id === ValidationId[warningOpt.id]
+      return validator.id === warningOpt.id
     })
   })
 
-  const errorProducers = errorValidators.map((warningOpt) => {
+  const errorProducers = errorValidators.map((errorOpt) => {
     return validators.find((validator) => {
-      return validator.id === ValidationId[warningOpt.id]
+      return validator.id === errorOpt.id
     })
   })
 
@@ -121,7 +88,7 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
       values={{ warningCount }
       }
     />
-    : undefined
+    : DO_NOT_RENDER
   const errorsMessage = errorCount > 0
     ? <FormattedMessage
       tagName='option'
@@ -131,7 +98,7 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
       values={{ errorCount }
       }
     />
-    : undefined
+    : DO_NOT_RENDER
   const header = (
     <span>
       {warningsMessage} {errorsMessage}
@@ -149,7 +116,7 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
         </Panel>
       </Collapse>
     </div>
-    : <span></span>
+    : DO_NOT_RENDER
 }
 
 interface ValidationProps {
@@ -167,7 +134,7 @@ interface Message {
 }
 
 interface ValidationOption {
-  id: ValidationId,
+  id: string,
   label: string,
   active: boolean,
   disabled: boolean
