@@ -43,5 +43,10 @@
     <dropColumn tableName="HIterationGroup" columnName="status" />
   </changeSet>
 
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Remove requireTranslationReview column in HProjectIteration</comment>
+    <dropColumn tableName="HProjectIteration" columnName="requireTranslationReview" />
+  </changeSet>
+
 
 </databaseChangeLog>
