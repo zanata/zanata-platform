@@ -29,20 +29,15 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class XmlEntityValidation extends AbstractValidationAction {
-  public id = 'XML_ENTITY'
-  public description: string
-  public messages: ValidationMessages
-  public label: string
-  public locale: string
+  public readonly id = 'XML_ENTITY'
+  public readonly description: string
+  public readonly messages: ValidationMessages
+  public readonly label: string
 
-  public _sourceExample: string
-  public get sourceExample() {
-    return "Pepper &amp;amp; salt"
-  }
-  public _targetExample: string
-  public get targetExample() {
-    return "Pepper amp<span class='js-example__target txt--warning'> incomplete entity, missing '& and ;'</span> salt"
-  }
+  public readonly sourceExample =
+    "Pepper &amp;amp; salt"
+  public readonly targetExample =
+    "Pepper amp<span class='js-example__target txt--warning'> incomplete entity, missing '& and ;'</span> salt"
   // &amp;, &quot;
   private charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;"
   private charRefExp = new RegExp(this.charRefRegex)
@@ -57,8 +52,9 @@ class XmlEntityValidation extends AbstractValidationAction {
 
   private ENTITY_START_CHAR = "&"
 
-  constructor(messages: ValidationMessages, locale?: string) {
-    super(messages, locale)
+  constructor(messages: ValidationMessages, locale: string) {
+    super(locale)
+    this.messages = messages
     this.description = messages.xmlEntityValidatorDesc
     this.label = messages[this.id]
   }

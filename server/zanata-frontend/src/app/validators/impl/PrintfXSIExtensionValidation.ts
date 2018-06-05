@@ -31,24 +31,18 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
-  public id = 'PRINTF_XSI_EXTENSION'
-  public description: string
-  public messages: ValidationMessages
-  public label: string
-  public locale: string
+  public readonly id = 'PRINTF_XSI_EXTENSION'
+  public readonly description: string
+  public readonly label: string
 
-  public _sourceExample: string
-  public get sourceExample() {
-    return "value must be between %x$1 and %y$2";
-  }
-  public _targetExample: string
-  public get targetExample() {
-    return "value must be between %x$1 and <span class='js-example__target txt--warning'>%y$3</span>";
-  }
+  public sourceExample =
+    "value must be between %x$1 and %y$2"
+  public targetExample =
+    "value must be between %x$1 and <span class='js-example__target txt--warning'>%y$3</span>";
 
   private POSITIONAL_REG_EXP = new RegExp("%(\\d+\\$).+")
 
-  constructor(messages: ValidationMessages, locale?: string) {
+  constructor(messages: ValidationMessages, locale: string) {
     super(messages, locale)
     this.description = messages.xmlEntityValidatorDesc
     this.label = messages[this.id]

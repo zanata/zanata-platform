@@ -29,23 +29,19 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class TabValidation extends AbstractValidationAction {
-  public id = 'TAB'
-  public description: string
-  public messages: ValidationMessages
-  public label: string
-  public locale: string
+  public readonly id = 'TAB'
+  public readonly  description: string
+  public readonly messages: ValidationMessages
+  public readonly label: string
 
-  public _sourceExample: string
-  public get sourceExample() {
-    return "\\t hello world";
-  }
-  public _targetExample: string
-  public get targetExample() {
-    return "<span class='js-example__target txt--warning'>missing tab char (\\t)</span> hello world";
-  }
+  public readonly sourceExample =
+    "\\t hello world"
+  public readonly targetExample =
+    "<span class='js-example__target txt--warning'>missing tab char (\\t)</span> hello world"
 
-  constructor(messages: ValidationMessages, locale?: string) {
-    super(messages, locale)
+  constructor(messages: ValidationMessages, locale: string) {
+    super(locale)
+    this.messages = messages
     this.description = messages.xmlEntityValidatorDesc
     this.label = messages[this.id]
   }

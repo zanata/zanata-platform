@@ -27,20 +27,15 @@ import ValidationMessages from '../ValidationMessages'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class NewlineLeadTrailValidation extends AbstractValidationAction {
-  public id = 'NEW_LINE'
-  public description: string
+  public readonly id = 'NEW_LINE'
+  public readonly description: string
   public messages: ValidationMessages
-  public label: string
-  public locale: string
+  public readonly label: string
 
-  public _sourceExample: string
-  public get sourceExample() {
-    return "\\n hello world with lead new line"
-  }
-  public _targetExample: string
-  public get targetExample() {
-    return "<span class='js-example__target txt--warning'>missing \\n</span> hello world with lead new line"
-  }
+  public readonly sourceExample =
+    "\\n hello world with lead new line"
+  public readonly targetExample =
+    "<span class='js-example__target txt--warning'>missing \\n</span> hello world with lead new line"
 
   private leadNewlineRegex = "^\n";
   private endNewlineRegex = "\n$";
@@ -48,8 +43,9 @@ class NewlineLeadTrailValidation extends AbstractValidationAction {
   private leadRegExp = new RegExp(this.leadNewlineRegex);
   private endRegExp = new RegExp(this.endNewlineRegex);
 
-  constructor(messages: ValidationMessages, locale?: string) {
-    super(messages, locale)
+  constructor(messages: ValidationMessages, locale: string) {
+    super(locale)
+    this.messages = messages
     this.description = messages.newLineValidatorDesc
     this.label = messages[this.id]
   }

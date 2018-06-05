@@ -21,13 +21,13 @@ import ValidationMessages from './ValidationMessages'
  * @see XmlEntityValidation
  */
 abstract class AbstractValidationAction implements ValidationAction {
-  public readonly id: string
-  public readonly messages: ValidationMessages
-  public readonly label: string
   public readonly locale: string
-  public readonly description: string
-  public readonly sourceExample: string
-  public readonly targetExample: string
+  public abstract messages: ValidationMessages
+  public abstract readonly id: string
+  public abstract readonly label: string
+  public abstract readonly description: string
+  public abstract readonly sourceExample: string
+  public abstract readonly targetExample: string
 
   public readonly rules: ValidationDisplayRules
 
@@ -39,14 +39,14 @@ abstract class AbstractValidationAction implements ValidationAction {
   }
   private exclusiveVals: ValidationAction[]
 
-  public get exclusiveValidations() {
-    return this.exclusiveVals
+  protected constructor(locale: string) {
+    this.locale = locale
+    this.rules = new ValidationDisplayRules(this.state)
+    this.exclusiveVals = []
   }
 
-  constructor(messages: ValidationMessages, locale?: string) {
-    this.messages = messages
-    this.locale = locale ? locale : 'en-US' // default to en-US locale
-    this.rules = new ValidationDisplayRules(this.state)
+  public get exclusiveValidations() {
+    return this.exclusiveVals
   }
 
   public validate(source?: string, target?: string): string[] {

@@ -31,25 +31,21 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class HtmlXmlTagValidation extends AbstractValidationAction {
-  public id = 'HTML_XML'
-  public description: string
+  public readonly id = 'HTML_XML'
+  public readonly description: string
   public messages: ValidationMessages
-  public label: string
-  public locale: string
+  public readonly label: string
 
-  public _sourceExample: string
-  public get sourceExample() {
-    return "&lt;p&gt;&lt;strong&gt;Hello world&lt;/strong&gt;&lt;/p&gt;"
-  }
-  public _targetExample: string
-  public get targetExample() {
-    return "&lt;p&gt;&lt;strong&gt;Hello world<span class='js-example__target txt--warning'>&lt;/stong&gt;</span>&lt;/p&gt;"
-  }
+  public readonly sourceExample =
+    "&lt;p&gt;&lt;strong&gt;Hello world&lt;/strong&gt;&lt;/p&gt;"
+  public readonly targetExample =
+    "&lt;p&gt;&lt;strong&gt;Hello world<span class='js-example__target txt--warning'>&lt;/stong&gt;</span>&lt;/p&gt;"
 
   private tagRegex = "<[^>]+>"
 
-  constructor(messages: ValidationMessages, locale?: string) {
-    super(messages, locale)
+  constructor(messages: ValidationMessages, locale: string) {
+    super(locale)
+    this.messages = messages
     this.description = messages.xmlEntityValidatorDesc
     this.label = messages[this.id]
   }
@@ -82,7 +78,7 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
   private orderValidation(srcTags: string[], trgTags: string[]): string[] {
     let errors: string[] = []
 
-    let longestRun: string[] = null
+    let longestRun: string[] | null = null
     let currentRun: string[] = []
 
     const src = srcTags
@@ -144,7 +140,7 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
     return -1
   }
 
-  private getTagList(src: string): string[] {
+  private getTagList(src: string): string[] | null {
     const regExp = new RegExp(this.tagRegex, 'g')
     return src.match(regExp)
   }

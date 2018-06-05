@@ -32,19 +32,14 @@ import MessageFormat from 'intl-messageformat'
  */
 class PrintfVariablesValidation extends AbstractValidationAction {
   public id = 'PRINTF_VARIABLES'
-  public description: string
-  public messages: ValidationMessages
-  public label: string
-  public locale: string
+  public readonly description: string
+  public readonly messages: ValidationMessages
+  public readonly label: string
 
-  public _sourceExample: string
-  public get sourceExample() {
-    return "value must be between %x and %y";
-  }
-  public _targetExample: string
-  public get targetExample() {
-    return "value must be between %x and <span class='js-example__target txt--warning'>%z</span>";
-  }
+  public sourceExample =
+    "value must be between %x and %y"
+  public targetExample =
+    "value must be between %x and <span class='js-example__target txt--warning'>%z</span>";
 
   private GLOBAL_FLAG = "g";
 
@@ -52,8 +47,9 @@ class PrintfVariablesValidation extends AbstractValidationAction {
   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
   private VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])"
 
-  constructor(messages: ValidationMessages, locale?: string) {
-    super(messages, locale)
+  constructor(messages: ValidationMessages, locale: string) {
+    super(locale)
+    this.messages = messages
     this.description = messages.printfVariablesValidatorDesc
     this.label = messages[this.id]
   }

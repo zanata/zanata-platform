@@ -37,23 +37,19 @@ import MessageFormat from 'intl-messageformat'
   * @see http://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html
   */
 class JavaVariablesValidation extends AbstractValidationAction {
-  public id = 'JAVA_VARIABLES'
-  public description: string
+  public readonly  id = 'JAVA_VARIABLES'
+  public readonly description: string
   public messages: ValidationMessages
-  public label: string
-  public locale: string
+  public readonly label: string
 
-  public _sourceExample: string
-  public get sourceExample() {
-    return "value must be between {0} and {1}"
-  }
-  public _targetExample: string
-  public get targetExample() {
-    return "value must be between {0} and <span class='js-example__target txt--warning'>{2}</span>"
-  }
+  public readonly sourceExample =
+    "value must be between {0} and {1}"
+  public readonly targetExample =
+    "value must be between {0} and <span class='js-example__target txt--warning'>{2}</span>"
 
-  constructor(messages: ValidationMessages, locale?: string) {
-    super(messages, locale)
+  constructor(messages: ValidationMessages, locale: string) {
+    super(locale)
+    this.messages = messages
     this.description = messages.javaVariablesValidatorDesc
     this.label = messages[this.id]
   }
