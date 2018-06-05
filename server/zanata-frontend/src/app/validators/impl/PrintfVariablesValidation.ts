@@ -30,7 +30,7 @@ import MessageFormat from 'intl-messageformat'
  *
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
-abstract class PrintfVariablesValidation extends AbstractValidationAction {
+class PrintfVariablesValidation extends AbstractValidationAction {
   public id = 'PRINTF_VARIABLES'
   public description: string
   public messages: ValidationMessages
