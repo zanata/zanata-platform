@@ -8,6 +8,8 @@ import ja from './ja.json'
 import fr from './fr.json'
 import ValidationMessages from '../ValidationMessages'
 
+const enDefault: ValidationMessages = en
+
 // Shallow extention of translations
 // Untranslated messages default to english
 const jaExtend: ValidationMessages = { ...en, ...ja }
@@ -19,8 +21,8 @@ const frExtend: ValidationMessages = { ...en, ...fr }
  * invalidXMLEntity: "Invalid XML {COUNT, plural, =0 {entity: } =1 {entity: } other {entities: } } {ENTITY}"
  */
 const Messages = {
-  'en': en as ValidationMessages,
-  'en-US': en as ValidationMessages,
+  'en': enDefault,
+  'en-US': enDefault,
   'ja': jaExtend,
   'ja-JP': jaExtend,
   'fr': frExtend
