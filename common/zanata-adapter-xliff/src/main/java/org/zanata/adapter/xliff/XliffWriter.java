@@ -84,11 +84,7 @@ public class XliffWriter extends XliffCommon {
             writer.writeAttribute(ATTRI_ID, textFlow.getId());
             writeTransUnitSource(writer, textFlow);
             if (target != null) {
-                if (approvedOnly) {
-                    if (target.getState().isApproved()) {
-                        writeTransUnitTarget(writer, target);
-                    }
-                } else if (target.getState().isTranslated()) {
+                if (usable(target.getState(), approvedOnly)) {
                     writeTransUnitTarget(writer, target);
                 }
             }
@@ -96,6 +92,11 @@ public class XliffWriter extends XliffCommon {
             // end trans-unit tag
             writer.writeEndElement();
         }
+    }
+
+    private static boolean usable(ContentState state, boolean approvedOnly) {
+        return state.isApproved() ||
+                (!approvedOnly && state.isTranslated());
     }
 
     private static void writeTransUnitSource(XMLStreamWriter writer,

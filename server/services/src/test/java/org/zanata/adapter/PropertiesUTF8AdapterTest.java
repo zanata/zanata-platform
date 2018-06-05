@@ -56,6 +56,15 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
 
     @Test
     public void testTranslatedPropertiesDocument() {
+        testTranslatedPropertiesDocument(false);
+    }
+
+    @Test
+    public void testTranslatedPropertiesDocumentApprovedOnly() {
+        testTranslatedPropertiesDocument(true);
+    }
+
+    private void testTranslatedPropertiesDocument(boolean approvedOnly) {
         TranslationsResource tResource = new TranslationsResource();
         addTranslation(tResource, "line1", "¥Foun’dé metalkcta", ContentState.Approved);
         addTranslation(tResource, "line2", "¥Tba’dé metalkcta", ContentState.Translated);
@@ -71,12 +80,13 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
                 tResource,
                 "ru",
                 Optional.absent(),
-                false);
+                approvedOnly);
 
-        assertThat(outputStream.toString(UTF_8)).isEqualTo(
-                "line1=¥Foun’dé metalkcta\n" +
+        String expected = "line1=¥Foun’dé metalkcta\n" +
                 "line2=¥Tba’dé metalkcta\n" +
-                "line3=\n");
+                "line3=\n";
+        if (approvedOnly) expected = expected.replace("¥Tba’dé metalkcta", "");
+        assertThat(outputStream.toString(UTF_8)).isEqualTo(
+                expected);
     }
-
 }

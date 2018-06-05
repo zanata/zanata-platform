@@ -85,8 +85,9 @@ public class IdmlAdapterTest extends AbstractAdapterTest<IDMLAdapter> {
                 .containsExactly("Dakta Amna");
         assertThat(translatedResource.getTextFlows().get(1).getContents())
                 .containsExactly("Dakta Tba");
+        // translation is fuzzy, so use the English source
         assertThat(translatedResource.getTextFlows().get(2).getContents())
-                .containsExactly("Dakta Kba");
+                .containsExactly("Line Three");
     }
 
 

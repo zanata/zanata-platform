@@ -346,7 +346,6 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
             Resource resource, TranslationsResource translationsResource,
             String locale, Optional<String> params, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
-
         Map<String, TextFlowTarget> translations =
                 transformToMapByResId(
                     translationsResource.getTextFlowTargets());
@@ -359,11 +358,11 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
             if (requireFileOutput) {
                 writeTranslatedFileWithFileOutput(output, originalFile,
-                    translations, localeId, writer, params);
+                    translations, localeId, writer, params, approvedOnly);
             } else {
                 writer.setOutput(output);
                 generateTranslatedFile(originalFile, translations, localeId,
-                    writer, params);
+                    writer, params, approvedOnly);
             }
         } catch (IllegalArgumentException e) {
             throw new FileFormatAdapterException(
@@ -394,14 +393,14 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     private void writeTranslatedFileWithFileOutput(OutputStream output,
             URI originalFile, Map<String, TextFlowTarget> translations,
             net.sf.okapi.common.LocaleId localeId, IFilterWriter writer,
-            Optional<String> params) {
+            Optional<String> params, boolean approvedOnly) {
         File tempFile = null;
 
         try {
             tempFile = File.createTempFile("filename", "extension");
             writer.setOutput(tempFile.getCanonicalPath());
             generateTranslatedFile(originalFile, translations, localeId,
-                    writer, params);
+                    writer, params, approvedOnly);
 
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException|SecurityException e) {
@@ -417,7 +416,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     protected void generateTranslatedFile(URI originalFile,
             Map<String, TextFlowTarget> translations,
             net.sf.okapi.common.LocaleId localeId, IFilterWriter writer,
-            Optional<String> params) {
+            Optional<String> params, boolean approvedOnly) {
         RawDocument rawDoc =
                 new RawDocument(originalFile, "UTF-8",
                         fromString("en"));
@@ -443,7 +442,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                             TextFlowTarget tft =
                                     translations.get(getIdFor(tu,
                                             translatable, subDocName));
-                            if (tft != null) {
+                            if (tft != null && usable(tft.getState(), approvedOnly)) {
                                 String translated = tft.getContents().get(0);
                                 translated =
                                         getFullTranslationText(tu, translated);
@@ -466,6 +465,11 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
             filter.close();
             writer.close();
         }
+    }
+
+    private boolean usable(ContentState state, boolean approvedOnly) {
+        return state.isApproved() ||
+                (!approvedOnly && state.isTranslated());
     }
 
     private String getFullTranslationText(TextUnit tu, String translated) {

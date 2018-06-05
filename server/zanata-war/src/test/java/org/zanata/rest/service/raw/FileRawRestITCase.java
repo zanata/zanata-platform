@@ -29,6 +29,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.ResourceRequestEnvironment;
@@ -49,17 +50,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.contentOf;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.rest.service.FileResource.FILETYPE_GETTEXT;
+import static org.zanata.rest.service.FileResource.FILETYPE_OFFLINE_PO;
 import static org.zanata.rest.service.FileResource.FILETYPE_RAW_SOURCE_DOCUMENT;
 import static org.zanata.rest.service.FileResource.FILETYPE_TRANSLATED_APPROVED;
+import static org.zanata.test.AssertjKt.describedBy;
 import static org.zanata.util.RawRestTestUtils.assertHeaderValue;
 
 public class FileRawRestITCase extends RestTest {
 
     private static final String DOCTYPE_XLIFF = "XLIFF";
     private static final String DOCTYPE_GETTEXT = "GETTEXT";
+    private static final String DOCTYPE_PLAIN_TEXT = DocumentType.PLAIN_TEXT.name();
     // from test-gettext.pot:
     private static final String[] BLANK_TRANSLATIONS = {
             "Parent Folder", "",
@@ -186,12 +192,42 @@ public class FileRawRestITCase extends RestTest {
                 DOCTYPE_XLIFF, "es");
 
         String downloadedXliffContent = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
-                filename, false, filename);
+                filename, true, filename);
 
         assertThat(downloadedXliffContent).isNotEmpty();
 
-        File translatedFile = getTestFile("test-xliff-es.xlf");
+        File translatedFile = getTestFile("test-xliff-es-approved.xlf");
         assertThat(downloadedXliffContent).isXmlEqualToContentOf(translatedFile);
+    }
+
+    @Test
+    @RunAsClient
+    public void downloadTextTranslation() throws Exception {
+        String filename = "test-text.txt";
+
+        uploadSourceFile(filename, DOCTYPE_PLAIN_TEXT);
+
+        String offlineEmptyPO = downloadAsOfflinePO(filename);
+
+        assertThat(offlineEmptyPO).contains(
+                "msgctxt \"764569e58f53ea8b6404f6fa7fc0247f\"\n" +
+                        "msgid \"Hello world.\"\n" +
+                        "msgstr \"\"\n" +
+                        "\n" +
+                        "msgctxt \"0101977b4093f837ff6276a762fba7be\"\n" +
+                        "msgid \"Goodbye.\"\n" +
+                        "msgstr \"\"");
+
+        // TODO sort out problem with uploading offlinepo (source hashes don't match)
+//        uploadTranslationFile("test-text-es.txt.po", filename, ".po", "es");
+//
+//        String downloadedContent = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
+//                filename, false, filename);
+//
+//        assertThat(downloadedContent).isNotEmpty();
+//
+//        File translatedFile = getTestFile("test-text-es.txt");
+//        assertThat(downloadedContent).isEqualTo(contentOf(translatedFile, UTF_8));
     }
 
     @Test
@@ -297,6 +333,21 @@ public class FileRawRestITCase extends RestTest {
         return getInputStreamAsStringFromResponse(response);
     }
 
+    private String downloadAsOfflinePO(String filename) {
+        // uses data from TextFlowTestData.dbunit.xml
+        final Response response = getFileResource()
+                .downloadTranslationFile("file-project", "1.0", "es", FILETYPE_OFFLINE_PO, filename, false);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertHeaderValue(response, "Content-Disposition",
+                "attachment; filename=\"" + filename + ".po\"");
+
+        String entityString = response.readEntity(String.class);
+
+        assertPoFileCorrect(entityString);
+        return entityString;
+    }
+
     private String downloadTranslationFile(String locale, String fileType, String docId, boolean approvedOnly, String expectedFileName) {
         Response response = getFileResource()
                 .downloadTranslationFile("file-project", "1.0", locale, fileType, docId, approvedOnly);
@@ -336,11 +387,14 @@ public class FileRawRestITCase extends RestTest {
 
         Response response = getFileResource().uploadTranslationFile("file-project", "1.0", locale, docId, merge, fileUploadForm);
 
-        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getStatus())
+                .as(describedBy(() -> getChunkUploadResponseFromResponse(response).getErrorMessage()))
+                .isEqualTo(200);
 
         ChunkUploadResponse chunkUploadResponseFromResponse = getChunkUploadResponseFromResponse(response);
 
         assertThat(chunkUploadResponseFromResponse.getErrorMessage()).isNullOrEmpty();
+        assertThat(chunkUploadResponseFromResponse.getSuccessMessage()).isEqualTo("Translations uploaded successfully");
     }
 
     private File getTestFile(String name) {
