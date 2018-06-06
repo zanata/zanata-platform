@@ -73,7 +73,7 @@ class Languages extends Component {
     if (notification && prevProps.notification !== notification) {
       Notification[notification.severity]({
         message: notification.message,
-        description: notification.details,
+        description: notification.description,
         duration: null
       })
     }
