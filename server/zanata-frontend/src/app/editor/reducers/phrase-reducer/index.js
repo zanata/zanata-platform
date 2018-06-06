@@ -196,13 +196,17 @@ export const phraseReducer = handleActions({
 
   [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo } }) =>
     update(state, {
-      inProgressSave: { $set: undefined },
       notification: {
         $set: {
           severity: SEVERITY.ERROR,
           message: `Save Translation Failed`,
           description: `Unable to save phraseId ${phraseId} as ${saveInfo.translations[0]}`
-        } }
+        } },
+      detail: {
+        [phraseId]: {
+          inProgressSave: { $set: undefined }
+        }
+      }
     }),
 
   [SAVE_INITIATED]: (state, { payload: { phraseId, saveInfo } }) =>
