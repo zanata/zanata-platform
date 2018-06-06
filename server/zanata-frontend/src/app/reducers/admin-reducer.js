@@ -47,6 +47,7 @@ const admin = handleActions({
   },
   [EDIT_CRITERION_SUCCESS]: (state, action) => {
     const index = state.review.criteria
+      // @ts-ignore
       .findIndex(c => c.id === action.payload.id)
     if (index >= 0) {
       return update(state, {
@@ -57,6 +58,7 @@ const admin = handleActions({
   },
   [DELETE_CRITERION_SUCCESS]: (state, action) => {
     const index = state.review.criteria
+      // @ts-ignore
       .findIndex(c => c.id === action.payload.id)
     if (index >= 0) {
       return update(state, {
