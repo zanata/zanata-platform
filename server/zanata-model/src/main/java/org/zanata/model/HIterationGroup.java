@@ -30,6 +30,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
+
+import io.leangen.graphql.annotations.GraphQLQuery;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.collect.Sets;
@@ -108,6 +110,7 @@ public class HIterationGroup extends SlugEntityBase
         this.activeLocales = activeLocales;
     }
 
+    @GraphQLQuery(name = "name", description = "name of the group")
     public String getName() {
         return this.name;
     }
