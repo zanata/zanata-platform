@@ -8,6 +8,7 @@ import {
   CLAMP_PAGE,
   UPDATE_PAGE
 } from '../../actions/controls-header-actions'
+import { SEVERITY } from '../../../actions/common-actions'
 import { COPY_GLOSSARY_TERM } from '../../actions/glossary-action-types'
 import {
   CANCEL_EDIT,
@@ -22,6 +23,7 @@ import {
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
   SAVE_FINISHED,
+  SAVE_FAILED,
   SAVE_INITIATED,
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
@@ -40,6 +42,8 @@ import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
 } from '../../actions/phrase-navigation-actions'
 import { findIndex } from 'lodash'
+
+/* eslint-disable max-len */
 
 // FIXME this reducer is too big. See if it can be split up.
 
@@ -61,6 +65,7 @@ export const defaultState = {
 
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
+  notification: undefined,
   selectedPhraseId: undefined,
   /* Cursor/selection position within the currently editing translation, used
    * for inserting terms from glossary etc. */
@@ -187,6 +192,17 @@ export const phraseReducer = handleActions({
       // TODO same as inProgressSave.status unless the server adjusted it
       status: {$set: status},
       revision: {$set: revision}
+    }),
+
+  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo } }) =>
+    update(state, {
+      inProgressSave: { $set: undefined },
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Save Translation Failed`,
+          description: `Unable to save phraseId ${phraseId} as ${saveInfo.translations[0]}`
+        } }
     }),
 
   [SAVE_INITIATED]: (state, { payload: { phraseId, saveInfo } }) =>
