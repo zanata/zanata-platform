@@ -8,7 +8,7 @@ const locale = 'en-US'
 const messages = Messages[locale]
 
 const PrintfVariablesValidator =
-  new PrintfVariablesValidation(messages, locale)
+  new PrintfVariablesValidation(locale, messages)
 
 const noErrors = []
 

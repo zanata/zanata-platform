@@ -8,7 +8,7 @@ const locale = 'en-US'
 const messages = Messages[locale]
 
 const PrintfXSIExtensionValidator =
-  new PrintfXSIExtensionValidation(messages, locale)
+  new PrintfXSIExtensionValidation(locale, messages)
 
 const noErrors = []
 

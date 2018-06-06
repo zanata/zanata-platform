@@ -23,13 +23,13 @@ function createValidators(locale: string): ValidationAction[] {
     : 'en'
   const resolvedMessages: ValidationMessages = Messages[resolvedLocale]
   return [
-    new HtmlXmlTagValidation(resolvedMessages, resolvedLocale),
-    new JavaVariablesValidation(resolvedMessages, resolvedLocale),
-    new NewlineLeadTrailValidation(resolvedMessages, resolvedLocale),
-    new PrintfVariablesValidation(resolvedMessages, resolvedLocale),
-    new PrintfXSIExtensionValidation(resolvedMessages, resolvedLocale),
-    new TabValidation(resolvedMessages, resolvedLocale),
-    new XmlEntityValidation(resolvedMessages, resolvedLocale)
+    new HtmlXmlTagValidation(resolvedLocale, resolvedMessages),
+    new JavaVariablesValidation(resolvedLocale, resolvedMessages),
+    new NewlineLeadTrailValidation(resolvedLocale, resolvedMessages),
+    new PrintfVariablesValidation(resolvedLocale, resolvedMessages),
+    new PrintfXSIExtensionValidation(resolvedLocale, resolvedMessages),
+    new TabValidation(resolvedLocale, resolvedMessages),
+    new XmlEntityValidation(resolvedLocale, resolvedMessages)
   ]
 }
 

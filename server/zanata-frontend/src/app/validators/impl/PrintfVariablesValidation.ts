@@ -48,7 +48,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
   private VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])"
 
-  constructor(messages: ValidationMessages, locale: string) {
+  constructor(locale: string, messages: ValidationMessages) {
     super(locale)
     this.messages = messages
     this.description = messages.printfVariablesValidatorDesc

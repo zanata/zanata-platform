@@ -44,7 +44,7 @@ class HtmlXmlTagValidation extends AbstractValidationAction {
 
   private tagRegex = "<[^>]+>"
 
-  constructor(messages: ValidationMessages, locale: string) {
+  constructor(locale: string, messages: ValidationMessages) {
     super(locale)
     this.messages = messages
     this.description = messages.xmlEntityValidatorDesc

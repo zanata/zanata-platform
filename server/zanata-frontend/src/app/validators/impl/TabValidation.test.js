@@ -8,7 +8,7 @@ const locale = 'en-US'
 const messages = Messages[locale]
 
 const TabValidator =
-  new TabValidation(messages, locale)
+  new TabValidation(locale, messages)
 
 const noErrors = []
 

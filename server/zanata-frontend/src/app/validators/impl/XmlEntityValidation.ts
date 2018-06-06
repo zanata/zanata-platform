@@ -52,7 +52,7 @@ class XmlEntityValidation extends AbstractValidationAction {
 
   private ENTITY_START_CHAR = "&"
 
-  constructor(messages: ValidationMessages, locale: string) {
+  constructor(locale: string, messages: ValidationMessages) {
     super(locale)
     this.messages = messages
     this.description = messages.xmlEntityValidatorDesc

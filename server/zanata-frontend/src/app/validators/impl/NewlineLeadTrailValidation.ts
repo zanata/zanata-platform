@@ -44,7 +44,7 @@ class NewlineLeadTrailValidation extends AbstractValidationAction {
   private leadRegExp = new RegExp(this.leadNewlineRegex);
   private endRegExp = new RegExp(this.endNewlineRegex);
 
-  constructor(messages: ValidationMessages, locale: string) {
+  constructor(locale: string, messages: ValidationMessages) {
     super(locale)
     this.messages = messages
     this.description = messages.newLineValidatorDesc

@@ -8,7 +8,7 @@ import Messages from '../messages'
 const locale = 'en-US'
 
 const HtmlXmlTagValidator =
-  new HtmlXmlTagValidation(Messages[locale], locale)
+  new HtmlXmlTagValidation(locale, Messages[locale])
 
 const messages = Messages[locale]
 

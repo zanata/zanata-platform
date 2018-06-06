@@ -42,8 +42,8 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
 
   private POSITIONAL_REG_EXP = new RegExp("%(\\d+\\$).+")
 
-  constructor(messages: ValidationMessages, locale: string) {
-    super(messages, locale)
+  constructor(locale: string, messages: ValidationMessages) {
+    super(locale, messages)
     this.description = messages.xmlEntityValidatorDesc
     this.label = messages[this.id]
   }

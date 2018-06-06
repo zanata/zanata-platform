@@ -7,7 +7,7 @@ const locale = 'en-US'
 const messages = Messages[locale]
 
 const NewlineLeadTrailValidator =
-  new NewlineLeadTrailValidation(messages, locale)
+  new NewlineLeadTrailValidation(locale, messages)
 
 const noErrors = []
 

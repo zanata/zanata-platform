@@ -40,7 +40,7 @@ class TabValidation extends AbstractValidationAction {
 
   protected readonly messages: ValidationMessages
 
-  constructor(messages: ValidationMessages, locale: string) {
+  constructor(locale: string, messages: ValidationMessages) {
     super(locale)
     this.messages = messages
     this.description = messages.xmlEntityValidatorDesc

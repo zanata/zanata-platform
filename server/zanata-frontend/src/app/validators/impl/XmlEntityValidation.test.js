@@ -8,7 +8,7 @@ const locale = 'en-US'
 const messages = Messages[locale]
 
 const XmlEntityValidator =
-  new XmlEntityValidation(messages, locale)
+  new XmlEntityValidation(locale, messages)
 
 const noErrors = []
 
