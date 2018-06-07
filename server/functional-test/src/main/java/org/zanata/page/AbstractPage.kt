@@ -571,15 +571,8 @@ abstract class AbstractPage(val driver: WebDriver) {
      * The system sometimes moves too fast for the Ajax pages, so provide a
      * pause
      */
-
     fun slightPause() {
-        // TODO waitForPageSilence should work (better, hopefully)
-        try {
-            Thread.sleep(500)
-        } catch (ie: InterruptedException) {
-            log.warn("Pause was interrupted")
-        }
-
+        waitForPageSilence()
     }
 
     fun scrollIntoView(targetElement: WebElement) {

@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.5.0-rc-3-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -2445,6 +2445,15 @@
                 <phase>test</phase>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <configuration>
+              <args>
+                <arg>-Werror</arg>
+              </args>
+            </configuration>
           </plugin>
         </plugins>
       </build>

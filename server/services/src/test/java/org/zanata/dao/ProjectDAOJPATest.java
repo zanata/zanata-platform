@@ -77,8 +77,9 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
         assertThat(searchProjects("proj"))
                 .as("wildcard search is only applied to full slug")
                 .isEmpty();
-        assertThat(searchProjects("example project")).containsExactly(expected)
-                .as("search by description");
+        assertThat(searchProjects("example project"))
+                .as("search by description")
+                .containsExactly(expected);
     }
 
     private List<HProject> searchProjects(String sam) throws ParseException {

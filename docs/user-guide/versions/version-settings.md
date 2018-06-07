@@ -59,13 +59,10 @@ By default, your project will be available for translation to a set of locales d
 ------------
 
 ## Translation Settings
-<figure>
-![Version Translation Settings tab](/images/version-translation-settings.png)
-<figcaption>Version Translation Settings tab</figcaption>
-</figure>
 
 ------------
-### Require translation review
+
+### Translation review
 
 See [Review overview](/user-guide/review/overview) for more information.
 
