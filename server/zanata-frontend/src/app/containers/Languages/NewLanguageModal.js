@@ -51,6 +51,7 @@ class NewLanguageModal extends Component {
   }
 
   handleCancel = () => {
+    this.props.form.resetFields()
     this.resetFields()
     this.props.handleOnClose()
   }
@@ -105,6 +106,7 @@ class NewLanguageModal extends Component {
         localeId: query.replace('_', '-')
       }
       this.props.handleOnSave(details)
+      this.props.form.resetFields()
       this.resetFields()
     }
   }
