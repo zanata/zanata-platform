@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>parent</artifactId>
-  <version>4.5.0-SNAPSHOT</version>
+  <version>4.6.0-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -724,7 +724,10 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven.javadoc.version}</version>
           <configuration>
-            <additionalparam>${javadoc.opts}</additionalparam>
+            <!-- for maven-javadoc-plugin 2.x -->
+            <additionalparam>-Xdoclint:none</additionalparam>
+            <!-- for maven-javadoc-plugin 3.x -->
+            <doclint>none</doclint>
           </configuration>
         </plugin>
         <plugin>
@@ -827,16 +830,6 @@
 
   <profiles>
     <profile>
-      <id>doclint-java8-disable</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <properties>
-        <javadoc.opts>-Xdoclint:none</javadoc.opts>
-      </properties>
-    </profile>
-
-    <profile>
       <id>release</id>
       <build>
         <plugins>
@@ -872,19 +865,13 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <!-- for maven-javadoc-plugin 2.x -->
-              <additionalparam>${javadoc.opts}</additionalparam>
-              <!-- for maven-javadoc-plugin 3.x -->
-              <doclint>none</doclint>
-            </configuration>
             <executions>
               <execution>
                 <id>aggregate</id>
                 <goals>
                   <goal>aggregate</goal>
                 </goals>
-                <phase>prepare-package</phase>
+                <phase>site</phase>
               </execution>
               <execution>
                 <id>attach-javadocs</id>

@@ -4,8 +4,8 @@ import Sidebar from '.'
 import AboutPage from '../../containers/ProjectVersion/AboutPage'
 import PeoplePage from '../../containers/ProjectVersion/PeoplePage'
 import GroupsPage from '../../containers/ProjectVersion/GroupsPage'
-import LanguagesPage from "../../containers/ProjectVersion/LanguagesPage";
-import DocumentsPage from "../../containers/ProjectVersion/DocumentsPage";
+import LanguagesPage from '../../containers/ProjectVersion/LanguagesPage'
+import DocumentsPage from '../../containers/ProjectVersion/DocumentsPage'
 
 const aboutText = 'This is one rocking project version. This is the best' +
     ' project version ever.'
@@ -13,7 +13,7 @@ const url = 'https://www.google.com'
 const linkname = 'Our awesome webpage'
 
 storiesOf('Sidebar', module)
-    .add('default (no test)', () => (
+    .add('default', () => (
         <div>
           <Sidebar />
           <div className='flexTab'>
@@ -26,31 +26,31 @@ storiesOf('Sidebar', module)
           </div>
       </div>
     ))
-    .add('AboutPage (no test)', () => (
+    .add('AboutPage', () => (
         <div>
           <Sidebar />
           <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
         </div>
     ))
-    .add('PeoplePage (no test)', () => (
+    .add('PeoplePage', () => (
         <div>
           <Sidebar />
           <PeoplePage />
         </div>
     ))
-    .add('GroupsPage (no test)', () => (
+    .add('GroupsPage', () => (
         <div>
           <Sidebar />
           <GroupsPage />
         </div>
     ))
-    .add('LanguagesPage (no test)', () => (
+    .add('LanguagesPage', () => (
         <div>
           <Sidebar />
           <LanguagesPage />
         </div>
     ))
-    .add('DocumentsPage (no test)', () => (
+    .add('DocumentsPage', () => (
         <div>
           <Sidebar />
           <DocumentsPage />
