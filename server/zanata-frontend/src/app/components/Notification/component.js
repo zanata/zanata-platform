@@ -5,7 +5,9 @@ import * as PropTypes from 'prop-types'
 import { Icon, Modal } from '../../components'
 import { isEmpty } from 'lodash'
 import { ButtonGroup, Row } from 'react-bootstrap'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
 /**
  * Notification popup modal that overlays on the page.
  */
