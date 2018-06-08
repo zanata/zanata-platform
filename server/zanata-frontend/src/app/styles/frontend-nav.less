@@ -3,10 +3,7 @@
   width: 19px !important;
   height: 19px !important;
 }
-.nav-icon {
-  width: 19px !important;
-  height: 22.25px !important;
-}
+
 @media (max-width: 29.375rem) {
   #nav {
     width: 100%;
@@ -14,6 +11,10 @@
     overflow: hidden;
     bottom: 0;
     z-index: 1000;
+  }
+  .nav-icon {
+    width: inherit;
+    height: inherit;
   }
   .nav-bar {
     order: 1;
@@ -35,6 +36,10 @@
     height: 100vh;
     top: 0;
     overflow: hidden;
+  }
+  .nav-icon {
+    width: 19px !important;
+    height: 22.25px !important;
   }
   .nav-bar {
     flex-direction: column;
