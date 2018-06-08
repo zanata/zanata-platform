@@ -1,8 +1,9 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { action } from '@storybook/addon-actions'
 import Lorem from 'react-lorem-component'
 import GlossaryTermModal from './component'
+
+const defaultClick = () => {}
 
 /*
 * See .storybook/README.md for info on the component storybook.
@@ -24,7 +25,7 @@ storiesOf('GlossaryTermModal', module)
   .add('with 1 detail item', () => (
     <GlossaryTermModal
       show
-      close={action('close')}
+      close={defaultClick}
       sourceLocale="en-US"
       targetLocale="de"
       term={{
@@ -45,7 +46,7 @@ storiesOf('GlossaryTermModal', module)
   .add('with 3 detail items', () => (
     <GlossaryTermModal
       show
-      close={action('close')}
+      close={defaultClick}
       sourceLocale="en-US"
       targetLocale="de"
       term={{
@@ -76,7 +77,7 @@ storiesOf('GlossaryTermModal', module)
   .add('details still loading', () => (
     <GlossaryTermModal
       show
-      close={action('close')}
+      close={defaultClick}
       sourceLocale="en-US"
       targetLocale="de"
       term={{
