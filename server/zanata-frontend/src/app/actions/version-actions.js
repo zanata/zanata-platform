@@ -79,6 +79,7 @@ export const fetchProjectPage = (projectSearchTerm) => {
       type: PROJECT_PAGE_SUCCESS,
       meta: {timestamp},
       payload: (_action, _state, res) => {
+        // @ts-ignore null
         return getJSON(res).then((json) => json.results)
       }
     },

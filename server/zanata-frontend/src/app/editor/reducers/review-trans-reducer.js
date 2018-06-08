@@ -27,6 +27,7 @@ const getErrorMessage = action => {
 const review = handleActions({
   [GET_ALL_CRITERIA_SUCCESS]: (state, action) => {
     // Add the unspecified option to the criteria list
+    // @ts-ignore
     action.payload.unshift(UNSPECIFIED)
     return update(state, {
       criteria: { $set: action.payload }

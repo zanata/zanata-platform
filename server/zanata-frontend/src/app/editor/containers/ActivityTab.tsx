@@ -176,6 +176,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
   const ActivityPager = (isUndefined(ActivityItems))
     ? DO_NOT_RENDER
     : <ActivityItemsPager
+      // @ts-ignore
       ActivityItems={ActivityItems}
       pageCount={pageCount}
       countPerPage={COUNT_PER_PAGE}
