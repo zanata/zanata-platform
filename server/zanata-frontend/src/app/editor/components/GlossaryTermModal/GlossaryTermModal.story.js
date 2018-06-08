@@ -22,7 +22,7 @@ storiesOf('GlossaryTermModal', module)
       </div>
     </div>
   ))
-  .add('with 1 detail item', () => (
+  .add('with 1 detail item (no test)', () => (
     <GlossaryTermModal
       show
       close={defaultClick}
@@ -43,7 +43,7 @@ storiesOf('GlossaryTermModal', module)
       ]}
     />
   ))
-  .add('with 3 detail items', () => (
+  .add('with 3 detail items (no test)', () => (
     <GlossaryTermModal
       show
       close={defaultClick}
