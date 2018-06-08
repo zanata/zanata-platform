@@ -168,7 +168,19 @@ describe('phrase-reducer test', () => {
       }
     })
     const copied = phraseReducer(withTextSelection, {
-      type: COPY_GLOSSARY_TERM, payload: 'TERM'
+      type: COPY_GLOSSARY_TERM,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
+      payload: 'TERM'
     })
     expect(copied.detail).toEqual({
       'p01': {
@@ -204,7 +216,18 @@ describe('phrase-reducer test', () => {
       }
     })
     const copied = phraseReducer(withPhraseDetail, {
-      type: COPY_FROM_ALIGNED_SOURCE
+      type: COPY_FROM_ALIGNED_SOURCE,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
     })
     expect(copied.detail['p01'].newTranslations).toEqual(
       [ 'translation', 'translations', 'plural source' ]
@@ -235,6 +258,17 @@ describe('phrase-reducer test', () => {
     })
     const copied = phraseReducer(withPhraseDetail, {
       type: COPY_FROM_SOURCE,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
       payload: {
         phraseId: 'p01',
         sourceIndex: 1
@@ -392,17 +426,39 @@ describe('phrase-reducer test', () => {
     })
     const withQueuedSave = phraseReducer(withPhraseDetail, {
       type: QUEUE_SAVE,
-      payload: {
-        phraseId: 'p01',
-        saveInfo: {
-          localeId: 'ja',
-          status: 'translated',
-          translations: ['翻訳', '翻訳']
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
         }
+      },
+      payload: {
+      phraseId: 'p01',
+      saveInfo: {
+        localeId: 'ja',
+        status: 'translated',
+        translations: ['翻訳', '翻訳']
       }
+    }
     })
     const withSaveInitiated = phraseReducer(withQueuedSave, {
       type: PENDING_SAVE_INITIATED,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
       payload: 'p01'
     })
     expect(withQueuedSave.detail['p01'].pendingSave).toEqual({
@@ -437,6 +493,17 @@ describe('phrase-reducer test', () => {
     })
     const saving = phraseReducer(withPhraseDetail, {
       type: SAVE_INITIATED,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
       payload: {
         phraseId: 'p01',
         saveInfo: {
@@ -448,6 +515,17 @@ describe('phrase-reducer test', () => {
     })
     const saved = phraseReducer(saving, {
       type: SAVE_FINISHED,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
       payload: {
         phraseId: 'p01',
         status: 'translated',
@@ -483,6 +561,17 @@ describe('phrase-reducer test', () => {
     })
     const saving = phraseReducer(withPhraseDetail, {
       type: SAVE_INITIATED,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
       payload: {
         phraseId: 'p01',
         saveInfo: {
@@ -564,6 +653,13 @@ describe('phrase-reducer test', () => {
       },
       getState: () => {
         return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          },
           context: {
             docId: 'doc1'
           },
@@ -719,7 +815,18 @@ describe('phrase-reducer test', () => {
       }
     })
     const undone = phraseReducer(textEntered, {
-      type: UNDO_EDIT
+      type: UNDO_EDIT,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      }
     })
     expect(undone.detail).toEqual({
       '1': {
@@ -759,6 +866,17 @@ describe('phrase-reducer test', () => {
     })
     const copied = phraseReducer(withPhraseDetail, {
       type: COPY_SUGGESTION,
+      getState: () => {
+        return {
+          headerData: {
+            context: {
+              selectedDoc: {
+                id: 'mydoc'
+              }
+            }
+          }
+        }
+      },
       payload: {
         targetContents: [ 'SUGGESTION', 'SUGGESTIONS' ]
       }
