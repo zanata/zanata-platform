@@ -102,21 +102,22 @@ export const phraseReducer = handleActions({
     }
   }),
 
-  [COPY_FROM_ALIGNED_SOURCE]: state => updatePhrase(
-    state, state.selectedPhraseId,
+  [COPY_FROM_ALIGNED_SOURCE]: (state, {getState}) => updatePhrase(
+    state, getState().headerData.context.selectedDoc.id, state.selectedPhraseId,
     {$apply: phrase => copyFromSource(phrase, phrase.selectedPluralIndex)
   }),
 
-  [COPY_FROM_SOURCE]: (state, { payload: { phraseId, sourceIndex } }) =>
-    updatePhrase(state, phraseId,
+  [COPY_FROM_SOURCE]: (state, {getState, payload: {phraseId, sourceIndex}}) =>
+    updatePhrase(state, getState().headerData.context.selectedDoc.id, phraseId,
       {$apply: (phrase) => copyFromSource(phrase, sourceIndex)}),
 
-  [COPY_GLOSSARY_TERM]: (state, { payload }) => updatePhrase(
-    state, state.selectedPhraseId, {$apply: phrase =>
+  [COPY_GLOSSARY_TERM]: (state, { getState, payload }) => updatePhrase(
+    state, getState().headerData.context.selectedDoc.id, state.selectedPhraseId,
+    {$apply: phrase =>
       insertTextAtRange(phrase, payload, state.selectedTextRange)}),
 
-  [COPY_SUGGESTION]: (state, { payload }) => updatePhrase(
-    state, state.selectedPhraseId,
+  [COPY_SUGGESTION]: (state, { getState, payload }) => updatePhrase(
+    state, getState().headerData.context.selectedDoc.id, state.selectedPhraseId,
     {$apply: phrase => copyFromSuggestion(phrase, payload)
   }),
 
@@ -127,7 +128,8 @@ export const phraseReducer = handleActions({
     ? update(state, { fetchingFilteredList: {$set: true} })
     : update(state, { fetchingList: {$set: true} }),
 
-  [PENDING_SAVE_INITIATED]: (state, { payload }) => updatePhrase(state, payload,
+  [PENDING_SAVE_INITIATED]: (state, { getState, payload }) =>
+    updatePhrase(state, getState().headerData.context.selectedDoc.id, payload,
     { pendingSave: {$set: undefined} }),
 
   [PHRASE_LIST_SUCCESS]: (state, {
@@ -176,31 +178,33 @@ export const phraseReducer = handleActions({
   [PHRASE_TEXT_SELECTION_RANGE]: (state, { payload }) =>
     update(state, { selectedTextRange: {$set: payload} }),
 
-  [QUEUE_SAVE]: (state, { payload: { phraseId, saveInfo } }) =>
-    updatePhrase(state, phraseId, { pendingSave: {$set: saveInfo} }),
+  [QUEUE_SAVE]: (state, {getState, payload: {phraseId, saveInfo}}) =>
+    updatePhrase(state, getState().headerData.context.selectedDoc.id, phraseId,
+      {pendingSave: {$set: saveInfo}}),
 
-  [SAVE_FINISHED]: (state, { payload: { phraseId, status, revision } }) =>
-    updatePhrase(state, phraseId, {
-      inProgressSave: {$set: undefined},
-      // FIXME check whether this should be translations from the action
-      translations: {$set: state.detail[phraseId].newTranslations},
-      // TODO same as inProgressSave.status unless the server adjusted it
-      status: {$set: status},
-      revision: {$set: revision}
-    }),
+  [SAVE_FINISHED]: (state, {getState, payload: {phraseId, status, revision}}) =>
+    updatePhrase(state, getState().headerData.context.selectedDoc.id, phraseId,
+      {
+        inProgressSave: {$set: undefined},
+        // FIXME check whether this should be translations from the action
+        translations: {$set: state.detail[phraseId].newTranslations},
+        // TODO same as inProgressSave.status unless the server adjusted it
+        status: {$set: status},
+        revision: {$set: revision}
+      }),
 
-  [SAVE_INITIATED]: (state, { payload: { phraseId, saveInfo } }) =>
-    updatePhrase(state, phraseId, { inProgressSave: {$set: saveInfo} }),
+  [SAVE_INITIATED]: (state, {getState, payload: {phraseId, saveInfo}}) =>
+    updatePhrase(state, getState().headerData.context.selectedDoc.id, phraseId,
+      {inProgressSave: {$set: saveInfo}}),
 
   // TODO see if this is possible without using global state
   [SELECT_PHRASE]: (state, { getState, payload }) =>
     selectPhrase(state, getState(), payload),
 
   [SELECT_PHRASE_SPECIFIC_PLURAL]:
-    (state, { getState, payload: {phraseId, index} }) =>
-      selectPhrase(
-        updatePhrase(state, phraseId, { selectedPluralIndex: {$set: index} }),
-        getState(), phraseId),
+    (state, {getState, payload: {phraseId, index}}) => selectPhrase(
+      updatePhrase(state, getState().headerData.context.selectedDoc.id,
+        phraseId, {selectedPluralIndex: {$set: index}}), getState(), phraseId),
 
   [SET_SAVE_AS_MODE]: (state, { payload }) =>
     update(state, { saveAsMode: {$set: payload} }),
@@ -210,7 +214,8 @@ export const phraseReducer = handleActions({
       detail: { [id]: { newTranslations: { [index]: {$set: text} } } }
     }),
 
-  [UNDO_EDIT]: (state) => updatePhrase(state, state.selectedPhraseId,
+  [UNDO_EDIT]: (state, {getState}) => updatePhrase(state,
+    getState().headerData.context.selectedDoc.id, state.selectedPhraseId,
     {$apply: (phrase) => update(phrase, {
       newTranslations: {$set: [...phrase.translations]}
     })
@@ -375,12 +380,20 @@ function decideSelectedPhrase (state, phraseList) {
 *
 * Returns state with just the indicated phrase changed.
 */
-function updatePhrase (state, phraseId, commands) {
+function updatePhrase (state, docId, phraseId, commands) {
+  const phraseList = state.inDoc[docId]
+  const phraseIndex = phraseList.findIndex(x => x.id === phraseId)
+  const updatedPhrase = update(state.detail[phraseId], commands)
+
   return update(state, {
     detail: {
-      [phraseId]: {$apply: (phrase) => {
-        return update(phrase, commands)
-      }}
+      [phraseId]: {$set: updatedPhrase}
+    },
+    inDoc: {
+      [docId]: {
+        $set: update(phraseList,
+          {[phraseIndex]: {status: {$set: updatedPhrase.status}}})
+      }
     }
   })
 }
