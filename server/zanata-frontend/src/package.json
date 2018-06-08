@@ -133,6 +133,7 @@
     "redux-immutable-state-invariant": "^2.1.0",
     "require.all": "^2.0.3",
     "reselect": "3.0.1",
+    "storybook-addon-intl": "2.3.0",
     "storybook-host": "4.1.5",
     "style-loader": "0.19.1",
     "ts-import-plugin": "^1.4.4",

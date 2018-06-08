@@ -1,10 +1,12 @@
 /* global document */
 import React from 'react'
 import Icons from '../app/components/Icons'
-import { addLocaleData, IntlProvider } from 'react-intl'
+import { addLocaleData } from 'react-intl'
 import enLocaleData from 'react-intl/locale-data/en.js'
 import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@storybook/react'
+import { setIntlConfig, withIntl } from 'storybook-addon-intl'
+import en from '../messages/en'
 import './storybook.css'
 
 // Storyshots test runs this file too, with no document available.
@@ -21,6 +23,16 @@ if (typeof document !== 'undefined') {
 // Set up locale data so formats etc. will work properly
 addLocaleData([...enLocaleData])
 
+const getMessages = (locale) => en[locale];
+
+// Set intl configuration
+setIntlConfig({
+  locales: [locale],
+  defaultLocale: locale,
+  formats: formats,
+  getMessages
+})
+
 /*
  * This sets up the context that all the components are expecting to be in.
  *
@@ -30,13 +42,12 @@ addLocaleData([...enLocaleData])
  * - All components can expect Source Sans Pro to be available in weights
  *   300, 400 (plain and italic), 600 and 700
  */
+addDecorator(withIntl)
 addDecorator((story) => (
-  <IntlProvider defaultLocale={locale} locale={locale} formats={formats}>
-    <div style={{padding: '2em'}}>
-      <Icons />
-      {story()}
-    </div>
-  </IntlProvider>
+  <div style={{padding: '2em'}}>
+    <Icons />
+    {story()}
+  </div>
 ))
 
 function loadStories () {
