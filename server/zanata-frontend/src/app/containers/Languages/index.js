@@ -11,7 +11,7 @@ import Helmet from 'react-helmet'
 import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
-import {Notification, LoaderText} from '../../components'
+import {LoaderText} from '../../components'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout'
@@ -20,6 +20,8 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
 
 import {
   initialLoad,
@@ -71,6 +73,17 @@ class Languages extends Component {
     this.props.handleInitLoad()
   }
 
+  componentDidUpdate (prevProps) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: null
+      })
+    }
+  }
+
   resetSearchText = (localeId) => {
     this.setState({
       searchText: ''
@@ -97,7 +110,6 @@ class Languages extends Component {
       user,
       loading,
       deleting,
-      notification,
       handleOnUpdatePageSize,
       handleOnUpdateSort,
       handlePageChanged,
@@ -115,13 +127,6 @@ class Languages extends Component {
     return (
       <div className='wideView bstrapReact languages'>
         <Layout>
-          {notification &&
-          (<Notification severity={notification.severity}
-            message={notification.message}
-            details={notification.details}
-            show={!!notification} />
-          )
-          }
           <Helmet title='Languages' />
           <div className='u-centerBlock'>
             <div className='clearfix'

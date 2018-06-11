@@ -266,7 +266,7 @@
       </ui:fragment>
     </p>
     <ul class="g--tight g--fit">
-      <ui:param name="showApproved" value="#{versionHomeAction.overallStatistic.percentApproved ne 0 || versionHome.instance.requireTranslationReview}"/>
+      <ui:param name="showApproved" value="#{versionHomeAction.overallStatistic.percentApproved ne 0}"/>
       <ui:fragment rendered="#{showApproved}">
         <li class="g__item l--push-bottom-half">
           <span class="stats txt--state-highlight">

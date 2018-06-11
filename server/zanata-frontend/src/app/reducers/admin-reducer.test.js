@@ -44,7 +44,10 @@ describe('admin-reducer test', () => {
       }})
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
-      .toEqual('Failed to retrieve review criteria. 401 - Unauthorized')
+      .toEqual({
+        description: '401 - Unauthorized',
+        message: 'Failed to retrieve review criteria.',
+        severity: 'error' })
   })
 
   it('can add new criterion', () => {
@@ -74,7 +77,11 @@ describe('admin-reducer test', () => {
       }})
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
-      .toEqual('Operation failed. 401 - Unauthorized')
+      .toEqual({
+        description: '401 - Unauthorized',
+        message: 'Add Criteria failed.',
+        severity: 'error'
+      })
   })
 
   it('can edit criterion', () => {
@@ -110,7 +117,11 @@ describe('admin-reducer test', () => {
       }})
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
-      .toEqual('Operation failed. 401 - Unauthorized')
+      .toEqual({
+        description: '401 - Unauthorized',
+        message: 'Edit criteria failed.',
+        severity: 'error'
+      })
   })
 
   it('can delete criterion', () => {
@@ -133,7 +144,7 @@ describe('admin-reducer test', () => {
     expect(initial.review.criteria).toEqual([])
     expect(deleted.review.criteria).toEqual([])
   })
-  it('can handle edit criterion failure', () => {
+  it('can handle delete criterion failure', () => {
     const initial = adminReducer(undefined, { type: 'any' })
 
     const failed = adminReducer(initial, {
@@ -144,6 +155,10 @@ describe('admin-reducer test', () => {
       }})
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
-      .toEqual('Operation failed. 401 - Unauthorized')
+      .toEqual({
+        description: '401 - Unauthorized',
+        message: 'Delete Criteria failed.',
+        severity: 'error'
+      })
   })
 })

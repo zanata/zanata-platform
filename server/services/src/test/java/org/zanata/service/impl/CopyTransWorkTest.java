@@ -51,11 +51,7 @@ public class CopyTransWorkTest {
         // An empty rule list should not change the state
         for (ContentState state : validTranslatedStates) {
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.<MatchRulePair> newArrayList(),
-                    true, state)).isEqualTo(state);
-            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.<MatchRulePair> newArrayList(),
-                    false, state)).isEqualTo(Translated);
+                Lists.newArrayList(), state)).isEqualTo(Translated);
         }
     }
 
@@ -66,19 +62,11 @@ public class CopyTransWorkTest {
         for (ContentState state : validTranslatedStates) {
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
                     Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(true), IGNORE)), true, state
-                    )).isEqualTo(state);
-            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(false), IGNORE)), true, state
-                    )).isEqualTo(state);
-            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(true), IGNORE)), false, state
+                            Suppliers.ofInstance(true), IGNORE)), state
                     )).isEqualTo(Translated);
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
                     Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(false), IGNORE)), false, state
+                            Suppliers.ofInstance(false), IGNORE)), state
                     )).isEqualTo(Translated);
         }
     }
@@ -90,19 +78,15 @@ public class CopyTransWorkTest {
         for (ContentState state : validTranslatedStates) {
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
                     Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(true), REJECT)), true, state
-                    )).isEqualTo(state);
-            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(false), REJECT)), true, state
+                            Suppliers.ofInstance(false), REJECT)), state
                     )).isEqualTo(New);
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
                     Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(true), REJECT)), false, state
+                            Suppliers.ofInstance(true), REJECT)), state
                     )).isEqualTo(Translated);
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
                     Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(false), REJECT)), false, state
+                            Suppliers.ofInstance(false), REJECT)), state
                     )).isEqualTo(New);
         }
     }
@@ -113,34 +97,23 @@ public class CopyTransWorkTest {
         // the evaluation fails
         for (ContentState state : validTranslatedStates) {
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.newArrayList(new MatchRulePair(
-                            Suppliers.ofInstance(true), DOWNGRADE_TO_FUZZY)),
-                    true, state
-                    )).isEqualTo(state);
+                Lists.newArrayList(
+                    new MatchRulePair(
+                        Suppliers.ofInstance(false),
+                        DOWNGRADE_TO_FUZZY)), state))
+                .isEqualTo(NeedReview);
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.newArrayList(
-                            new MatchRulePair(
-                                    Suppliers.ofInstance(false),
-                                    DOWNGRADE_TO_FUZZY)), true,
-                    state
-                    ))
-                    .isEqualTo(NeedReview);
+                Lists.newArrayList(
+                    new MatchRulePair(
+                        Suppliers.ofInstance(true),
+                        DOWNGRADE_TO_FUZZY)), state))
+                .isEqualTo(Translated);
             assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.newArrayList(
-                            new MatchRulePair(
-                                    Suppliers.ofInstance(true),
-                                    DOWNGRADE_TO_FUZZY)), false,
-                    state
-                    ))
-                    .isEqualTo(Translated);
-            assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                    Lists.newArrayList(
-                            new MatchRulePair(
-                                    Suppliers.ofInstance(false),
-                                    DOWNGRADE_TO_FUZZY)), false,
-                    state
-                    ))
-                    .isEqualTo(NeedReview);
+                Lists.newArrayList(
+                    new MatchRulePair(
+                        Suppliers.ofInstance(false),
+                        DOWNGRADE_TO_FUZZY)), state))
+                .isEqualTo(NeedReview);
         }
     }
 
@@ -154,22 +127,20 @@ public class CopyTransWorkTest {
                                 DOWNGRADE_TO_FUZZY),
                         new MatchRulePair(Suppliers.ofInstance(false),
                                 REJECT)
-                ),
-                true, Translated
+                ), Translated
                 )).isEqualTo(New);
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
                 .newArrayList(new MatchRulePair(Suppliers.ofInstance(true),
                         IGNORE), new MatchRulePair(Suppliers.ofInstance(false),
-                        REJECT)), false, Translated)).isEqualTo(New);
-
+                        REJECT)), Translated)).isEqualTo(New);
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
                 .newArrayList(new MatchRulePair(Suppliers.ofInstance(false),
                         REJECT), new MatchRulePair(Suppliers.ofInstance(false),
-                        DOWNGRADE_TO_FUZZY)), true, Translated)).isEqualTo(New);
+                        DOWNGRADE_TO_FUZZY)), Translated)).isEqualTo(New);
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
                 .newArrayList(new MatchRulePair(Suppliers.ofInstance(false),
                         REJECT), new MatchRulePair(Suppliers.ofInstance(true),
-                        IGNORE)), false, Translated)).isEqualTo(New);
+                        IGNORE)), Translated)).isEqualTo(New);
     }
 
     @Test
@@ -182,8 +153,7 @@ public class CopyTransWorkTest {
                                 DOWNGRADE_TO_FUZZY),
                         new MatchRulePair(Suppliers.ofInstance(true),
                                 REJECT)
-                ),
-                true, Translated
+                ), Translated
                 )).isEqualTo(NeedReview);
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
                 .newArrayList(
@@ -191,8 +161,7 @@ public class CopyTransWorkTest {
                                 DOWNGRADE_TO_FUZZY),
                         new MatchRulePair(Suppliers.ofInstance(true),
                                 REJECT)
-                ),
-                false, Translated
+                ), Translated
                 )).isEqualTo(NeedReview);
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
                 .newArrayList(
@@ -200,8 +169,7 @@ public class CopyTransWorkTest {
                                 DOWNGRADE_TO_FUZZY),
                         new MatchRulePair(Suppliers.ofInstance(false),
                                 IGNORE)
-                ),
-                true, Approved
+                ), Approved
                 )).isEqualTo(NeedReview);
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(Lists
                 .newArrayList(
@@ -209,8 +177,7 @@ public class CopyTransWorkTest {
                                 DOWNGRADE_TO_FUZZY),
                         new MatchRulePair(Suppliers.ofInstance(false),
                                 IGNORE)
-                ),
-                true, Approved
+                ), Approved
                 )).isEqualTo(NeedReview);
     }
 
@@ -219,17 +186,8 @@ public class CopyTransWorkTest {
         // Tests the expected content state when approval is/is not required,
         // and NO rules are evaluated
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                Lists.<MatchRulePair> newArrayList(),
-                true, Translated)).isEqualTo(Translated);
+            Lists.newArrayList(), Translated)).isEqualTo(Translated);
         assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                Lists.<MatchRulePair> newArrayList(),
-                false, Translated)).isEqualTo(Translated);
-        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                Lists.<MatchRulePair> newArrayList(),
-                true, Approved)).isEqualTo(Approved);
-        assertThat(CopyTransWorkFactory.determineContentStateFromRuleList(
-                Lists.<MatchRulePair> newArrayList(),
-                false, Approved)).isEqualTo(Translated);
+            Lists.newArrayList(), Approved)).isEqualTo(Translated);
     }
-
 }

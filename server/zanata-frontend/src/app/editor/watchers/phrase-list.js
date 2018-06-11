@@ -109,6 +109,7 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
         {
           type: PHRASE_LIST_SUCCESS,
           payload: (_action, _state, res) =>
+            // @ts-ignore
             getJSON(res).then(phraseList => ({
               docId,
               phraseList: phraseList.map(phrase => ({

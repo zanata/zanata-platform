@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
-import { Icon, LoaderText, Select, Notification } from '../../components/'
+import { Icon, LoaderText, Select } from '../../components/'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -32,6 +32,10 @@ import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
+
+/* eslint-disable */
 
 /**
  * Root component for Glossary page
@@ -89,8 +93,16 @@ class Glossary extends Component {
    */
   componentDidUpdate (prevProps, prevState) {
     const projectSlug = this.props.params.projectSlug
+    const { notification } = this.props
     if (prevProps.params.projectSlug !== projectSlug) {
       this.props.handleInitLoad(projectSlug)
+    }
+    if (notification && prevProps.notification !== notification) {
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: null
+      })
     }
   }
 
@@ -207,13 +219,6 @@ class Glossary extends Component {
 
     return (
       <div>
-        {notification &&
-          (<Notification severity={notification.severity}
-            message={notification.message}
-            details={notification.details}
-            show={!!notification} />
-          )
-        }
         <Helmet title={headerTitle} />
         <div className='wideView' id='glossary'>
           <Layout>

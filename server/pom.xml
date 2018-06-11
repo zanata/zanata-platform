@@ -30,7 +30,6 @@
     <kotlin.compiler.languageVersion>1.2</kotlin.compiler.languageVersion>
     <kotlin.compiler.apiVersion>1.2</kotlin.compiler.apiVersion>
 -->
-    <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
@@ -2305,13 +2304,6 @@
           </configuration>
         </plugin>
         <plugin>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${maven.javadoc.version}</version>
-          <configuration>
-            <additionalparam>${javadoc.opts}</additionalparam>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>1.8</version>
@@ -2339,16 +2331,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>doclint-java8-disable</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <properties>
-        <javadoc.opts>-Xdoclint:none</javadoc.opts>
-      </properties>
-    </profile>
-
     <profile>
       <!-- This profile runs a single integration test with
         -Dit.test=<integration-test-name>, skipping unit tests. -->
@@ -2463,6 +2445,15 @@
                 <phase>test</phase>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <configuration>
+              <args>
+                <arg>-Werror</arg>
+              </args>
+            </configuration>
           </plugin>
         </plugins>
       </build>

@@ -113,7 +113,7 @@
     "isomorphic-fetch": "2.2.1",
     "jest-cli": "22.1.1",
     "less": "2.7.3",
-    "less-loader": "2.2.3",
+    "less-loader": "4.0.5",
     "postcss-bem-linter": "3.1.0",
     "postcss-calc": "6.0.1",
     "postcss-color-function": "4.0.1",
