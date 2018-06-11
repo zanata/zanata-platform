@@ -30,6 +30,9 @@
         // NB not used if noEmit is true
         "outDir": "./build/",
         "sourceMap": true,
+        "skipLibCheck": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
         "target": "ES5"
     },
     "include": [

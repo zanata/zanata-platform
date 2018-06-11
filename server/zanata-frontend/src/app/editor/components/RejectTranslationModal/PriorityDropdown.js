@@ -28,10 +28,14 @@ class PriorityDropdown extends Component {
       <Select.Option key={0} value={MINOR}>
         {MINOR}
       </Select.Option>,
-      <Select.Option key={1} value={MAJOR} className='u-textWarning'>
+      <Select.Option key={1} value={MAJOR}
+        // @ts-ignore
+        className='u-textWarning'>
         {MAJOR}
       </Select.Option>,
-      <Select.Option key={2} value={CRITICAL} className='u-textDanger'>
+      <Select.Option key={2} value={CRITICAL}
+        // @ts-ignore
+        className='u-textDanger'>
         {CRITICAL}
       </Select.Option>
     ]

@@ -51,6 +51,7 @@ function fetchPhraseDetail (locale, phraseIds) {
         PHRASE_DETAIL_REQUEST,
         {
           type: PHRASE_DETAIL_SUCCESS,
+          // @ts-ignore
           payload: (_action, _state, res) => getJSON(res)
             .then(details => transUnitDetailToPhraseDetail(details, locale))
         },

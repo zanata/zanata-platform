@@ -44,7 +44,9 @@ class DeleteEntry extends Component {
 
     return (
       <div className='u-blockInline'>
-        <Tooltip placement='top' className='bstrapReact'
+        <Tooltip placement='top'
+          // @ts-ignore
+          className='bstrapReact'
           title={deleteLanguage} onVisibleChange={show}>
           <Button className='btn-sm iconCross btn-default' icon='close'
             aria-label='button'

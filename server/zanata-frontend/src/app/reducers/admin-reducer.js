@@ -10,6 +10,7 @@ import {
   DELETE_CRITERION_FAILURE,
   GET_ALL_CRITERIA_FAILURE
 } from '../actions/review-actions'
+import { SEVERITY } from '../actions/common-actions'
 
 const defaultState = {
   notification: undefined,
@@ -47,6 +48,7 @@ const admin = handleActions({
   },
   [EDIT_CRITERION_SUCCESS]: (state, action) => {
     const index = state.review.criteria
+      // @ts-ignore
       .findIndex(c => c.id === action.payload.id)
     if (index >= 0) {
       return update(state, {
@@ -57,6 +59,7 @@ const admin = handleActions({
   },
   [DELETE_CRITERION_SUCCESS]: (state, action) => {
     const index = state.review.criteria
+      // @ts-ignore
       .findIndex(c => c.id === action.payload.id)
     if (index >= 0) {
       return update(state, {
@@ -67,23 +70,45 @@ const admin = handleActions({
   },
   [ADD_CRITERION_FAILURE]: (state, action) => {
     return update(state, {
-      notification: {$set: `Operation failed. ${getErrorMessage(action)}`}
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Add Criteria failed.`,
+          description: getErrorMessage(action)
+        }
+      }
     })
   },
   [EDIT_CRITERION_FAILURE]: (state, action) => {
     return update(state, {
-      notification: {$set: `Operation failed. ${getErrorMessage(action)}`}
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Edit criteria failed.`,
+          description: getErrorMessage(action)
+        }
+      }
     })
   },
   [DELETE_CRITERION_FAILURE]: (state, action) => {
     return update(state, {
-      notification: {$set: `Operation failed. ${getErrorMessage(action)}`}
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Delete Criteria failed.`,
+          description: getErrorMessage(action)
+        }
+      }
     })
   },
   [GET_ALL_CRITERIA_FAILURE]: (state, action) => {
     return update(state, {
       notification: {
-        $set: `Failed to retrieve review criteria. ${getErrorMessage(action)}`
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Failed to retrieve review criteria.`,
+          description: getErrorMessage(action)
+        }
       }
     })
   }
