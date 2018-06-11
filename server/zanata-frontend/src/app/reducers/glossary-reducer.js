@@ -545,7 +545,8 @@ const glossary = handleActions({
       },
       notification: {
         severity: SEVERITY.INFO,
-        message: 'Glossary term created.'
+        message: 'Glossary term created.',
+        duration: 5
       }
     }
   },
@@ -562,8 +563,9 @@ const glossary = handleActions({
       notification: {
         severity: SEVERITY.ERROR,
         message:
-        'We were unable save glossary entry. ' +
-        'Please refresh this page and try again.'
+        'We were unable to save the glossary entry.',
+        description: action.payload.response,
+        duration: null
       }
     }
   },
