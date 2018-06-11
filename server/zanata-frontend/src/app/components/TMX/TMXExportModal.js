@@ -105,24 +105,21 @@ class TMXExportModal extends Component {
       const downloadTMX = handleExportTMX.bind(undefined,
         srcLang.localeDetails, project, version)
       return (
-        <Row type="flex" justify="center" className="mb3">
+        <Row type="flex" justify="center">
           <Col span={6}>
             <Tooltip title={localeTooltipMsg}>
               <a href='#'>{localeId}</a>
             </Tooltip>
           </Col>
           <Col span={6}>
-            <Tooltip title={`${srcLang.docCount} documents`}>
-              <span className='txt-muted'>
-                <Icon name='document' className='n1' />
-                <span>{srcLang.docCount}</span>
-              </span>
+            <Tooltip title={`${srcLang.docCount} Documents`}>
+              <Icon name='document' className='n1' /> <span>
+              {srcLang.docCount} Documents</span>
             </Tooltip>
           </Col>
           <Col span={6}>
             <Tooltip title={downloadTooltipMsg}>
               <Button
-                className='btn-primary'
                 type='primary'
                 size='small'
                 disabled={downloading[localeId]}
@@ -130,7 +127,7 @@ class TMXExportModal extends Component {
                 {downloading[localeId] ? 'Downloading' : 'Download'}
               </Button>
             </Tooltip>
-            <span className='txt-warn'>*</span>
+            <span className='asterix'>*</span>
           </Col>
         </Row>
       )
