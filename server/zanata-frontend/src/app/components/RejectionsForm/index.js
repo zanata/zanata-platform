@@ -2,25 +2,11 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { Icon } from '../../components'
+import { Form, FormGroup, ControlLabel, Button, OverlayTrigger, Tooltip }
+  from 'react-bootstrap'
+import { Icon, TextInput, SelectableDropdown } from '../../components'
+import Toggle from 'react-toggle'
 import { isEmpty } from 'lodash'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
-import Form from 'antd/lib/form'
-import 'antd/lib/form/style/css'
-import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
-import Switch from 'antd/lib/switch'
-import 'antd/lib/switch/style/css'
-import Tooltip from 'antd/lib/tooltip'
-import 'antd/lib/tooltip/style/css'
-import Row from 'antd/lib/row'
-import 'antd/lib/row/style/css'
-import Col from 'antd/lib/col'
-import 'antd/lib/col/style/css'
-const Option = Select.Option
 
 /**
  * Reject Translations Administration panel
@@ -29,6 +15,24 @@ export const MINOR = 'Minor'
 export const MAJOR = 'Major'
 export const CRITICAL = 'Critical'
 const DO_NOT_RENDER = undefined
+
+const tooltipSave = (<Tooltip id='tooltip'>Save criteria</Tooltip>)
+
+const tooltipDelete = (<Tooltip id='tooltip'>Delete criteria</Tooltip>)
+
+function priorityToTextState (priority) {
+  switch (priority) {
+    case CRITICAL:
+      return 'u-textDanger'
+    case MAJOR:
+      return 'u-textWarning'
+    case MINOR:
+      return 'u-textInfo'
+  }
+}
+
+const priorityToDisplay =
+  p => <span className={priorityToTextState(p)}>{p}</span>
 
 class RejectionsForm extends Component {
   static propTypes = {
@@ -45,9 +49,9 @@ class RejectionsForm extends Component {
     commentRequired: PropTypes.bool,
     // if it's in admin mode, we will allow user to update
     isAdminMode: PropTypes.bool.isRequired,
-    key: PropTypes.number,
     // whether delete button shoud be displayed
     displayDelete: PropTypes.bool.isRequired,
+    className: PropTypes.string,
     criterionId: PropTypes.string.isRequired
   }
 
@@ -70,7 +74,8 @@ class RejectionsForm extends Component {
     }
   }
 
-  onEditableChange = checked => {
+  onEditableChange = e => {
+    const checked = e.target.checked
     this.setState(_prevState => ({
       isCommentRequired: checked
     }))
@@ -99,88 +104,67 @@ class RejectionsForm extends Component {
   render () {
     const {
       commentRequired,
+      className,
       isAdminMode,
-      key,
       displayDelete,
-      criteriaPlaceholder
+      criteriaPlaceholder,
+      criterionId
     } = this.props
+    const textState = priorityToTextState(this.state.priority)
     const error = isEmpty(this.state.description)
+    const title = <span className={textState}>{this.state.priority}</span>
     const priorityDisabled = !isAdminMode && !commentRequired
     const deleteBtn = displayDelete
       ? (
-      <Tooltip title='Delete criteria'>
-        <span>
-          <Button type='danger' className='btn-danger' onClick={this.onDelete}>
-            <Icon name='trash' className='s0 iconEdit' />
-          </Button>
-        </span>
-      </Tooltip>
+      <OverlayTrigger placement='top' overlay={tooltipDelete}>
+        <Button bsStyle='danger' className={className} onClick={this.onDelete}>
+          <Icon name='trash' className='s0 iconEdit' />
+        </Button>
+      </OverlayTrigger>
       ) : DO_NOT_RENDER
     const commentToggle = isAdminMode ? (
-      <Form.Item label='Comment required'>
-        <Switch
-          checked={this.state.isCommentRequired}
-          onChange={this.onEditableChange} />
-      </Form.Item>
+      <FormGroup id='toggleComment' controlId='formInlineEditable'>
+        <ControlLabel>Comment required</ControlLabel><br />
+        <Toggle icons={false} onChange={this.onEditableChange}
+          checked={this.state.isCommentRequired} />
+      </FormGroup>
       )
       : DO_NOT_RENDER
     const formBtn = isAdminMode ? (
-      <Form.Item>
-        <span className='pr3'>
-          <Tooltip title='Save criteria'>
-            <span>
-              <Button type='primary'
-                onClick={this.onSave}
-                disabled={error}>
-                <Icon name='tick' className='s0 iconEdit' />
-              </Button>
-            </span>
-          </Tooltip>
-        </span>
+      <FormGroup controlId='formInlineButtonEdit'>
+        <ControlLabel>&nbsp;</ControlLabel><br />
+        <OverlayTrigger placement='top' overlay={tooltipSave}>
+          <Button bsStyle='primary' className={className} onClick={this.onSave}
+            disabled={error}>
+            <Icon name='tick' className='s0 iconEdit' />
+          </Button>
+        </OverlayTrigger>
         {deleteBtn}
-      </Form.Item>
+      </FormGroup>
     ) : DO_NOT_RENDER
     return (
-      <Form key={key} layout='inline'>
-        <Row className='pb4' gutter={16}>
-          <Col span={12}>
-            <Form.Item label='Criteria' className='w-100'>
-              <Input.TextArea
-                disabled={!isAdminMode}
-                maxLength={255}
-                onChange={this.onTextChange}
-                placeholder={criteriaPlaceholder}
-                rows={2}
-                className='w-90'
-                value={this.state.description} />
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Form.Item label='Priority'>
-              <Select
-                key={key}
-                value={this.state.priority}
-                disabled={priorityDisabled}
-                onChange={this.onPriorityChange}>
-                <Option title={MINOR} key={MINOR} value={MINOR}>
-                  <span className='u-textInfo'>{MINOR}</span>
-                </Option>
-                <Option title={MAJOR} key={MAJOR} value={MAJOR}>
-                  <span className='u-textWarning'>{MAJOR}</span>
-                </Option>
-                <Option title={CRITICAL} key={CRITICAL} value={CRITICAL}>
-                  <span className='u-textDanger'>{CRITICAL}</span>
-                </Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            {commentToggle}
-          </Col>
-          <Col span={4}>
-            {formBtn}
-          </Col>
-        </Row>
+      <Form id='rejectionsForm' inline>
+        <FormGroup className='u-flexGrow1' controlId='formInlineCriteria'>
+          <ControlLabel>Criteria</ControlLabel><br />
+          <TextInput multiline editable={isAdminMode || commentRequired}
+            type='text' numberOfLines={2} onChange={this.onTextChange}
+            placeholder={criteriaPlaceholder} maxLength={255}
+            value={this.state.description} />
+        </FormGroup>
+        <FormGroup controlId='formInlinePriority'>
+          <ControlLabel>Priority</ControlLabel><br />
+          <SelectableDropdown
+            id={criterionId + 'review-criteria-dropdown-basic'}
+            onSelectDropdownItem={this.onPriorityChange}
+            selectedValue={this.state.priority}
+            title={title}
+            valueToDisplay={priorityToDisplay}
+            values={[MINOR, MAJOR, CRITICAL]}
+            disabled={priorityDisabled}
+          />
+        </FormGroup>
+        {commentToggle}
+        {formBtn}
       </Form>
     )
   }

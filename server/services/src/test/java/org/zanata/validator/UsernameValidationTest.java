@@ -132,10 +132,9 @@ public class UsernameValidationTest {
         Set<ConstraintViolation<RegisterAction>> constraintViolations =
                 validator.validateProperty(registerAction, "username");
 
-        // May cause multiple violations
         assertThat(constraintViolations.size())
-                .as("The username failed validation")
-                .isGreaterThanOrEqualTo(1);
+                .isGreaterThanOrEqualTo(1) // May cause multiple violations
+                .as("The username failed validation");
     }
 
     @Test
@@ -152,8 +151,8 @@ public class UsernameValidationTest {
                 validator.validateProperty(registerAction, "username");
 
         assertThat(constraintViolations.size())
-                .as("The username passed validation")
-                .isEqualTo(0);
+                .isEqualTo(0)
+                .as("The username passed validation");
     }
 
 }

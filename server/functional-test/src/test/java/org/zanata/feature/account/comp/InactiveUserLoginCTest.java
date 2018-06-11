@@ -54,8 +54,8 @@ public class InactiveUserLoginCTest extends ZanataTestCase {
                 .signInInactive(usernamepassword, usernamepassword);
 
         assertThat(inactiveAccountPage.getTitle())
-                .as("The account is inactive")
-                .isEqualTo("Zanata: Account is not activated");
+                .isEqualTo("Zanata: Account is not activated")
+                .as("The account is inactive");
 
         inactiveAccountPage = inactiveAccountPage
                 .enterNewEmail("notproper@")

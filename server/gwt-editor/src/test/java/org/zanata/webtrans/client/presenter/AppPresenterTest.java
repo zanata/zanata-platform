@@ -556,23 +556,19 @@ public class AppPresenterTest {
     public void onProjectStatsUpdated() {
         projectStats = new ContainerTranslationStatistics();
         projectStats.addStats(new TranslationStatistics(new TransUnitCount(0,
-                0, 0), userWorkspace.getWorkspaceContext().getWorkspaceId()
-                .getLocaleId().getId()));
+            0, 0), userWorkspace.getWorkspaceContext().getWorkspaceId().getLocaleId().getId()));
         projectStats.addStats(new TranslationStatistics(new TransUnitWords(0,
-                0, 0), userWorkspace.getWorkspaceContext().getWorkspaceId()
-                .getLocaleId().getId()));
+            0, 0), userWorkspace.getWorkspaceContext().getWorkspaceId().getLocaleId().getId()));
 
         presenter.setStatesForTest(projectStats, selectedDocumentStats, null,
                 null);
         presenter.showView(MainView.Documents);
 
-        RefreshProjectStatsEvent event =
-                new RefreshProjectStatsEvent(buildSampleDocumentArray());
+        RefreshProjectStatsEvent event = new RefreshProjectStatsEvent(buildSampleDocumentArray());
         presenter.onProjectStatsUpdated(event);
 
-        assertThat(projectStats.getStats().size())
-                .as("project stats should contain stats in the event")
-                .isEqualTo(2);
+        assertThat(projectStats.getStats().size()).isEqualTo(2)
+                .as("project stats should contain stats in the event");
 
         verify(display, times(2)).setStats(projectStats, true);
     }

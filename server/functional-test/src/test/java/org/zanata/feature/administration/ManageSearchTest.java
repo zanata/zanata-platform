@@ -42,8 +42,8 @@ public class ManageSearchTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("Admin is logged in");
         dashboardPage = new BasicWorkFlow().goToDashboard();
     }
 

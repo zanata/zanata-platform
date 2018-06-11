@@ -52,8 +52,8 @@ public class AutoRoleAssignmentTest extends ZanataTestCase {
                 .saveRoleAssignment();
 
         assertThat(roleAssignmentsPage.getRulesByPattern())
-                .as("The rule was created")
-                .contains(".+ransla.+");
+                .contains(".+ransla.+")
+                .as("The rule was created");
 
         roleAssignmentsPage.logout();
         {
@@ -65,8 +65,7 @@ public class AutoRoleAssignmentTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToAdministration()
-                .getTitle())
-                .as("The translator user was automatically given admin rights")
-                .isEqualTo("Zanata: Administration");
+                .getTitle()).isEqualTo("Zanata: Administration")
+                .as("The translator user was automatically given admin rights");
     }
 }

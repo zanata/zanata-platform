@@ -78,8 +78,8 @@ public class ProjectIterationDAO extends
     }
 
     @Nullable
-    public HProjectIteration getBySlug(@Nullable HProject project,
-            @Nullable String iterationSlug) {
+    public HProjectIteration getBySlug(@Nonnull HProject project,
+            @Nonnull String iterationSlug) {
         if (project == null || StringUtils.isEmpty(iterationSlug)) {
             return null;
         }
@@ -286,11 +286,11 @@ public class ProjectIterationDAO extends
     }
 
     /**
-     * @param versionId
+     * @param iterationId
      * @return
      */
     public Map<String, TransUnitWords> getAllWordStatsStatistics(
-        Long versionId) {
+            Long iterationId) {
         Query q =
                 getSession()
                         .createQuery(
@@ -302,25 +302,31 @@ public class ProjectIterationDAO extends
                                         + "and tft.textFlow.obsolete = false "
                                         + "and tft.textFlow.document.obsolete = false "
                                         + "group by tft.state, tft.locale.localeId");
-        q.setParameter("id", versionId);
+        q.setParameter("id", iterationId);
         q.setCacheable(true).setComment(
                 "ProjectIterationDAO.getAllWordStatsStatistics");
         @SuppressWarnings("unchecked")
         List<Object[]> stats = q.list();
 
-        Map<String, TransUnitWords> result = new HashMap<>();
+        Map<String, TransUnitWords> result =
+                new HashMap<String, TransUnitWords>();
 
         for (Object[] count : stats) {
             TransUnitWords stat;
             ContentState state = (ContentState) count[0];
             Long word = (Long) count[1];
             LocaleId locale = (LocaleId) count[2];
-            stat = result
-                .computeIfAbsent(locale.getId(), key -> new TransUnitWords());
+            if (!result.containsKey(locale.getId())) {
+                stat = new TransUnitWords();
+                result.put(locale.getId(), stat);
+            } else {
+                stat = result.get(locale.getId());
+            }
+
             stat.set(state, word.intValue());
         }
 
-        Long totalCount = getTotalWordCountForIteration(versionId);
+        Long totalCount = getTotalWordCountForIteration(iterationId);
         for (TransUnitWords count : result.values()) {
             count.set(ContentState.New,
                     StatisticsUtil.calculateUntranslated(totalCount, count));
@@ -331,12 +337,12 @@ public class ProjectIterationDAO extends
     /**
      * Retreives translation unit level statistics for a project iteration.
      *
-     * @param versionId
+     * @param iterationId
      *            The numeric id for a Project iteration.
      * @return A map of translation unit counts indexed by a locale id string.
      */
     public Map<String, TransUnitCount> getAllStatisticsForContainer(
-            Long versionId) {
+            Long iterationId) {
         Query q =
                 getSession()
                         .createQuery(
@@ -348,7 +354,7 @@ public class ProjectIterationDAO extends
                                         + " and tft.textFlow.obsolete = false"
                                         + " and tft.textFlow.document.obsolete = false"
                                         + " group by tft.state, tft.locale");
-        q.setParameter("id", versionId);
+        q.setParameter("id", iterationId);
         q.setComment("ProjectIterationDAO.getAllStatisticsForContainer");
 
         @SuppressWarnings("unchecked")
@@ -360,17 +366,21 @@ public class ProjectIterationDAO extends
             Long count = (Long) row.get("count");
             LocaleId localeId = (LocaleId) row.get("locale");
 
-            TransUnitCount transUnitCount = retVal
-                .computeIfAbsent(localeId.getId(), key -> new TransUnitCount());
+            TransUnitCount transUnitCount = retVal.get(localeId.getId());
+            if (transUnitCount == null) {
+                transUnitCount = new TransUnitCount();
+                retVal.put(localeId.getId(), transUnitCount);
+            }
 
             transUnitCount.set(state, count.intValue());
         }
 
-        Long versionTotalCount = getTotalMessageCountForIteration(versionId);
         for (TransUnitCount stat : retVal.values()) {
+            Long totalCount = getTotalMessageCountForIteration(iterationId);
             stat.set(ContentState.New,
-                    StatisticsUtil.calculateUntranslated(versionTotalCount, stat));
+                    StatisticsUtil.calculateUntranslated(totalCount, stat));
         }
+
         return retVal;
     }
 

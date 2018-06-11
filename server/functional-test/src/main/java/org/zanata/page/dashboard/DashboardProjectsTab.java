@@ -33,7 +33,7 @@ import java.util.List;
 public class DashboardProjectsTab extends DashboardBasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(DashboardProjectsTab.class);
-    private By membersOfProjectsList = By.id("membersOfProjects");
+    private By maintainedProjectsList = By.id("maintainedProjects");
     private By createProjectLink = By.id("create-project-link");
 
     public DashboardProjectsTab(WebDriver driver) {
@@ -41,8 +41,8 @@ public class DashboardProjectsTab extends DashboardBasePage {
     }
 
     public List<WebElement> getMaintainedProjectList() {
-        log.info("Query members of projects list");
-        return readyElement(membersOfProjectsList)
+        log.info("Query maintained projects list");
+        return readyElement(maintainedProjectsList)
                 .findElement(By.tagName("ul")).findElements(By.xpath("./li"));
     }
 

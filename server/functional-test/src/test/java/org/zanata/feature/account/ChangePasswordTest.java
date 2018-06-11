@@ -55,20 +55,17 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .enterOldPassword("translator")
                 .enterNewPassword("newpassword")
                 .clickUpdatePasswordButton();
-        dashboard.expectNotification(
-                DashboardAccountTab.PASSWORD_UPDATE_SUCCESS);
+        dashboard.expectNotification(DashboardAccountTab.PASSWORD_UPDATE_SUCCESS);
         dashboard.logout();
 
-        assertThat(new BasicWorkFlow().goToHome().hasLoggedIn())
-                .as("User is logged out")
-                .isFalse();
+        assertThat(new BasicWorkFlow().goToHome().hasLoggedIn()).isFalse()
+                .as("User is logged out");
 
         DashboardBasePage dashboardPage = new LoginWorkFlow()
                 .signIn("translator", "newpassword");
 
-        assertThat(dashboardPage.hasLoggedIn())
-                .as("User has logged in with the new password")
-                .isTrue();
+        assertThat(dashboardPage.hasLoggedIn()).isTrue()
+                .as("User has logged in with the new password");
     }
 
     @Trace(summary = "The user must enter their current password correctly " +
@@ -84,8 +81,8 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .clickUpdatePasswordButton();
 
         assertThat(dashboardAccountTab.getErrors())
-                .as("Old password is incorrect error is shown")
-                .contains(DashboardAccountTab.INCORRECT_OLD_PASSWORD_ERROR);
+                .contains(DashboardAccountTab.INCORRECT_OLD_PASSWORD_ERROR)
+                .as("Old password is incorrect error is shown");
     }
 
     @Trace(summary = "The user must enter a non-empty new password " +
@@ -99,8 +96,8 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .clickUpdatePasswordButton();
 
         assertThat(dashboardAccountTab.getErrors())
-                .as("Empty password message displayed")
-                .contains(DashboardAccountTab.FIELD_EMPTY_ERROR);
+                .contains(DashboardAccountTab.FIELD_EMPTY_ERROR)
+                .as("Empty password message displayed");
     }
 
     @Trace(summary = "The user must enter a new password of between 6 and " +
@@ -117,7 +114,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .clickUpdatePasswordButton();
 
         assertThat(dashboardAccountTab.getErrors())
-                .as("Incorrect password length message displayed")
-                .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR);
+                .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
+                .as("Incorrect password length message displayed");
     }
 }

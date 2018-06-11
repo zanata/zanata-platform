@@ -123,6 +123,8 @@ public class HProjectIteration extends SlugEntityBase
     @NotNull
     @Column(columnDefinition = "char(1)")
     private EntityStatus status = EntityStatus.ACTIVE;
+    @Column(nullable = true)
+    private Boolean requireTranslationReview = false;
 
     @Override
     public Iterator<DocumentWithId> iterator() {
@@ -134,6 +136,13 @@ public class HProjectIteration extends SlugEntityBase
     @Transient
     public EntityType getEntityType() {
         return EntityType.HProjectIteration;
+    }
+
+    public Boolean getRequireTranslationReview() {
+        if (requireTranslationReview == null) {
+            return Boolean.FALSE;
+        }
+        return requireTranslationReview;
     }
 
     @Override
@@ -189,6 +198,11 @@ public class HProjectIteration extends SlugEntityBase
 
     public void setStatus(final EntityStatus status) {
         this.status = status;
+    }
+
+    public void setRequireTranslationReview(
+            final Boolean requireTranslationReview) {
+        this.requireTranslationReview = requireTranslationReview;
     }
 
     public HProject getProject() {

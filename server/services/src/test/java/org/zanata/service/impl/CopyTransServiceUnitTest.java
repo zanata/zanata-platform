@@ -97,7 +97,8 @@ public class CopyTransServiceUnitTest {
 
 
         String iterSlug = "iterslug";
-        HProjectIteration iter = createIter(iterSlug, proj);
+        boolean requireReview = true;
+        HProjectIteration iter = createIter(iterSlug, proj, requireReview);
 
         List<HTextFlow> textFlows = Arrays.asList(new HTextFlow());
         HDocument doc = createDoc(iter, textFlows);
@@ -130,10 +131,11 @@ public class CopyTransServiceUnitTest {
         return doc;
     }
 
-    private HProjectIteration createIter(String iterSlug, HProject proj) {
+    private HProjectIteration createIter(String iterSlug, HProject proj, boolean requireReview) {
         HProjectIteration iter = new HProjectIteration();
         iter.setSlug(iterSlug);
         iter.setProject(proj);
+        iter.setRequireTranslationReview(requireReview);
         return iter;
     }
 

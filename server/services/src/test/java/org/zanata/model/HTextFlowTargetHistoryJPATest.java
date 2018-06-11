@@ -66,27 +66,24 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         session.flush();
 
         List<HTextFlowTargetHistory> historyElems = getHistory(target);
-        assertThat(historyElems.size())
-                .as("Incorrect History size on persist")
-                .isEqualTo(0);
+        assertThat(historyElems.size()).isEqualTo(0)
+                .as("Incorrect History size on persist");
 
         target.setContents("blah!");
         session.flush();
 
         historyElems = getHistory(target);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on first update")
-                .isEqualTo(1);
+        assertThat(historyElems.size()).isEqualTo(1)
+                .as("Incorrect History size on first update");
 
         target.setContents("hola mundo!");
         session.flush();
 
         historyElems = getHistory(target);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on second update")
-                .isEqualTo(2);
+        assertThat(historyElems.size()).isEqualTo(2)
+                .as("Incorrect History size on second update");
         assertThat(historyElems.size()).isEqualTo(2);
         HTextFlowTargetHistory hist = historyElems.get(0);
         assertThat(hist.getContents()).isEqualTo(Arrays.asList("helleu world"));

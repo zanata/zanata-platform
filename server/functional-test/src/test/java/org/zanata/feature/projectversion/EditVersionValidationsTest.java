@@ -131,14 +131,14 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .openValidationOptions();
 
         assertThat(editorPage.isValidationOptionSelected(
-                EditorPage.Validations.TABS))
-                .as("The option is selected")
-                .isTrue();
+                        EditorPage.Validations.TABS))
+                .isTrue()
+                .as("The option is selected");
 
         assertThat(editorPage.isValidationOptionAvailable(
-                EditorPage.Validations.TABS))
-                .as("The option is unavailable")
-                .isFalse();
+                        EditorPage.Validations.TABS))
+                .isFalse()
+                .as("The option is unavailable");
     }
 
     @Trace(summary = "The user cannot select both printf formats for " +
@@ -158,14 +158,13 @@ public class EditVersionValidationsTest extends ZanataTestCase {
         //        "Updated validation Positional printf (XSI extension) to Error.");
 
         assertThat(versionTranslationTab
-                .isValidationLevel("Positional printf (XSI extension)",
-                        "Error"))
-                .as("The Positional printf level is Error")
-                .isTrue();
+                .isValidationLevel("Positional printf (XSI extension)", "Error"))
+                .isTrue()
+                .as("The Positional printf level is Error");
         assertThat(versionTranslationTab
                 .isValidationLevel("Printf variables", "Off"))
-                .as("The Printf level is Off")
-                .isTrue();
+                .isTrue()
+                .as("The Printf level is Off");
 
         versionTranslationTab.setValidationLevel("Printf variables", "Error");
 
@@ -175,12 +174,12 @@ public class EditVersionValidationsTest extends ZanataTestCase {
 
         assertThat(versionTranslationTab
                 .isValidationLevel("Printf variables", "Error"))
-                .as("The Printf level is Error")
-                .isTrue();
+                .isTrue()
+                .as("The Printf level is Error");
         assertThat(versionTranslationTab
                 .isValidationLevel("Positional printf (XSI extension)", "Off"))
-                .as("The Positional printf level is Off")
-                .isTrue();
+                .isTrue()
+                .as("The Positional printf level is Off");
     }
 
     @Trace(summary = "The user can turn on a disabled validation option")

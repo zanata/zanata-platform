@@ -24,18 +24,16 @@ public class HistoryTokenTest {
     public void constructionSetsDefaults() {
         token = new HistoryToken();
 
-        assertThat(MainView.Documents)
-                .as("default view should be document list")
-                .isEqualTo(token.getView());
+        assertThat(MainView.Documents).isEqualTo(token.getView())
+                .as("default view should be document list");
         assertThat(token.getDocumentPath())
                 .as("default document path should be an empty string")
                 .isEqualTo("");
         assertThat(token.getDocFilterText())
                 .as("default document filter text should be an empty string")
                 .isEqualTo("");
-        assertThat(token.getDocFilterExact())
-                .as("default document filter exact match flag should be false")
-                .isFalse();
+        assertThat(token.getDocFilterExact()).isFalse()
+                .as("default document filter exact match flag should be false");
         assertThat(token.getEditorTextSearch())
                 .as("default search text should be null").isNull();
         assertThat(token.getProjectSearchText())
@@ -44,9 +42,8 @@ public class HistoryTokenTest {
         assertThat(token.getProjectSearchReplacement())
                 .as("default project-wide search replacement text should be an empty string")
                 .isEqualTo("");
-        assertThat(token.getProjectSearchCaseSensitive())
-                .as("default project-wide search case sensitive flag should be false")
-                .isFalse();
+        assertThat(token.getProjectSearchCaseSensitive()).isFalse()
+                .as("default project-wide search case sensitive flag should be false");
         assertThat(token.getTextFlowId()).isNull();
         assertThat(token.isFilterTranslated()).isFalse();
         assertThat(token.isFilterUntranslated()).isFalse();
@@ -60,29 +57,21 @@ public class HistoryTokenTest {
     public void fromEmptyStringSetsDefaults() {
         token = HistoryToken.fromTokenString("");
 
-        assertThat(token.getView())
-                .as("default view should be document list")
-                .isEqualTo(MainView.Documents);
-        assertThat(token.getDocumentPath())
-                .as("default document path should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getDocFilterText())
-                .as("default document filter text should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getDocFilterExact())
-                .as("default document filter exact match flag should be false")
-                .isFalse();
-        assertThat(token.getEditorTextSearch())
-                .as("default search text should be null").isNull();
-        assertThat(token.getProjectSearchText())
-                .as("default project-wide search text should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getProjectSearchReplacement())
-                .as("default project-wide search replacement text should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getProjectSearchCaseSensitive())
-                .as("default project-wide search case sensitive flag should be false")
-                .isFalse();
+        assertThat(token.getView()).isEqualTo(MainView.Documents)
+                .as("default view should be document list");
+        assertThat(token.getDocumentPath()).isEqualTo("")
+                .as("default document path should be an empty string");
+        assertThat(token.getDocFilterText()).isEqualTo("")
+                .as("default document filter text should be an empty string");
+        assertThat(token.getDocFilterExact()).isFalse()
+                .as("default document filter exact match flag should be false");
+        assertThat(token.getEditorTextSearch()).as("default search text should be null").isNull();
+        assertThat(token.getProjectSearchText()).isEqualTo("").as(
+                "default project-wide search text should be an empty string");
+        assertThat(token.getProjectSearchReplacement()).isEqualTo("")
+                .as("default project-wide search replacement text should be an empty string");
+        assertThat(token.getProjectSearchCaseSensitive()).isFalse()
+                .as("default project-wide search case sensitive flag should be false");
         assertThat(token.getTextFlowId()).isNull();
         assertThat(token.isFilterTranslated()).isFalse();
         assertThat(token.isFilterUntranslated()).isFalse();
@@ -96,29 +85,22 @@ public class HistoryTokenTest {
     public void fromNullStringSetsDefaults() {
         token = HistoryToken.fromTokenString(null);
 
-        assertThat(token.getView())
-                .as("default view should be document list")
-                .isEqualTo(MainView.Documents);
-        assertThat(token.getDocumentPath())
-                .as("default document path should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getDocFilterText())
-                .as("default document filter text should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getDocFilterExact())
-                .as("default document filter exact match flag should be false")
-                .isFalse();
+        assertThat(token.getView()).isEqualTo(MainView.Documents)
+                .as("default view should be document list");
+        assertThat(token.getDocumentPath()).isEqualTo("")
+                .as("default document path should be an empty string");
+        assertThat(token.getDocFilterText()).isEqualTo("")
+                .as("default document filter text should be an empty string");
+        assertThat(token.getDocFilterExact()).isFalse()
+                .as("default document filter exact match flag should be false");
         assertThat(token.getEditorTextSearch())
                 .as("default search text should be null").isNull();
-        assertThat(token.getProjectSearchText())
-                .as("default project-wide search text should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getProjectSearchReplacement())
-                .as("default project-wide search replacement text should be an empty string")
-                .isEqualTo("");
-        assertThat(token.getProjectSearchCaseSensitive())
-                .as("default project-wide search case sensitive flag should be false")
-                .isFalse();
+        assertThat(token.getProjectSearchText()).isEqualTo("")
+                .as("default project-wide search text should be an empty string");
+        assertThat(token.getProjectSearchReplacement()).isEqualTo("")
+                .as("default project-wide search replacement text should be an empty string");
+        assertThat(token.getProjectSearchCaseSensitive()).isFalse()
+                .as("default project-wide search case sensitive flag should be false");
         assertThat(token.getTextFlowId()).isNull();
         assertThat(token.isFilterTranslated()).isFalse();
         assertThat(token.isFilterUntranslated()).isFalse();
@@ -135,18 +117,14 @@ public class HistoryTokenTest {
 
         token = HistoryToken.fromTokenString(tokenString);
 
-        assertThat(token.getView())
-                .as("view should be set from token string")
-                .isEqualTo(MainView.Editor);
-        assertThat(token.getDocumentPath())
-                .as("document path should be set from token string")
-                .isEqualTo("some/document");
-        assertThat(token.getDocFilterText())
-                .as("document filter text should be set from token string")
-                .isEqualTo("myfilter");
-        assertThat(token.getDocFilterExact())
-                .as("document filter exact match flag should be set from token string")
-                .isTrue();
+        assertThat(token.getView()).isEqualTo(MainView.Editor)
+                .as("view should be set from token string");
+        assertThat(token.getDocumentPath()).isEqualTo("some/document")
+                .as("document path should be set from token string");
+        assertThat(token.getDocFilterText()).isEqualTo("myfilter")
+                .as("document filter text should be set from token string");
+        assertThat(token.getDocFilterExact()).isTrue()
+                .as("document filter exact match flag should be set from token string");
     }
 
     @Test
@@ -156,18 +134,14 @@ public class HistoryTokenTest {
 
         token = HistoryToken.fromTokenString(tokenString);
 
-        assertThat(token.getEditorTextSearch())
-                .as("search text should be set from token string")
-                .isEqualTo("searchtext");
-        assertThat(token.getProjectSearchText())
-                .as("project-wide search text should be set from token string")
-                .isEqualTo("projectsearchtext");
-        assertThat(token.getProjectSearchReplacement())
-                .as("project-wide search replacement text should be set from token string")
-                .isEqualTo("replacementtext");
-        assertThat(token.getProjectSearchCaseSensitive())
-                .as("project-wide search case sensitivity should be set from token string")
-                .isTrue();
+        assertThat(token.getEditorTextSearch()).isEqualTo("searchtext")
+                .as("search text should be set from token string");
+        assertThat(token.getProjectSearchText()).isEqualTo("projectsearchtext")
+                .as("project-wide search text should be set from token string");
+        assertThat(token.getProjectSearchReplacement()).isEqualTo("replacementtext")
+                .as("project-wide search replacement text should be set from token string");
+        assertThat(token.getProjectSearchCaseSensitive()).isTrue()
+                .as("project-wide search case sensitivity should be set from token string");
     }
 
     @Test
@@ -177,18 +151,14 @@ public class HistoryTokenTest {
 
         token = HistoryToken.fromTokenString(differentOrderTokenString);
 
-        assertThat(token.getView())
-                .as("view should be set from any position in token string")
-                .isEqualTo(MainView.Editor);
-        assertThat(token.getDocumentPath())
-                .as("document path should be set from any position in token string")
-                .isEqualTo("some/document");
-        assertThat(token.getDocFilterText())
-                .as("document filter text should be set from any position in token string")
-                .isEqualTo("myfilter");
-        assertThat(token.getDocFilterExact())
-                .as("document filter exact match flag should be set from any position in token string")
-                .isTrue();
+        assertThat(token.getView()).isEqualTo(MainView.Editor)
+                .as("view should be set from any position in token string");
+        assertThat(token.getDocumentPath()).isEqualTo("some/document")
+                .as("document path should be set from any position in token string");
+        assertThat(token.getDocFilterText()).isEqualTo("myfilter")
+                .as("document filter text should be set from any position in token string");
+        assertThat(token.getDocFilterExact()).isTrue()
+                .as("document filter exact match flag should be set from any position in token string");
     }
 
     @Test
@@ -198,18 +168,15 @@ public class HistoryTokenTest {
 
         token = HistoryToken.fromTokenString(differentOrderTokenString);
 
-        assertThat(token.getEditorTextSearch())
-                .as("search text should be set from any position in token string")
-                .isEqualTo("searchtext");
-        assertThat(token.getProjectSearchText())
-                .as("project-wide search text should be set from any position in token string")
-                .isEqualTo("projectsearchtext");
+        assertThat(token.getEditorTextSearch()).isEqualTo("searchtext")
+                .as("search text should be set from any position in token string");
+        assertThat(token.getProjectSearchText()).isEqualTo("projectsearchtext")
+                .as("project-wide search text should be set from any position in token string");
         assertThat(token.getProjectSearchReplacement())
-                .as("project-wide search replacement text should be set from any position in token string")
-                .isEqualTo("replacementtext");
-        assertThat(token.getProjectSearchCaseSensitive())
-                .as("project-wide search case sensitivity should be set from any position in token string")
-                .isTrue();
+                .isEqualTo("replacementtext")
+                .as("project-wide search replacement text should be set from any position in token string");
+        assertThat(token.getProjectSearchCaseSensitive()).isTrue().as(
+                "project-wide search case sensitivity should be set from any position in token string");
     }
 
     @Test
@@ -238,29 +205,22 @@ public class HistoryTokenTest {
         token = HistoryToken.fromTokenString(unknownTokensString);
 
         // should be using defaults as there are no known keys
-        assertThat(token.getView())
-                .as("unknown keys should be ignored")
-                .isEqualTo(MainView.Documents);
-        assertThat(token.getDocumentPath())
-                .as("unknown keys should be ignored")
-                .isEqualTo("");
-        assertThat(token.getDocFilterText())
-                .as("unknown keys should be ignored")
-                .isEqualTo("");
-        assertThat(token.getDocFilterExact())
-                .as("unknown keys should be ignored")
-                .isFalse();
+        assertThat(token.getView()).isEqualTo(MainView.Documents)
+                .as("unknown keys should be ignored");
+        assertThat(token.getDocumentPath()).isEqualTo("")
+                .as("unknown keys should be ignored");
+        assertThat(token.getDocFilterText()).isEqualTo("")
+                .as("unknown keys should be ignored");
+        assertThat(token.getDocFilterExact()).isFalse()
+                .as("unknown keys should be ignored");
         assertThat(token.getEditorTextSearch())
                 .as("unknown keys should be ignored").isNull();
-        assertThat(token.getProjectSearchText())
-                .as("unknown keys should be ignored")
-                .isEqualTo("");
-        assertThat(token.getProjectSearchReplacement())
-                .as("unknown keys should be ignored")
-                .isEqualTo("");
-        assertThat(token.getProjectSearchCaseSensitive())
-                .as("unknown keys should be ignored")
-                .isFalse();
+        assertThat(token.getProjectSearchText()).isEqualTo("")
+                .as("unknown keys should be ignored");
+        assertThat(token.getProjectSearchReplacement()).isEqualTo("")
+                .as("unknown keys should be ignored");
+        assertThat(token.getProjectSearchCaseSensitive()).isFalse()
+                .as("unknown keys should be ignored");
     }
 
     @Test
@@ -274,9 +234,8 @@ public class HistoryTokenTest {
 
         token.setView(MainView.Editor);
         token.setView(null);
-        assertThat(token.getView())
-                .as("view should reset to default if set to null value")
-                .isEqualTo(MainView.Documents);
+        assertThat(token.getView()).isEqualTo(MainView.Documents)
+                .as("view should reset to default if set to null value");
     }
 
     @Test
@@ -287,34 +246,28 @@ public class HistoryTokenTest {
         assertThat(token.getDocumentPath()).isEqualTo("new/document/path");
 
         token.setDocumentPath(null);
-        assertThat(token.getDocumentPath())
-                .as("document path should be set to empty string if null is given")
-                .isEqualTo("");
+        assertThat(token.getDocumentPath()).isEqualTo("")
+                .as("document path should be set to empty string if null is given");
 
         token.setDocumentPath("random/path");
         token.setDocumentPath("");
-        assertThat(token.getDocumentPath())
-                .as("document path can be set to empty string")
-                .isEqualTo("");
+        assertThat(token.getDocumentPath()).isEqualTo("")
+                .as("document path can be set to empty string");
     }
 
     @Test
     public void getSetFilterText() {
         token = new HistoryToken();
         token.setDocFilterText("filter/text, more/filter/text, foo");
-        assertThat(token.getDocFilterText())
-                .isEqualTo("filter/text, more/filter/text, foo");
+        assertThat(token.getDocFilterText()).isEqualTo("filter/text, more/filter/text, foo");
 
         token.setDocFilterText(null);
-        assertThat(token.getDocFilterText())
-                .as("filter text should be returned as empty string after setting to null")
-                .isEqualTo("");
+        assertThat(token.getDocFilterText()).isEqualTo("").as(
+                "filter text should be returned as empty string after setting to null");
 
         token.setDocFilterText("some filter text");
         token.setDocFilterText("");
-        assertThat(token.getDocFilterText())
-                .as("filter text can be set to empty string")
-                .isEqualTo("");
+        assertThat(token.getDocFilterText()).isEqualTo("").as("filter text can be set to empty string");
     }
 
     @Test
@@ -346,19 +299,16 @@ public class HistoryTokenTest {
     public void getSetProjectSearchText() {
         token = new HistoryToken();
         token.setProjectSearchText("some project search text");
-        assertThat(token.getProjectSearchText())
-                .isEqualTo("some project search text");
+        assertThat(token.getProjectSearchText()).isEqualTo("some project search text");
 
         token.setProjectSearchText(null);
-        assertThat(token.getProjectSearchText())
-                .as("project search text should be returned as empty string after setting to null")
-                .isEqualTo("");
+        assertThat(token.getProjectSearchText()).isEqualTo("").as(
+                "project search text should be returned as empty string after setting to null");
 
         token.setProjectSearchText("text to be discarded");
         token.setProjectSearchText("");
-        assertThat(token.getProjectSearchText())
-                .as("project search text can be set to empty string")
-                .isEqualTo("");
+        assertThat(token.getProjectSearchText()).isEqualTo("")
+                .as("project search text can be set to empty string");
     }
 
     @Test
@@ -392,18 +342,16 @@ public class HistoryTokenTest {
     public void encodesColon() {
         token = new HistoryToken();
         token.setProjectSearchText("test:test");
-        assertThat(token.toTokenString())
-                .as("Colons should be replaced with \"!c\" in the token string")
-                .isEqualTo("projectsearch:test!ctest");
+        assertThat(token.toTokenString()).isEqualTo("projectsearch:test!ctest")
+                .as("Colons should be replaced with \"!c\" in the token string");
     }
 
     @Test
     public void encodesSemicolon() {
         token = new HistoryToken();
         token.setProjectSearchText("test;test");
-        assertThat(token.toTokenString())
-                .as("Semicolons should be replaced with \"!s\" in the token string")
-                .isEqualTo("projectsearch:test!stest");
+        assertThat(token.toTokenString()).isEqualTo("projectsearch:test!stest")
+                .as("Semicolons should be replaced with \"!s\" in the token string");
     }
 
     @Test
@@ -412,9 +360,8 @@ public class HistoryTokenTest {
 
         String tokenString = token.toTokenString();
 
-        assertThat(tokenString.length())
-                .as("output token string should not contain default values")
-                .isEqualTo(0);
+        assertThat(tokenString.length()).isEqualTo(0)
+                .as("output token string should not contain default values");
     }
 
     @Test
@@ -461,30 +408,23 @@ public class HistoryTokenTest {
         token = null;
         token = HistoryToken.fromTokenString(tokenString);
 
-        assertThat(token.getView())
-                .as("view should survive a round-trip to and from token string")
-                .isEqualTo(MainView.Editor);
-        assertThat(token.getDocumentPath())
-                .as("document path should survive a round-trip to and from token string")
-                .isEqualTo("some/document");
-        assertThat(token.getDocFilterText())
-                .as("document filter text should survive a round-trip to and from token string")
-                .isEqualTo("myfilter");
-        assertThat(token.getDocFilterExact())
-                .as("document filter exact match flag should survive a round-trip to and from token string")
-                .isTrue();
-        assertThat(token.getEditorTextSearch())
-                .as("search text should survive a round-trip to and from token string")
-                .isEqualTo("searchtext");
-        assertThat(token.getProjectSearchText())
-                .as("project-wide search text should survive a round-trip to and from token string")
-                .isEqualTo("projectsearchtext");
+        assertThat(token.getView()).isEqualTo(MainView.Editor)
+                .as("view should survive a round-trip to and from token string");
+        assertThat(token.getDocumentPath()).isEqualTo("some/document")
+                .as("document path should survive a round-trip to and from token string");
+        assertThat(token.getDocFilterText()).isEqualTo("myfilter")
+                .as("document filter text should survive a round-trip to and from token string");
+        assertThat(token.getDocFilterExact()).isTrue()
+                .as("document filter exact match flag should survive a round-trip to and from token string");
+        assertThat(token.getEditorTextSearch()).isEqualTo("searchtext")
+                .as("search text should survive a round-trip to and from token string");
+        assertThat(token.getProjectSearchText()).isEqualTo("projectsearchtext")
+                .as("project-wide search text should survive a round-trip to and from token string");
         assertThat(token.getProjectSearchReplacement())
-                .as("project-wide search replacement text should survive a round-trip to and from token string")
-                .isEqualTo("replacementtext");
-        assertThat(token.getProjectSearchCaseSensitive())
-                .as("project-wide search case sensitivity should survive a round-trip to and from token string")
-                .isTrue();
+                .isEqualTo("replacementtext")
+                .as("project-wide search replacement text should survive a round-trip to and from token string");
+        assertThat(token.getProjectSearchCaseSensitive()).isTrue().as(
+                "project-wide search case sensitivity should survive a round-trip to and from token string");
     }
 
     @Test
@@ -502,21 +442,19 @@ public class HistoryTokenTest {
         token = HistoryToken.fromTokenString(tokenString);
 
         assertThat(token.getDocumentPath())
-                .as("encodable characters in document path should survive a round-trip to and from token string")
-                .isEqualTo("some:document;with!encodedchars");
+                .isEqualTo("some:document;with!encodedchars")
+                .as("encodable characters in document path should survive a round-trip to and from token string");
 
-        assertThat(token.getDocFilterText())
-                .as("encodable characters in document filter text should survive a round-trip to and from token string")
-                .isEqualTo("my!fil:ter;");
-        assertThat(token.getEditorTextSearch())
-                .as("encodable characters in search text should survive a round-trip to and from token string")
-                .isEqualTo(":search!text;");
+        assertThat(token.getDocFilterText()).isEqualTo("my!fil:ter;")
+                .as("encodable characters in document filter text should survive a round-trip to and from token string");
+        assertThat(token.getEditorTextSearch()).isEqualTo(":search!text;")
+                .as("encodable characters in search text should survive a round-trip to and from token string");
         assertThat(token.getProjectSearchText())
-                .as("encodable characters in project-wide search text should survive a round-trip to and from token string")
-                .isEqualTo("project:search;text!");
+                .isEqualTo("project:search;text!")
+                .as("encodable characters in project-wide search text should survive a round-trip to and from token string");
         assertThat(token.getProjectSearchReplacement())
-                .as("encodable characters in project-wide search replacement text should survive a round-trip to and from token string")
-                .isEqualTo("re!place;ment:text");
+                .isEqualTo("re!place;ment:text")
+                .as("encodable characters in project-wide search replacement text should survive a round-trip to and from token string");
     }
 
     @Test

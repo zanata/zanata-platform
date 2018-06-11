@@ -542,6 +542,11 @@ public class SecurityFunctions extends PermissionProvider {
         return isAdmin();
     }
 
+    @GrantsPermission(actions = "view-obsolete")
+    public boolean canViewObsoleteVersionGroup(HIterationGroup group) {
+        return isAdmin();
+    }
+
     /***************************************************************************
      * Copy Trans rules
      **************************************************************************/

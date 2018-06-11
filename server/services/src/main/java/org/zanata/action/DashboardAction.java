@@ -21,12 +21,8 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import org.apache.commons.lang3.StringUtils;
@@ -39,8 +35,6 @@ import javax.inject.Named;
 import org.zanata.dao.VersionGroupDAO;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
-import org.zanata.model.HProjectLocaleMember;
-import org.zanata.model.HProjectMember;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -136,22 +130,6 @@ public class DashboardAction implements Serializable {
                 : DateUtil.getHowLongAgoDescription(lastTranslatedDate);
     }
 
-    public List<String> getUserProjectRoles(HProject project) {
-        Set<String> roles = new HashSet<>();
-        for (HProjectMember member: project.getMembers()) {
-            if (member.getPerson().equals(authenticatedAccount.getPerson())) {
-                roles.add(member.getRole().toString());
-            }
-        }
-
-        for (HProjectLocaleMember member: project.getLocaleMembers()) {
-            if (member.getPerson().equals(authenticatedAccount.getPerson())) {
-                roles.add(member.getRole().toString());
-            }
-        }
-        return new ArrayList<>(roles);
-    }
-
     public String getShortTime(Date date) {
         return DateUtil.formatShortDate(date);
     }
@@ -224,13 +202,13 @@ public class DashboardAction implements Serializable {
         @Override
         protected List<HProject> fetchRecords(int start, int max,
                 String filter) {
-            return projectDAO.getProjectsForMember(
+            return projectDAO.getProjectsForMaintainer(
                     authenticatedAccount.getPerson(), filter, start, max);
         }
 
         @Override
         protected long fetchTotalRecords(String filter) {
-            return projectDAO.getProjectsForMemberCount(
+            return projectDAO.getMaintainedProjectCount(
                     authenticatedAccount.getPerson(), filter);
         }
     }

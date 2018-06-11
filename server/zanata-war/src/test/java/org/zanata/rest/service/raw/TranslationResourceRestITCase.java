@@ -257,14 +257,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 false);
         TranslationsResource trans = createTargetDoc();
         getTransResource()
-                .putTranslationsWithDocId(nbLocale, trans, docName, null,
-                        "auto");
+                .putTranslationsWithDocId(nbLocale, trans, docName, null, "auto");
 
         {
             Response response =
                     getSourceDocResource().getResourceWithDocId(docName, null);
-            assertThat(response.getStatus())
-                    .isEqualTo(Status.OK.getStatusCode());
+            assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
             Resource doc = getResourceFromResponse(response);
             assertThat(doc.getTextFlows().size()).isEqualTo(1);
@@ -277,24 +275,18 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                                 null);
         assertThat(response.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
-        TranslationsResource doc =
-                getTranslationsResourceFromResponse(response);
-        assertThat(doc.getTextFlowTargets().size())
-                .as("should have one textFlow")
-                .isEqualTo(1);
+        TranslationsResource doc = getTranslationsResourceFromResponse(response);
+        assertThat(doc.getTextFlowTargets().size()).isEqualTo(1)
+                .as("should have one textFlow");
         TextFlowTarget tft = doc.getTextFlowTargets().get(0);
 
         assertThat(tft).isNotNull();
-        assertThat(tft.getResId())
-                .as("should have a textflow with this id")
-                .isEqualTo("tf1");
+        assertThat(tft.getResId()).isEqualTo("tf1")
+                .as("should have a textflow with this id");
 
-        assertThat(tft)
-                .as("expected de target")
-                .isNotNull();
-        assertThat(tft.getContents())
-                .as("expected translation for de")
-                .isEqualTo(asList("hei verden"));
+        assertThat(tft).isNotNull().as("expected de target");
+        assertThat(tft.getContents()).isEqualTo(asList("hei verden"))
+                .as("expected translation for de");
     }
 
     @Test
@@ -376,34 +368,26 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response = getSourceDocResource()
                 .putResourceWithDocId(doc, docName, null, false);
 
-        assertThat(response.getStatus())
-                .isEqualTo(Status.CREATED.getStatusCode());
+        assertThat(response.getStatus()).isEqualTo(Status.CREATED.getStatusCode());
         assertThat(response.getMetadata().getFirst("Location").toString())
-                .endsWith(
-                        BASE_PATH + "?docId=" + UrlUtil.encodeString(docName));
+                .endsWith(BASE_PATH + "?docId=" + UrlUtil.encodeString(docName));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);
 
-        assertThat(documentResponse.getStatus())
-                .isEqualTo(Status.OK.getStatusCode());
+        assertThat(documentResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
 
         doc = getResourceFromResponse(documentResponse);
 
         assertThat(doc.getRevision()).isEqualTo(1);
 
-        assertThat(doc.getTextFlows())
-                .as("Should have textFlows")
-                .isNotNull();
-        assertThat(doc.getTextFlows().size())
-                .as("Should have 2 textFlows")
-                .isEqualTo(2);
-        assertThat(doc.getTextFlows().get(0).getId())
-                .as("Should have tf1 textFlow")
-                .isEqualTo("tf1");
-        assertThat(doc.getTextFlows().get(1).getId())
-                .as("Container1 should have tf3 textFlow")
-                .isEqualTo(tf3.getId());
+        assertThat(doc.getTextFlows()).isNotNull().as("Should have textFlows");
+        assertThat(doc.getTextFlows().size()).isEqualTo(2)
+                .as("Should have 2 textFlows");
+        assertThat(doc.getTextFlows().get(0).getId()).isEqualTo("tf1")
+                .as("Should have tf1 textFlow");
+        assertThat(doc.getTextFlows().get(1).getId()).isEqualTo(tf3.getId())
+                .as("Container1 should have tf3 textFlow");
 
         textFlow = doc.getTextFlows().get(0);
         textFlow.setId("tf2");
@@ -416,21 +400,16 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         documentResponse = getSourceDocResource()
                 .getResourceWithDocId(docName, null);
-        assertThat(documentResponse.getStatus())
-                .isEqualTo(Status.OK.getStatusCode());
+        assertThat(documentResponse.getStatus()).isEqualTo(Status.OK.getStatusCode());
         doc = getResourceFromResponse(documentResponse);
 
         assertThat(doc.getRevision()).isEqualTo(2);
 
-        assertThat(doc.getTextFlows())
-                .as("Should have textFlows")
-                .isNotNull();
-        assertThat(doc.getTextFlows().size())
-                .as("Should have two textFlows")
-                .isEqualTo(2);
-        assertThat(doc.getTextFlows().get(0).getId())
-                .as("should have same id")
-                .isEqualTo("tf2");
+        assertThat(doc.getTextFlows()).isNotNull().as("Should have textFlows");
+        assertThat(doc.getTextFlows().size()).isEqualTo(2)
+                .as("Should have two textFlows");
+        assertThat(doc.getTextFlows().get(0).getId()).isEqualTo("tf2")
+                .as("should have same id");
     }
 
     @Test
@@ -677,10 +656,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                     headerFound = true;
                 }
             }
-            assertThat(headerFound)
-                    .as("PO Target Header '" + reqHeader
-                            + "' was not present when pulling translations.")
-                    .isTrue();
+            assertThat(headerFound).isTrue().as("PO Target Header '" + reqHeader
+                    + "' was not present when pulling translations.");
         }
 
         /**

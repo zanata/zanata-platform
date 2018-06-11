@@ -5,22 +5,16 @@ import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
-import { Alert } from 'react-bootstrap'
+import {Panel, Alert, Breadcrumb, Well} from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
 import {selectors} from '../../reducers/admin-reducer'
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout'
-import 'antd/lib/layout/style/css'
-import Breadcrumb from 'antd/lib/breadcrumb'
-import 'antd/lib/breadcrumb/style/css'
-import Card from 'antd/lib/card'
-import 'antd/lib/card/style/css'
 
 const DO_NOT_RENDER = undefined
- /* eslint-disable max-len */
+/* eslint-enable max-len */
 
 class AdminReview extends Component {
   static propTypes = {
@@ -41,7 +35,6 @@ class AdminReview extends Component {
       showNewEntryForm: false
     }
   }
-
   componentDidMount () {
     this.props.fetchAllCriteria()
   }
@@ -55,28 +48,25 @@ class AdminReview extends Component {
   }
   render () {
     const {criteria, deleteEntry, editEntry, notification} = this.props
-    const criteriaList = (criteria.length > 0)
-      ? criteria.map((c, i) => <RejectionsForm key={i}
-        commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
-        criteriaPlaceholder={c.description} isAdminMode displayDelete
-        onSave={editEntry} description={c.description}
-        priority={c.priority} />)
-      : null
+    const criteriaList = criteria.map((c, i) => <RejectionsForm key={i}
+      commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
+      criteriaPlaceholder={c.description} isAdminMode displayDelete
+      onSave={editEntry} description={c.description}
+      priority={c.priority} />)
     const newEntryForm = this.state.showNewEntryForm ? (
-      <span className='mb2'>
-        <Card title='Add new entry'>
-          <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
-            criteriaPlaceholder='fill in criteria'
-            onSave={this.saveNewEntry} />
-        </Card>
-      </span>) : DO_NOT_RENDER
+      <Panel header='Add new entry'>
+        <RejectionsForm priority={MINOR} isAdminMode displayDelete={false}
+          criteriaPlaceholder='fill in criteria'
+          onSave={this.saveNewEntry} />
+      </Panel>) : DO_NOT_RENDER
+
     const notificationBar = notification &&
       <Alert bsStyle='danger'>{notification}</Alert>
     return <div className='container centerWrapper' id='admin-review'>
       <Layout>
         <Breadcrumb>
           <Breadcrumb.Item href='home'>
-            <a href='home'>Administration</a>
+            Administration
           </Breadcrumb.Item>
         </Breadcrumb>
         {notificationBar}
@@ -84,30 +74,28 @@ class AdminReview extends Component {
         <p className='lead'>Set the translation rejection criteria to be used
           in the editor. Start by adding your first 'new rejection criteria
         entry' and add as many criteria as you require.</p>
-        <span className='mb2'>
-          <Card type='inner' title='Example criteria'>
-            <hr />
-            <ul>
-              <li><strong>Translation Errors</strong>: terminology, mistranslated,
-              addition, omission, un-localized, do not translate, etc</li>
-              <li><strong>Language Quality</strong>: grammar, spelling,
-                punctuation, typo, ambiguous wording, product name,
-                sentence structuring, readability, word choice, not natural,
-              too literal, style and tone, etc</li>
-              <li><strong>Style Guide and Glossary Violations</strong></li>
-              <li><strong>Consistency</strong>: inconsistent style or vocabulary,
-              brand inconsistency, etc.</li>
-              <li><strong>Format</strong>: mismatches, white-spaces, tag error
-                or missing, special character, numeric format, truncated,
-              etc.</li>
-            </ul>
-          </Card>
-        </span>
+        <Well bsSize='lg'><h2>Example criteria</h2>
+          <hr />
+          <ul>
+            <li><strong>Translation Errors</strong>: terminology, mistranslated,
+            addition, omission, un-localized, do not translate, etc</li>
+            <li><strong>Language Quality</strong>: grammar, spelling,
+              punctuation, typo, ambiguous wording, product name,
+              sentence structuring, readability, word choice, not natural,
+            too literal, style and tone, etc</li>
+            <li><strong>Style Guide and Glossary Violations</strong></li>
+            <li><strong>Consistency</strong>: inconsistent style or vocabulary,
+            brand inconsistency, etc.</li>
+            <li><strong>Format</strong>: mismatches, white-spaces, tag error
+              or missing, special character, numeric format, truncated,
+            etc.</li>
+          </ul>
+        </Well>
         {criteriaList}
         {newEntryForm}
         <div className='rejection-btns'>
           <Button type='primary' icon='plus' aria-label='button'
-            onClick={this.showAddNewEntryForm}>
+            onClick={this.showAddNewEntryForm()}>
           New review criteria entry</Button>
         </div>
       </Layout>

@@ -58,7 +58,11 @@ public class VersionTranslationTab extends VersionBasePage {
                 readyElement(By.id("settings-translation-validation-form"))
                         .findElement(By.id(optionElementID));
         getExecutor().executeScript("arguments[0].click();", option);
-        waitForPageSilence();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ie) {
+            // Wait for half a second before continuing
+        }
         return new VersionTranslationTab(getDriver());
     }
 

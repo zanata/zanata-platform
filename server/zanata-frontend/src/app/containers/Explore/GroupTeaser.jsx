@@ -4,6 +4,11 @@ import * as PropTypes from 'prop-types'
 import { Link, Icon } from '../../components'
 import { getVersionGroupUrl } from '../../utils/UrlHelper'
 
+const statusIcons = {
+  ACTIVE: '',
+  READONLY: 'locked',
+  OBSOLETE: 'trash'
+}
 /**
  * Entry of Version Group search results
  */
@@ -12,6 +17,7 @@ const GroupTeaser = ({
   name,
   ...props
 }) => {
+  const status = statusIcons[details.status]
   const description = details.description
     ? (<div className='u-textMuted'>
       {details.description}
@@ -27,7 +33,9 @@ const GroupTeaser = ({
     </div>
   ) : undefined
   const link = getVersionGroupUrl(details.id)
-
+  const className = status !== statusIcons.ACTIVE
+                  ? 'text-muted-bold'
+                  : 'text-bold'
   return (
     <div className='teaserView' name={name}>
       {/* <View className='Mend(rh)'>
@@ -35,7 +43,11 @@ const GroupTeaser = ({
       </View> */}
       <div className='teaser-inner'>
         <div>
-          <Link link={link} useHref className='text-bold'>
+          <Link link={link} useHref className={className}>
+            {status !== statusIcons.ACTIVE &&
+            (<Icon name={statusIcons[details.status]} className='s1'
+              parentClassName='iconsStatus'
+            />)}
             {details.title}
           </Link>
           {description}
@@ -52,6 +64,7 @@ GroupTeaser.propTypes = {
    */
   details: PropTypes.shape({
     id: PropTypes.string,
+    status: PropTypes.string,
     description: PropTypes.string,
     title: PropTypes.string
   }),

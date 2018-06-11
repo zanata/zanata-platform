@@ -24,20 +24,15 @@ package org.zanata.rest.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.io.input.TeeInputStream;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
@@ -176,53 +171,29 @@ public class FileResourceClientTest {
         }
     }
 
-    // testDownloadSourceFile and testDownloadTranslationFile sometimes fail
-    // in weird ways (supposedly jgettext ParseException inside
-    // org.apache.http.conn.EofSensorInputStream.isReadAllowed()!), so
-    // executeWithIODebug will log the stream contents (and root cause) if
-    // an exception occurs.
-
-    private <T> T executeWithIODebug(InputStream origInputStream, Function<InputStream, T> callable)
-            throws IOException {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        TeeInputStream teeInputStream = new TeeInputStream(origInputStream, bytes);
-        try {
-            return callable.apply(teeInputStream);
-        } catch (Exception e) {
-            Throwable root = ExceptionUtils.getRootCause(e);
-            if (root != null) {
-                System.err.println(root.toString());
-                root.printStackTrace();
-            }
-            String msg = e.toString() + "\nstream contents:\n" + bytes.toString(StandardCharsets.UTF_8);
-            throw new IOException(msg, e);
-        }
-    }
-
     @Test
     public void testDownloadSourceFile() throws IOException {
         InputStream inputStream =
                 client.downloadSourceFile("about-fedora", "master", "pot",
                         "About-Fedora").readEntity(InputStream.class);
         PoReader2 reader = new PoReader2();
-        Resource resource = executeWithIODebug(inputStream, in ->
-                reader.extractTemplate(
-                        new InputSource(in),
-                        LocaleId.EN_US,
-                        "About-Fedora"));
+        Resource resource =
+                reader.extractTemplate(new InputSource(inputStream),
+                        LocaleId.EN_US, "About-Fedora");
         assertThat(resource.getTextFlows()).hasSize(1);
     }
 
     @Test
-    public void testDownloadTranslationFile() throws Exception {
+    public void testDownloadTranslationFile() {
         InputStream inputStream =
                 client.downloadTranslationFile("about-fedora", "master", "es",
                         "po", "About-Fedora").readEntity(InputStream.class);
         PoReader2 reader = new PoReader2();
-        TranslationsResource translationsResource = executeWithIODebug(
-                inputStream, in ->
-                        reader.extractTarget(new InputSource(in)));
+        TranslationsResource translationsResource =
+                reader.extractTarget(new InputSource(inputStream));
         assertThat(translationsResource.getTextFlowTargets()).hasSize(1);
     }
 
 }
+
+

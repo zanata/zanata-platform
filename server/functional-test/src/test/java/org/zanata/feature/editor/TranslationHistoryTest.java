@@ -54,11 +54,11 @@ public class TranslationHistoryTest extends ZanataTestCase {
                 .clickShowHistoryForRow(0);
 
         assertThat(editorPage.getHistoryEntryAuthor(0))
-                .as("The user is displayed")
-                .startsWith("admin");
+                .startsWith("admin")
+                .as("The user is displayed");
         assertThat(editorPage.getHistoryEntryContent(0))
-                .as("The content change is displayed")
-                .contains("historytest");
+                .contains("historytest")
+                .as("The content change is displayed");
     }
 
     @Test
@@ -79,19 +79,19 @@ public class TranslationHistoryTest extends ZanataTestCase {
                 .clickCompareOn(1);
 
         assertThat(editorPage.getTranslationHistoryCompareTabtext())
-                .as("The tab displays compared versions")
-                .isEqualTo("Compare ver. 2 and 1");
+                .isEqualTo("Compare ver. 2 and 1")
+                .as("The tab displays compared versions");
 
         editorPage = editorPage.clickCompareVersionsTab();
 
         assertThat(editorPage.getComparisonTextInRow(0))
-                .as("The new text is displayed")
-                .isEqualTo("historytest2");
+                .isEqualTo("historytest2")
+                .as("The new text is displayed");
         assertThat(editorPage.getComparisonTextInRow(1))
-                .as("The old text is also displayed")
-                .isEqualTo("historytest2");
+                .isEqualTo("historytest2")
+                .as("The old text is also displayed");
         assertThat(editorPage.getComparisonTextDiff())
-                .as("The diff is displayed")
-                .contains("--2");
+                .contains("--2")
+                .as("The diff is displayed");
     }
 }

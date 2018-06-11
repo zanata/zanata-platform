@@ -49,8 +49,8 @@ public class CreateProjectTest extends ZanataTestCase {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("Admin is logged in");
     }
 
     @Trace(summary = "The user can create a project")
@@ -60,8 +60,8 @@ public class CreateProjectTest extends ZanataTestCase {
                 .createNewSimpleProject("basicproject", "basicproject");
 
         assertThat(projectVersionsPage.getProjectName().trim())
-                .as("The project name is correct")
-                .isEqualTo("basicproject");
+                .isEqualTo("basicproject")
+                .as("The project name is correct");
     }
 
     @Trace(summary = "The user can create a project with description")
@@ -76,12 +76,12 @@ public class CreateProjectTest extends ZanataTestCase {
                 new ProjectWorkFlow().createNewProject(projectSettings);
 
         assertThat(projectPage.getProjectName().trim())
-                .as("The project name is correct")
-                .isEqualTo(projectSettings.get("Name"));
+                .isEqualTo(projectSettings.get("Name"))
+                .as("The project name is correct");
 
         assertThat(projectPage.getContentAreaParagraphs())
-                .as("The project content area shows the description")
-                .contains(projectSettings.get("Description"));
+                .contains(projectSettings.get("Description"))
+                .as("The project content area shows the description");
     }
 
 }

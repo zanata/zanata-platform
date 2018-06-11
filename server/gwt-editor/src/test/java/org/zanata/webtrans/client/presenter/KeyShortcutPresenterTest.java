@@ -132,51 +132,38 @@ public class KeyShortcutPresenterTest {
         keyShortcutPresenter.showShortcuts();
 
         // Shortcut list should contain Alt+Y and Esc shortcuts
-        assertThat(shortcutList.size())
-                .as("KeyShortcutPresenter should register 2 global shortcuts")
-                .isEqualTo(3);
+        assertThat(shortcutList.size()).isEqualTo(3)
+                .as("KeyShortcutPresenter should register 2 global shortcuts");
 
         // esc should be first as it has no modifiers
         Set<Keys> firstShortcutKeys = shortcutList.get(0).getAllKeys();
         String firstShortcut = "first shortcut should be Esc with no modifiers";
-        assertThat(firstShortcutKeys.size())
-                .as(firstShortcut)
-                .isEqualTo(1);
+        assertThat(firstShortcutKeys.size()).isEqualTo(1).as(firstShortcut);
         Keys firstShortcutFirstKeys = firstShortcutKeys.iterator().next();
-        assertThat(firstShortcutFirstKeys.getModifiers())
-                .as(firstShortcut)
-                .isEqualTo(0);
+        assertThat(firstShortcutFirstKeys.getModifiers()).isEqualTo(0)
+                .as(firstShortcut);
         assertThat(firstShortcutFirstKeys.getKeyCode())
-                .as(firstShortcut)
-                .isEqualTo(KeyCodes.KEY_ESCAPE);
+                .isEqualTo(KeyCodes.KEY_ESCAPE).as(firstShortcut);
 
         // Alt+X should be next
         Set<Keys> secondShortcutKeys = shortcutList.get(1).getAllKeys();
         String secondShortcut = "second shortcut should be Alt+X";
-        assertThat(secondShortcutKeys.size())
-                .as(secondShortcut)
-                .isEqualTo(1);
+        assertThat(secondShortcutKeys.size()).isEqualTo(1).as(secondShortcut);
         Keys secondShortcutFirstKeys = secondShortcutKeys.iterator().next();
         assertThat(secondShortcutFirstKeys.getModifiers())
-                .as(secondShortcut)
-                .isEqualTo(Keys.ALT_KEY);
-        assertThat(secondShortcutFirstKeys.getKeyCode())
-                .as(secondShortcut)
-                .isEqualTo((int) 'X');
+                .isEqualTo(Keys.ALT_KEY).as(secondShortcut);
+        assertThat(secondShortcutFirstKeys.getKeyCode()).isEqualTo((int) 'X')
+                .as(secondShortcut);
 
         // Alt+Y should be last
         Set<Keys> thirdShortcutKeys = shortcutList.get(2).getAllKeys();
         String thirdShortcut = "third shortcut should be Alt+Y";
-        assertThat(thirdShortcutKeys.size())
-                .as(thirdShortcut)
-                .isEqualTo(1);
+        assertThat(thirdShortcutKeys.size()).isEqualTo(1).as(thirdShortcut);
         Keys thirdShortcutFirstKeys = thirdShortcutKeys.iterator().next();
         assertThat(thirdShortcutFirstKeys.getModifiers())
-                .as(thirdShortcut)
-                .isEqualTo(Keys.ALT_KEY);
-        assertThat(thirdShortcutFirstKeys.getKeyCode())
-                .as(thirdShortcut)
-                .isEqualTo((int) 'Y');
+                .isEqualTo(Keys.ALT_KEY).as(thirdShortcut);
+        assertThat(thirdShortcutFirstKeys.getKeyCode()).isEqualTo((int) 'Y')
+                .as(thirdShortcut);
     }
 
     @Test

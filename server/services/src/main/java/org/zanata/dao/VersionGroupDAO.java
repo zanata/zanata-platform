@@ -31,8 +31,11 @@ import org.hibernate.Session;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
+import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -50,13 +53,24 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         super(HIterationGroup.class, session);
     }
 
-    public int getAllGroupsCount() {
-        return getAllGroups(-1, 0).size();
+    public int getAllGroupsCount(EntityStatus... statuses) {
+        return getAllGroups(-1, 0, statuses).size();
     }
 
-    public List<HIterationGroup> getAllGroups(int maxResult, int firstResult) {
-        Query query = getSession()
-                .createQuery("from HIterationGroup order by name asc");
+    public List<HIterationGroup> getAllGroups(int maxResult, int firstResult,
+        EntityStatus... statuses) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("from HIterationGroup ");
+        if (statuses != null && statuses.length >= 1) {
+            sb.append("where status in :statuses ");
+        }
+
+        sb.append("order by name asc");
+        Query query = getSession().createQuery(sb.toString());
+
+        if (statuses != null && statuses.length >= 1) {
+            query.setParameterList("statuses", Lists.newArrayList(statuses));
+        }
 
         query.setFirstResult(firstResult);
         if(maxResult != -1) {
@@ -96,10 +110,12 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         Query q = getSession().createQuery(
             "from HIterationGroup g " +
                 "where :maintainer in elements(g.maintainers) " +
+                "and g.status <> :obsolete " +
                 "and (g.name like :filter " +
                 "or g.slug like :filter) " +
                 "order by g.name")
             .setParameter("maintainer", maintainer)
+            .setParameter("obsolete", EntityStatus.OBSOLETE)
             .setParameter("filter", "%" + sqlFilter + "%")
             .setFirstResult(firstResult)
             .setMaxResults(maxResults);
@@ -113,31 +129,37 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         Query q = getSession().createQuery(
             "select count(g) from HIterationGroup g " +
                 "where :maintainer in elements(g.maintainers) " +
+                "and g.status <> :obsolete " +
                 "and (g.name like :filter " +
                 "or g.slug like :filter) " +
                 "order by g.name")
             .setParameter("maintainer", maintainer)
+            .setParameter("obsolete", EntityStatus.OBSOLETE)
             .setParameter("filter", "%" + sqlFilter + "%");
         return ((Long) q.uniqueResult()).intValue();
     }
 
     public List<HIterationGroup> searchGroupBySlugAndName(String searchTerm,
-            int maxResult, int firstResult) {
+            int maxResult, int firstResult, EntityStatus... statuses) {
         if (StringUtils.isEmpty(searchTerm)) {
-            return new ArrayList<>();
+            return new ArrayList<HIterationGroup>();
         }
         StringBuilder sb = new StringBuilder();
         sb.append("from HIterationGroup ")
-                .append("where (lower(slug) LIKE :searchTerm escape '!' ")
-                .append("OR lower(name) LIKE :searchTerm escape '!') ")
-                .append("order by name asc");
+                .append("where (lower(slug) LIKE lower(:searchTerm) escape '!' OR lower(name) LIKE lower(:searchTerm) escape '!') ");
+        if (statuses != null && statuses.length >= 1) {
+            sb.append("AND status in :statuses ");
+        }
+        sb.append("order by name asc");
         Query query = getSession().createQuery(sb.toString());
-        String escapeSearchTerm =
-                StringUtils.lowerCase(escapeQuery(searchTerm));
+        String escapeSearchTerm = escapeQuery(searchTerm);
         query.setParameter("searchTerm", "%" + escapeSearchTerm + "%");
         query.setFirstResult(firstResult);
         if(maxResult != -1) {
             query.setMaxResults(maxResult);
+        }
+        if (statuses != null && statuses.length >= 1) {
+            query.setParameterList("statuses", Lists.newArrayList(statuses));
         }
         query.setComment("VersionGroupDAO.searchGroupBySlugAndName");
         query.setCacheable(true);
@@ -146,7 +168,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         return list;
     }
 
-    public int searchGroupBySlugAndNameCount(String searchTerm) {
-        return searchGroupBySlugAndName(searchTerm, -1, 0).size();
+    public int searchGroupBySlugAndNameCount(String searchTerm, EntityStatus... statuses) {
+        return searchGroupBySlugAndName(searchTerm, -1, 0, statuses).size();
     }
 }

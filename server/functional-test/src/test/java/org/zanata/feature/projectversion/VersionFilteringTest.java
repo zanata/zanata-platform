@@ -59,35 +59,33 @@ public class VersionFilteringTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .loggedInAs())
-                .as("Login as translator")
-                .isEqualTo("translator");
+                .isEqualTo("translator")
+                .as("Login as translator");
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .goToProjectByName(projectName)
                 .expectDisplayedVersions(2);
 
-        assertVersions(projectVersionsPage, 2,
-                new String[]{ "bravo", "alpha" });
+        assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .clickSearchIcon()
                 .enterVersionSearch("alpha")
                 .expectDisplayedVersions(1);
 
-        assertVersions(projectVersionsPage, 1, new String[]{ "alpha" });
+        assertVersions(projectVersionsPage, 1, new String[]{"alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
                 .expectDisplayedVersions(2);
 
-        assertVersions(projectVersionsPage, 2,
-                new String[]{ "bravo", "alpha" });
+        assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .enterVersionSearch("bravo")
                 .expectDisplayedVersions(1);
 
-        assertVersions(projectVersionsPage, 1, new String[]{ "bravo" });
+        assertVersions(projectVersionsPage, 1, new String[]{"bravo"});
 
         projectVersionsPage.waitForPageSilence();
         projectVersionsPage = projectVersionsPage
@@ -102,19 +100,18 @@ public class VersionFilteringTest extends ZanataTestCase {
                 .clearVersionSearch()
                 .expectDisplayedVersions(2);
 
-        assertVersions(projectVersionsPage, 2,
-                new String[]{ "bravo", "alpha" });
+        assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
     }
 
     private void assertVersions(ProjectVersionsPage page,
                                 int versionsCount,
                                 String[] versionNames) {
         assertThat(page.getNumberOfDisplayedVersions())
-                .as("The version count is " + versionsCount)
-                .isEqualTo(versionsCount);
+                .isEqualTo(versionsCount)
+                .as("The version count is " + versionsCount);
 
         assertThat(page.getVersions())
-                .as("The versions are correct")
-                .contains(versionNames);
+                .contains(versionNames)
+                .as("The versions are correct");
     }
 }
