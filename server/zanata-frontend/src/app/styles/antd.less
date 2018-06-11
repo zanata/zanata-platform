@@ -4,6 +4,18 @@
 // Override new-zanata modal namespace styles
 .ant-modal-close {
   border: none !important;
-  background-color: initial !important;
-  padding: initial !important;
+  padding: 0 !important;
+  }
+  
+// pagination alignment on Explore page
+.teaserHeader .ant-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+// needed for new-zanata overrides on button styling
+.ant-btn-primary {
+  background-color: @primary-color;
+  color: @normal-color
 }
