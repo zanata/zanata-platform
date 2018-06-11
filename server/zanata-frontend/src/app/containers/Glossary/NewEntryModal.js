@@ -13,8 +13,6 @@ import Input from 'antd/lib/input'
 import 'antd/lib/input/style/'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/index.less'
-import notification from 'antd/lib/notification'
-import 'antd/lib/notification/style/css'
 
 import {
   glossaryToggleNewEntryModal,
@@ -27,7 +25,6 @@ class NewEntryModal extends Component {
     entry: PropTypes.object,
     isSaving: PropTypes.bool,
     show: PropTypes.bool,
-    terms: PropTypes.object,
     handleNewEntryDisplay: PropTypes.func,
     handleNewEntryCreate: PropTypes.func
   }
@@ -80,33 +77,12 @@ class NewEntryModal extends Component {
     })
   }
 
-  handleCreate = () => {
-    const { entry } = this.state
-    const { handleNewEntryCreate, terms } = this.props
-    const foundDuplicate = terms && Object.values(terms).some((term) => {
-      return (
-        term.description === entry.description &&
-        term.pos === entry.pos &&
-        term.srcTerm.content === entry.srcTerm.content
-      )
-    })
-    if (foundDuplicate) {
-      notification.error({
-        message: 'Could not create Glossary entry.',
-        description: 'Duplicate entry exists.',
-        duration: null
-      })
-    } else {
-      handleNewEntryCreate(this.state.entry)
-      this.resetFields()
-    }
-  }
-
   render () {
     const {
       show,
       isSaving,
-      handleNewEntryDisplay
+      handleNewEntryDisplay,
+      handleNewEntryCreate
       } = this.props
     const isAllowSave = !isEmpty(this.state.entry.srcTerm.content)
 
@@ -129,7 +105,11 @@ class NewEntryModal extends Component {
             aria-label='button'
             type='primary'
             disabled={!isAllowSave || isSaving}
-            onClick={this.handleCreate}>
+            onClick={
+              () => {
+                handleNewEntryCreate(this.state.entry); this.resetFields()
+              }
+            }>
             <LoaderText loading={isSaving} loadingText='Saving'>
               Save
             </LoaderText>
@@ -164,9 +144,8 @@ class NewEntryModal extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { terms } = state.glossary
   const { entry, isSaving, show } = state.glossary.newEntry
-  return { entry, isSaving, show, terms }
+  return { entry, isSaving, show }
 }
 
 const mapDispatchToProps = (dispatch) => {

@@ -283,8 +283,8 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         // Different entry with same source content, pos and description
         if (!sameHashEntry.getId().equals(from.getId())) {
             return Optional.of("Duplicate glossary entry in source locale \'"
-                    + srcLocale + "\' ,source content \'" + srcTerm.getContent()
-                    + "\' ,pos \'" + from.getPos() + "\' ,description \'"
+                    + srcLocale + "\', source content \'" + srcTerm.getContent()
+                    + "\', pos \'" + from.getPos() + "\', description \'"
                     + from.getDescription() + "\'");
         }
         return Optional.empty();
