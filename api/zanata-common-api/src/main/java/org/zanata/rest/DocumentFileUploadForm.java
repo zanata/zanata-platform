@@ -87,10 +87,16 @@ public class DocumentFileUploadForm implements Serializable {
         this.fileStream = fileStream;
     }
 
+    /**
+     * A DocumentType name if known, otherwise the (unknown) source extension - eg ".po".
+     */
     public String getFileType() {
         return fileType;
     }
 
+    /**
+     * A DocumentType name if known, otherwise the (unknown) source extension - eg ".po".
+     */
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }

@@ -144,7 +144,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
             throw new ZanataServiceException("Project version not found: "
                     + projectSlug + " " + iterationSlug);
         }
-        if (fileName.endsWith(".po")) {
+        if (fileName.endsWith(".po") || DocumentType.GETTEXT.name().equals(documentType.orNull())) {
             // Always process a standard translation file
             return parsePoFile(fileContents, projectSlug, iterationSlug, docId);
         } else if (version.getProjectType() == ProjectType.File) {
@@ -165,6 +165,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     public TranslationsResource parsePoFile(InputStream fileContents,
             String projectSlug, String iterationSlug, String docId) {
         boolean originalIsPo = isPoDocument(projectSlug, iterationSlug, docId);
+        log.debug("original doc {}/{}/{} is of type PO: {}", projectSlug, iterationSlug, docId, originalIsPo);
         try {
             return parsePoFile(fileContents, !originalIsPo);
         } catch (Exception e) {
@@ -176,17 +177,19 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     @Override
     public TranslationsResource parseAdapterTranslationFile(File tempFile,
             String projectSlug, String iterationSlug, String docId,
-            String localeId, String fileName, Optional<String> documentType) {
+            String localeId, String fileNameOrType, Optional<String> documentType) {
         HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug,
                 iterationSlug, docId);
         TranslationsResource transRes;
-        FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
+        // TODO can fileNameOrType actually be a DocumentType name? getAdapterFor doesn't accept DocumentType name
+        // This method should probably accept a non-optional DocumentType instead
+        FileFormatAdapter adapter = getAdapterFor(documentType, fileNameOrType);
         try {
             transRes = adapter.parseTranslationFile(tempFile.toURI(),
                     doc.getSourceLocaleId(), localeId, getAdapterParams(doc));
         } catch (FileFormatAdapterException e) {
             throw new ZanataServiceException(
-                    "Error parsing translation file: " + fileName, e);
+                    "Error parsing translation file: " + fileNameOrType, e);
         } catch (RuntimeException e) {
             throw new ZanataServiceException(e);
         }
@@ -221,6 +224,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
 
     @Override
     public boolean hasMultipleDocumentTypes(String fileNameOrExtension) {
+        // TODO what about fromTranslationExtension?
         String extension = FilenameUtils.getExtension(fileNameOrExtension);
         return DocumentType.fromSourceExtension(extension).size() > 1;
     }
@@ -341,19 +345,19 @@ public class TranslationFileServiceImpl implements TranslationFileService {
      * Get an appropriate adapter for a document type or file name.
      *
      * @param documentType
-     * @param fileName
+     * @param fileNameOrExtension
      * @return adapter for given documentType if present, otherwise return
      *         adapter with given fileName.
      */
     private FileFormatAdapter getAdapterFor(Optional<String> documentType,
-            @Nonnull String fileName) {
+            @Nonnull String fileNameOrExtension) {
         if (documentType.isPresent()
                 && StringUtils.isNotEmpty(documentType.get())) {
             DocumentType docType = DocumentType.valueOf(documentType.get());
             return docType != null ? getAdapterFor(docType)
-                    : getAdapterFor(fileName);
+                    : getAdapterFor(fileNameOrExtension);
         }
-        return getAdapterFor(fileName);
+        return getAdapterFor(fileNameOrExtension);
     }
 
     @Override
@@ -423,6 +427,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
             if (doc.getRawDocument() == null) {
                 // po is the only format in File projects for which no raw
                 // document is stored
+                // TODO this doesn't seem like a safe assumption, long term - what about doc.contentType?
                 return true;
             }
             // additional check in case we do start storing raw documents for po

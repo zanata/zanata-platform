@@ -113,26 +113,21 @@ public class TranslationDocumentUpload implements Serializable {
                 }
             }
             TranslationsResource transRes;
-            if (uploadForm.getFileType().equals(".po")) {
+            String fileType = uploadForm.getFileType();
+            if (fileType.equals(".po") || fileType.equals(DocumentType.GETTEXT.name())) {
                 InputStream poStream = getInputStream(tempFile, uploadForm);
                 transRes = translationFileServiceImpl.parsePoFile(poStream,
                         id.getProjectSlug(), id.getVersionSlug(),
                         id.getDocId());
             } else {
-                if (!tempFile.isPresent()) {
-                    tempFile = Optional
-                            .of(util.persistTempFileFromUpload(uploadForm));
-                }
-                // FIXME this is misusing the 'filename' field. the method
-                // should probably take a
-                // type anyway
+                File temp = tempFile.or(util.persistTempFileFromUpload(uploadForm));
                 Optional<String> docType =
-                        Optional.fromNullable(uploadForm.getFileType());
+                        Optional.fromNullable(fileType);
                 transRes =
                         translationFileServiceImpl.parseAdapterTranslationFile(
-                                tempFile.get(), id.getProjectSlug(),
+                                temp, id.getProjectSlug(),
                                 id.getVersionSlug(), id.getDocId(), localeId,
-                                uploadForm.getFileType(), docType);
+                                fileType, docType);
             }
             if (tempFile.isPresent()) {
                 boolean deleted = tempFile.get().delete();
@@ -143,7 +138,7 @@ public class TranslationDocumentUpload implements Serializable {
                 }
             }
             Set<String> extensions =
-                    newExtensions(uploadForm.getFileType().equals(".po"));
+                    newExtensions(fileType.equals(".po"));
             // TODO useful error message for failed saving?
             List<String> warnings = translationServiceImpl.translateAllInDoc(
                     id.getProjectSlug(), id.getVersionSlug(), id.getDocId(),

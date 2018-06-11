@@ -50,9 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.contentOf;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.rest.service.FileResource.FILETYPE_GETTEXT;
 import static org.zanata.rest.service.FileResource.FILETYPE_OFFLINE_PO;
@@ -110,7 +108,7 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void downloadAsGettext1() {
+    public void downloadFromGettextProjectAsGettext1() {
         // uses data from TextFlowTestData.dbunit.xml
         final Response response = getFileResource()
                 .downloadTranslationFile("sample-project", "1.0", "en-US", FILETYPE_GETTEXT, "my/path/document.txt", false);
@@ -129,7 +127,7 @@ public class FileRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void downloadAsGettext2() {
+    public void downloadFromGettextProjectAsGettext2() {
         // uses data from TextFlowTestData.dbunit.xml
         Response response = getFileResource()
                 .downloadTranslationFile("sample-project", "1.0", "en-US", FILETYPE_GETTEXT, "my/path/document-2.txt", false);
@@ -219,7 +217,11 @@ public class FileRawRestITCase extends RestTest {
                         "msgstr \"\"");
 
         // TODO sort out problem with uploading offlinepo (source hashes don't match)
-//        uploadTranslationFile("test-text-es.txt.po", filename, ".po", "es");
+
+        // Hint: TranslationFileServiceImpl.parsePoFile(InputStream, String, String, String) works with offlinepo
+        // but this doesn't: TranslationFileServiceImpl.parseAdapterTranslationFile
+
+        uploadTranslationFile("test-text-es.txt.po", filename, DocumentType.GETTEXT.name(), "es");
 //
 //        String downloadedContent = downloadTranslationFile("es", FILETYPE_TRANSLATED_APPROVED,
 //                filename, false, filename);

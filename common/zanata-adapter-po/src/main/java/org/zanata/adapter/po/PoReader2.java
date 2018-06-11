@@ -51,8 +51,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class PoReader2 {
 
-    public static final ContentType PO_CONTENT_TYPE = new ContentType(
-            "application/x-gettext");
+    public static final ContentType PO_CONTENT_TYPE = ContentType.PO;
 
     public static final ImmutableSet<String> POT_HEADER_FIELDS = ImmutableSet
             .of(HeaderFields.KEY_ProjectIdVersion,

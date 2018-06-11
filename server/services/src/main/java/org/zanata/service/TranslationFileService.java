@@ -50,6 +50,7 @@ public interface TranslationFileService extends Serializable {
      * @param fileName
      *            the name including extension for the file (used to determine
      *            how to parse file)
+     *            or a DocumentType name, or an unknown extension (probably .po)
      * @return a representation of the translations
      * @throws ZanataServiceException
      *             if there is no adapter available for the document format, or
@@ -61,7 +62,8 @@ public interface TranslationFileService extends Serializable {
 
     /**
      * Extract the translated strings from a po file to usable form, using
-     * appropriate id mapping.
+     * appropriate id mapping. In other words, it uses offlinepo if the
+     * specified document is not a PO file.
      *
      * @param fileContents
      *            the po document to parse
@@ -79,8 +81,9 @@ public interface TranslationFileService extends Serializable {
      *
      * @param tempFile
      *            the document to parse
-     * @param fileName
-     *            used to determine appropriate adapter
+     * @param fileNameOrType
+     *            used to determine appropriate adapter. Can apparently be a
+     *            filename, a DocumentType name or an unknown source extension (eg .po)
      * @return a representation of the translations
      * @throws ZanataServiceException
      *             if there is no adapter available for the document format, or
@@ -88,7 +91,7 @@ public interface TranslationFileService extends Serializable {
      */
     TranslationsResource parseAdapterTranslationFile(File tempFile,
             String projectSlug, String iterationSlug, String docId,
-            String localeId, String fileName, Optional<String> documentType) throws ZanataServiceException;
+            String localeId, String fileNameOrType, Optional<String> documentType) throws ZanataServiceException;
 
     /**
      * Extract the translatable strings from a new document file or from a new

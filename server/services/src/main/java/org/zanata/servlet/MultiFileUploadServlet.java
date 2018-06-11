@@ -415,12 +415,16 @@ public class MultiFileUploadServlet extends HttpServlet {
             return form;
         }
 
+        /*
+         * Returns a DocumentType name if possible, otherwise the (unknown) source extension (eg .po).
+         */
         private String getFileTypeForItem(String filename) {
             String extension = FilenameUtils.getExtension(filename);
-            /**
+            /*
              * TODO: Implement docType selection for multifile upload. At the
              * moment, get the first docType from returned list.
              */
+            // TODO what about fromTranslationExtension?
             DocumentType fileType = DocumentType.fromSourceExtension(extension)
                     .iterator().next();
             if (!fileTypes.isEmpty()) {
