@@ -1,21 +1,14 @@
 @import "~antd/dist/antd.less";
 @import "./ant-theme-vars.less";
 
+// antd style overrides
+
 // Override new-zanata modal namespace styles
 .ant-modal-close {
   border: none !important;
   background-color: initial !important;
   padding: initial !important;
 }
-
-// pagination alignment on Explore page
-.teaserHeader .ant-layout {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-}
-
-// antd style overrides
 
 .ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
   vertical-align: inherit;
@@ -24,4 +17,15 @@
 
 .ant-form-inline .ant-form-item {
   display: flex;
+}
+
+input.react-autosuggest__input {
+  background-color: transparent;
+}
+
+// pagination alignment on Explore page
+.teaserHeader .ant-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
 }

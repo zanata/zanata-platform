@@ -181,6 +181,10 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
       pageCount={pageCount}
       countPerPage={COUNT_PER_PAGE}
     />
+  // Do not show the comment box if no translations to comment on
+  const commentBox = isEmpty(latest)
+    ? DO_NOT_RENDER
+    : <CommentBox postComment={postComment} maxLength={commentTextLimit} />
   return (
     <div>
       <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
@@ -188,7 +192,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
           selected={selectedActivites} />
       </div>
       <div className="SidebarActivity">
-        <CommentBox postComment={postComment} maxLength={commentTextLimit} />
+        {commentBox}
         {ActivityPager}
       </div>
     </div>
