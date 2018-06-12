@@ -51,10 +51,11 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
+        boolean includeFuzzy = getOpts().getIncludeFuzzy();
         File transFileToWrite = getTransFileToWrite(docName, localeMapping);
         PropWriter.writeTranslationsFile(doc, targetDoc,
             transFileToWrite,
-            PropWriter.CHARSET.UTF8, createSkeletons);
+            PropWriter.CHARSET.UTF8, createSkeletons, includeFuzzy);
         return null;
     }
 

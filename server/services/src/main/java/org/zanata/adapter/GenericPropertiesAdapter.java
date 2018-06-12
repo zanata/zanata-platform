@@ -122,11 +122,12 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
             throws FileFormatAdapterException, IllegalArgumentException {
         // write source string with empty translation
         boolean createSkeletons = true;
+        boolean includeFuzzy = true;
         File tempFile = null;
         try {
             tempFile = File.createTempFile("filename", "extension");
             PropWriter.writeTranslationsFile(resource, translationsResource,
-                    tempFile, charset, createSkeletons);
+                    tempFile, charset, createSkeletons, includeFuzzy);
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {
             throw new FileFormatAdapterException(

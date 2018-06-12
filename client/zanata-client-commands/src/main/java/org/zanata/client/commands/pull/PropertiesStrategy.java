@@ -63,10 +63,11 @@ public class PropertiesStrategy extends AbstractPullStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
+        boolean includeFuzzy = getOpts().getIncludeFuzzy();
         File transFileToWrite = getTransFileToWrite(docName, localeMapping);
         PropWriter.writeTranslationsFile(createSkeletons ? doc : null,
                 targetDoc, transFileToWrite, PropWriter.CHARSET.Latin1,
-                createSkeletons);
+                createSkeletons, includeFuzzy);
 
         return null;
     }

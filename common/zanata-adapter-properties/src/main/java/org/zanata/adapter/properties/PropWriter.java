@@ -82,19 +82,20 @@ public class PropWriter {
      * @param propertiesFile
      * @param charset
      * @param createSkeletons
+     * @param includeFuzzy
      * @throws IOException
      */
     public static void writeTranslationsFile(final Resource srcDoc,
             final TranslationsResource doc,
             final File propertiesFile, final CHARSET charset,
-            boolean createSkeletons) throws IOException {
+            boolean createSkeletons, boolean includeFuzzy) throws IOException {
 
         Properties targetProp = new Properties();
 
         if (srcDoc == null) {
             for (TextFlowTarget target : doc.getTextFlowTargets()) {
                 textFlowTargetToProperty(target.getResId(), target, targetProp,
-                    createSkeletons);
+                    createSkeletons, includeFuzzy);
             }
         } else {
             Map<String, TextFlowTarget> targets = new HashMap<>();
@@ -106,7 +107,7 @@ public class PropWriter {
             for (TextFlow textFlow : srcDoc.getTextFlows()) {
                 TextFlowTarget target = targets.get(textFlow.getId());
                 textFlowTargetToProperty(textFlow.getId(), target, targetProp,
-                    createSkeletons);
+                    createSkeletons, includeFuzzy);
             }
         }
         storeProps(targetProp, propertiesFile, charset);
@@ -128,13 +129,13 @@ public class PropWriter {
      */
     public static void writeTranslations(Resource srcDoc, final TranslationsResource doc,
         final File baseDir, String bundleName, String locale,
-        final CHARSET charset, boolean createSkeletons) throws IOException {
+        final CHARSET charset, boolean createSkeletons, boolean includeFuzzy) throws IOException {
         File langFile =
             new File(baseDir, bundleName + "_" + locale + ".properties");
         PathUtil.makeDirs(langFile.getParentFile());
         log.debug("Creating target file {}", langFile);
 
-        writeTranslationsFile(srcDoc, doc, langFile, charset, createSkeletons);
+        writeTranslationsFile(srcDoc, doc, langFile, charset, createSkeletons, includeFuzzy);
     }
 
     private static void storeProps(Properties props, File file, CHARSET charset)
@@ -155,11 +156,11 @@ public class PropWriter {
 
     private static void textFlowTargetToProperty(String resId,
             TextFlowTarget target, Properties targetProp,
-            boolean createSkeletons) {
-        if (target == null || !target.getState().isTranslated()
+            boolean createSkeletons, boolean includeFuzzy) {
+        if (target == null || (!target.getState().isTranslated() && !includeFuzzy)
                 || target.getContents() == null
                 || target.getContents().size() == 0) {
-            // don't save fuzzy or empty values
+            // don't save fuzzy or empty values unless includeFuzzy is set
             if (createSkeletons) {
                 targetProp.setProperty(resId, "");
             }
