@@ -204,7 +204,7 @@ const glossary = handleActions({
     notification: {
       severity: SEVERITY.INFO,
       message: 'File imported successfully',
-      details: size(action.payload.glossaryEntries) + ' terms imported.'
+      description: size(action.payload.glossaryEntries) + ' terms imported.'
     }
   }),
   [GLOSSARY_UPLOAD_FAILURE]: (state, action) => ({

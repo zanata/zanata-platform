@@ -1,7 +1,6 @@
 export {default as Nav} from './Nav'
 export {default as NavItem} from './Nav/NavItem'
 export {default as NavIcon} from './Nav/NavIcon'
-export {default as Notification} from './Notification'
 export {default as TextInput} from './TextInput'
 export {default as EditableText} from './EditableText'
 export {default as Icon} from './Icon'
