@@ -124,25 +124,7 @@ public class PullCommandTest {
         opts.setPullType("trans");
         opts.setMinDocPercent(0);
 
-        pullCommand = new PullCommand(opts, restClientFactory) {
-            @Override
-            protected List<String>
-                    getQualifiedDocNamesForCurrentModuleFromServer() {
-                return Lists.newArrayList("file1");
-            }
-
-            @Override
-            protected void pullDocForLocale(PullStrategy strat, Resource doc,
-                    String localDocName, String docUri,
-                    boolean createSkeletons,
-                    LocaleMapping locMapping, File transFile)
-                    throws IOException {
-                // pretend we are pulling
-                transClient.getTranslations(docUri,
-                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, null);
-            }
-        };
+        pullCommand = getPullCommand();
 
         // When:
         pullCommand.run();
@@ -150,11 +132,9 @@ public class PullCommandTest {
         // Then:
         verifyZeroInteractions(statsClient);
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false,
-                null);
+                EXTENSIONS, false, null);
         verify(transClient).getTranslations("file1", new LocaleId("de"),
-                EXTENSIONS, false,
-                null);
+                EXTENSIONS, false, null);
     }
 
     @Test
@@ -188,25 +168,7 @@ public class PullCommandTest {
                 .getStatistics(projectSlug, versionSlug, true, false, new String[] {"zh", "de"}))
                 .thenReturn(statistics);
 
-        pullCommand = new PullCommand(opts, restClientFactory) {
-            @Override
-            protected List<String>
-                    getQualifiedDocNamesForCurrentModuleFromServer() {
-                return Lists.newArrayList("file1");
-            }
-
-            @Override
-            protected void pullDocForLocale(PullStrategy strat, Resource doc,
-                    String localDocName, String docUri,
-                    boolean createSkeletons,
-                    LocaleMapping locMapping, File transFile)
-                    throws IOException {
-                // pretend we are pulling
-                transClient.getTranslations(docUri,
-                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, null);
-            }
-        };
+        pullCommand = getPullCommand();
 
         // When:
         pullCommand.run();
@@ -215,8 +177,7 @@ public class PullCommandTest {
         verify(statsClient).getStatistics(projectSlug, versionSlug, true,
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false,
-                null);
+                EXTENSIONS, false, null);
         verifyNoMoreInteractions(transClient);
     }
 
@@ -251,25 +212,7 @@ public class PullCommandTest {
                 .getStatistics(projectSlug, versionSlug, true, false, new String[] {"zh", "de"}))
                 .thenReturn(statistics);
 
-        pullCommand = new PullCommand(opts, restClientFactory) {
-            @Override
-            protected List<String>
-            getQualifiedDocNamesForCurrentModuleFromServer() {
-                return Lists.newArrayList("file1");
-            }
-
-            @Override
-            protected void pullDocForLocale(PullStrategy strat, Resource doc,
-                    String localDocName, String docUri,
-                    boolean createSkeletons,
-                    LocaleMapping locMapping, File transFile)
-                    throws IOException {
-                // pretend we are pulling
-                transClient.getTranslations(docUri,
-                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
-                        createSkeletons, null);
-            }
-        };
+        pullCommand = getPullCommand();
 
         // When:
         pullCommand.run();
@@ -278,9 +221,31 @@ public class PullCommandTest {
         verify(statsClient).getStatistics(projectSlug, versionSlug, true,
                 false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
-                EXTENSIONS, false,
-                null);
+                EXTENSIONS, false, null);
         verifyNoMoreInteractions(transClient);
+    }
+
+    private PullCommand getPullCommand() {
+        return new PullCommand(opts, restClientFactory) {
+            @Override
+            protected List<String>
+            getQualifiedDocNamesForCurrentModuleFromServer() {
+                return Lists.newArrayList("file1");
+            }
+
+            @Override
+            protected void pullDocForLocale(PullStrategy strat, Resource doc,
+                                            String localDocName, String docUri,
+                                            boolean createSkeletons,
+                                            LocaleMapping locMapping,
+                                            File transFile)
+                    throws IOException {
+                // pretend we are pulling
+                transClient.getTranslations(docUri,
+                        new LocaleId(locMapping.getLocale()), EXTENSIONS,
+                        createSkeletons, null);
+            }
+        };
     }
 
 }

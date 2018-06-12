@@ -28,6 +28,11 @@ milestone()
 
 PullRequests.ensureJobDescription(env, manager, steps)
 
+@Field
+boolean allFuncTestsDefault
+//noinspection GroovyPointlessBoolean
+allFuncTestsDefault = manager.build.project.description?.contains('allFuncTests') || false
+
 // initialiser must be run separately (bindings not available during compilation phase)
 // we can't set these values yet, because we need a node to look at the environment
 @Field
@@ -69,7 +74,7 @@ node {
         ],
         [
           $class: 'BooleanParameterDefinition',
-          defaultValue: false,
+          defaultValue: allFuncTestsDefault,
           description: 'Run all functional tests?',
           name: 'allFuncTests'
         ],
@@ -126,7 +131,7 @@ boolean resolveAllFuncTests() {
     echo "allFuncTests param is null; using default value."
   }
   // paramVal may be a String, so compare as Strings
-  def result = (paramVal ?: false).toString().equals("true")
+  def result = (paramVal ?: allFuncTestsDefault).toString().equals("true")
   echo "allFuncTests: $result"
 
   return result
@@ -236,6 +241,7 @@ timestamps {
             -Dkotlin.compiler.incremental=false \
             -DskipFuncTests \
             -DskipArqTests \
+            -Dmaven.compiler.failOnWarning \
             -Dmaven.test.failure.ignore \
             -Ddepcheck \
           """
@@ -295,8 +301,8 @@ timestamps {
 
           step([$class: 'WarningsPublisher',
                 consoleParsers: [
-                        [parserName: 'Java Compiler (javac)'],
-
+                        // we use maven.compiler.failOnWarning instead
+                        // [parserName: 'Java Compiler (javac)'],
                         // we use arg -Werror instead
                         // [parserName: 'kotlin'],
                         [parserName: 'JavaDoc'],

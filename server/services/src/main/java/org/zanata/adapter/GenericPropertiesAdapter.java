@@ -118,7 +118,7 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
     @Override
     public void writeTranslatedFile(OutputStream output, URI originalFile,
             Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params)
+            String locale, Optional<String> params, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         // write source string with empty translation
         boolean createSkeletons = true;
@@ -126,7 +126,7 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
         try {
             tempFile = File.createTempFile("filename", "extension");
             PropWriter.writeTranslationsFile(resource, translationsResource,
-                    tempFile, charset, createSkeletons);
+                    tempFile, charset, createSkeletons, approvedOnly);
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {
             throw new FileFormatAdapterException(

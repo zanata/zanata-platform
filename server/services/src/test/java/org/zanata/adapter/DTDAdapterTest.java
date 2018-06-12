@@ -30,6 +30,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import java.io.File;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -50,7 +51,16 @@ public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
     }
 
     @Test
-    public void testTranslatedDTDDocument() throws Exception {
+    public void testTranslatedDTDDocument() {
+        testTranslatedDTDDocument(false);
+    }
+
+    @Test
+    public void testTranslatedDTDDocumentApprovedOnly() {
+        testTranslatedDTDDocument(true);
+    }
+
+    private void testTranslatedDTDDocument(boolean approvedOnly) {
         File testFile = getTestFile("basicdtd.dtd");
         Resource resource = parseTestFile("basicdtd.dtd");
 
@@ -70,12 +80,18 @@ public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(output, testFile.toURI(),
-                resource, translationsResource, "dv-DL", Optional.absent());
+                resource, translationsResource, "dv-DL", Optional.absent(),
+                approvedOnly);
 
-        assertThat(output.toString()).isEqualTo(
-                "<!ENTITY firstField \"Dakta Amna\">\n" +
-                "<!ENTITY secondField \"Dakta Tba\">\n" +
-                "<!ENTITY thirdField \"Dakta Kba\">\n");
+        String trans1 = "Dakta Amna";
+        // use the English source if approvedOnly
+        String trans2 = approvedOnly ? "Line Two" : "Dakta Tba";
+        // just the English source
+        String trans3 = "Line Three";
+        assertThat(output.toString(UTF_8)).isEqualTo(
+                "<!ENTITY firstField \"" + trans1 + "\">\n" +
+                        "<!ENTITY secondField \"" + trans2 + "\">\n" +
+                        "<!ENTITY thirdField \"" + trans3 + "\">\n");
     }
 
 }
