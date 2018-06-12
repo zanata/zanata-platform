@@ -14,7 +14,8 @@ import {
   QUEUE_SAVE,
   SAVE_INITIATED,
   PENDING_SAVE_INITIATED,
-  SAVE_FINISHED
+  SAVE_FINISHED,
+  SAVE_FAILED
 } from './phrases-action-types'
 import {
   defaultSaveStatus,
@@ -134,6 +135,13 @@ const saveFinished = createAction(SAVE_FINISHED,
     revision
   }))
 
+const saveFailed = createAction(SAVE_FAILED,
+  (phraseId, saveInfo, response) => ({
+    phraseId,
+    saveInfo,
+    response
+  }))
+
 export function savePhraseWithStatus (phrase, status, reviewComment) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
@@ -185,10 +193,7 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
         .then(response => {
           if (isErrorResponse(response)) {
             console.error('Failed to save phrase')
-            // TODO dispatch an error about save failure
-            //      this should remove the inProgressSave data
-            // FIXME make phraseSaveFailed exist
-            // dispatch(phraseSaveFailed(currentPhrase, saveInfo))
+            dispatch(saveFailed(phrase.id, saveInfo, response))
           } else {
             response.json().then(({ revision, status }) => {
               dispatch(saveFinished(phrase.id, status, revision)).then(

@@ -33,5 +33,4 @@ public class PullModuleMojo extends AbstractPullMojo {
     public boolean getEnableModules() {
         return true;
     }
-
 }

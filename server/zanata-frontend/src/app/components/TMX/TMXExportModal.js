@@ -105,7 +105,7 @@ class TMXExportModal extends Component {
       const downloadTMX = handleExportTMX.bind(undefined,
         srcLang.localeDetails, project, version)
       return (
-        <Row type="flex" justify="center">
+        <Row type="flex" justify="center" key={localeId}>
           <Col span={6}>
             <Tooltip title={localeTooltipMsg}>
               <a href='#'>{localeId}</a>
