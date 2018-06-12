@@ -29,6 +29,7 @@ import java.io.InputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -129,7 +130,7 @@ public class FileSystemPersistService implements FilePersistService {
     }
 
     @Override
-    public InputStream getRawDocumentContentAsStream(HRawDocument document)
+    public InputStream getRawDocumentContentAsStream(@Nonnull HRawDocument document)
             throws RawDocumentContentAccessException {
         File rawFile = getFileForRawDocument(document);
         try {
@@ -152,7 +153,7 @@ public class FileSystemPersistService implements FilePersistService {
         return false;
     }
 
-    private File getFileForRawDocument(HRawDocument rawDocument) {
+    private File getFileForRawDocument(@Nonnull HRawDocument rawDocument) {
         return getFileForName(rawDocument.getFileId());
     }
 }

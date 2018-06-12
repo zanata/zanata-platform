@@ -23,16 +23,19 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.OutputStream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -106,7 +109,8 @@ public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
     }
 
     private void testTranslatedGettext(boolean approvedOnly) {
-        Resource resource = parseTestFile("test-gettext-untranslated.pot");
+        File sourceFile = getTestFile("test-gettext-untranslated.pot");
+        Resource resource = parseTestFile(sourceFile);
 
         String firstSourceId = resource.getTextFlows().get(0).getId();
         String secondSourceId = resource.getTextFlows().get(1).getId();
@@ -118,8 +122,11 @@ public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
         addTranslation(transResource, thirdSourceId, "Conectar", ContentState.NeedReview);
 
         OutputStream outputStream = new ByteArrayOutputStream();
-        adapter.writeTranslatedFile(outputStream, null, resource,
-                transResource, "es", Optional.absent(), approvedOnly);
+        ParserOptions sourceOptions = new ParserOptions(sourceFile.toURI(), LocaleId.EN, "");
+        TranslatedDoc translatedDoc = new TranslatedDoc(resource, transResource, LocaleId.ES);
+        adapter.writeTranslatedFile(outputStream,
+                new WriterOptions(sourceOptions, translatedDoc),
+                approvedOnly);
         assertThat(outputStream.toString()).contains(
                 "\n\nmsgctxt \"0293301ed6a54b7e4503e74bba17bf11\"\nmsgid \"Parent Folder\"\n" +
                         "msgstr \"Carpeta padre\"");

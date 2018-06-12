@@ -20,7 +20,6 @@
  */
 package org.zanata.adapter;
 
-import com.google.common.base.Optional;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -52,13 +51,18 @@ abstract class AbstractAdapterTest <T extends FileFormatAdapter> {
         return adapter;
     }
 
-    Resource parseTestFile(String fileName) {
-        File testFile = new File(resourcePath.concat(fileName));
+    protected Resource parseTestFile(String fileName) {
+        File testFile = getTestFile(fileName);
+        return parseTestFile(testFile);
+    }
+
+    protected Resource parseTestFile(File testFile) {
         if (!testFile.exists()) {
             throw new RuntimeException("missing test file: " + testFile.getAbsolutePath());
         }
-        return adapter.parseDocumentFile(testFile.toURI(),
-                LocaleId.EN, Optional.absent());
+        return adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                testFile.toURI(),
+                LocaleId.EN, ""));
     }
 
     File getTestFile(String fileName) {

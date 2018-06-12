@@ -31,6 +31,7 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.adapter.GettextAdapter;
 import org.zanata.adapter.HTMLAdapter;
 import org.zanata.adapter.IDMLAdapter;
@@ -62,10 +63,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.common.DocumentType.GETTEXT;
 import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;
@@ -182,8 +184,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         TranslationsResource transRes;
         FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
         try {
-            transRes = adapter.parseTranslationFile(tempFile.toURI(),
-                    doc.getSourceLocaleId(), localeId, getAdapterParams(doc));
+            transRes = adapter.parseTranslationFile(
+                    new ParserOptions(tempFile.toURI(), new LocaleId(localeId), getAdapterParams(doc)));
         } catch (FileFormatAdapterException e) {
             throw new ZanataServiceException(
                     "Error parsing translation file: " + fileName, e);
@@ -193,14 +195,14 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         return transRes;
     }
 
-    public Optional<String> getAdapterParams(HDocument doc) {
+    public String getAdapterParams(HDocument doc) {
         if (doc != null) {
             HRawDocument rawDoc = doc.getRawDocument();
             if (rawDoc != null) {
-                return Optional.fromNullable(rawDoc.getAdapterParameters());
+                return nullToEmpty(rawDoc.getAdapterParameters());
             }
         }
-        return Optional.<String> absent();
+        return "";
     }
 
     @Override
@@ -235,23 +237,22 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     }
 
     @Override
-    public Resource parseAdapterDocumentFile(URI documentFile,
-            String documentPath, String fileName, Optional<String> params,
+    public Resource parseAdapterDocumentFile(
+            String documentPath, String fileName, ParserOptions options,
             Optional<String> documentType) throws ZanataServiceException {
-        return parseUpdatedAdapterDocumentFile(documentFile,
+        return parseUpdatedAdapterDocumentFile(
                 FileUtil.convertToValidPath(documentPath) + fileName, fileName,
-                params, documentType);
+                options, documentType);
     }
 
     @Override
-    public Resource parseUpdatedAdapterDocumentFile(URI documentFile,
-            String docId, String fileName, Optional<String> params,
+    public Resource parseUpdatedAdapterDocumentFile(
+            String docId, String fileName, ParserOptions options,
             Optional<String> documentType) throws ZanataServiceException {
         FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
         Resource doc;
         try {
-            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"),
-                    params);
+            doc = adapter.parseDocumentFile(options);
         } catch (FileFormatAdapterException e) {
             throw new ZanataServiceException(
                     "Error parsing document file: " + fileName, e);
