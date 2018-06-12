@@ -185,8 +185,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         TranslationsResource transRes;
         FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
         try {
-            transRes = adapter.parseTranslationFile(tempFile.toURI(),
-                    doc.getSourceLocaleId(), localeId, getAdapterParams(doc));
+            transRes = adapter.parseTranslationFile(
+                    new ParserOptions(tempFile.toURI(), new LocaleId(localeId), getAdapterParams(doc)));
         } catch (FileFormatAdapterException e) {
             throw new ZanataServiceException(
                     "Error parsing translation file: " + fileName, e);

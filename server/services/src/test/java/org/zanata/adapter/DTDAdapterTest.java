@@ -25,6 +25,8 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -79,8 +81,10 @@ public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
                 ContentState.NeedReview);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        adapter.writeTranslatedFile(output, testFile.toURI(),
-                resource, translationsResource, "dv-DL", "",
+        FileFormatAdapter.ParserOptions
+                sourceOptions = new FileFormatAdapter.ParserOptions(testFile.toURI(), LocaleId.EN, "");
+        TranslatedDoc translatedDoc = new TranslatedDoc(resource, translationsResource, new LocaleId("dv-DL"));
+        adapter.writeTranslatedFile(output, sourceOptions, translatedDoc,
                 approvedOnly);
 
         String trans1 = "Dakta Amna";

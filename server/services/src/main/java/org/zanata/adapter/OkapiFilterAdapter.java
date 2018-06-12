@@ -45,6 +45,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
@@ -53,12 +54,10 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.FileUtil;
 import org.zanata.util.HashUtil;
+import org.zanata.util.OkapiUtil;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-
-import javax.annotation.Nonnull;
 
 import static net.sf.okapi.common.LocaleId.fromString;
 
@@ -282,19 +281,16 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         }
     }
 
+    @NotNull
     @Override
-    public TranslationsResource parseTranslationFile(@Nonnull URI fileUri,
-                                                     @Nonnull LocaleId sourceLocaleId,
-                                                     @Nonnull String localeId,
-                                                     String filterParams)
-            throws FileFormatAdapterException, IllegalArgumentException {
+    public TranslationsResource parseTranslationFile(ParserOptions options) {
         RawDocument rawDoc =
-                new RawDocument(fileUri, "UTF-8",
+                new RawDocument(options.getRawFile(), "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
-            rawDoc.setTargetLocale(net.sf.okapi.common.LocaleId.fromString(localeId));
+            rawDoc.setTargetLocale(OkapiUtil.toOkapiLocale(options.getLocale()));
         }
-        return parseTranslationFile(rawDoc, filterParams);
+        return parseTranslationFile(rawDoc, options.getParams());
     }
 
     protected TranslationsResource parseTranslationFile(RawDocument rawDoc,
@@ -342,27 +338,27 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     }
 
     @Override
-    public void writeTranslatedFile(OutputStream output, URI originalFile,
-            Resource resource, TranslationsResource translationsResource,
-            String locale, String params, boolean approvedOnly)
+    public void writeTranslatedFile(@NotNull OutputStream output,
+            @NotNull ParserOptions sourceOptions,
+            @NotNull TranslatedDoc translatedDoc, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         Map<String, TextFlowTarget> translations =
                 transformToMapByResId(
-                    translationsResource.getTextFlowTargets());
+                    translatedDoc.getTranslation().getTextFlowTargets());
 
         try {
-            net.sf.okapi.common.LocaleId localeId = fromString(locale);
+            net.sf.okapi.common.LocaleId localeId = OkapiUtil.toOkapiLocale(translatedDoc.getLocale());
 
             IFilterWriter writer = filter.createFilterWriter();
             writer.setOptions(localeId, getOutputEncoding());
 
             if (requireFileOutput) {
-                writeTranslatedFileWithFileOutput(output, originalFile,
-                    translations, localeId, writer, params, approvedOnly);
+                writeTranslatedFileWithFileOutput(output, sourceOptions.getRawFile(),
+                    translations, localeId, writer, sourceOptions.getParams(), approvedOnly);
             } else {
                 writer.setOutput(output);
-                generateTranslatedFile(originalFile, translations, localeId,
-                    writer, params, approvedOnly);
+                generateTranslatedFile(sourceOptions.getRawFile(), translations, localeId,
+                    writer, sourceOptions.getParams(), approvedOnly);
             }
         } catch (IllegalArgumentException e) {
             throw new FileFormatAdapterException(
@@ -510,7 +506,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     private void updateParams(String params) {
         filter.getParameters().reset();
         updateParamsWithDefaults(filter.getParameters());
-        filter.getParameters().fromString(params);
+        if (!params.isEmpty()) filter.getParameters().fromString(params);
     }
 
     protected void updateParamsWithDefaults(IParameters params) {

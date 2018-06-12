@@ -24,12 +24,14 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.adapter.properties.PropWriter;
 import static org.zanata.adapter.AdapterUtils.readStream;
 import org.zanata.common.ContentState;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
@@ -90,15 +92,16 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
         return doc;
     }
 
+    @NotNull
     @Override
-    public TranslationsResource parseTranslationFile(URI fileUri,
-            LocaleId sourceLocaleId, String localeId, Optional<String> params)
+    public TranslationsResource parseTranslationFile(
+            @NotNull ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
         PropReader propReader =
-                new PropReader(charset, sourceLocaleId, ContentState.Approved);
+                new PropReader(charset, null, ContentState.Approved);
         Resource srcDoc = new Resource();
         TranslationsResource targetDoc = new TranslationsResource();
-        try (BufferedInputStream inputStream = readStream(fileUri)) {
+        try (BufferedInputStream inputStream = readStream(options.getRawFile())) {
             propReader.extractTarget(targetDoc, inputStream, srcDoc);
         } catch (IOException e) {
             throw new FileFormatAdapterException(
@@ -114,16 +117,16 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
      * used for contentHash check
      */
     @Override
-    public void writeTranslatedFile(OutputStream output, URI originalFile,
-            Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params, boolean approvedOnly)
+    public void writeTranslatedFile(@NotNull OutputStream output,
+            @NotNull ParserOptions sourceOptions,
+            @NotNull TranslatedDoc translatedDoc, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         // write source string with empty translation
         boolean createSkeletons = true;
         File tempFile = null;
         try {
-            tempFile = File.createTempFile("filename", "extension");
-            PropWriter.writeTranslationsFile(resource, translationsResource,
+            tempFile = File.createTempFile("filename", ".properties");
+            PropWriter.writeTranslationsFile(translatedDoc,
                     tempFile, charset, createSkeletons, approvedOnly);
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {
@@ -134,7 +137,7 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
         }
     }
 
-    @Override
+    @Override @Nonnull
     public String generateTranslationFilename(@Nonnull HDocument document,
                                               @Nonnull String locale) {
         String srcExt = FilenameUtils.getExtension(document.getName());

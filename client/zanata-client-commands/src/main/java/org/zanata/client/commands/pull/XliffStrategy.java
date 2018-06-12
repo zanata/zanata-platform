@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import org.zanata.adapter.xliff.XliffWriter;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.dto.LocaleMappedTranslatedDoc;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -59,12 +60,12 @@ public class XliffStrategy extends AbstractPullStrategy {
     }
 
     @Override
-    public FileDetails writeTransFile(Resource doc, String docName,
-            LocaleMapping localeMapping, TranslationsResource targetDoc)
+    public FileDetails writeTransFile(String docName,
+            LocaleMappedTranslatedDoc translatedDoc)
             throws IOException {
-        File transFileToWrite = getTransFileToWrite(docName, localeMapping);
-        XliffWriter.writeFile(transFileToWrite, doc, localeMapping
-                .getLocalLocale(), targetDoc, getOpts().getCreateSkeletons(),
+        File transFileToWrite = getTransFileToWrite(docName, translatedDoc.getLocale());
+        XliffWriter.writeFile(transFileToWrite, translatedDoc.getSource(), translatedDoc.getLocale()
+                .getLocalLocale(), translatedDoc.getTranslation(), getOpts().getCreateSkeletons(),
                 getOpts().getApprovedOnly());
         return null;
     }

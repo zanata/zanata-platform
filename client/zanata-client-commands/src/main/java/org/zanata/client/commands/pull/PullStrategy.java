@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.dto.LocaleMappedTranslatedDoc;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -64,17 +65,12 @@ public interface PullStrategy {
      * pre: docWithLocalName.getName() must match docName if docWithLocalName is
      * not null
      *
-     * @param docWithLocalName
-     *            may be null if needsDocToWriteTrans() returns false
      * @param docName
      *            may be null if needsDocToWriteTrans() returns false
-     * @param localeMapping
-     * @param targetDoc
      * @return Details of the file that was written. May be null if the Strategy
      *         cannot provide details.
      * @throws IOException
      */
-    FileDetails writeTransFile(Resource docWithLocalName, String docName,
-            LocaleMapping localeMapping, TranslationsResource targetDoc)
-            throws IOException;
+    FileDetails writeTransFile(String docName,
+            LocaleMappedTranslatedDoc doc) throws IOException;
 }

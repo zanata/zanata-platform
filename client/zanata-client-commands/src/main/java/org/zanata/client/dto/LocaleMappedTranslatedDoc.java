@@ -22,6 +22,7 @@ package org.zanata.client.dto;
 
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -50,5 +51,9 @@ public class LocaleMappedTranslatedDoc {
 
     public LocaleMapping getLocale() {
         return locale;
+    }
+
+    public TranslatedDoc toTranslatedDoc() {
+        return new TranslatedDoc(source, translation, new LocaleId(locale.getLocale()));
     }
 }

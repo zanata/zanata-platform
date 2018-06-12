@@ -20,6 +20,8 @@
  */
 package org.zanata.common.dto;
 
+import javax.annotation.Nullable;
+
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -28,22 +30,22 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class TranslatedDoc {
-    private final Resource source;
-    private final TranslationsResource translation;
+    private final @Nullable Resource source;
+    private final @Nullable TranslationsResource translation;
     private final LocaleId locale;
 
-    public TranslatedDoc(Resource source,
-            TranslationsResource translation, LocaleId locale) {
+    public TranslatedDoc(@Nullable Resource source,
+            @Nullable TranslationsResource translation, LocaleId locale) {
         this.source = source;
         this.translation = translation;
         this.locale = locale;
     }
 
-    public Resource getSource() {
+    public @Nullable Resource getSource() {
         return source;
     }
 
-    public TranslationsResource getTranslation() {
+    public @Nullable TranslationsResource getTranslation() {
         return translation;
     }
 

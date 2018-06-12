@@ -31,6 +31,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HRawDocument;
@@ -57,7 +58,7 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
         Resource resource =
                 adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
                         latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent()));
+                        ""));
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents())
@@ -92,15 +93,13 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
         Resource resource =
                 adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
                         latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent()));
+                        ""));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        adapter.writeTranslatedFile(output,
-                null,
-                resource,
-                tResource,
-                "ru",
-                Optional.absent(),
+        FileFormatAdapter.ParserOptions
+                sourceOptions = new FileFormatAdapter.ParserOptions(null, LocaleId.EN, "");
+        TranslatedDoc translatedDoc = new TranslatedDoc(resource, tResource, new LocaleId("ru"));
+        adapter.writeTranslatedFile(output, sourceOptions, translatedDoc,
                 false);
 
         // \u00C0 is the escaped unicode form of À

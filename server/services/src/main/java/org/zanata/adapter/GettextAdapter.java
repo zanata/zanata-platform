@@ -24,12 +24,15 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
@@ -48,8 +51,8 @@ import static org.zanata.adapter.AdapterUtils.readStream;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class GettextAdapter implements FileFormatAdapter {
-    @Override
-    public Resource parseDocumentFile(ParserOptions options)
+    @Override @Nonnull
+    public Resource parseDocumentFile(@Nonnull ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
         if (options.getLocale() == null) {
             throw new IllegalArgumentException("Source locale cannot be null");
@@ -68,36 +71,33 @@ public class GettextAdapter implements FileFormatAdapter {
         return doc;
     }
 
+    @NotNull
     @Override
-    public TranslationsResource parseTranslationFile(URI fileUri,
-            LocaleId sourceLocaleId, String localeId, Optional<String> params)
+    public TranslationsResource parseTranslationFile(
+            @NotNull ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
-        if (StringUtils.isEmpty(localeId)) {
-            throw new IllegalArgumentException(
-                    "locale id string cannot be null or empty");
-        }
         PoReader2 reader = new PoReader2();
-        BufferedInputStream inputStream = readStream(fileUri);
-        TranslationsResource resource =
-                reader.extractTarget(new InputSource(inputStream));
-        try {
-            inputStream.close();
+        TranslationsResource resource;
+        try (BufferedInputStream inputStream = readStream(
+                options.getRawFile())) {
+            resource = reader.extractTarget(new InputSource(inputStream));
         } catch (IOException e) {
+            throw new FileFormatAdapterException("IOException", e);
         }
         return resource;
     }
 
     @Override
-    public void writeTranslatedFile(OutputStream output, URI originalFile,
-            Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params, boolean approvedOnly)
+    public void writeTranslatedFile(@NotNull OutputStream output,
+            @NotNull ParserOptions sourceOptions,
+            @NotNull TranslatedDoc translatedDoc, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         PoWriter2 writer = new PoWriter2.Builder().encodeTabs(true)
                 .mapIdToMsgctxt(true).approvedOnly(approvedOnly)
                 .create();
         try {
-            writer.writePo(output, Charsets.UTF_8.name(), resource,
-                    translationsResource);
+            writer.writePo(output, Charsets.UTF_8.name(), translatedDoc.getSource(),
+                    translatedDoc.getTranslation());
         } catch (IOException e) {
             throw new FileFormatAdapterException(
                     "Unable to generate translated file", e);

@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
@@ -73,8 +74,11 @@ public class IdmlAdapterTest extends AbstractAdapterTest<IDMLAdapter> {
 
         File outputFile = File.createTempFile("test-idml-translated", ".idml");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        adapter.writeTranslatedFile(output, originalFile.toURI(),
-                resource, translationsResource, "dv-DL", "",
+        FileFormatAdapter.ParserOptions
+                sourceOptions = new FileFormatAdapter.ParserOptions(originalFile.toURI(), LocaleId.EN, "");
+        TranslatedDoc
+                translatedDoc = new TranslatedDoc(resource, translationsResource, new LocaleId("dv-DL"));
+        adapter.writeTranslatedFile(output, sourceOptions, translatedDoc,
                 false);
         output.writeTo(new FileOutputStream(outputFile));
 

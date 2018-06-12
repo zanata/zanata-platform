@@ -31,7 +31,6 @@ import org.zanata.model.HDocument
 import org.zanata.rest.dto.resource.Resource
 import org.zanata.rest.dto.resource.TranslationsResource
 
-import com.google.common.base.Optional
 import org.zanata.common.dto.TranslatedDoc
 
 /**
@@ -44,10 +43,11 @@ interface FileFormatAdapter {
 
     // for parseDocumentFile(), parseTranslationFile()
     data class ParserOptions(
-            // (formerly originalFile/originalDoc/documentUri)
             /** location of the document to parse */
-            val rawFile: URI,
-            // source document locale
+            // (formerly originalFile/originalDoc/documentUri)
+            val rawFile: URI?,
+            // document locale
+            /** locale of document */
             val locale: LocaleId,
             /** adapter-specific parameter string. See documentation for
              * individual adapters. */
@@ -80,15 +80,8 @@ interface FileFormatAdapter {
     /**
      * Extract translation strings from the given translation document.
      *
-     * @param fileUri
-     * translated document to parse
-     * @param sourceLocaleId
-     * source locale id
      * @param localeId
      * translation locale id
-     * @param params
-     * adapter-specific parameter string. See documentation for
-     * individual adapters.
      * @return representation of the translations in the document
      * @throws FileFormatAdapterException
      * if the document cannot be parsed
@@ -96,9 +89,7 @@ interface FileFormatAdapter {
      * if translatedDocumentContent or localeId is null
      */
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    fun parseTranslationFile(fileUri: URI,
-                             sourceLocaleId: LocaleId, localeId: String,
-                             params: String): TranslationsResource
+    fun parseTranslationFile(options: ParserOptions): TranslationsResource
 
     /**
      * Write translated file to the given output, using the given list of
@@ -106,17 +97,6 @@ interface FileFormatAdapter {
      *
      * @param output
      * stream to write translated document
-     * @param originalFile
-     * source document
-     * @param resource
-     * source file
-     * @param translationsResource
-     * to use in generating translated file
-     * @param locale
-     * to use for translated document
-     * @param params
-     * adapter-specific parameter string. See documentation for
-     * individual adapters.
      * @throws FileFormatAdapterException
      * if there is any problem parsing the original file or writing
      * the translated file
@@ -124,9 +104,8 @@ interface FileFormatAdapter {
      * if any parameters are null
      */
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    fun writeTranslatedFile(output: OutputStream, originalFile: URI,
-                            resource: Resource, translationsResource: TranslationsResource,
-                            locale: String, params: String, approvedOnly: Boolean)
+    fun writeTranslatedFile(output: OutputStream, sourceOptions: ParserOptions,
+                            translatedDoc: TranslatedDoc, approvedOnly: Boolean)
 
 
     /**

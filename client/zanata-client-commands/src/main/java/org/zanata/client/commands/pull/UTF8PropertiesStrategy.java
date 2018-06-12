@@ -26,6 +26,9 @@ import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.dto.LocaleMappedTranslatedDoc;
+import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -47,12 +50,13 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy {
     }
 
     @Override
-    public FileDetails writeTransFile(Resource doc, String docName,
-            LocaleMapping localeMapping, TranslationsResource targetDoc)
+    public FileDetails writeTransFile(String docName,
+            LocaleMappedTranslatedDoc translations)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
-        File transFileToWrite = getTransFileToWrite(docName, localeMapping);
-        PropWriter.writeTranslationsFile(doc, targetDoc, transFileToWrite,
+        File transFileToWrite = getTransFileToWrite(docName, translations.getLocale());
+        PropWriter.writeTranslationsFile(
+                translations.toTranslatedDoc(), transFileToWrite,
                 PropWriter.CHARSET.UTF8, createSkeletons,
                 getOpts().getApprovedOnly());
         return null;
