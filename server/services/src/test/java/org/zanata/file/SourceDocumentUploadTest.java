@@ -112,7 +112,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         when(
                 documentDAO.getAdapterParams(conf.projectSlug,
                         conf.versionSlug, conf.docId)).thenReturn(
-                Optional.fromNullable(conf.storedParams));
+                conf.storedParams);
 //        conf.storedParams);
         when(
                 documentDAO.addRawDocument(ArgumentMatchers.any(HDocument.class),

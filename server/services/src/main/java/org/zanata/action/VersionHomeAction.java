@@ -800,9 +800,8 @@ public class VersionHomeAction extends AbstractSortAction
         }
     }
 
-    private Optional<String> getOptionalParams() {
-        return Optional.fromNullable(
-                Strings.emptyToNull(sourceFileUpload.getAdapterParams()));
+    private String getOptionalParams() {
+        return Strings.nullToEmpty(sourceFileUpload.getAdapterParams());
     }
 
     public void setSelectedLocaleId(String localeId) {
@@ -892,10 +891,8 @@ public class VersionHomeAction extends AbstractSortAction
                     new String(PasswordUtil.encodeHex(md5hash)));
             rawDocument.setType(docType);
             rawDocument.setUploadedBy(identity.getCredentials().getUsername());
-            Optional<String> params = getOptionalParams();
-            if (params.isPresent()) {
-                rawDocument.setAdapterParameters(params.get());
-            }
+            String params = getOptionalParams();
+            rawDocument.setAdapterParameters(params);
             try {
                 String name = projectSlug + ":" + versionSlug + ":" + docId;
                 virusScanner.scan(tempFile, name);

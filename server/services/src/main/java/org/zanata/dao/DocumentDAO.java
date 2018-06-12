@@ -482,32 +482,17 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         return rawDoc;
     }
 
-//    public String getAdapterParams(String projectSlug,
-//            String iterationSlug, String docId) {
-//        HDocument doc = getByProjectIterationAndDocId(projectSlug,
-//                iterationSlug, docId);
-//        if (doc != null) {
-//            HRawDocument rawDoc = doc.getRawDocument();
-//            if (rawDoc != null) {
-//                return nullToEmpty(rawDoc.getAdapterParameters());
-//            }
-//        }
-//        return "";
-//    }
-//
-
-
-    public Optional<String> getAdapterParams(String projectSlug,
+    public String getAdapterParams(String projectSlug,
             String iterationSlug, String docId) {
         HDocument doc = getByProjectIterationAndDocId(projectSlug,
                 iterationSlug, docId);
         if (doc != null) {
             HRawDocument rawDoc = doc.getRawDocument();
             if (rawDoc != null) {
-                return Optional.fromNullable(rawDoc.getAdapterParameters());
+                return nullToEmpty(rawDoc.getAdapterParameters());
             }
         }
-        return Optional.<String> absent();
+        return "";
     }
 
     public List<HDocument> getDocumentsByIds(List<Long> docIds) {

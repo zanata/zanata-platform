@@ -129,7 +129,8 @@ public abstract class DocumentUploadTest extends ZanataTest {
         public final long size;
         public final InputStream fileStream;
         public final String hash;
-        public final @Nonnull String params, storedParams;
+        public final @Nonnull String params;
+        public final @Nullable String storedParams;
 
         public final DocumentFileUploadForm uploadForm;
 
@@ -269,7 +270,7 @@ public abstract class DocumentUploadTest extends ZanataTest {
                 return this;
             }
 
-            public Builder storedParams(String storedParams) {
+            public Builder storedParams(@Nullable String storedParams) {
                 this.storedParams = storedParams;
                 return this;
             }

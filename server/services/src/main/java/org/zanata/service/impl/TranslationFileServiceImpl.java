@@ -67,6 +67,8 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.common.DocumentType.GETTEXT;
 import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;
@@ -194,14 +196,14 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         return transRes;
     }
 
-    public Optional<String> getAdapterParams(HDocument doc) {
+    public String getAdapterParams(HDocument doc) {
         if (doc != null) {
             HRawDocument rawDoc = doc.getRawDocument();
             if (rawDoc != null) {
-                return Optional.fromNullable(rawDoc.getAdapterParameters());
+                return nullToEmpty(rawDoc.getAdapterParameters());
             }
         }
-        return Optional.<String> absent();
+        return "";
     }
 
     @Override

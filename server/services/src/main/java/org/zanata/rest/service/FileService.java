@@ -319,8 +319,7 @@ public class FileService implements FileResource {
                 FileFormatAdapter adapter = translationFileServiceImpl
                         .getAdapterFor(hRawDocument.getType());
                 String rawParamString = hRawDocument.getAdapterParameters();
-                Optional<String> params = Optional
-                        .<String> fromNullable(Strings.emptyToNull(rawParamString));
+                String params = Strings.nullToEmpty(rawParamString);
                 StreamingOutput output = new FormatAdapterStreamingOutput(uri, res,
                         transRes, locale, adapter, params, approvedOnly);
                 String translationFilename =
@@ -457,12 +456,12 @@ public class FileService implements FileResource {
         private String locale;
         private URI original;
         private FileFormatAdapter adapter;
-        private Optional<String> params;
+        private String params;
         private final boolean approvedOnly;
 
         public FormatAdapterStreamingOutput(URI originalDoc, Resource resource,
                 TranslationsResource translationsResource, String locale,
-                FileFormatAdapter adapter, Optional<String> params,
+                FileFormatAdapter adapter, String params,
                 boolean approvedOnly) {
             this.resource = resource;
             this.translationsResource = translationsResource;

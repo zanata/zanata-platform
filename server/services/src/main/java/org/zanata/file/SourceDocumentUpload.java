@@ -265,10 +265,8 @@ public class SourceDocumentUpload implements Serializable {
                     "Uploaded file did not pass virus scan");
         }
         HDocument document;
-        Optional<String> params;
-        params = Optional.fromNullable(
-                Strings.emptyToNull(uploadForm.getAdapterParams()));
-        if (!params.isPresent()) {
+        String params = nullToEmpty(uploadForm.getAdapterParams());
+        if (params.isEmpty()) {
             params = documentDAO.getAdapterParams(id.getProjectSlug(),
                     id.getVersionSlug(), id.getDocId());
         }
@@ -279,7 +277,7 @@ public class SourceDocumentUpload implements Serializable {
                     translationFileServiceImpl.parseUpdatedAdapterDocumentFile(
                             id.getDocId(),
                             uploadForm.getFileType(),
-                            new FileFormatAdapter.ParserOptions(tempFile.toURI(), LocaleId.EN_US, params.or("")),
+                            new FileFormatAdapter.ParserOptions(tempFile.toURI(), LocaleId.EN_US, params),
                             docType);
             doc.setLang(LocaleId.EN_US);
             // TODO Copy Trans values
@@ -298,7 +296,7 @@ public class SourceDocumentUpload implements Serializable {
         DocumentType documentType =
                 DocumentType.getByName(uploadForm.getFileType());
         persistRawDocument(document, tempFile, contentHash, documentType,
-                params.or(""));
+                params);
         translationFileServiceImpl.removeTempFile(tempFile);
     }
 
