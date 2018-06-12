@@ -1,6 +1,6 @@
 /** @define Button; use strict */
 
-@import 'suitcss-components-button';
+@import "suitcss-components-button";
 
 :root {
   --Button-rhythm: 1.5rem;
@@ -240,7 +240,7 @@ not conflict with the other frontend code
 .Button--small, .ant-btn.Button--small {
   min-height: calc(var(--Button-rhythm) * 1) !important;
   padding: var(--Button-padding-small) !important;
-  font-size: calc(14/16)rem !important;
+  font-size: calc(14 /16)rem !important;
 }
 
 .EditorButton:hover, .ant-btn.EditorButton:hover, html input[type=button],

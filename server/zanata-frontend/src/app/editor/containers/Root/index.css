@@ -1000,7 +1000,6 @@ label span.n1 {
 .alert-danger .s2 svg {
   vertical-align: middle;
   padding-right: 0.5rem;
-
 }
 
 .alert-danger strong {
@@ -1040,8 +1039,8 @@ label span.n1 {
 
 @media (--gtemd-viewport) {
   .Editor-translations {
-    background: linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
-    linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
+    background: linear-gradient(to right,var(--Editor-color-status-bg),var(--Editor-color-status-bg)),
+    linear-gradient(to right,var(--Editor-color-translation-bg),var(--Editor-color-translation-bg));
     background-position: center, right;
     background-repeat: no-repeat;
     background-size: var(--rhythm) 100%, 50% 100%;
