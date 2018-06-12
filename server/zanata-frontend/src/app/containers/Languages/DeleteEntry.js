@@ -23,12 +23,12 @@ class DeleteEntry extends Component {
     } = this.props
     /* eslint-disable react/jsx-no-bind */
     const deleteLanguage = (
-      <span className='tc'>
-        <p>Are you sure you want to delete&nbsp;
+      <span>
+        <p className='tc'>Are you sure you want to delete&nbsp;
           <strong>{locale.displayName}</strong>?&nbsp;
         </p>
-        <p className='tc'>
-          <Button className='btn-default btn-sm mr2' aria-label='button'
+        <p className='button-spacing tc'>
+          <Button className='btn-default btn-sm mr3' aria-label='button'
             onClick={() => handleDeleteEntryDisplay(false)}>
             Cancel
           </Button>

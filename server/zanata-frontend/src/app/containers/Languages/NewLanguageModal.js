@@ -56,6 +56,7 @@ class NewLanguageModal extends Component {
   }
 
   resetFields = () => {
+    this.props.form.resetFields()
     this.setState({
       details: {
         enabledByDefault: true,

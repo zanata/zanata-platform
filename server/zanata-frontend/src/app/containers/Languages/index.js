@@ -125,7 +125,7 @@ class Languages extends Component {
 
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
-      <div className='wideView bstrapReact languages'>
+      <div className='bstrapReact languages'>
         <Layout>
           <Helmet title='Languages' />
           <div className='u-centerBlock'>
@@ -199,9 +199,8 @@ class Languages extends Component {
                   {noResults &&
                     <div className='loader-loadingContainer'>
                       <span className='u-textLoadingMuted'>
-                        <Icon type='global' />
+                        <Icon type='global' /> No results
                       </span>
-                      <p className='glossaryText-muted'>No results</p>
                     </div>
                   }
                   {!loading && !noResults &&
