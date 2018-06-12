@@ -25,11 +25,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Charsets;
@@ -101,5 +103,12 @@ public class GettextAdapter implements FileFormatAdapter {
             throw new FileFormatAdapterException(
                     "Unable to generate translated file", e);
         }
+    }
+
+    @NotNull
+    @Override
+    public String generateTranslationFilename(@NotNull HDocument document,
+            @NotNull String locale) throws IllegalArgumentException {
+        return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
     }
 }

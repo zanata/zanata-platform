@@ -26,11 +26,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
+import org.jetbrains.annotations.NotNull;
 import org.zanata.adapter.xliff.XliffCommon;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.adapter.xliff.XliffWriter;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Optional;
@@ -111,4 +113,12 @@ public class XliffAdapter implements FileFormatAdapter {
             FileUtil.tryDeleteFile(tempFile);
         }
     }
+
+    @NotNull
+    @Override
+    public String generateTranslationFilename(@NotNull HDocument document,
+            @NotNull String locale) throws IllegalArgumentException {
+        return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
+    }
+
 }

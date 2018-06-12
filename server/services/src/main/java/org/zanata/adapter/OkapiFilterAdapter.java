@@ -39,12 +39,14 @@ import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.resource.StartSubDocument;
 import net.sf.okapi.common.resource.TextUnit;
 
+import org.jetbrains.annotations.NotNull;
 import org.zanata.adapter.TranslatableSeparator.SplitString;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
@@ -518,6 +520,13 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     protected void updateParamsWithDefaults(IParameters params) {
         // default empty implementation is provided so that subclasses are not
         // forced to override when defaults are not needed.
+    }
+
+    @NotNull
+    @Override
+    public String generateTranslationFilename(@NotNull HDocument document,
+            @NotNull String locale) throws IllegalArgumentException {
+        return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
     }
 
 }
