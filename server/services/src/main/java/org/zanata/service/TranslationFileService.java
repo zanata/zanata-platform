@@ -155,10 +155,6 @@ public interface TranslationFileService extends Serializable {
 
     /**
      * Check whether a handler for the given document type is available.
-     *
-     * @param fileNameOrExtension
-     *            full filename with extension, or just extension
-     * @return
      */
     boolean hasAdapterFor(DocumentType type);
 

@@ -1,0 +1,21 @@
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"X-Generator: Zanata unknown\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "764569e58f53ea8b6404f6fa7fc0247f"
+msgid "Hola mundo."
+msgstr ""
+
+msgctxt "0101977b4093f837ff6276a762fba7be"
+msgid "Adiós."
+msgstr ""
+

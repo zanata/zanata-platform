@@ -84,6 +84,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         logOptions(log, getOpts());
         log.info("Create skeletons for untranslated messages/files: {}",
                 getOpts().getCreateSkeletons());
+        log.info("Approved translations only: {}", getOpts().getApprovedOnly());
         if (getOpts().getFromDoc() != null) {
             log.info("From document: {}", getOpts().getFromDoc());
         }
@@ -96,7 +97,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
      * @param logger
      * @param opts
      */
-    public static void logOptions(Logger logger, PullOptions opts) {
+    static void logOptions(Logger logger, PullOptions opts) {
         logger.info("Server: {}", opts.getUrl());
         logger.info("Project: {}", opts.getProj());
         logger.info("Version: {}", opts.getProjectVersion());
@@ -155,6 +156,15 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             log.error("You are trying to pull source only, but source is not available for this project type.\n");
             log.info("Nothing to do. Aborting.\n");
             return;
+        }
+
+        if (getOpts().getApprovedOnly()) {
+            if (getOpts().getIncludeFuzzy() || getOpts().getCreateSkeletons()) {
+                String msg =
+                        "You can't use the option --approved together with --create-skeletons or --include-fuzzy";
+                log.error(msg);
+                throw new ConfigException(msg);
+            }
         }
 
         List<String> unsortedDocNamesForModule =
@@ -286,8 +296,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     @VisibleForTesting
     protected void pullDocForLocale(PullStrategy strat, Resource doc,
             String localDocName, String docId, boolean createSkeletons,
-            LocaleMapping locMapping,
-            File transFile) throws IOException {
+            LocaleMapping locMapping, File transFile) throws IOException {
         LocaleId locale = new LocaleId(locMapping.getLocale());
         String eTag = null;
         ETagCacheEntry eTagCacheEntry =

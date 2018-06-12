@@ -40,8 +40,10 @@ public abstract class AbstractGettextPullStrategy extends AbstractPullStrategy {
     protected AbstractGettextPullStrategy(PullOptions opts) {
         super(opts);
         poWriter =
-                new PoWriter2(opts.getEncodeTabs(), false,
-                        opts.isContinueAfterError());
+                new PoWriter2.Builder().encodeTabs(opts.getEncodeTabs())
+                        .continueAfterError(opts.isContinueAfterError())
+                        .approvedOnly(opts.getApprovedOnly())
+                        .create();
     }
 
     protected PoWriter2 getPoWriter() {

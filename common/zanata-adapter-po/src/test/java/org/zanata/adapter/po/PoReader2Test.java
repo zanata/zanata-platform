@@ -3,13 +3,12 @@ package org.zanata.adapter.po;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.tennera.jgettext.Message;
@@ -30,16 +29,13 @@ public class PoReader2Test {
     private static final Logger log = LoggerFactory
             .getLogger(PoReader2Test.class);
 
-    String testDir = "src/test/resources/";
-    PoReader2 poReader = new PoReader2();
+    private final PoReader2 poReader = new PoReader2();
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    private Resource getTemplate() {
-        InputSource inputSource =
-                new InputSource(new File(testDir, "pot/RPM.pot").toURI()
-                        .toString());
+    private Resource getTemplate() throws IOException {
+        InputSource inputSource = getTestInputSource("pot/RPM.pot");
         inputSource.setEncoding("utf8");
 
         log.debug("parsing template");
@@ -50,13 +46,11 @@ public class PoReader2Test {
     }
 
     @Test
-    public void extractTarget() throws IOException, JAXBException {
+    public void extractTarget() throws Exception {
         InputSource inputSource;
         Resource doc = getTemplate();
         String locale = "ja-JP";
-        inputSource =
-                new InputSource(new File(testDir, locale + "/RPM.po").toURI()
-                        .toString());
+        inputSource = getTestInputSource(locale + "/RPM.po");
         inputSource.setEncoding("utf8");
         log.debug("extracting target: " + locale);
         TranslationsResource targetDoc = poReader.extractTarget(inputSource);
@@ -96,15 +90,13 @@ public class PoReader2Test {
     }
 
     @Test
-    public void extractTemplate() {
+    public void extractTemplate() throws Exception {
         getTemplate();
     }
 
     @Test
-    public void extractInvalidTemplate() throws IOException, JAXBException {
-        InputSource inputSource =
-                new InputSource(new File(testDir, "pot/invalid.pot").toURI()
-                        .toString());
+    public void extractInvalidTemplate() throws Exception {
+        InputSource inputSource = getTestInputSource("pot/invalid.pot");
         inputSource.setEncoding("utf8");
 
         exception.expect(RuntimeException.class);
@@ -113,17 +105,24 @@ public class PoReader2Test {
     }
 
     @Test
-    public void extractInvalidTarget() throws IOException, JAXBException {
+    public void shouldRejectIllegalCharset() throws Exception {
         String locale = "ja-JP";
-        InputSource inputSource =
-                new InputSource(new File(testDir, locale + "/invalid.po")
-                        .toURI().toString());
+        InputSource inputSource = getTestInputSource(locale + "/invalid.po");
         inputSource.setEncoding("utf8");
         log.debug("extracting target: " + locale);
 
         exception.expect(RuntimeException.class);
         exception.expectMessage("unsupported charset");
         poReader.extractTarget(inputSource);
+    }
+
+    private InputSource getTestInputSource(String resourceName) throws IOException {
+        InputStream stream =
+                getClass().getResourceAsStream("/" + resourceName);
+        if (stream == null) {
+            throw new IOException("resource not found: " + resourceName);
+        }
+        return new InputSource(stream);
     }
 
     @Test

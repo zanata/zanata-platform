@@ -236,7 +236,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
             return;
         }
         int targetPage = navigationStateHolder.getTargetPage(targetId);
-        Log.info("target page : [" + targetPage + "] target TU id: " + targetId);
+        Log.info("target page : " + targetPage + ", target TU id: " + targetId);
 
         if (navigationStateHolder.getCurrentPage() == targetPage) {
             eventBus.fireEvent(new TableRowSelectedEvent(targetId));

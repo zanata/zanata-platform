@@ -241,6 +241,7 @@ timestamps {
             -Dkotlin.compiler.incremental=false \
             -DskipFuncTests \
             -DskipArqTests \
+            -Dmaven.compiler.failOnWarning \
             -Dmaven.test.failure.ignore \
             -Ddepcheck \
           """
@@ -300,8 +301,8 @@ timestamps {
 
           step([$class: 'WarningsPublisher',
                 consoleParsers: [
-                        [parserName: 'Java Compiler (javac)'],
-
+                        // we use maven.compiler.failOnWarning instead
+                        // [parserName: 'Java Compiler (javac)'],
                         // we use arg -Werror instead
                         // [parserName: 'kotlin'],
                         [parserName: 'JavaDoc'],

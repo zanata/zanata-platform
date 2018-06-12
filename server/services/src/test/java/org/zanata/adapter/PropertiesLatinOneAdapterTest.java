@@ -20,12 +20,11 @@
  */
 package org.zanata.adapter;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
-import com.google.common.base.Charsets;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ContentState;
@@ -54,7 +53,7 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
 
     @Test
     public void parseLatinOneProperties() throws Exception {
-        File latin1EncodedFile = createTempPropertiesFile(StandardCharsets.ISO_8859_1);
+        File latin1EncodedFile = createTempPropertiesFile(ISO_8859_1);
         Resource resource =
                 adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
                         Optional.absent());
@@ -88,28 +87,25 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
         addTranslation(tResource, "line2", "ÀTbade metalkcta", ContentState.Translated);
         addTranslation(tResource, "line3", "ÀKbade metalkcta", ContentState.NeedReview);
 
-        File latin1EncodedFile = createTempPropertiesFile(StandardCharsets.ISO_8859_1);
+        File latin1EncodedFile = createTempPropertiesFile(ISO_8859_1);
         Resource resource =
                 adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
                         Optional.absent());
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        adapter.writeTranslatedFile(outputStream,
+        adapter.writeTranslatedFile(output,
                 null,
                 resource,
                 tResource,
                 "ru",
-                Optional.absent());
+                Optional.absent(),
+                false);
 
         // \u00C0 is the escaped unicode form of À
-        assertThat(toLatin1String(outputStream)).isEqualTo(
+        assertThat(output.toString(ISO_8859_1)).isEqualTo(
                 "line1=\\u00C0Founde metalkcta\n" +
                 "line2=\\u00C0Tbade metalkcta\n" +
                 "line3=\n");
     }
 
-    private String toLatin1String(ByteArrayOutputStream outputStream)
-            throws UnsupportedEncodingException {
-        return outputStream.toString(Charsets.ISO_8859_1.name());
-    }
 }
