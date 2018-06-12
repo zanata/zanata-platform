@@ -1,6 +1,19 @@
 @import "~antd/dist/antd.less";
 @import "./ant-theme-vars.less";
 
+.ant-modal-close {
+  border: none !important;
+  background-color: initial !important;
+  padding: initial !important;
+}
+
 input.react-autosuggest__input {
   background-color: transparent;
+}
+
+// pagination alignment on Explore page
+.teaserHeader .ant-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
 }
