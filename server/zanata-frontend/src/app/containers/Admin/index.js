@@ -23,15 +23,17 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
+import { getDswid } from '../../utils/UrlHelper'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
-import { isAdmin } from '../../config'
 import { Link, Icon } from '../../components'
 import Helmet from 'react-helmet'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
+
+const dswid = getDswid()
 
 import {
   showExportTMXModal
@@ -46,18 +48,6 @@ class Admin extends Component {
   }
 
   render () {
-    if (!isAdmin) {
-      return (
-        <div>
-          <Helmet title='Administration' />
-          <div className='wideView' id='admin'>
-            <div className='u-centerBlock'>
-              <p>You are not authorised to access to this page</p>
-            </div>
-          </div>
-        </div>
-      )
-    }
     return (
       <div>
         <Helmet title='Administration' />
@@ -67,10 +57,10 @@ class Admin extends Component {
             <Row gutter={6}>
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Admin_Server_configuration_home'
-                  link='/admin/server_configuration'
-                  useHref className='list-group-item'>
+                  link={'/admin/server_settings' + dswid}
+                  className='list-group-item'>
                   <Icon name='settings' className='s2' />
-                  Server configuration
+                  Server settings
                 </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>

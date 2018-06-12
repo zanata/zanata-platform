@@ -98,12 +98,10 @@
                 <h:inputText id="human" styleClass="is-hidden"
                   value="#{register.humanField}"/>
 
-                <ui:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
-                  <p class="txt--meta l--push-top-half" id="termsOfUseUrl">
-                    <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
-                      applicationConfiguration.termsOfUseUrl)}" escape="false"/>
-                  </p>
-                </ui:fragment>
+                <p class="txt--meta l--push-top-half" id="termsOfUseUrl">
+                  <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
+                    applicationConfiguration.termsOfUseUrl)}" escape="false"/>
+                </p>
 
                 <div class="l--push-top-1">
                   <h:commandButton value="#{msgs['jsf.Signup']}" action="#{register.register}"
