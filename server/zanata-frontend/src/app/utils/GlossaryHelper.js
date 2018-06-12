@@ -34,6 +34,7 @@ var GlossaryHelper = {
     entry.description = trim(data.description)
     entry.srcLang = data.srcTerm.locale
     entry.sourceReference = data.srcTerm.reference
+    /** @type {any[]} */
     entry.glossaryTerms = []
     entry.qualifiedName = {name: qualifiedName}
 
@@ -85,6 +86,7 @@ var GlossaryHelper = {
     const srcDate = toString(srcTerm.lastModifiedDate)
     if (!isEmpty(srcDate)) {
       srcTerm.lastModifiedDate =
+        // @ts-ignore
         DateHelpers.shortDateTime(DateHelpers.getDate(srcDate))
     }
 
@@ -95,6 +97,7 @@ var GlossaryHelper = {
         const transDate = toString(transTerm.lastModifiedDate)
         if (!isEmpty(transDate)) {
           transTerm.lastModifiedDate =
+            // @ts-ignore
             DateHelpers.shortDateTime(DateHelpers.getDate(transDate))
         }
         if (isEmpty(transTerm.comment)) {

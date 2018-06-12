@@ -262,10 +262,12 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 .using("slug", getProjectSlug()).load();
         validateProjectState(project);
         if (versionId == null) {
+            HProject targetProject = projectDAO.getBySlug(getProjectSlug());
+            validateProjectState(targetProject);
             HProjectIteration iteration = (HProjectIteration) session
                     .byNaturalId(HProjectIteration.class)
                     .using("slug", getSlug())
-                    .using("project", projectDAO.getBySlug(getProjectSlug()))
+                    .using("project", targetProject)
                     .load();
             validateIterationState(iteration);
             versionId = iteration.getId();
@@ -300,18 +302,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
     private void setMessage(String message) {
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 message);
-    }
-
-    @Transactional
-    public void updateRequireTranslationReview(String key, boolean checked) {
-        identity.checkPermission(getInstance(), "update");
-        getInstance().setRequireTranslationReview(checked);
-        update();
-        if (checked) {
-            setMessage(msgs.get("jsf.iteration.requireReview.enabled"));
-        } else {
-            setMessage(msgs.get("jsf.iteration.requireReview.disabled"));
-        }
     }
 
     public List<ValidationAction> getValidationList() {

@@ -5,7 +5,6 @@ import * as PropType from 'prop-types'
 import {connect} from 'react-redux'
 import RejectionsForm, {MAJOR, MINOR, CRITICAL}
   from '../../components/RejectionsForm'
-import { Alert } from 'react-bootstrap'
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
@@ -18,6 +17,8 @@ import Breadcrumb from 'antd/lib/breadcrumb'
 import 'antd/lib/breadcrumb/style/css'
 import Card from 'antd/lib/card'
 import 'antd/lib/card/style/css'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
 
 const DO_NOT_RENDER = undefined
  /* eslint-disable max-len */
@@ -45,6 +46,16 @@ class AdminReview extends Component {
   componentDidMount () {
     this.props.fetchAllCriteria()
   }
+  componentDidUpdate (prevProps, prevState) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: null
+      })
+    }
+  }
   showAddNewEntryForm = () => {
     this.setState(prevState => ({
       showNewEntryForm: true
@@ -54,7 +65,7 @@ class AdminReview extends Component {
     this.props.addNewEntry(entry)
   }
   render () {
-    const {criteria, deleteEntry, editEntry, notification} = this.props
+    const {criteria, deleteEntry, editEntry} = this.props
     const criteriaList = (criteria.length > 0)
       ? criteria.map((c, i) => <RejectionsForm key={i}
         commentRequired={c.commentRequired} entityId={c.id} onDelete={deleteEntry}
@@ -70,8 +81,6 @@ class AdminReview extends Component {
             onSave={this.saveNewEntry} />
         </Card>
       </span>) : DO_NOT_RENDER
-    const notificationBar = notification &&
-      <Alert bsStyle='danger'>{notification}</Alert>
     return <div className='container centerWrapper' id='admin-review'>
       <Layout>
         <Breadcrumb>
@@ -79,7 +88,6 @@ class AdminReview extends Component {
             <a href='home'>Administration</a>
           </Breadcrumb.Item>
         </Breadcrumb>
-        {notificationBar}
         <h1>Reject translations settings</h1>
         <p className='lead'>Set the translation rejection criteria to be used
           in the editor. Start by adding your first 'new rejection criteria

@@ -32,8 +32,8 @@
         "outDir": "./build/",
         "sourceMap": true,
         "skipLibCheck": true,
-        // "strictNullChecks": true,
-        // "strictPropertyInitialization": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
         "target": "ES5"
     },
     "include": [

@@ -52,6 +52,15 @@ You will need to [Create a project](/user-guide/projects/create-project) and [Cr
     - `Merge` option - If unchecked, uploaded translations overrides current translation, otherwise, it will merge with current translation in system.
     - `My translations` option - Indicates if all uploaded translations were translated by you.
 
+#### Translation document formats
+Translation files, typically of the Gettext .po format, can be uploaded for a document in the selected language.
+There is a limited set of document formats that support upload of a translated raw document. These are:
+ * DTD (.dtd)
+ * Qt Linguist (.ts)
+ * Subtitle (.srt, .sbt, .sub, .vtt)
+
+Other document formats uploaded as translation sources will have no, or potentially undesirable, results.
+
 ------------
 
 ### From client
