@@ -1,4 +1,5 @@
 // @ts-nocheck
+import React from 'react'
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import phraseFilterReducer, { defaultState as defaultFilterState }
@@ -41,7 +42,7 @@ import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
 } from '../../actions/phrase-navigation-actions'
-import { findIndex } from 'lodash'
+import { findIndex, isEmpty } from 'lodash'
 
 /* eslint-disable max-len */
 
@@ -198,13 +199,21 @@ export const phraseReducer = handleActions({
         revision: {$set: revision}
       }),
 
-  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo } }) =>
+  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo, response } }) =>
     update(state, {
       notification: {
         $set: {
           severity: SEVERITY.ERROR,
           message: `Save Translation Failed`,
-          description: `Unable to save phraseId ${phraseId} as ${saveInfo.translations[0]}`
+          description:
+            <p>
+            Unable to save phraseId {phraseId}
+            {isEmpty(saveInfo.translations)
+                ? null
+                : ` as ${saveInfo.translations[0]}`}
+              <br />
+            Status {response.status} {response.statusText}
+            </p>
         }
       },
       detail: {

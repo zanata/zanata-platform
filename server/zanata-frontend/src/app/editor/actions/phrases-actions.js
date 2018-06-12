@@ -136,9 +136,10 @@ const saveFinished = createAction(SAVE_FINISHED,
   }))
 
 const saveFailed = createAction(SAVE_FAILED,
-  (phraseId, saveInfo) => ({
+  (phraseId, saveInfo, response) => ({
     phraseId,
-    saveInfo
+    saveInfo,
+    response
   }))
 
 export function savePhraseWithStatus (phrase, status, reviewComment) {
@@ -192,7 +193,7 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
         .then(response => {
           if (isErrorResponse(response)) {
             console.error('Failed to save phrase')
-            dispatch(saveFailed(phrase.id, saveInfo))
+            dispatch(saveFailed(phrase.id, saveInfo, response))
           } else {
             response.json().then(({ revision, status }) => {
               dispatch(saveFinished(phrase.id, status, revision)).then(
