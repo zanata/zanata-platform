@@ -74,14 +74,12 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
     }
 
     @Override
-    public Resource parseDocumentFile(@Nonnull URI fileUri,
-                                      @Nonnull LocaleId sourceLocale,
-                                      Optional<String> params)
+    public Resource parseDocumentFile(ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
         PropReader propReader =
-                new PropReader(charset, sourceLocale, ContentState.Approved);
+                new PropReader(charset, options.getLocale(), ContentState.Approved);
         Resource doc = new Resource();
-        try (BufferedInputStream inputStream = readStream(fileUri)) {
+        try (BufferedInputStream inputStream = readStream(options.getRawFile())) {
             propReader.extractTemplate(doc, inputStream);
         } catch (IOException e) {
             throw new FileFormatAdapterException(

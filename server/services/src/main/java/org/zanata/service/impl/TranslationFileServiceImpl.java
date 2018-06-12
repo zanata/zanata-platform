@@ -31,6 +31,7 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.adapter.GettextAdapter;
 import org.zanata.adapter.HTMLAdapter;
 import org.zanata.adapter.IDMLAdapter;
@@ -235,23 +236,22 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     }
 
     @Override
-    public Resource parseAdapterDocumentFile(URI documentFile,
-            String documentPath, String fileName, Optional<String> params,
+    public Resource parseAdapterDocumentFile(
+            String documentPath, String fileName, ParserOptions options,
             Optional<String> documentType) throws ZanataServiceException {
-        return parseUpdatedAdapterDocumentFile(documentFile,
+        return parseUpdatedAdapterDocumentFile(
                 FileUtil.convertToValidPath(documentPath) + fileName, fileName,
-                params, documentType);
+                options, documentType);
     }
 
     @Override
-    public Resource parseUpdatedAdapterDocumentFile(URI documentFile,
-            String docId, String fileName, Optional<String> params,
+    public Resource parseUpdatedAdapterDocumentFile(
+            String docId, String fileName, ParserOptions options,
             Optional<String> documentType) throws ZanataServiceException {
         FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
         Resource doc;
         try {
-            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"),
-                    params);
+            doc = adapter.parseDocumentFile(options);
         } catch (FileFormatAdapterException e) {
             throw new ZanataServiceException(
                     "Error parsing document file: " + fileName, e);

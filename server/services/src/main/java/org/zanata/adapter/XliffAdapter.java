@@ -50,16 +50,14 @@ import javax.annotation.Nonnull;
  */
 public class XliffAdapter implements FileFormatAdapter {
     @Override
-    public Resource parseDocumentFile(@Nonnull URI fileUri,
-                                      @Nonnull LocaleId sourceLocale,
-                                      Optional<String> filterParams)
+    public Resource parseDocumentFile(ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
         XliffReader xliffReader = new XliffReader();
         File tempFile;
         Resource doc;
         try {
-            tempFile = new File(fileUri);
-            doc = xliffReader.extractTemplate(tempFile, sourceLocale,
+            tempFile = new File(options.getRawFile());
+            doc = xliffReader.extractTemplate(tempFile, options.getLocale(),
                     tempFile.getName(),
                     XliffCommon.ValidationType.CONTENT.name());
         } catch (IOException e) {

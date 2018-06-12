@@ -80,7 +80,7 @@ public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(output, testFile.toURI(),
-                resource, translationsResource, "dv-DL", Optional.absent(),
+                resource, translationsResource, "dv-DL", "",
                 approvedOnly);
 
         String trans1 = "Dakta Amna";

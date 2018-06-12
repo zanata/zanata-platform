@@ -55,8 +55,9 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
     public void parseLatinOneProperties() throws Exception {
         File latin1EncodedFile = createTempPropertiesFile(ISO_8859_1);
         Resource resource =
-                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent());
+                adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                        latin1EncodedFile.toURI(), LocaleId.EN,
+                        Optional.absent()));
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents())
@@ -89,8 +90,9 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
 
         File latin1EncodedFile = createTempPropertiesFile(ISO_8859_1);
         Resource resource =
-                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent());
+                adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                        latin1EncodedFile.toURI(), LocaleId.EN,
+                        Optional.absent()));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         adapter.writeTranslatedFile(output,

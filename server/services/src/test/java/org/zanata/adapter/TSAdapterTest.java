@@ -157,7 +157,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                 new LocaleId("dv-LL"));
         TranslationsResource translationsResource =
                 getAdapter().parseTranslationFile(rawDocument,
-                        Optional.absent());
+                        "");
 
         assertThat(translationsResource.getTextFlowTargets().size()).isEqualTo(2);
         assertThat(translationsResource.getTextFlowTargets().get(0).getContents())
@@ -196,7 +196,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
             writer.setOutput(outputStream);
             getAdapter()
                     .generateTranslatedFile(originalFile.toURI(), translations,
-                            localeId, writer, Optional.absent(), approvedOnly);
+                            localeId, writer, "", approvedOnly);
         }
         // the second translation (Translated) should only have type=unfinished if approvedOnly is set
         String maybeTypeUnfinished = approvedOnly ? "type=\"unfinished\" " : "";
@@ -229,7 +229,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                 new LocaleId("ru"));
         exception.expect(FileFormatAdapterException.class);
         exception.expectMessage("Unable to parse translation file");
-        getAdapter().parseTranslationFile(rawDocument, Optional.absent());
+        getAdapter().parseTranslationFile(rawDocument, "");
     }
 
     @Test
@@ -243,7 +243,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                     getTestFile("test-ts-nonexistent.ts").toURI(),
                     new HashMap<>(),
                     new LocaleId("en"),
-                    filterWriter, Optional.absent(), false);
+                    filterWriter, "", false);
         }
     }
 

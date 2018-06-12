@@ -54,7 +54,8 @@ public class PlainTextAdapterTest extends AbstractAdapterTest<PlainTextAdapter> 
         // NB parameters copied from okapi-filter-plaintext: /net/sf/okapi/filters/plaintext/okf_plaintext_paragraphs.fprm
         // TODO we need a way of using Okapi's pre-defined filter configurations by name (okf_plaintext_paragraphs)
         Resource resource =
-                adapter.parseDocumentFile(getTestFile("plaintext.txt").toURI(),
+                adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                        getTestFile("plaintext.txt").toURI(),
                         LocaleId.EN,
                         Optional.of("#v1\n" +
                                 "unescapeSource.b=true\n" +
@@ -65,7 +66,7 @@ public class PlainTextAdapterTest extends AbstractAdapterTest<PlainTextAdapter> 
                                 "codeFinderRules=#v1$0a$count.i=2$0a$rule0=%(([-0+#]?)[-0+#]?)((\\d\\$)?)(([\\d\\*]*)(\\.[\\d\\*]*)?)[dioxXucsfeEgGpn]$0a$rule1=(\\\\r\\\\n)|\\\\a|\\\\b|\\\\f|\\\\n|\\\\r|\\\\t|\\\\v$0a$sample=$0a$useAllRulesWhenTesting.b=false\n" +
                                 "wrapMode.i=0\n" +
                                 "extractParagraphs.b=true\n" +
-                                "parametersClass=net.sf.okapi.filters.plaintext.paragraphs.Parameters"));
+                                "parametersClass=net.sf.okapi.filters.plaintext.paragraphs.Parameters")));
         assertThat(resource.getTextFlows()).hasSize(2);
         assertThat(resource.getTextFlows().get(0).getContents())
                 .containsExactly("The first paragraph is split over more than one line. " +

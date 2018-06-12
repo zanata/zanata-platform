@@ -49,19 +49,18 @@ import static org.zanata.adapter.AdapterUtils.readStream;
  */
 public class GettextAdapter implements FileFormatAdapter {
     @Override
-    public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
-            Optional<String> params)
+    public Resource parseDocumentFile(ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
-        if (sourceLocale == null) {
+        if (options.getLocale() == null) {
             throw new IllegalArgumentException("Source locale cannot be null");
         }
-        if (fileUri == null) {
+        if (options.getRawFile() == null) {
             throw new IllegalArgumentException("Document URI cannot be null");
         }
         PoReader2 reader = new PoReader2();
-        BufferedInputStream inputStream = readStream(fileUri);
+        BufferedInputStream inputStream = readStream(options.getRawFile());
         Resource doc = reader.extractTemplate(new InputSource(inputStream),
-                sourceLocale, "");
+                options.getLocale(), "");
         try {
             inputStream.close();
         } catch (IOException e) {

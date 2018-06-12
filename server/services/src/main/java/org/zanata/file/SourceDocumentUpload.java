@@ -20,6 +20,7 @@
  */
 package org.zanata.file;
 
+import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 import java.io.File;
@@ -34,6 +35,8 @@ import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -274,8 +277,10 @@ public class SourceDocumentUpload implements Serializable {
                     Optional.fromNullable(uploadForm.getFileType());
             Resource doc =
                     translationFileServiceImpl.parseUpdatedAdapterDocumentFile(
-                            tempFile.toURI(), id.getDocId(),
-                            uploadForm.getFileType(), params, docType);
+                            id.getDocId(),
+                            uploadForm.getFileType(),
+                            new FileFormatAdapter.ParserOptions(tempFile.toURI(), LocaleId.EN_US, params.or("")),
+                            docType);
             doc.setLang(LocaleId.EN_US);
             // TODO Copy Trans values
             document = documentServiceImpl.saveDocument(id.getProjectSlug(),
@@ -293,13 +298,13 @@ public class SourceDocumentUpload implements Serializable {
         DocumentType documentType =
                 DocumentType.getByName(uploadForm.getFileType());
         persistRawDocument(document, tempFile, contentHash, documentType,
-                params);
+                params.or(""));
         translationFileServiceImpl.removeTempFile(tempFile);
     }
 
     private void persistRawDocument(HDocument document, File rawFile,
             String contentHash, DocumentType documentType,
-            Optional<String> params) {
+            String params) {
         HRawDocument rawDocument = new HRawDocument();
         rawDocument.setDocument(document);
         rawDocument.setContentHash(contentHash);
@@ -307,8 +312,8 @@ public class SourceDocumentUpload implements Serializable {
         rawDocument.setUploadedBy(identity.getCredentials().getUsername());
         filePersistService.persistRawDocumentContentFromFile(rawDocument,
                 rawFile, FilenameUtils.getExtension(rawFile.getName()));
-        if (params.isPresent()) {
-            rawDocument.setAdapterParameters(params.get());
+        if (!params.isEmpty()) {
+            rawDocument.setAdapterParameters(params);
         }
         documentDAO.addRawDocument(document, rawDocument);
         documentDAO.flush();

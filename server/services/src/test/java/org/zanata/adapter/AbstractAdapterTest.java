@@ -57,8 +57,9 @@ abstract class AbstractAdapterTest <T extends FileFormatAdapter> {
         if (!testFile.exists()) {
             throw new RuntimeException("missing test file: " + testFile.getAbsolutePath());
         }
-        return adapter.parseDocumentFile(testFile.toURI(),
-                LocaleId.EN, Optional.absent());
+        return adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                testFile.toURI(),
+                LocaleId.EN, ""));
     }
 
     File getTestFile(String fileName) {

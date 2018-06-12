@@ -148,7 +148,7 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
         OutputStream outputStream = new ByteArrayOutputStream();
         try (IFilterWriter writer = createWriter(outputStream)) {
             adapter.generateTranslatedFile(originalFile.toURI(), translations,
-                    this.localeId, writer, Optional.absent(), approvedOnly);
+                    this.localeId, writer, "", approvedOnly);
         }
 
         String firstTitle = "Foun’dé metalkcta";

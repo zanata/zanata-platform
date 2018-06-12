@@ -74,12 +74,12 @@ public class IdmlAdapterTest extends AbstractAdapterTest<IDMLAdapter> {
         File outputFile = File.createTempFile("test-idml-translated", ".idml");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(output, originalFile.toURI(),
-                resource, translationsResource, "dv-DL", Optional.absent(),
+                resource, translationsResource, "dv-DL", "",
                 false);
         output.writeTo(new FileOutputStream(outputFile));
 
-        Resource translatedResource = adapter.parseDocumentFile(
-                outputFile.toURI(), new LocaleId("en"), Optional.absent());
+        Resource translatedResource = adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                outputFile.toURI(), new LocaleId("en"), ""));
 
         assertThat(translatedResource.getTextFlows().get(0).getContents())
                 .containsExactly("Dakta Amna");

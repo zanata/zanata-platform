@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.inject.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -127,7 +129,7 @@ public abstract class DocumentUploadTest extends ZanataTest {
         public final long size;
         public final InputStream fileStream;
         public final String hash;
-        public final String params, storedParams;
+        public final @Nonnull String params, storedParams;
 
         public final DocumentFileUploadForm uploadForm;
 
@@ -262,7 +264,7 @@ public abstract class DocumentUploadTest extends ZanataTest {
                 return this;
             }
 
-            public Builder params(String params) {
+            public Builder params(@Nullable String params) {
                 this.params = params;
                 return this;
             }

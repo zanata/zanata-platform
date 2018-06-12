@@ -34,6 +34,8 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 import com.google.common.base.Optional;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 @Named("documentDAO")
 @RequestScoped
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
@@ -479,6 +481,21 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         makePersistent(doc);
         return rawDoc;
     }
+
+//    public String getAdapterParams(String projectSlug,
+//            String iterationSlug, String docId) {
+//        HDocument doc = getByProjectIterationAndDocId(projectSlug,
+//                iterationSlug, docId);
+//        if (doc != null) {
+//            HRawDocument rawDoc = doc.getRawDocument();
+//            if (rawDoc != null) {
+//                return nullToEmpty(rawDoc.getAdapterParameters());
+//            }
+//        }
+//        return "";
+//    }
+//
+
 
     public Optional<String> getAdapterParams(String projectSlug,
             String iterationSlug, String docId) {

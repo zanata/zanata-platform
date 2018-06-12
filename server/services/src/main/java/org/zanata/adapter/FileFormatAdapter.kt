@@ -25,7 +25,6 @@ import java.net.URI
 
 import org.apache.commons.io.FilenameUtils
 import org.apache.commons.lang3.StringUtils
-import org.zanata.common.DocumentType
 import org.zanata.common.LocaleId
 import org.zanata.exception.FileFormatAdapterException
 import org.zanata.model.HDocument
@@ -46,13 +45,13 @@ interface FileFormatAdapter {
     // for parseDocumentFile(), parseTranslationFile()
     data class ParserOptions(
             // (formerly originalFile/originalDoc/documentUri)
+            /** location of the document to parse */
             val rawFile: URI,
             // source document locale
             val locale: LocaleId,
             /** adapter-specific parameter string. See documentation for
              * individual adapters. */
-            // TODO use empty string for absent?
-            val params: Optional<String>
+            val params: String
     )
 
     // for writeTranslatedFile()
@@ -76,8 +75,7 @@ interface FileFormatAdapter {
      * if the document cannot be parsed
      */
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    fun parseDocumentFile(documentUri: URI,
-                          sourceLocale: LocaleId, params: Optional<String>): Resource
+    fun parseDocumentFile(options: ParserOptions): Resource
 
     /**
      * Extract translation strings from the given translation document.
@@ -100,7 +98,7 @@ interface FileFormatAdapter {
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
     fun parseTranslationFile(fileUri: URI,
                              sourceLocaleId: LocaleId, localeId: String,
-                             params: Optional<String>): TranslationsResource
+                             params: String): TranslationsResource
 
     /**
      * Write translated file to the given output, using the given list of
@@ -128,7 +126,7 @@ interface FileFormatAdapter {
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
     fun writeTranslatedFile(output: OutputStream, originalFile: URI,
                             resource: Resource, translationsResource: TranslationsResource,
-                            locale: String, params: Optional<String>, approvedOnly: Boolean)
+                            locale: String, params: String, approvedOnly: Boolean)
 
 
     /**

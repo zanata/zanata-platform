@@ -47,6 +47,8 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
+import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.exception.AuthorizationException;
@@ -851,18 +853,23 @@ public class VersionHomeAction extends AbstractSortAction
         }
         HDocument document = null;
         try {
+            LocaleId locale = new LocaleId(sourceFileUpload.getSourceLang());
             Resource doc;
+            ParserOptions parserOptions = new ParserOptions(
+                    tempFile.toURI(), locale, getOptionalParams());
             if (docId == null) {
                 doc = translationFileServiceImpl.parseAdapterDocumentFile(
-                        tempFile.toURI(), documentPath, fileName,
-                        getOptionalParams(), Optional.of(docType.name()));
+                        documentPath, fileName,
+                        parserOptions,
+                        Optional.of(docType.name()));
             } else {
                 doc = translationFileServiceImpl
-                        .parseUpdatedAdapterDocumentFile(tempFile.toURI(),
-                                docId, fileName, getOptionalParams(),
+                        .parseUpdatedAdapterDocumentFile(
+                                docId, fileName,
+                                parserOptions,
                                 Optional.of(docType.name()));
             }
-            doc.setLang(new LocaleId(sourceFileUpload.getSourceLang()));
+            doc.setLang(locale);
             Set<String> extensions = Collections.<String> emptySet();
             // TODO Copy Trans values
             document = documentServiceImpl.saveDocument(projectSlug,
