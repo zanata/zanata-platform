@@ -51,9 +51,9 @@ class SplitDropdown extends React.Component {
       /* eslint-disable max-len */
       <div className={className}>
         <ButtonGroup className="ButtonGroup--hz ButtonGroup--borderCollapse u-rounded">
-          <Button className="ButtonGroup-item">
+          <div className="ButtonGroup-item">
             {this.props.actionButton}
-          </Button>
+          </div>
           {toggleButtonItem}
         </ButtonGroup>
         {this.props.content}

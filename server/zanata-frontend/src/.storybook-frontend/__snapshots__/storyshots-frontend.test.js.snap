@@ -16092,12 +16092,6 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
 </span>
 `;
 
-exports[`Frontend Storyshots Notification Error 1`] = `undefined`;
-
-exports[`Frontend Storyshots Notification Info 1`] = `undefined`;
-
-exports[`Frontend Storyshots Notification Warning 1`] = `undefined`;
-
 exports[`Frontend Storyshots Pagination default 1`] = `
 <span>
   <h2>

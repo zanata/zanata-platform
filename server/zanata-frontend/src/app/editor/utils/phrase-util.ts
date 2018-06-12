@@ -31,6 +31,7 @@ export function hasTranslationChanged (phrase: Phrase) {
   const allSame = every(phrase.newTranslations,
       function (translation, index) {
         return nullToEmpty(translation) ===
+            // @ts-ignore
             nullToEmpty(phrase.translations[index])
       })
 
@@ -43,6 +44,7 @@ export function hasNoTranslation (phrase: Phrase) {
 
 export function hasEmptyTranslation (phrase: Phrase) {
   return compact(phrase.newTranslations).length !==
+    // @ts-ignore
       phrase.newTranslations.length
 }
 

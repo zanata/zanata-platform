@@ -59,7 +59,6 @@ pages:
 # Review
 - Translation Review:
   - Overview: 'user-guide/review/overview.md'
-  - Enabling review in version: 'user-guide/review/review-enable.md'
   - Add reviewer: 'user-guide/review/add-reviewer.md'
   - Start reviewing: 'user-guide/review/translation-review.md'
 # Translation reuse
