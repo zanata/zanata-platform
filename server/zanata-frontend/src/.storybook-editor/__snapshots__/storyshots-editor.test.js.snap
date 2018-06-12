@@ -5634,7 +5634,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
 
 exports[`Editor Storyshots CommentBox default 1`] = `
 <div
-  className="TransUnit-commentBox"
+  className="TransUnit-commentBox mb4"
 >
   <span>
     <span
@@ -5666,7 +5666,7 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     value=""
   />
   <Button
-    className="EditorButton Button--small u-rounded Button--primary u-pullRight mb4 mt2"
+    className="EditorButton Button--small u-rounded Button--primary u-pullRight mt2"
     disabled={true}
     onClick={[Function]}
   >
