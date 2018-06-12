@@ -192,9 +192,9 @@ class Languages extends Component {
                   </div>)}
                   {noResults &&
                     <div className='loader-loadingContainer'>
-                      <p className='glossaryText-muted'>
-                        <Icon type='global' />&bsp;No results
-                      </p>
+                      <span className='u-textLoadingMuted'>
+                        <Icon type='global' /> No results
+                      </span>
                     </div>
                   }
                   {!loading && !noResults &&
