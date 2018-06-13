@@ -45,7 +45,6 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
-import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
@@ -167,7 +166,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
         RawDocument rawDoc =
                 new RawDocument(options.getRawFile(), "UTF-8",
-                        net.sf.okapi.common.LocaleId.fromString("en"));
+                        fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
             rawDoc.setTargetLocale(net.sf.okapi.common.LocaleId.EMPTY);
         }
