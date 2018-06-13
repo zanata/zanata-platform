@@ -10,6 +10,20 @@
   align-items: baseline;
 }
 
+.sortable-helper {
+  z-index: 10000 !important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: @primary-color;
+}
+
+  // needed for new-zanata overrides on button styling
+.ant-btn-primary {
+  background-color: @primary-color;
+  color: @normal-color
+}
+
 .teaser-inner div a.text-muted-bold {
   vertical-align: sub;
 }
@@ -67,3 +81,13 @@
 input.react-autosuggest__input {
   background-color: transparent;
 }
+
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
+  vertical-align: inherit;
+  width: inherit;
+}
+
+.ant-form-inline .ant-form-item {
+  display: flex;
+}
+
