@@ -53,10 +53,10 @@ const fields = {
     label: 'Source comment',
     description: 'source comment text'
   },
-  transComment: {
-    label: 'Translation comment',
-    description: 'translation comment text'
-  },
+  // transComment: {
+  //   label: 'Translation comment',
+  //   description: 'translation comment text'
+  // },
   msgContext: {
     label: 'msgctxt (gettext)',
     description: 'exact Message Context for a string'
