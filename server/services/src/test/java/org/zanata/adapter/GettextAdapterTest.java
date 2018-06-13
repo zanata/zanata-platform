@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.dto.TranslatedDoc;
@@ -123,7 +124,8 @@ public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
         OutputStream outputStream = new ByteArrayOutputStream();
         ParserOptions sourceOptions = new ParserOptions(null, LocaleId.EN, "");
         TranslatedDoc translatedDoc = new TranslatedDoc(resource, transResource, LocaleId.ES);
-        adapter.writeTranslatedFile(outputStream, sourceOptions, translatedDoc,
+        adapter.writeTranslatedFile(outputStream,
+                new WriterOptions(sourceOptions, translatedDoc),
                 approvedOnly);
         assertThat(outputStream.toString()).contains(
                 "\n\nmsgctxt \"0293301ed6a54b7e4503e74bba17bf11\"\nmsgid \"Parent Folder\"\n" +

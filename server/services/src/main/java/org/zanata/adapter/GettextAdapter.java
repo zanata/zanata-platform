@@ -89,15 +89,14 @@ public class GettextAdapter implements FileFormatAdapter {
 
     @Override
     public void writeTranslatedFile(@NotNull OutputStream output,
-            @NotNull ParserOptions sourceOptions,
-            @NotNull TranslatedDoc translatedDoc, boolean approvedOnly)
+            @NotNull WriterOptions options, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         PoWriter2 writer = new PoWriter2.Builder().encodeTabs(true)
                 .mapIdToMsgctxt(true).approvedOnly(approvedOnly)
                 .create();
         try {
-            writer.writePo(output, Charsets.UTF_8.name(), translatedDoc.getSource(),
-                    translatedDoc.getTranslation());
+            writer.writePo(output, Charsets.UTF_8.name(), options.getTranslatedDoc().getSource(),
+                    options.getTranslatedDoc().getTranslation());
         } catch (IOException e) {
             throw new FileFormatAdapterException(
                     "Unable to generate translated file", e);
