@@ -27,7 +27,11 @@ describe('DraggableVersionPanels', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <li className="v list-group-item" >
         <DragHandle />
-        {'ver1'} <span className='txt-muted'> {'meikai1'}
+        <span className='ml2'>
+          {'ver1'}
+        </span>
+        <span className='txt-muted ml1'>
+          {'meikai1'}
         </span> <LockIcon status={'ACTIVE'} />
         {" "}
         <Button
