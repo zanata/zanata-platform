@@ -25,7 +25,6 @@ import org.zanata.client.dto.LocaleMappedTranslatedDoc;
 import org.zanata.client.etag.ETagCacheEntry;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
-import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.resource.Resource;

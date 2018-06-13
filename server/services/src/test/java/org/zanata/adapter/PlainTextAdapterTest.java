@@ -28,8 +28,6 @@ import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 
-import com.google.common.base.Optional;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */

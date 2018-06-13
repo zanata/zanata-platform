@@ -8,7 +8,6 @@ import org.zanata.client.dto.LocaleMappedTranslatedDoc;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * Strategy for converting documents from Zanata to a local file type. Every
@@ -31,7 +30,7 @@ public interface PullStrategy {
      * @return true if this strategy only allows interactions with translation
      *         files.
      */
-    public boolean isTransOnly();
+    boolean isTransOnly();
 
     /**
      * Does this strategy need the source document (Resource) when writing

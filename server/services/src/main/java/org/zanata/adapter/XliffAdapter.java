@@ -24,21 +24,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 
 import org.jetbrains.annotations.NotNull;
 import org.zanata.adapter.xliff.XliffCommon;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.adapter.xliff.XliffWriter;
-import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import com.google.common.base.Optional;
 import org.zanata.util.FileUtil;
-
-import javax.annotation.Nonnull;
 
 /**
  * Adapter to read and write {@link org.zanata.common.DocumentType#XLIFF} file

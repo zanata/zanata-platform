@@ -32,7 +32,6 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.base.Optional;
 
 import static com.google.common.base.Strings.nullToEmpty;
 

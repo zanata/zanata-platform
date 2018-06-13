@@ -20,7 +20,6 @@
  */
 package org.zanata.adapter;
 
-import com.google.common.base.Optional;
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.IParameters;

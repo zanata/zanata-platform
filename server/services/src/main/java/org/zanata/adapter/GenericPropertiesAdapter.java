@@ -21,7 +21,6 @@
 package org.zanata.adapter;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +30,6 @@ import static org.zanata.adapter.AdapterUtils.readStream;
 import org.zanata.common.ContentState;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
-import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
@@ -43,7 +41,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 
 /**
  * Properties file adapter to read and write.

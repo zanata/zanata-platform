@@ -32,8 +32,6 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -78,7 +76,8 @@ public class IdmlAdapterTest extends AbstractAdapterTest<IDMLAdapter> {
                 sourceOptions = new FileFormatAdapter.ParserOptions(originalFile.toURI(), LocaleId.EN, "");
         TranslatedDoc
                 translatedDoc = new TranslatedDoc(resource, translationsResource, new LocaleId("dv-DL"));
-        adapter.writeTranslatedFile(output, sourceOptions, translatedDoc,
+        adapter.writeTranslatedFile(output,
+                new FileFormatAdapter.WriterOptions(sourceOptions, translatedDoc),
                 false);
         output.writeTo(new FileOutputStream(outputFile));
 

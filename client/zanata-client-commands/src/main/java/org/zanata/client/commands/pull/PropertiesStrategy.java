@@ -25,14 +25,12 @@ import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
-import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.dto.LocaleMappedTranslatedDoc;
 import org.zanata.common.LocaleId;
 import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a
@@ -68,7 +66,7 @@ public class PropertiesStrategy extends AbstractPullStrategy {
         File transFileToWrite = getTransFileToWrite(docName, doc.getLocale());
         LocaleId locale = new LocaleId(doc.getLocale().getLocale());
         TranslatedDoc transDoc = createSkeletons ?
-                new TranslatedDoc(doc.getSource(), doc.getTranslation(), locale):
+                new TranslatedDoc(doc.getSource(), doc.getTranslation(), locale) :
                 new TranslatedDoc(null, doc.getTranslation(), locale);
         PropWriter.writeTranslationsFile(transDoc,
                 transFileToWrite, PropWriter.CHARSET.Latin1,

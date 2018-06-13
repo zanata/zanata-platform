@@ -24,6 +24,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
+import com.google.common.annotations.VisibleForTesting;
 
 public class PropWriter {
     private static final Logger log = LoggerFactory.getLogger(PropWriter.class);
@@ -114,6 +115,7 @@ public class PropWriter {
      * Writes to given properties file of the given TranslationsResource
      * in {@link CHARSET#UTF8} or {@link CHARSET#Latin1} encoding.
      */
+    @VisibleForTesting
     static void writeTranslations(final TranslatedDoc translatedDoc,
             final File baseDir,
             String bundleName, String locale, final CHARSET charset,

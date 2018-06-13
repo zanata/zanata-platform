@@ -38,7 +38,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.resource.Resource;
 
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 

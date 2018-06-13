@@ -23,22 +23,17 @@ package org.zanata.adapter;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.common.LocaleId;
-import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 
 import static org.zanata.adapter.AdapterUtils.readStream;
 

@@ -20,7 +20,6 @@
  */
 package org.zanata.adapter;
 
-import com.google.common.base.Optional;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +83,8 @@ public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
         FileFormatAdapter.ParserOptions
                 sourceOptions = new FileFormatAdapter.ParserOptions(testFile.toURI(), LocaleId.EN, "");
         TranslatedDoc translatedDoc = new TranslatedDoc(resource, translationsResource, new LocaleId("dv-DL"));
-        adapter.writeTranslatedFile(output, sourceOptions, translatedDoc,
+        adapter.writeTranslatedFile(output,
+                new FileFormatAdapter.WriterOptions(sourceOptions, translatedDoc),
                 approvedOnly);
 
         String trans1 = "Dakta Amna";

@@ -64,8 +64,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-//TODO damason: add thorough unit testing
 
 @Dependent
 @Named("sourceDocumentUploader")

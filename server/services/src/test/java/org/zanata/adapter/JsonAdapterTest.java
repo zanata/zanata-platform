@@ -38,8 +38,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 
 /**

@@ -20,7 +20,6 @@
  */
 package org.zanata.adapter;
 
-import com.google.common.base.Optional;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;

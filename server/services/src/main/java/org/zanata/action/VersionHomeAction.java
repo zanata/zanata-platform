@@ -47,7 +47,6 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
-import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.events.DocumentLocaleKey;

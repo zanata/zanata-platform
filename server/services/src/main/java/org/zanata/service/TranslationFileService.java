@@ -32,7 +32,6 @@ import com.google.common.base.Optional;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Set;
 
 /**

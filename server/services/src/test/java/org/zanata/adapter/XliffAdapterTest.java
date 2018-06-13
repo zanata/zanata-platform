@@ -20,6 +20,7 @@
  */
 package org.zanata.adapter;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -37,8 +38,6 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -126,19 +125,19 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
                 approvedOnly);
         output.writeTo(new FileOutputStream(outputFile));
 
-        assertThat(output.toString()).contains(
+        assertThat(output.toString(UTF_8)).contains(
                 "        <source>Line One</source>\n" +
                         "        <target>Dakta Amna</target>");
         if (approvedOnly) {
-            assertThat(output.toString()).contains(
+            assertThat(output.toString(UTF_8)).contains(
                     "        <source>Line Two</source>\n        <context-group");
         } else {
-            assertThat(output.toString()).contains(
+            assertThat(output.toString(UTF_8)).contains(
                     "        <source>Line Two</source>\n" +
                             "        <target>Dakta Tba</target>");
         }
         // Assert fuzzy is not copied anywhere to output
-        assertThat(output.toString()).doesNotContain("<target>Dakta Kba</target>");
+        assertThat(output.toString(UTF_8)).doesNotContain("<target>Dakta Kba</target>");
     }
 
 }

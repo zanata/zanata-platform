@@ -25,13 +25,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
-import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.dto.LocaleMappedTranslatedDoc;
-import org.zanata.common.LocaleId;
-import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a

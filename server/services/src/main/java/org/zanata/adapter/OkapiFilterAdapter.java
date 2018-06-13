@@ -339,18 +339,19 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public void writeTranslatedFile(@NotNull OutputStream output,
-            @NotNull ParserOptions sourceOptions,
-            @NotNull TranslatedDoc translatedDoc, boolean approvedOnly)
+            @NotNull WriterOptions options, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         Map<String, TextFlowTarget> translations =
                 transformToMapByResId(
-                    translatedDoc.getTranslation().getTextFlowTargets());
+                    options.getTranslatedDoc().getTranslation().getTextFlowTargets());
 
         try {
-            net.sf.okapi.common.LocaleId localeId = OkapiUtil.toOkapiLocale(translatedDoc.getLocale());
+            net.sf.okapi.common.LocaleId localeId = OkapiUtil.toOkapiLocale(options.getTranslatedDoc().getLocale());
 
             IFilterWriter writer = filter.createFilterWriter();
             writer.setOptions(localeId, getOutputEncoding());
+
+            ParserOptions sourceOptions = options.getSourceParserOptions();
 
             if (requireFileOutput) {
                 writeTranslatedFileWithFileOutput(output, sourceOptions.getRawFile(),
@@ -376,7 +377,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         List<TextFlowTarget> targets) {
         Map<String, TextFlowTarget> resIdTargetMap = Maps.newHashMap();
 
-        for(TextFlowTarget target: targets) {
+        for (TextFlowTarget target: targets) {
             resIdTargetMap.put(target.getResId(), target);
         }
         return resIdTargetMap;
