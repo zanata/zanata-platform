@@ -118,15 +118,14 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
      */
     @Override
     public void writeTranslatedFile(@NotNull OutputStream output,
-            @NotNull ParserOptions sourceOptions,
-            @NotNull TranslatedDoc translatedDoc, boolean approvedOnly)
+            @NotNull WriterOptions options, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         // write source string with empty translation
         boolean createSkeletons = true;
         File tempFile = null;
         try {
             tempFile = File.createTempFile("filename", ".properties");
-            PropWriter.writeTranslationsFile(translatedDoc,
+            PropWriter.writeTranslationsFile(options.getTranslatedDoc(),
                     tempFile, charset, createSkeletons, approvedOnly);
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {

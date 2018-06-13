@@ -28,6 +28,8 @@ import java.io.File;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.dto.TranslatedDoc;
@@ -76,10 +78,11 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
         File originalFile = new File(resourcePath.concat("test-properties-utf8.properties"));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        FileFormatAdapter.ParserOptions
-                sourceOptions = new FileFormatAdapter.ParserOptions(originalFile.toURI(), LocaleId.EN, "");
+        ParserOptions
+                sourceOptions = new ParserOptions(originalFile.toURI(), LocaleId.EN, "");
         TranslatedDoc translatedDoc = new TranslatedDoc(resource, tResource, new LocaleId("ru"));
-        adapter.writeTranslatedFile(outputStream, sourceOptions, translatedDoc,
+        adapter.writeTranslatedFile(outputStream,
+                new WriterOptions(sourceOptions, translatedDoc),
                 approvedOnly);
 
         String expected = "line1=¥Foun’dé metalkcta\n" +

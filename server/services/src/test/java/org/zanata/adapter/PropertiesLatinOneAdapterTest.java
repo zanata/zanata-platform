@@ -27,6 +27,7 @@ import java.io.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.DocumentType;
@@ -99,7 +100,8 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
         FileFormatAdapter.ParserOptions
                 sourceOptions = new FileFormatAdapter.ParserOptions(null, LocaleId.EN, "");
         TranslatedDoc translatedDoc = new TranslatedDoc(resource, tResource, new LocaleId("ru"));
-        adapter.writeTranslatedFile(output, sourceOptions, translatedDoc,
+        adapter.writeTranslatedFile(output,
+                new WriterOptions(sourceOptions, translatedDoc),
                 false);
 
         // \u00C0 is the escaped unicode form of À

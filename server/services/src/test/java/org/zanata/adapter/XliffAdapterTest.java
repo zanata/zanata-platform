@@ -31,8 +31,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
@@ -77,11 +80,9 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
         // Xliff implementation deletes the file
         FileUtils.copyFile(translationFile, tempFile);
         assertThat(tempFile.exists()).isTrue();
-        LocaleId sourceLocale = LocaleId.fromJavaName("en");
 
         TranslationsResource translationsResource =
-                adapter.parseTranslationFile(tempFile.toURI(), sourceLocale,
-                        "fr", Optional.absent());
+                adapter.parseTranslationFile(new ParserOptions(tempFile.toURI(), LocaleId.FR, ""));
         assertThat(translationsResource.getTextFlowTargets().get(0).getContents())
                 .containsExactly("Imanétaba Amna");
         assertThat(translationsResource.getTextFlowTargets().get(1).getContents())
@@ -118,8 +119,10 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
 
         File outputFile = File.createTempFile("test-xliff-translated", ".xlf");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        adapter.writeTranslatedFile(output, null,
-                resource, translationsResource, "dv-DL", Optional.absent(),
+        adapter.writeTranslatedFile(output,
+                new WriterOptions(
+                        new ParserOptions(null, LocaleId.EN, ""),
+                        new TranslatedDoc(resource, translationsResource, new LocaleId("dv-DL"))),
                 approvedOnly);
         output.writeTo(new FileOutputStream(outputFile));
 

@@ -69,16 +69,16 @@ public class XliffAdapter implements FileFormatAdapter {
         return doc;
     }
 
+    @NotNull
     @Override
-    public TranslationsResource parseTranslationFile(@Nonnull URI fileUri,
-            LocaleId sourceLocaleId, String localeId, Optional<String> params)
-            throws  FileFormatAdapterException,
-                    IllegalArgumentException {
+    public TranslationsResource parseTranslationFile(
+            @NotNull ParserOptions options)
+            throws FileFormatAdapterException, IllegalArgumentException {
         XliffReader xliffReader = new XliffReader();
         TranslationsResource targetDoc;
         File transFile = null;
         try {
-            transFile = new File(fileUri);
+            transFile = new File(options.getRawFile());
             targetDoc = xliffReader.extractTarget(transFile);
         } catch (FileNotFoundException e) {
             throw new FileFormatAdapterException(
@@ -92,17 +92,17 @@ public class XliffAdapter implements FileFormatAdapter {
     }
 
     @Override
-    public void writeTranslatedFile(OutputStream output, URI originalFile,
-            Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params, boolean approvedOnly)
+    public void writeTranslatedFile(@NotNull OutputStream output,
+            @NotNull WriterOptions options, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         // write source string with empty translation
         boolean createSkeletons = true;
         File tempFile = null;
         try {
             tempFile = File.createTempFile("filename", "extension");
-            XliffWriter.writeFile(tempFile, resource, locale,
-                    translationsResource, createSkeletons, approvedOnly);
+            XliffWriter.writeFile(tempFile, options.getTranslatedDoc().getSource(),
+                    options.component2().getLocale().getId(),
+                    options.getTranslatedDoc().getTranslation(), createSkeletons, approvedOnly);
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {
             throw new FileFormatAdapterException(

@@ -41,12 +41,9 @@ import org.zanata.common.dto.TranslatedDoc
  */
 interface FileFormatAdapter {
 
-    // for parseDocumentFile(), parseTranslationFile()
     data class ParserOptions(
             /** location of the document to parse */
-            // (formerly originalFile/originalDoc/documentUri)
             val rawFile: URI?,
-            // document locale
             /** locale of document */
             val locale: LocaleId,
             /** adapter-specific parameter string. See documentation for
@@ -54,9 +51,8 @@ interface FileFormatAdapter {
             val params: String
     )
 
-    // for writeTranslatedFile()
     data class WriterOptions(
-            val parserOptions: ParserOptions,
+            val sourceParserOptions: ParserOptions,
             val translatedDoc: TranslatedDoc
     )
 
@@ -104,9 +100,7 @@ interface FileFormatAdapter {
      * if any parameters are null
      */
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    fun writeTranslatedFile(output: OutputStream, sourceOptions: ParserOptions,
-                            translatedDoc: TranslatedDoc, approvedOnly: Boolean)
-
+    fun writeTranslatedFile(output: OutputStream, options: WriterOptions, approvedOnly: Boolean)
 
     /**
      * Generate translation file with locale and translation extension from DocumentType
