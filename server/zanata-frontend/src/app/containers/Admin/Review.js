@@ -116,7 +116,7 @@ class AdminReview extends Component {
         <div className='mb3'>
           <Button type="primary" icon="plus"
             aria-label="button"
-            onClick={this.showAddNewEntryForm()}>
+            onClick={this.showAddNewEntryForm}>
           New review criteria entry</Button>
         </div>
       </Layout>
