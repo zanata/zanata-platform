@@ -168,6 +168,15 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
 
     @Test
     public void testTranslatedTSDocument() throws Exception {
+        testTranslatedTSDocument(false);
+    }
+
+    @Test
+    public void testTranslatedTSDocumentApprovedOnly() {
+        testTranslatedTSDocument(true);
+    }
+
+    private void testTranslatedTSDocument(boolean approvedOnly) {
         Resource resource = parseTestFile("test-ts-untranslated.ts");
         Map<String, TextFlowTarget> translations = new HashMap<>();
         addTranslation(translations, resource.getTextFlows().get(0).getId(),
@@ -176,6 +185,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
         addTranslation(translations, resource.getTextFlows().get(1).getId(),
                 "Tba’dé metalkcta",
                 ContentState.Translated);
+        // TODO test NeedReview as well (should be omitted or marked as unfinished)
         File originalFile = getTestFile("test-ts-untranslated.ts");
         LocaleId localeId = new LocaleId("en");
         OutputStream outputStream = new ByteArrayOutputStream();
@@ -186,19 +196,21 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
             writer.setOutput(outputStream);
             getAdapter()
                     .generateTranslatedFile(originalFile.toURI(), translations,
-                            localeId, writer, Optional.absent());
+                            localeId, writer, Optional.absent(), approvedOnly);
         }
+        // the second translation (Translated) should only have type=unfinished if approvedOnly is set
+        String maybeTypeUnfinished = approvedOnly ? "type=\"unfinished\" " : "";
         assertThat(outputStream.toString()).isEqualTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE TS []>\n" +
-                "<TS version=\"2.1\" sourcelanguage=\"en\" language=\"sv\">\n" +
-                "<message>\n" +
-                "    <source>First source</source>\n" +
-                "<translation type=\"unfinished\" variants=\"no\">Foun’dé metalkcta</translation>\n" +
-                "  </message><message>\n" +
-                "      <source>Second source</source>\n" +
-                "<translation type=\"unfinished\" variants=\"no\">Tba’dé metalkcta</translation>\n" +
-                "    </message>\n" +
-                "</TS>\n");
+                        "<TS version=\"2.1\" sourcelanguage=\"en\" language=\"sv\">\n" +
+                        "<message>\n" +
+                        "    <source>First source</source>\n" +
+                        "<translation variants=\"no\">Foun’dé metalkcta</translation>\n" +
+                        "  </message><message>\n" +
+                        "      <source>Second source</source>\n" +
+                        "<translation " + maybeTypeUnfinished + "variants=\"no\">Tba’dé metalkcta</translation>\n" +
+                        "    </message>\n" +
+                        "</TS>\n");
     }
 
     @Test
@@ -231,7 +243,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                     getTestFile("test-ts-nonexistent.ts").toURI(),
                     new HashMap<>(),
                     new LocaleId("en"),
-                    filterWriter, Optional.absent());
+                    filterWriter, Optional.absent(), false);
         }
     }
 

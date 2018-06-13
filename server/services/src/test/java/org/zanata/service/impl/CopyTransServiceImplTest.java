@@ -87,8 +87,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     ProjectDAO projectDAO;
     @Inject
     DocumentDAO documentDAO;
-    @Inject
-    CopyTransServiceImpl copyTransService;
     @Produces
     @Mock
     private UrlUtil urlUtil;
@@ -179,7 +177,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         // translated)
         @SuppressWarnings("unused")
         CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE,
-                IGNORE, true, true, true, true, Approved).expectUntranslated();
+                IGNORE, true, true, true, Approved).expectUntranslated();
         // testCopyTrans(execution);
     }
 
@@ -205,8 +203,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         // Run the copy trans scenario
         @SuppressWarnings("unused")
         CopyTransExecution execution =
-                new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true,
-                        true, Approved).expectTransState(Approved);
+            new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true,
+                Approved).expectTransState(Approved);
         // testCopyTrans(execution);
     }
 
@@ -217,7 +215,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         private Boolean contextMatches;
         private Boolean projectMatches;
         private Boolean documentMatches;
-        private Boolean requireTranslationReview;
         private ContentState expectedTranslationState;
         private boolean expectUntranslated;
         private String[] expectedContents;
@@ -227,15 +224,13 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 ConditionRuleAction projectMismatchAction,
                 ConditionRuleAction documentMismatchAction,
                 Boolean contextMatches, Boolean projectMatches,
-                Boolean documentMatches, Boolean requireTranslationReview,
-                ContentState matchState) {
+                Boolean documentMatches, ContentState matchState) {
             this.contextMismatchAction = contextMismatchAction;
             this.projectMismatchAction = projectMismatchAction;
             this.documentMismatchAction = documentMismatchAction;
             this.contextMatches = contextMatches;
             this.projectMatches = projectMatches;
             this.documentMatches = documentMatches;
-            this.requireTranslationReview = requireTranslationReview;
             this.matchState = matchState;
         }
 
@@ -278,10 +273,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
 
         public Boolean getDocumentMatches() {
             return this.documentMatches;
-        }
-
-        public Boolean getRequireTranslationReview() {
-            return this.requireTranslationReview;
         }
 
         public ContentState getExpectedTranslationState() {
@@ -351,15 +342,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
             if (this$documentMatches == null ? other$documentMatches != null
                     : !this$documentMatches.equals(other$documentMatches))
                 return false;
-            final Object this$requireTranslationReview =
-                    this.getRequireTranslationReview();
-            final Object other$requireTranslationReview =
-                    other.getRequireTranslationReview();
-            if (this$requireTranslationReview == null
-                    ? other$requireTranslationReview != null
-                    : !this$requireTranslationReview
-                            .equals(other$requireTranslationReview))
-                return false;
             final Object this$expectedTranslationState =
                     this.getExpectedTranslationState();
             final Object other$expectedTranslationState =
@@ -411,10 +393,6 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
             final Object $documentMatches = this.getDocumentMatches();
             result = result * PRIME + ($documentMatches == null ? 43
                     : $documentMatches.hashCode());
-            final Object $requireTranslationReview =
-                    this.getRequireTranslationReview();
-            result = result * PRIME + ($requireTranslationReview == null ? 43
-                    : $requireTranslationReview.hashCode());
             final Object $expectedTranslationState =
                     this.getExpectedTranslationState();
             result = result * PRIME + ($expectedTranslationState == null ? 43
@@ -438,9 +416,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                     + this.getDocumentMismatchAction() + ", contextMatches="
                     + this.getContextMatches() + ", projectMatches="
                     + this.getProjectMatches() + ", documentMatches="
-                    + this.getDocumentMatches() + ", requireTranslationReview="
-                    + this.getRequireTranslationReview()
-                    + ", expectedTranslationState="
+                    + this.getDocumentMatches() + ", expectedTranslationState="
                     + this.getExpectedTranslationState()
                     + ", expectUntranslated=" + this.isExpectUntranslated()
                     + ", expectedContents="

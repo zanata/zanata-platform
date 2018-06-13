@@ -57,7 +57,6 @@
   .containerSidebar {
     margin-left: 4.5rem;
     background-color: #fff;
-    height: 100vh;
     padding-bottom: 3rem;
   }
   .wideView {
@@ -65,15 +64,12 @@
     -webkit-align-items: center;
     /* Safari 7.0+ */
     overflow: hidden;
-    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    max-width: 100%;
-    width: inherit;
-    margin-left: 1rem;
+    width: 99%;
     padding-left: @spacing-base;
     padding-right: @spacing-base;
   }
-  .wideView.languages, .wideView#glossary {
+  .wideView#glossary {
     padding-bottom: 3rem;
   }
   .gwtBase {
@@ -136,16 +132,17 @@
     display: block;
   }
   .nav-link {
+    /* remove relative font scaling for nav so it
+     is consistent across all of frontend */
+    font-size: 11px !important;
     background-color: "";
     color: rgb(237, 242, 248) !important;
     flex-direction: column;
     -webkit-flex-direction: column;
     align-items: center;
     -webkit-align-items: center;
-    /* Safari 7.0+ */
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
-    font-size: 0.694rem !important;
     text-align: center;
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -535,6 +532,9 @@
   }
   .editable.row {
     padding: @spacing-rh;
+  }
+  .select {
+    background-color: transparent;
   }
   .Select-option {
     line-height: 1rem;
@@ -4069,7 +4069,7 @@
     }
     .containerSidebar {
       margin-left: 4.5rem;
-      width: 100%;
+      width: 95%;
       margin-bottom: 0;
     }
     #root {

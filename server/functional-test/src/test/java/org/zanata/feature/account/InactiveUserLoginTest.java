@@ -101,13 +101,16 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .clickResendActivationEmail();
 
         assertThat(homePage.expectNotification(HomePage.SIGNUP_SUCCESS_MESSAGE))
-                .as("The message sent notification is displayed");
-        assertThat(hasEmailRule.getMessages().size()).isEqualTo(2)
-                .as("A second email was sent");
+                .as("The message sent notification is displayed")
+                .isTrue();
+        assertThat(hasEmailRule.getMessages().size())
+                .as("A second email was sent")
+                .isEqualTo(2);
 
         WiserMessage message = hasEmailRule.getMessages().get(1);
-        assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
-                .as("The second email contains the activation link");
+        assertThat(EmailQuery.hasLink(message, ACTIVATE))
+                .as("The second email contains the activation link")
+                .isTrue();
 
         new BasicWorkFlow()
                 .goToUrl(EmailQuery.getLink(message, ACTIVATE), HomePage.class);
@@ -119,8 +122,9 @@ public class InactiveUserLoginTest extends ZanataTestCase {
          */
         assertThat(new LoginWorkFlow()
                 .signIn(usernamepassword, usernamepassword)
-                .loggedInAs()).isEqualTo(usernamepassword).as(
-                        "The user has validated their account and logged in");
+                .loggedInAs())
+                .as("The user has validated their account and logged in")
+                .isEqualTo(usernamepassword);
     }
 
     @Trace(summary = "The user can update the account activation email address",

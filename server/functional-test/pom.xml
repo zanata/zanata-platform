@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.5.0-rc-3-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -735,9 +735,14 @@
                   <executable>/bin/sh</executable>
                   <!-- NB this assumes zanata-test-war has been built locally and recently -->
                   <arguments>
+                    <argument>-e</argument>
                     <argument>${server.dir}/zanata-test-war/target/zanata-test-war-${project.version}/WEB-INF/liquibase</argument>
                     <argument>update</argument>
                   </arguments>
+                  <environmentVariables>
+                    <!-- see also opts.fileDir in configure-app-server.js -->
+                    <LIQUIBASE_JVM_OPTS>-Dzanata.file.directory=${basedir}/target/documents</LIQUIBASE_JVM_OPTS>
+                  </environmentVariables>
                   <skip>${liquibase.exec.skip}</skip>
                   <workingDirectory>${basedir}/target/test-classes</workingDirectory>
                 </configuration>

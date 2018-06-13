@@ -38,6 +38,7 @@ class Suggestion extends React.Component {
 
   /**
    * Calculate the match type for the suggestion
+   * @type Function
    */
   matchType = (suggestion) => {
     let topMatch = suggestion.matchDetails[0]

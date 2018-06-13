@@ -45,7 +45,7 @@ public class UsernameValidationTest extends ZanataTestCase {
         registerPage.defocus(registerPage.usernameField);
 
         assertThat(registerPage.getErrors())
-                .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
-                .as("Username validation errors are shown");
+                .as("Username validation errors are shown")
+                .contains(RegisterPage.USERNAME_VALIDATION_ERROR);
     }
 }

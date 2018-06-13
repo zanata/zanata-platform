@@ -64,7 +64,8 @@ public class XliffStrategy extends AbstractPullStrategy {
             throws IOException {
         File transFileToWrite = getTransFileToWrite(docName, localeMapping);
         XliffWriter.writeFile(transFileToWrite, doc, localeMapping
-                .getLocalLocale(), targetDoc, getOpts().getCreateSkeletons());
+                .getLocalLocale(), targetDoc, getOpts().getCreateSkeletons(),
+                getOpts().getApprovedOnly());
         return null;
     }
 

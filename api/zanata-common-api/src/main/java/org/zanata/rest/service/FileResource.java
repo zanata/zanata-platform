@@ -22,13 +22,7 @@ package org.zanata.rest.service;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -76,17 +70,22 @@ public interface FileResource {
     /**
      * Specifies to download a preview of the translated document in the
      * original source format, showing all non-empty translations (even if not
-     * approved). Where translations are empty, source strings are used.
+     * translated/approved). Where translations are empty, source strings are used.
      */
     public static final String FILETYPE_TRANSLATED_APPROVED_AND_FUZZY =
             "half-baked";
 
     /**
      * Specifies to download a completed version of a translated document in the
-     * original source format, showing only approved translations. Where no
-     * approved translation is available, source strings are used.
+     * original source format, showing only translated/approved translations
+     * (not fuzzy). Where no translated/approved translation is available,
+     * source strings are used.
      */
     public static final String FILETYPE_TRANSLATED_APPROVED = "baked";
+
+    String FILETYPE_GETTEXT = "po";
+    String FILETYPE_GETTEXT_TEMPLATE = "pot";
+    String FILETYPE_OFFLINE_PO = "offlinepo";
 
     /**
      * Deprecated. Returns the source file extensions supported by the server.
@@ -230,11 +229,13 @@ public interface FileResource {
      * @param locale
      *            Translations for this locale will be contained in the
      *            downloaded document.
-     * @param fileExtension
+     * @param fileType
      *            File type to be downloaded. (Options: 'po', 'half_baked',
      *            'baked')
      * @param docId
      *            Document identifier to fetch translations for.
+     * @param approvedOnly
+     *            If true, only include Approved translations (not Translated, Fuzzy or New).
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - A translation file in the requested format with
@@ -246,15 +247,16 @@ public interface FileResource {
      *         the server while performing this operation.
      */
     @GET
+    // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}&approvedOnly={approvedOnly}
     @Path(FILE_DOWNLOAD_TEMPLATE)
-    // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
-            public
             Response downloadTranslationFile(
                     @PathParam("projectSlug") String projectSlug,
                     @PathParam("iterationSlug") String iterationSlug,
                     @PathParam("locale") String locale,
-                    @PathParam("fileType") String fileExtension,
-                    @QueryParam("docId") String docId);
+                    @PathParam("fileType") String fileType,
+                    @QueryParam("docId") String docId,
+                    @DefaultValue("false") @QueryParam("approvedOnly")
+                            boolean approvedOnly);
 
     /**
      * Downloads a previously generated file.

@@ -72,6 +72,7 @@ describe('ui-reducer test', () => {
   })
 
   it('can toggle glossary', () => {
+    // @ts-ignore
     const openedGlossary = uiReducer(undefined, { type: TOGGLE_GLOSSARY })
     const closedGlossary = uiReducer(openedGlossary, { type: TOGGLE_GLOSSARY })
     expect(closedGlossary.panels.sidebar).toEqual({
@@ -85,6 +86,7 @@ describe('ui-reducer test', () => {
   })
 
   it('can toggle activity', () => {
+    // @ts-ignore
     const closedActivity = uiReducer(undefined, { type: TOGGLE_ACTIVITY })
     const openedActivity = uiReducer(closedActivity, { type: TOGGLE_ACTIVITY })
     expect(closedActivity.panels.sidebar).toEqual({
@@ -98,6 +100,7 @@ describe('ui-reducer test', () => {
   })
 
   it('can toggle header', () => {
+    // @ts-ignore
     const closedHeader = uiReducer(undefined, { type: TOGGLE_HEADER })
     const openedHeader = uiReducer(closedHeader, { type: TOGGLE_HEADER })
     expect(closedHeader.panels.navHeader.visible).toEqual(false)
@@ -105,6 +108,7 @@ describe('ui-reducer test', () => {
   })
 
   it('can toggle key shortcuts modal', () => {
+    // @ts-ignore
     const openedKeyShortcuts = uiReducer(undefined, {
       type: TOGGLE_KEY_SHORTCUTS
     })

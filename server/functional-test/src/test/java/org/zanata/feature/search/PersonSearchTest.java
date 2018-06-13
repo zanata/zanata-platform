@@ -50,10 +50,11 @@ public class PersonSearchTest extends ZanataTestCase {
                 .expectPersonListContains("translator");
 
         assertThat(explorePage.getUserSearchResults())
-                .contains("translator")
-                .as("Normal user can see the person listed");
+                .as("Normal user can see the person listed")
+                .contains("translator");
 
-        ProfilePage profilePage = explorePage.clickUserSearchEntry("translator");
+        ProfilePage profilePage =
+                explorePage.clickUserSearchEntry("translator");
 
         assertThat(profilePage.getUsername().trim())
                 .isEqualTo("translator");
@@ -71,8 +72,8 @@ public class PersonSearchTest extends ZanataTestCase {
                 .enterSearch("snart");
 
         assertThat(explorePage.getUserSearchResults().isEmpty())
-                .isTrue()
-                .as("The user is not displayed");
+                .as("The user is not displayed")
+                .isTrue();
     }
 
     @Trace(summary = "The user can access another user's profile via the URL")
@@ -100,7 +101,7 @@ public class PersonSearchTest extends ZanataTestCase {
                 .clickUserSearchEntry("translator");
 
         assertThat(profilePage.expectContributionsMatrixVisible())
-                .isTrue()
-                .as("A logged in user can see the user's contributions");
+                .as("A logged in user can see the user's contributions")
+                .isTrue();
     }
 }

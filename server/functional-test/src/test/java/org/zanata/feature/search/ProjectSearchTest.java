@@ -50,15 +50,15 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .expectProjectListContains("about fedora");
 
         assertThat(explorePage.getProjectSearchResults())
-                .contains("about fedora")
-                .as("Normal user can see the project");
+                .as("Normal user can see the project")
+                .contains("about fedora");
 
         ProjectBasePage projectPage =
-            explorePage.clickProjectEntry("about fedora");
+                explorePage.clickProjectEntry("about fedora");
 
         assertThat(projectPage.getProjectName().trim())
-                .isEqualTo("about fedora")
-                .as("The project page is the correct one");
+                .as("The project page is the correct one")
+                .isEqualTo("about fedora");
     }
 
     @Trace(summary = "The system will provide no results on an " +
@@ -71,8 +71,8 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .enterSearch("arodef");
 
         assertThat(explorePage.getProjectSearchResults().isEmpty())
-                .isTrue()
-                .as("No projects are displayed");
+                .as("No projects are displayed")
+                .isTrue();
     }
 
     @Trace(summary = "The user cannot search for Deleted projects")
@@ -94,8 +94,8 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .enterSearch("about");
 
         assertThat(explorePage.getProjectSearchResults().isEmpty())
-            .isTrue()
-            .as("No projects are displayed");
+                .as("No projects are displayed")
+                .isTrue();
     }
 
 }
