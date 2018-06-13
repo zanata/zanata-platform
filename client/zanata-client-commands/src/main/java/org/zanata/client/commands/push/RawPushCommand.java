@@ -647,6 +647,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
     private String calculateFileHash(File srcFile) {
         try {
+//            return Files.asByteSource(srcFile).hash(Hashing.md5()).toString();
             MessageDigest md = MessageDigest.getInstance("MD5");
             InputStream fileStream = new FileInputStream(srcFile);
             try {

@@ -5,7 +5,6 @@ npm-debug.log
 # compiled resources
 bundle.css
 bundle.js
-dist/
 
 # jest coverage reports
 coverage/

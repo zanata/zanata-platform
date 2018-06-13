@@ -94,7 +94,7 @@ public class XliffAdapter implements FileFormatAdapter {
     @Override
     public void writeTranslatedFile(OutputStream output, URI originalFile,
             Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params)
+            String locale, Optional<String> params, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         // write source string with empty translation
         boolean createSkeletons = true;
@@ -102,7 +102,7 @@ public class XliffAdapter implements FileFormatAdapter {
         try {
             tempFile = File.createTempFile("filename", "extension");
             XliffWriter.writeFile(tempFile, resource, locale,
-                    translationsResource, createSkeletons);
+                    translationsResource, createSkeletons, approvedOnly);
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {
             throw new FileFormatAdapterException(

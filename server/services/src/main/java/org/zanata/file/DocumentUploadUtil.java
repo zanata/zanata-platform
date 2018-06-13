@@ -152,6 +152,7 @@ public class DocumentUploadUtil implements Serializable {
 
     private static void failIfDocumentTypeNotRecognized(
             DocumentFileUploadForm uploadForm) throws DocumentUploadException {
+//        if (".po".equals(uploadForm.getFileType())) return;
         try {
             DocumentType type = DocumentType.valueOf(uploadForm.getFileType());
             if (type == null) {
@@ -323,7 +324,7 @@ public class DocumentUploadUtil implements Serializable {
      *             file contents.
      */
     private void checkAndUpdateHash(DocumentFileUploadForm uploadForm,
-            MessageDigest md, String providedHash) {
+            MessageDigest md, String providedHash) throws DocumentUploadException {
         String md5hash = new String(PasswordUtil.encodeHex(md.digest()));
         if (isNullOrEmpty(providedHash)) {
             // Web upload with no hash provided, use generated hash for metadata

@@ -35,7 +35,13 @@ import '../index.css'
  */
 function runApp () {
   // Dynamically load the locale data of the selected appLocale
-  addLocaleData(require(`react-intl/locale-data/${appLocale}`))
+  try {
+    addLocaleData(require(`react-intl/locale-data/${appLocale}`))
+  } catch (e) {
+    console.error(`Locale module not found for locale: ${appLocale}
+    Defaulting to en`)
+    addLocaleData(require('react-intl/locale-data/en'))
+  }
 
   const history = browserHistory
   history.basename = appUrl
