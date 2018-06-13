@@ -38,7 +38,11 @@ export class Item extends Component<ItemProps, {}> {
     const { value: { version, projectSlug } } = this.props
     return <li className="v list-group-item" >
       <DragHandle />
-      {version.id} <span className="txt-muted"> {projectSlug}
+      <span className="ml2">
+        {version.id}
+      </span>
+      <span className="txt-muted ml1">
+        {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
       <Button className="close btn-xs" aria-label="button"
