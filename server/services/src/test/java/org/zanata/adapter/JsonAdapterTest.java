@@ -56,22 +56,13 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
     @Test
     public void parseJSON() {
         Resource resource = parseTestFile("basicjson.json");
-        assertThat(resource.getTextFlows()).hasSize(5);
+        // Standalone strings are not identified
+        assertThat(resource.getTextFlows()).hasSize(3);
         assertThat(getTextFlowContentsAt(resource, 0)).containsExactly("Line One");
     }
 
     /*
-     * JSON parts with duplicated keys are handled separately
-     */
-    @Test
-    public void testStandaloneElementsAreIncluded() {
-        Resource resource = parseTestFile("basicjson.json");
-        assertThat(getTextFlowContentsAt(resource, 3)).containsExactly("First");
-        assertThat(getTextFlowContentsAt(resource, 4)).containsExactly("Second");
-    }
-
-    /*
-     * JSON parts with duplicated keys are separate
+     * JSON parts with similar keys at the same level are individual
      */
     @Test
     public void testDuplicateKeys() {
@@ -95,10 +86,10 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
      * JSON parts with similar content are separate
      */
     @Test
-    @Ignore("ZNTA-1731")
     public void testDuplicateContent() {
         Resource resource = parseTestFile("test-json-duplicatecontent.json");
         assertThat(resource.getTextFlows()).hasSize(3);
+        assertThat(getTextFlowContentsAt(resource, 0)).containsExactly("Dupe");
         assertThat(getTextFlowContentsAt(resource, 1)).containsExactly("Same");
         assertThat(getTextFlowContentsAt(resource, 2)).containsExactly("Same");
     }
