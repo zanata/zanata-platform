@@ -62,12 +62,14 @@ import org.zanata.model.type.EntityType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @Cacheable
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Access(AccessType.FIELD)
+@GraphQLType(name = "ProjectIteration")
 public class HProjectIteration extends SlugEntityBase
         implements Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType,
         HasUserFriendlyToString {

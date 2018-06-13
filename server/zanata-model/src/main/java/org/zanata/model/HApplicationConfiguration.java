@@ -30,9 +30,11 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import io.leangen.graphql.annotations.types.GraphQLType;
 // FIXME Cacheable
 
 @Entity
+@GraphQLType(name = "ApplicationConfiguration")
 public class HApplicationConfiguration extends ModelEntityBase {
 
     // Please keep these constants sorted!

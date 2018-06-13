@@ -32,6 +32,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.annotations.types.GraphQLType;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.collect.Sets;
@@ -42,6 +43,7 @@ import com.google.common.collect.Sets;
 @Entity
 @Access(AccessType.FIELD)
 @Table(uniqueConstraints = @UniqueConstraint(name = "slug", columnNames = "slug"))
+@GraphQLType(name = "IterationGroup")
 public class HIterationGroup extends SlugEntityBase
         implements HasUserFriendlyToString {
 

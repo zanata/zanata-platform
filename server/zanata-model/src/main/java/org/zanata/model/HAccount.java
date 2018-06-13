@@ -51,6 +51,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.zanata.model.security.HCredentials;
 import org.zanata.rest.dto.Account;
+import io.leangen.graphql.annotations.GraphQLIgnore;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @see Account
@@ -59,6 +61,7 @@ import org.zanata.rest.dto.Account;
 @Cacheable
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"),
         indexes = @Index(name = "Idx_enabled_username", columnList = "enabled, username"))
+@GraphQLType(name = "Account")
 public class HAccount extends ModelEntityBase
         implements Serializable, HasUserFriendlyToString, Eraseable {
 
@@ -85,6 +88,8 @@ public class HAccount extends ModelEntityBase
     @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
             mappedBy = "account")
+    // at least until we work out some security measures:
+    @GraphQLIgnore
     public HAccountActivationKey getAccountActivationKey() {
         return accountActivationKey;
     }
@@ -92,6 +97,8 @@ public class HAccount extends ModelEntityBase
     @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
             mappedBy = "account")
+    // at least until we work out some security measures:
+    @GraphQLIgnore
     public HAccountResetPasswordKey getAccountResetPasswordKey() {
         return accountResetPasswordKey;
     }
@@ -114,6 +121,8 @@ public class HAccount extends ModelEntityBase
     }
     // @UserPassword(hash = PasswordHash.ALGORITHM_MD5)
 
+    // at least until we work out some security measures:
+    @GraphQLIgnore
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -124,6 +133,8 @@ public class HAccount extends ModelEntityBase
     }
 
     @Size(min = 32, max = 32)
+    // at least until we work out some security measures:
+    @GraphQLIgnore
     public String getApiKey() {
         return apiKey;
     }
@@ -144,6 +155,8 @@ public class HAccount extends ModelEntityBase
 
     @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL },
             orphanRemoval = true)
+    // at least until we work out some security measures:
+    @GraphQLIgnore
     public Set<HCredentials> getCredentials() {
         if (credentials == null) {
             credentials = new HashSet<>();

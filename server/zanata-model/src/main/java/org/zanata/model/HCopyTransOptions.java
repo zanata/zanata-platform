@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.ConditionRuleActionType;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * Persistent representation of Copy Trans options.
@@ -38,6 +39,7 @@ import org.zanata.model.type.ConditionRuleActionType;
 @TypeDef(name = "conditionRuleAction",
         typeClass = ConditionRuleActionType.class)
 @Cacheable
+@GraphQLType(name = "CopyTransOptions")
 public class HCopyTransOptions extends ModelEntityBase {
 
     private static final long serialVersionUID = -2604026393081629260L;

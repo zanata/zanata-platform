@@ -72,6 +72,7 @@ import org.zanata.rest.dto.Project;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @see Project
@@ -85,6 +86,7 @@ import com.google.common.collect.Sets;
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Indexed
 @TypeDef(name = "projectRole", typeClass = ProjectRoleType.class)
+@GraphQLType(name = "Project")
 public class HProject extends SlugEntityBase
         implements Serializable, HasEntityStatus, HasUserFriendlyToString {
 

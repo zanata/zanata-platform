@@ -57,6 +57,7 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.model.type.TranslationSourceTypeType;
 
 import com.google.common.base.Objects;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @Immutable
@@ -78,6 +79,7 @@ import com.google.common.base.Objects;
                 typeClass = TranslationSourceTypeType.class),
         @TypeDef(name = "entityType", typeClass = EntityTypeType.class) })
 @EntityListeners({ HTextFlowTargetHistory.EntityListener.class })
+@GraphQLType(name = "TextFlowTargetHistory")
 public class HTextFlowTargetHistory extends HTextContainer
         implements Serializable, ITextFlowTargetHistory {
     static final String QUERY_MATCHING_HISTORY =

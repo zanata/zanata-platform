@@ -70,6 +70,7 @@ import org.zanata.util.StringUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -83,6 +84,7 @@ import com.google.common.collect.ImmutableList;
 @Cacheable
 @NamedQueries({ @NamedQuery(name = HTextFlow.QUERY_GET_BY_DOC_AND_RES_ID_BATCH,
         query = "select distinct tf from HTextFlow tf left join fetch tf.targets tft left join fetch tft.history where tf.document = :document and tf.resId in (:resIds) and tf.obsolete = false") })
+@GraphQLType(name = "TextFlow")
 public class HTextFlow extends HTextContainer implements Serializable,
         ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow {
     private static final org.slf4j.Logger log =

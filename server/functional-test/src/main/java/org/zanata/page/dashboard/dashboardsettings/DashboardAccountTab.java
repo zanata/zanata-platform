@@ -48,6 +48,7 @@ public class DashboardAccountTab extends DashboardBasePage {
             By.id("passwordChangeForm:newPasswordField:input:newPassword");
     private By changePasswordButton = By.cssSelector(
             "button[id^=\'passwordChangeForm:changePasswordButton\']");
+    private By exportUserData = By.id("exportUserData");
 
     public DashboardAccountTab(WebDriver driver) {
         super(driver);
@@ -84,5 +85,9 @@ public class DashboardAccountTab extends DashboardBasePage {
         log.info("Click Update Password");
         clickElement(changePasswordButton);
         return new DashboardAccountTab(getDriver());
+    }
+
+    public String getExportUserDataURL() {
+        return readyElement(exportUserData).getAttribute("href");
     }
 }

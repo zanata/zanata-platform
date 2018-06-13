@@ -52,7 +52,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         return (HAccount) cr.uniqueResult();
     }
 
-    @GraphQLQuery(name = "user")
+    @GraphQLQuery(name = "account")
     public @Nullable HAccount getByUsername(@GraphQLArgument(name = "username") String username) {
         Criteria cr = getSession().createCriteria(HAccount.class);
         cr.add(Restrictions.eq("username", username));

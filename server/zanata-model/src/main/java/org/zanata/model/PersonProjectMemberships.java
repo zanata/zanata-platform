@@ -43,6 +43,7 @@ import java.util.Set;
  * boolean properties to represent all roles so they can be easily bound to
  * individual UI elements (e.g. checkboxes).
  */
+// TODO why is this in org.zanata.model with the entities?
 public class PersonProjectMemberships implements Serializable {
     private static final long serialVersionUID = -6361740969547052616L;
     private HPerson person;

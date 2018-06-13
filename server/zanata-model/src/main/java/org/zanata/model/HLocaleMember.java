@@ -31,17 +31,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLInterface;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author camunoz@redhat.com
  */
 @Entity
 @Table(name = "HLocale_Member")
-@GraphQLInterface(name = "LocaleMember", implementationAutoDiscovery = true)
+@GraphQLType(name = "LocaleMember")
 public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
     private HLocaleMemberPk id = new HLocaleMemberPk();
@@ -96,7 +96,7 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     }
 
     @Transient
-    @GraphQLQuery(name = "language", description = "language")
+    @GraphQLQuery(name = "locale", description = "locale")
     public HLocale getSupportedLanguage() {
         return id.getSupportedLanguage();
     }

@@ -24,44 +24,61 @@ package org.zanata.service;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.SchemaPrinter;
 import io.leangen.graphql.GraphQLSchemaGenerator;
-import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.zanata.dao.AccountDAO;
-import org.zanata.util.WithRequestScope;
 
 import javax.annotation.Nonnull;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import static org.zanata.service.GraphQLScalarsKt.getAllScalarTypes;
 
 /**
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com),
+ * Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
  */
 @ApplicationScoped
 public class GraphQLService {
-    private AccountDAO accountDAO;
+    private final AccountDAO accountDAO;
     private GraphQL graphQL;
+    private GraphQLSchema schema;
 
     @Inject
     public GraphQLService(AccountDAO accountDAO) {
         this.accountDAO = accountDAO;
     }
 
-    @WithRequestScope
-    public void onCreate(@Observes @Initialized ServletContext context) {
-        initGraphQLSchemaGenerator();
+    @SuppressWarnings("unused")
+    protected GraphQLService() {
+        this(null);
     }
 
-    private void initGraphQLSchemaGenerator() {
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @PostConstruct
+    @VisibleForTesting
+    public void postConstruct() {
         //register the service
-        GraphQLSchema schema = new GraphQLSchemaGenerator()
+        schema = new GraphQLSchemaGenerator()
+                .withAdditionalTypes(getAllScalarTypes())
                 .withOperationsFromSingleton(accountDAO, AccountDAO.class)
                 .generate();
         graphQL = GraphQL.newGraphQL(schema).build();
     }
 
+    public String getSchema() {
+        return new SchemaPrinter().print(schema);
+    }
+
     public ExecutionResult query(@Nonnull String query) {
         return graphQL.execute(query);
     }
+
 }

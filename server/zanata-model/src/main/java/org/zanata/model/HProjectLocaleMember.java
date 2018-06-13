@@ -37,6 +37,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 /**
  * Represents a user's membership and role in a locale for a project.
  */
@@ -44,6 +46,7 @@ import java.io.Serializable;
 @Table(name = "HProject_LocaleMember")
 @IdClass(HProjectLocaleMember.HProjectLocaleMemberPK.class)
 @TypeDef(name = "localeRole", typeClass = LocaleRoleType.class)
+@GraphQLType(name = "ProjectLocaleMember")
 public class HProjectLocaleMember
         implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;

@@ -21,11 +21,11 @@
 package org.zanata.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Cacheable;
@@ -41,24 +41,23 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
-import io.leangen.graphql.annotations.GraphQLComplexity;
 import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLInterface;
+import io.leangen.graphql.annotations.types.GraphQLType;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.rest.dto.Person;
 
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * @see Person
  */
 @Entity
 @Cacheable
+@GraphQLType(name = "Person")
 public class HPerson extends ModelEntityBase implements Serializable, Eraseable {
     private static final long serialVersionUID = 1L;
     private String name;
@@ -68,6 +67,7 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     private Set<HProject> maintainerProjects;
     private Set<HIterationGroup> maintainerVersionGroups;
     private Set<HLocaleMember> languageTeamMemberships;
+    private Set<HProjectLocaleMember> projectLocaleMemberships;
     private Set<HProjectMember> projectMemberships;
 
     private boolean erased;
@@ -85,7 +85,6 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
 
     @OneToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "accountId")
-    @GraphQLIgnore
     public HAccount getAccount() {
         return account;
     }
@@ -105,16 +104,14 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     @Transient
     @GraphQLIgnore
     public Set<HProject> getMaintainerProjects() {
-        Set<HProjectMember> maintainerMemberships = Sets
-                .filter(getProjectMemberships(), HProjectMember.IS_MAINTAINER);
-        Collection<HProject> projects = Collections2
-                .transform(maintainerMemberships, HProjectMember.TO_PROJECT);
-        return ImmutableSet.copyOf(projects);
+        return getProjectMemberships().stream()
+                .filter(HProjectMember.IS_MAINTAINER)
+                .map(HProjectMember.TO_PROJECT)
+                .collect(toImmutableSet());
     }
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",
             cascade = CascadeType.ALL)
-    @GraphQLIgnore
     public Set<HIterationGroup> getMaintainerVersionGroups() {
         if (maintainerVersionGroups == null) {
             maintainerVersionGroups = new HashSet<>();
@@ -125,15 +122,10 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     @Transient
     @GraphQLIgnore
     public Set<HLocale> getLanguageMemberships() {
-        final Set<HLocale> memberships = new HashSet<HLocale>();
-        for (HLocaleMember locMem : this.getLanguageTeamMemberships()) {
-            memberships.add(locMem.getSupportedLanguage());
-        }
-        return memberships;
+        return getLanguageTeamMemberships().stream().map(HLocaleMember::getSupportedLanguage).collect(Collectors.toSet());
     }
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person", orphanRemoval = true)
-    @GraphQLIgnore
     public Set<HLocaleMember> getLanguageTeamMemberships() {
         if (this.languageTeamMemberships == null) {
             this.languageTeamMemberships = new HashSet<>();
@@ -142,8 +134,15 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person", orphanRemoval = true)
-    @GraphQLIgnore
-    protected Set<HProjectMember> getProjectMemberships() {
+    public Set<HProjectLocaleMember> getProjectLocaleMemberships() {
+        if (projectLocaleMemberships == null) {
+            projectLocaleMemberships = new HashSet<>();
+        }
+        return projectLocaleMemberships;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person", orphanRemoval = true)
+    public Set<HProjectMember> getProjectMemberships() {
         if (projectMemberships == null) {
             projectMemberships = Sets.newHashSet();
         }
@@ -155,7 +154,6 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @GraphQLIgnore
     public Date getErasureDate() {
         return erasureDate == null ? null : new Date(erasureDate.getTime());
     }
@@ -163,7 +161,6 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     @OneToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "erasedBy")
     @Override
-    @GraphQLIgnore
     public HAccount getErasedBy() {
         return this.erasedBy;
     }
@@ -216,11 +213,13 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @Transient
+    @GraphQLIgnore
     public boolean isMaintainerOfVersionGroups() {
         return !getMaintainerVersionGroups().isEmpty();
     }
 
     @Transient
+    @GraphQLIgnore
     public boolean isMaintainerOfProjects() {
         return !getMaintainerProjects().isEmpty();
     }
@@ -249,6 +248,11 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     public void setLanguageTeamMemberships(
             final Set<HLocaleMember> languageTeamMemberships) {
         this.languageTeamMemberships = languageTeamMemberships;
+    }
+
+    public void setProjectLocaleMemberships(
+            final Set<HProjectLocaleMember> projectLocaleMemberships) {
+        this.projectLocaleMemberships = projectLocaleMemberships;
     }
 
     public void setProjectMemberships(

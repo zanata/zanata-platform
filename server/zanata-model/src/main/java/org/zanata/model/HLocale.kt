@@ -21,8 +21,8 @@
 package org.zanata.model
 
 import com.ibm.icu.util.ULocale
-import io.leangen.graphql.annotations.GraphQLIgnore
 import io.leangen.graphql.annotations.GraphQLQuery
+import io.leangen.graphql.annotations.types.GraphQLType
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.hibernate.annotations.NaturalId
@@ -50,6 +50,7 @@ import java.util.HashSet
 @Entity
 @Cacheable
 @TypeDef(name = "localeId", typeClass = LocaleIdType::class)
+@GraphQLType(name = "Locale")
 class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @get:NaturalId
@@ -58,12 +59,9 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     @GraphQLQuery(name = "localeId", description = "localeId")
     var localeId: LocaleId
 
-    @GraphQLIgnore
     var isActive: Boolean = false
-    @GraphQLIgnore
     var isEnabledByDefault: Boolean = false
 
-    @GraphQLIgnore
     var supportedProjects: Set<HProject>? = null
         @ManyToMany
         @JoinTable(
@@ -74,7 +72,6 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
             if (field == null) field = HashSet()
             return field
         }
-    @GraphQLIgnore
     var supportedIterations: Set<HProjectIteration>? = null
         @ManyToMany
         @JoinTable(
@@ -85,7 +82,6 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
             if (field == null) field = HashSet()
             return field
         }
-    @GraphQLIgnore
     var members: Set<HLocaleMember>? = null
         @OneToMany(cascade = [CascadeType.ALL], mappedBy = "id.supportedLanguage")
         @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
@@ -94,7 +90,6 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
             return field
         }
 
-    @GraphQLIgnore
     var pluralForms: String? = null
 
     @GraphQLQuery(name = "name", description = "name of the language")
