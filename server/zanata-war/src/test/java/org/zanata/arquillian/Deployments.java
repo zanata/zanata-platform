@@ -99,11 +99,7 @@ public class Deployments {
                                 false,
                                 // JavaMelody's ServletFilter/Listener
                                 // interferes with test deployments.
-                                "net.bull.javamelody:javamelody-core",
-                                // jar from Maven repo
-                                "org.zanata:gwt-editor",
-                                // classes from Maven reactor
-                                "org.zanata:gwt-editor:jar:classes:?"
+                                "net.bull.javamelody:javamelody-core"
                                 // We shouldn't need apicompat interfaces in
                                 // the server, but we will also need to
                                 // exclude the tests which refer to them.

@@ -22,11 +22,11 @@ class DeleteEntry extends Component {
     /* eslint-disable react/jsx-no-bind */
     const deleteLanguage = (
       <span>
-        <p className='tc'>Are you sure you want to delete&nbsp;
+        <p>Are you sure you want to delete&nbsp;
           <strong>{locale.displayName}</strong>?&nbsp;
         </p>
-        <p className='button-spacing tc'>
-          <Button className='btn-default btn-sm mr3' aria-label='button'
+        <span className='button-spacing'>
+          <Button className='btn-default btn-sm' aria-label='button'
             onClick={() => handleDeleteEntryDisplay(false)}>
             Cancel
           </Button>
@@ -38,15 +38,13 @@ class DeleteEntry extends Component {
             }}>
             Delete
           </Button>
-        </p>
+        </span>
       </span>
     )
 
     return (
       <div className='u-blockInline'>
-        <Tooltip placement='top'
-          // @ts-ignore
-          className='bstrapReact'
+        <Tooltip placement='top' className='bstrapReact'
           title={deleteLanguage} onVisibleChange={show}>
           <Button className='btn-sm iconCross btn-default' icon='close'
             aria-label='button'

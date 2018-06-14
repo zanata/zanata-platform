@@ -12,22 +12,14 @@
 @normal-color: #d9d9d9;
 
 @layout-body-background: #fff;
-@label-color: @primary-color;
+
 @btn-primary-bg: @primary-color;
 
-// needed for new-zanata overrides on button styling
-.ant-btn-primary {
-  background-color: @primary-color;
-  color: @normal-color
-}
-
-.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
-  vertical-align: inherit;
-  width: inherit;
-}
-
-.ant-form-inline .ant-form-item {
+// pagination alignment on Explore page
+.teaserHeader .ant-layout {
   display: flex;
+  flex-direction: row;
+  align-items: baseline;
 }
 
 // Utility classes not included in Tachiyons

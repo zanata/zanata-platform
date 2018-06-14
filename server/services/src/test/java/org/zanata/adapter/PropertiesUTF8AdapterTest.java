@@ -20,11 +20,10 @@
  */
 package org.zanata.adapter;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-
+import java.io.OutputStream;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,15 +55,6 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
 
     @Test
     public void testTranslatedPropertiesDocument() {
-        testTranslatedPropertiesDocument(false);
-    }
-
-    @Test
-    public void testTranslatedPropertiesDocumentApprovedOnly() {
-        testTranslatedPropertiesDocument(true);
-    }
-
-    private void testTranslatedPropertiesDocument(boolean approvedOnly) {
         TranslationsResource tResource = new TranslationsResource();
         addTranslation(tResource, "line1", "¥Foun’dé metalkcta", ContentState.Approved);
         addTranslation(tResource, "line2", "¥Tba’dé metalkcta", ContentState.Translated);
@@ -72,21 +62,19 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
 
         Resource resource = parseTestFile("test-properties-utf8.properties");
         File originalFile = new File(resourcePath.concat("test-properties-utf8.properties"));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        OutputStream outputStream = new ByteArrayOutputStream();
 
         adapter.writeTranslatedFile(outputStream,
                 originalFile.toURI(),
                 resource,
                 tResource,
                 "ru",
-                Optional.absent(),
-                approvedOnly);
+                Optional.absent());
 
-        String expected = "line1=¥Foun’dé metalkcta\n" +
+        assertThat(outputStream.toString()).isEqualTo(
+                "line1=¥Foun’dé metalkcta\n" +
                 "line2=¥Tba’dé metalkcta\n" +
-                "line3=\n";
-        if (approvedOnly) expected = expected.replace("¥Tba’dé metalkcta", "");
-        assertThat(outputStream.toString(UTF_8)).isEqualTo(
-                expected);
+                "line3=\n");
     }
+
 }

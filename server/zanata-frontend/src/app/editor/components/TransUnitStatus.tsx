@@ -66,7 +66,7 @@ class TransUnitStatus extends React.Component<TransUnitStatusProps, any> {
     return (
       <div className={className}>
         <span className="u-hiddenVisually">
-          {statusNames[phrase.status!]}
+          {statusNames[phrase.status]}
         </span>
         <ul className="TransUnit-metaData">
           {comments}

@@ -97,15 +97,6 @@ public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
 
     @Test
     public void testTranslatedGettext() {
-        testTranslatedGettext(false);
-    }
-
-    @Test
-    public void testTranslatedGettextApprovedOnly() {
-        testTranslatedGettext(true);
-    }
-
-    private void testTranslatedGettext(boolean approvedOnly) {
         Resource resource = parseTestFile("test-gettext-untranslated.pot");
 
         String firstSourceId = resource.getTextFlows().get(0).getId();
@@ -119,22 +110,13 @@ public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
 
         OutputStream outputStream = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(outputStream, null, resource,
-                transResource, "es", Optional.absent(), approvedOnly);
-        assertThat(outputStream.toString()).contains(
-                "\n\nmsgctxt \"0293301ed6a54b7e4503e74bba17bf11\"\nmsgid \"Parent Folder\"\n" +
-                        "msgstr \"Carpeta padre\"");
-        if (approvedOnly) {
-            assertThat(outputStream.toString()).contains(
-                    "\n\n#, fuzzy\nmsgctxt \"47a0be8d1015d526a1fbaa56c3102135\"\nmsgid \"Subject:\"\n" +
-                            "msgstr \"Asunto:\"");
-        } else {
-            assertThat(outputStream.toString()).contains(
-                    "\n\nmsgctxt \"47a0be8d1015d526a1fbaa56c3102135\"\nmsgid \"Subject:\"\n" +
-                            "msgstr \"Asunto:\"");
-        }
-        assertThat(outputStream.toString()).contains(
-                "\n\n#, fuzzy\nmsgctxt \"49ab28040dfa07f53544970c6d147e1e\"\nmsgid \"Connect\"\n" +
-                        "msgstr \"Conectar\"");
+                transResource, "es", Optional.absent());
+        assertThat(outputStream.toString()).contains("msgid \"Parent Folder\"\n" +
+                "msgstr \"Carpeta padre\"");
+        assertThat(outputStream.toString()).contains("msgid \"Subject:\"\n" +
+                "msgstr \"Asunto:\"");
+        assertThat(outputStream.toString()).contains("msgid \"Connect\"\n" +
+                "msgstr \"Conectar\"");
     }
 
 }

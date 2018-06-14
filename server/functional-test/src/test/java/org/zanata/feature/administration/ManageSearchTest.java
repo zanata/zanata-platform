@@ -42,8 +42,8 @@ public class ManageSearchTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("Admin is logged in");
         dashboardPage = new BasicWorkFlow().goToDashboard();
     }
 
@@ -59,23 +59,19 @@ public class ManageSearchTest extends ZanataTestCase {
                 .clickSelectAll();
 
         assertThat(manageSearchPage.allActionsSelected())
-                .as("All actions are selected")
-                .isTrue();
+                .as("All actions are selected");
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running")
-                .isTrue();
+                .as("No operations are running");
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
                 .expectActionsToFinish();
 
         assertThat(manageSearchPage.completedIsDisplayed())
-                .as("Completed is displayed")
-                .isTrue();
+                .as("Completed is displayed");
 
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running")
-                .isTrue();
+                .as("No operations are running");
     }
 
     @Trace(summary = "The administrator can abort the regeneration of the " +
@@ -89,18 +85,15 @@ public class ManageSearchTest extends ZanataTestCase {
                 .clickSelectAll();
 
         assertThat(manageSearchPage.allActionsSelected())
-                .as("All actions are selected")
-                .isTrue();
+                .as("All actions are selected");
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running")
-                .isTrue();
+                .as("No operations are running");
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
                 .abort();
 
         assertThat(manageSearchPage.abortedIsDisplayed())
-                .as("Aborted is displayed")
-                .isTrue();
+                .as("Aborted is displayed");
     }
 }

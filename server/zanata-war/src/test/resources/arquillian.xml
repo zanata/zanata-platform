@@ -1,5 +1,4 @@
 <arquillian xmlns="http://jboss.org/schema/arquillian"
-  xmlns:xml="http://www.w3.org/XML/1998/namespace"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
@@ -16,7 +15,7 @@
       <property name="jbossHome">${jboss.home}</property>
       <!-- We can use the JAVA_HOME env variable instead of this -->
       <!--             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property> -->
-      <property name="javaVmArguments">${server.jvmargs:}</property>
+      <property name="javaVmArguments">${server.jvmargs}</property>
       <!-- From JBOSS_HOME/standalone/configuration -->
       <property name="serverConfig">standalone-full-ha.xml</property>
       <!--<property name="allowConnectingToRunningServer">true</property>-->
@@ -30,7 +29,7 @@
   <container qualifier="wildfly" default="true">
     <configuration>
       <property name="jbossHome">${jboss.home}</property>
-      <property name="javaVmArguments">${server.jvmargs:-Djava.net.preferIPv4Stack=true}</property>
+      <property name="javaVmArguments">${server.jvmargs}</property>
       <!-- From JBOSS_HOME/standalone/configuration -->
       <property name="serverConfig">standalone-full-ha.xml</property>
       <!-- NB: don't put whitespace around the number -->

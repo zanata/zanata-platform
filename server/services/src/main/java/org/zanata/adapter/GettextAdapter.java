@@ -89,11 +89,9 @@ public class GettextAdapter implements FileFormatAdapter {
     @Override
     public void writeTranslatedFile(OutputStream output, URI originalFile,
             Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params, boolean approvedOnly)
+            String locale, Optional<String> params)
             throws FileFormatAdapterException, IllegalArgumentException {
-        PoWriter2 writer = new PoWriter2.Builder().encodeTabs(true)
-                .mapIdToMsgctxt(true).approvedOnly(approvedOnly)
-                .create();
+        PoWriter2 writer = new PoWriter2(true, true);
         try {
             writer.writePo(output, Charsets.UTF_8.name(), resource,
                     translationsResource);

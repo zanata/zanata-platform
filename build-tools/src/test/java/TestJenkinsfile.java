@@ -111,10 +111,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
 
         // these objects are just used as parameters
         getBinding().setProperty("scm", ImmutableMap.of());
-        getBinding().setProperty("manager",
-                ImmutableMap.of("build",
-                        ImmutableMap.of("project",
-                                ImmutableMap.of())));
+        getBinding().setProperty("manager", ImmutableMap.of());
     }
 
     static class SH<T, R> extends Closure<R> {

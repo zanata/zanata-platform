@@ -13,8 +13,6 @@ import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 import DetailsPane from './DetailsPane'
-import Notification from 'antd/lib/notification'
-import 'antd/lib/notification/style/css'
 
 /* React Bootstrap Tab keys for tracking active Tab */
 const activityTabKey = 1
@@ -56,12 +54,6 @@ class TranslationInfoPanel extends React.Component {
       reviewComments: PropTypes.arrayOf(commentShape),
       latestHistoryItem: historyShape
     }),
-    notification: PropTypes.shape({
-      severity: PropTypes.string,
-      message: PropTypes.string,
-      description: PropTypes.string,
-      duration: PropTypes.number
-    }),
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
       resId: PropTypes.string.isRequired,
@@ -82,16 +74,6 @@ class TranslationInfoPanel extends React.Component {
     this.state = {
       key: activityTabKey,
       selectedActivites: 'all'
-    }
-  }
-  componentDidUpdate (prevProps) {
-    const { notification } = this.props
-    if (notification && prevProps.notification !== notification) {
-      Notification[notification.severity]({
-        message: notification.message,
-        description: notification.description,
-        duration: null
-      })
     }
   }
   handleSelectTab (key) {
@@ -209,7 +191,7 @@ class TranslationInfoPanel extends React.Component {
 }
 function mapStateToProps (state) {
   const { glossary, phrases, context, activity } = state
-  const { detail, selectedPhraseId, notification } = phrases
+  const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
   const { results, searchText } = glossary
   const glossaryResults = results.get(searchText)
@@ -229,7 +211,6 @@ function mapStateToProps (state) {
     glossaryVisible,
     glossaryCount,
     hasSelectedPhrase,
-    notification,
     transHistory,
     transUnitId,
     localeId,

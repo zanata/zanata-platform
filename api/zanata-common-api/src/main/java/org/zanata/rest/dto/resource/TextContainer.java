@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
@@ -112,7 +111,7 @@ class TextContainer implements Serializable, HasContents {
      */
     @JsonIgnore
     @XmlTransient
-    public @Nonnull List<String> getContents() {
+    public List<String> getContents() {
         if (content != null) {
             return Arrays.asList(content);
         } else if (contents != null) {

@@ -77,10 +77,9 @@ public class HTextFlowJPATest extends ZanataDbunitJpaTest {
     public void textFlowWithSingleContent() {
         HDocument hdoc =
                 new HDocument("fullpath", ContentType.TextPlain, en_US);
-        hdoc.setProjectIteration(
-                projectIterationDAO.findById(1L, false)); // Taken
-        // from
-        // ProjectsData.dbunit.xml
+        hdoc.setProjectIteration(projectIterationDAO.findById(1L, false)); // Taken
+                                                                           // from
+                                                                           // ProjectsData.dbunit.xml
 
         HTextFlow tf = new HTextFlow(hdoc, "hello world res id", "hello world");
 
@@ -92,25 +91,22 @@ public class HTextFlowJPATest extends ZanataDbunitJpaTest {
         // reload the doc
         em.refresh(hdoc);
 
-        assertThat(hdoc.getTextFlows().size())
-                .as("Expected document to contain at least one text flow")
-                .isGreaterThan(0);
-        assertThat(hdoc.getTextFlows().get(0).getContents().size())
-                .as("Expected Text flow to contain single content")
-                .isEqualTo(1);
+        assertThat(hdoc.getTextFlows().size()).isGreaterThan(0)
+                .as("Expected document to contain at least one text flow");
+        assertThat(hdoc.getTextFlows().get(0).getContents().size()).isEqualTo(1)
+                .as("Expected Text flow to contain single content");
         assertThat(hdoc.getTextFlows().get(0).getContents().get(0))
-                .as("Expected deprecated method to still work")
-                .isEqualTo("hello world");
+                .isEqualTo("hello world")
+                .as("Expected deprecated method to still work");
     }
 
     @Test
     public void textFlowWithPlurals() {
         HDocument hdoc =
                 new HDocument("fullpath", ContentType.TextPlain, en_US);
-        hdoc.setProjectIteration(
-                projectIterationDAO.findById(1L, false)); // Taken
-        // from
-        // ProjectsData.dbunit.xml
+        hdoc.setProjectIteration(projectIterationDAO.findById(1L, false)); // Taken
+                                                                           // from
+                                                                           // ProjectsData.dbunit.xml
 
         HTextFlow tf =
                 new HTextFlow(hdoc, "hello world res id 1", "hello world");
@@ -128,29 +124,26 @@ public class HTextFlowJPATest extends ZanataDbunitJpaTest {
         // reload the doc
         em.refresh(hdoc);
 
-        assertThat(hdoc.getTextFlows().size())
-                .as("Expected document to contain at least one text flow")
-                .isGreaterThan(0);
-        assertThat(hdoc.getTextFlows().get(0).getContents().size())
-                .as("Expected Text flow to contain 3 content strings")
-                .isEqualTo(3);
+        assertThat(hdoc.getTextFlows().size()).isGreaterThan(0)
+                .as("Expected document to contain at least one text flow");
+        assertThat(hdoc.getTextFlows().get(0).getContents().size()).isEqualTo(3)
+                .as("Expected Text flow to contain 3 content strings");
         assertThat(hdoc.getTextFlows().get(0).getContents())
-                .as("Expected contents to be preserved")
                 .isEqualTo(Arrays.asList("hello world",
-                        "hello worlds", "hellos worlds"));
+                        "hello worlds", "hellos worlds"))
+                .as("Expected contents to be preserved");
         assertThat(hdoc.getTextFlows().get(0).getContents().get(0))
-                .as("Expected deprecated method to still work")
-                .isEqualTo("hello world");
+                .isEqualTo("hello world")
+                .as("Expected deprecated method to still work");
     }
 
     @Test
     public void textFlowWithPluralsAndSomeEmptyContents() {
         HDocument hdoc =
                 new HDocument("fullpath", ContentType.TextPlain, en_US);
-        hdoc.setProjectIteration(
-                projectIterationDAO.findById(1L, false)); // Taken
-        // from
-        // ProjectsData.dbunit.xml
+        hdoc.setProjectIteration(projectIterationDAO.findById(1L, false)); // Taken
+                                                                           // from
+                                                                           // ProjectsData.dbunit.xml
 
         HTextFlow tf =
                 new HTextFlow(hdoc, "hello world res id 1", "hello world");
@@ -164,16 +157,14 @@ public class HTextFlowJPATest extends ZanataDbunitJpaTest {
         // reload the doc
         em.refresh(hdoc);
 
-        assertThat(hdoc.getTextFlows().size())
-                .as("Expected document to contain at least one text flow")
-                .isGreaterThan(0);
-        assertThat(hdoc.getTextFlows().get(0).getContents().size())
-                .as("Expected Text flow to contain 4 content strings")
-                .isEqualTo(4);
+        assertThat(hdoc.getTextFlows().size()).isGreaterThan(0)
+                .as("Expected document to contain at least one text flow");
+        assertThat(hdoc.getTextFlows().get(0).getContents().size()).isEqualTo(4)
+                .as("Expected Text flow to contain 4 content strings");
         assertThat(hdoc.getTextFlows().get(0).getContents())
-                .as("Expected contents to be preserved")
                 .isEqualTo(Arrays.asList("hello world 1",
-                        "hello world 2", null, "hello world 4"));
+                        "hello world 2", null, "hello world 4"))
+                .as("Expected contents to be preserved");
         assertThat(hdoc.getTextFlows().get(0).getContents().get(0))
                 .isEqualTo("hello world 1");
     }

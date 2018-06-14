@@ -60,8 +60,8 @@ public class SecurityTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .loggedInAs())
-                .as("User can log in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("User can log in");
     }
 
     @Trace(summary = "The user must enter a correct username and " +
@@ -72,8 +72,8 @@ public class SecurityTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow()
                 .signInFailure("nosuchuser", "password")
                 .expectError("Login failed"))
-                .as("Log in error message is shown")
-                .contains("Login failed");
+                .contains("Login failed")
+                .as("Log in error message is shown");
     }
 
     @Trace(summary = "The user may reset their password via email",
@@ -131,9 +131,9 @@ public class SecurityTest extends ZanataTestCase {
                 .resetFailure();
 
         assertThat(resetPasswordPage.getNotificationMessage(By
-                .id("passwordResetRequestForm:messages")))
-                .as("A no such account message is displayed")
-                .isEqualTo("No account found.");
+                        .id("passwordResetRequestForm:messages")))
+                .isEqualTo("No account found.")
+                .as("A no such account message is displayed");
     }
 
     @Trace(summary = "Username or email field must not empty")
@@ -147,8 +147,8 @@ public class SecurityTest extends ZanataTestCase {
                 .resetFailure();
 
         assertThat(resetPasswordPage.getErrors())
-                .as("value is required error is displayed")
-                .contains("value is required");
+                .contains("value is required")
+                .as("value is required error is displayed");
     }
 
 }

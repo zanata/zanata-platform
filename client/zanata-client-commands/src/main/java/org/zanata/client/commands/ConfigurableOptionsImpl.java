@@ -118,7 +118,7 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
 
     @Override
     @Option(name = "--log-http",
-            usage = "Enable HTTP message logging. WARNING: Uses a lot of memory if sending/receiving large amounts of data (eg large documents).")
+            usage = "Enable HTTP message logging.")
     public void setLogHttp(boolean logHttp) {
         this.logHttp = logHttp;
     }

@@ -106,69 +106,45 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
     }
 
     @Test
-    public void testTranslatedJSONDocument() {
-        testTranslatedJSONDocument(false);
-    }
-
-    @Test
-    public void testTranslatedJSONDocumentApprovedOnly() {
-        testTranslatedJSONDocument(true);
-    }
-
-    private void testTranslatedJSONDocument(boolean approvedOnly) {
+    public void testTranslatedJSONDocument() throws Exception {
         Resource resource = parseTestFile("test-json-untranslated.json");
         assertThat(resource.getTextFlows().get(1).getContents())
                 .containsExactly("First Source");
         assertThat(resource.getTextFlows().get(2).getContents())
                 .containsExactly("Second Source");
-        assertThat(resource.getTextFlows().get(3).getContents())
-                .containsExactly("Third Source");
         String firstSourceId = resource.getTextFlows().get(1).getId();
         String secondSourceId = resource.getTextFlows().get(2).getId();
-        String thirdSourceId = resource.getTextFlows().get(3).getId();
 
         Map<String, TextFlowTarget> translations = new HashMap<>();
 
-        TextFlowTarget tft1 = new TextFlowTarget();
-        tft1.setContents("Foun’dé metalkcta");
-        tft1.setState(ContentState.Approved);
-        translations.put(firstSourceId, tft1);
+        TextFlowTarget firstTranslation = new TextFlowTarget();
+        firstTranslation.setContents("Foun’dé metalkcta");
+        firstTranslation.setState(ContentState.Approved);
+        translations.put(firstSourceId, firstTranslation);
 
-        TextFlowTarget tft2 = new TextFlowTarget();
-        tft2.setContents("Tba’dé metalkcta");
-        tft2.setState(ContentState.Translated);
-        translations.put(secondSourceId, tft2);
-
-        TextFlowTarget tft3 = new TextFlowTarget();
-        tft3.setContents("Third metalkcta");
-        tft3.setState(ContentState.NeedReview);
-        translations.put(thirdSourceId, tft3);
+        TextFlowTarget secondTranslation = new TextFlowTarget();
+        secondTranslation.setContents("Tba’dé metalkcta");
+        secondTranslation.setState(ContentState.Translated);
+        translations.put(secondSourceId, secondTranslation);
 
         File originalFile = getTestFile("test-json-untranslated.json");
         OutputStream outputStream = new ByteArrayOutputStream();
         try (IFilterWriter writer = createWriter(outputStream)) {
             adapter.generateTranslatedFile(originalFile.toURI(), translations,
-                    this.localeId, writer, Optional.absent(), approvedOnly);
+                    this.localeId, writer, Optional.absent());
         }
 
-        String firstTitle = "Foun’dé metalkcta";
-        String secondTitle = approvedOnly ? "Second Source" : "Tba’dé metalkcta";
-        String thirdTitle = "Third Source";
-
         assertThat(outputStream.toString()).isEqualTo("{\n"+
-                "  \"test\": {\n" +
-                "    \"title\": \"Test\",\n" +
-                "    \"test1\": {\n" +
-                "      \"title\": \"" + firstTitle + "\"\n" +
-                "    },\n" +
-                "    \"test2\": {\n" +
-                "      \"title\": \"" + secondTitle + "\"\n" +
-                "    },\n" +
-                "    \"test3\": {\n" +
-                "      \"title\": \"" + thirdTitle + "\"\n" +
-                "    }\n" +
-                "  }\n" +
-                "}\n");
+            "  \"test\": {\n" +
+            "    \"title\": \"Test\",\n" +
+            "    \"test1\": {\n" +
+            "      \"title\": \"Foun’dé metalkcta\"\n" +
+            "    },\n" +
+            "    \"test2\": {\n" +
+            "      \"title\": \"Tba’dé metalkcta\"\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n");
     }
 
     // we do clean up the writer, but in the caller

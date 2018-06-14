@@ -109,10 +109,7 @@ public class TranslationArchiveServiceImpl
         final FileOutputStream output = new FileOutputStream(downloadFile);
         final ZipOutputStream zipOutput = new ZipOutputStream(output);
         zipOutput.setMethod(ZipOutputStream.DEFLATED);
-        // TODO should we have an option for approvedOnly?
-        final PoWriter2 poWriter =
-                new PoWriter2.Builder().mapIdToMsgctxt(!isPoProject)
-                        .create();
+        final PoWriter2 poWriter = new PoWriter2(false, !isPoProject);
         final Set<String> extensions = new HashSet<String>();
         extensions.add("gettext");
         extensions.add("comment");
@@ -153,7 +150,7 @@ public class TranslationArchiveServiceImpl
                     textFlowTargetDAO.findTranslations(document, hLocale);
             resourceUtils.transferToTranslationsResource(translationResource,
                     document, hLocale, extensions, hTargets,
-                    true);
+                    Optional.<String> absent());
             Resource res = resourceUtils.buildResource(document);
             String filename = localeDirectory + document.getDocId() + ".po";
             zipOutput.putNextEntry(new ZipEntry(filename));

@@ -46,10 +46,7 @@
         <li class="js-suggest__result autocomplete__result" data-key="last-modified-before">last-modified-before: <span class="txt--understated">date in format yyyy-mm-dd</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="last-modified-after">last-modified-after: <span class="txt--understated">date in format yyyy-mm-dd</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="source-comment">source-comment: <span class="txt--understated">source comment text</span></li>
-        <!-- Disabled for now (ZNTA-2612) because it only searches for
-             translator comments (which Zanata can't show), not review comments. -->
-        <!-- Note that entity #45 is a dash (can't have two dashes in a comment) - IntelliJ can fix when uncommenting. -->
-        <!--<li class="js-suggest__result autocomplete__result" data-key="translation-comment">translation-comment: <span class="txt&#45;&#45;understated">translation comment text</span></li>-->
+        <li class="js-suggest__result autocomplete__result" data-key="translation-comment">translation-comment: <span class="txt--understated">translation comment text</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="msgctxt">msgctxt: <span class="txt--understated">exact Message Context for a string</span></li>
       </ul>
     </g:HTMLPanel>

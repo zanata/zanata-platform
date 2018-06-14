@@ -41,7 +41,6 @@ const DayMatrix = ({
           onClick={() => handleSelectedDayChanged(date)}
           className={date === selectedDay ? 'active ' + btnStyle : btnStyle}
           disabled={dateIsInFuture || !date}
-          // @ts-ignore
           title={wordCount + ' words'}>
           <div className='cal-date'>{date ? dateLabel : '\u00a0'}</div>
           <div className='cal-info'>

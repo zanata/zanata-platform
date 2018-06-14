@@ -49,6 +49,4 @@ public interface PullOptions extends PushPullOptions {
     int getMinDocPercent();
 
     File getCacheDir();
-
-    boolean getApprovedOnly();
 }

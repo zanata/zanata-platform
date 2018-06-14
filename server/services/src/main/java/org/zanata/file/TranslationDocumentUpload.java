@@ -260,8 +260,9 @@ public class TranslationDocumentUpload implements Serializable {
     }
 
     private static String buildWarningString(List<String> warnings) {
-        return "Upload succeeded but had the following warnings:\n    " +
-                Joiner.on("\n    ").join(warnings);
+        return Joiner.on("\n\t").join(
+                "Upload succeeded but had the following warnings:", warnings)
+                + "\n";
     }
 
     private static MergeType mergeTypeFromString(String type) {

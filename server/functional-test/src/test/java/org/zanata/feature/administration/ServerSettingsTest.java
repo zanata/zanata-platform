@@ -55,9 +55,8 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .send(HomePage.class);
         String emailContent =
                 HasEmailRule.getEmailContent(hasEmailRule.getMessages().get(0));
-        assertThat(emailContent)
-                .as("The email indicates the expected server url")
-                .contains("http://myserver.com/zanata");
+        assertThat(emailContent).contains("http://myserver.com/zanata")
+                .as("The email indicates the expected server url");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -71,9 +70,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .goToServerConfigPage();
 
-        // check that expected url was displayed
-        serverConfigurationPage.expectFieldValue(
-                ServerConfigurationPage.registerUrlField, url);
+        assertThat(serverConfigurationPage.expectFieldValue(
+                ServerConfigurationPage.registerUrlField, url))
+                        .as("The expected url was displayed");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -92,8 +91,7 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .send(HomePage.class);
 
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeReceiver())
-                .as("The recipient admin was set")
-                .contains("lara@example.com");
+                .contains("lara@example.com").as("The recipient admin was set");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -108,16 +106,16 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .goToServerConfigPage();
 
-        serverConfigurationPage.expectFieldValue(
-                ServerConfigurationPage.fromEmailField, email);
+        assertThat(serverConfigurationPage.expectFieldValue(
+                ServerConfigurationPage.fromEmailField, email));
 
         serverConfigurationPage.goToHomePage().logout();
         new RegisterWorkFlow().registerInternal("test1", "test1", "test123",
                 "test1@test.com");
 
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeSender())
-                .as("The server email sender was set")
-                .contains("lara@example.com");
+                .contains("lara@example.com")
+                .as("The server email sender was set");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -129,9 +127,8 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .gotoMorePage();
 
-        assertThat(morePage.getHelpURL())
-                .as("The help URL was set correctly")
-                .isEqualTo("http://www.test.com/");
+        assertThat(morePage.getHelpURL()).isEqualTo("http://www.test.com/")
+                .as("The help URL was set correctly");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -147,9 +144,8 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .logout()
                 .goToRegistration();
 
-        assertThat(registerPage.termsOfUseUrlVisible())
-                .as("The Terms of Use URL is not visible")
-                .isFalse();
+        assertThat(registerPage.termsOfUseUrlVisible()).isFalse()
+                .as("The Terms of Use URL is not visible");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -162,9 +158,8 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .logout()
                 .goToRegistration();
 
-        assertThat(registerPage.getTermsUrl())
-                .as("The Terms of Use URL was set correctly")
-                .isEqualTo("http://www.test.com/");
+        assertThat(registerPage.getTermsUrl()).isEqualTo("http://www.test.com/")
+                .as("The Terms of Use URL was set correctly");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -180,11 +175,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage();
 
         assertThat(serverConfigurationPage.selectedLoggingLevel())
-                .as("Level is correct")
-                .isEqualTo("Error");
+                .isEqualTo("Error").as("Level is correct");
         assertThat(serverConfigurationPage.getLogEmailTarget())
-                .as("Recipient is correct")
-                .isEqualTo("lara@example.com");
+                .isEqualTo("lara@example.com").as("Recipient is correct");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -199,10 +192,9 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage();
 
         assertThat(serverConfigurationPage.getPiwikUrl())
-                .as("Piwik url is correct is correct")
-                .isEqualTo("http://example.com/piwik");
-        assertThat(serverConfigurationPage.getPiwikID())
-                .as("Piwik ID is correct")
-                .isEqualTo("12345");
+                .isEqualTo("http://example.com/piwik")
+                .as("Piwik url is correct is correct");
+        assertThat(serverConfigurationPage.getPiwikID()).isEqualTo("12345")
+                .as("Piwik ID is correct");
     }
 }

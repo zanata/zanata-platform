@@ -55,9 +55,8 @@ public class AccountClientTest {
     public void testPut() throws Exception {
         Response response =
                 client.put("admin", new Account("a@b.c", "d", "e", "f"));
-        assertThat(response.getStatus())
-                .as("server returns successful status code")
-                .isEqualTo(201);
+        assertThat(response.getStatus()).isEqualTo(201)
+                .as("server returns successful status code");
     }
 }
 

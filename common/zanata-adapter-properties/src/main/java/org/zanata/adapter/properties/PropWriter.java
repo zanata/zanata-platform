@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.fedorahosted.openprops.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,14 +87,14 @@ public class PropWriter {
     public static void writeTranslationsFile(final Resource srcDoc,
             final TranslationsResource doc,
             final File propertiesFile, final CHARSET charset,
-            boolean createSkeletons, boolean approvedOnly) throws IOException {
+            boolean createSkeletons) throws IOException {
 
         Properties targetProp = new Properties();
 
         if (srcDoc == null) {
             for (TextFlowTarget target : doc.getTextFlowTargets()) {
                 textFlowTargetToProperty(target.getResId(), target, targetProp,
-                    createSkeletons, approvedOnly);
+                    createSkeletons);
             }
         } else {
             Map<String, TextFlowTarget> targets = new HashMap<>();
@@ -108,7 +106,7 @@ public class PropWriter {
             for (TextFlow textFlow : srcDoc.getTextFlows()) {
                 TextFlowTarget target = targets.get(textFlow.getId());
                 textFlowTargetToProperty(textFlow.getId(), target, targetProp,
-                    createSkeletons, approvedOnly);
+                    createSkeletons);
             }
         }
         storeProps(targetProp, propertiesFile, charset);
@@ -128,16 +126,15 @@ public class PropWriter {
      *
      * @throws IOException
      */
-    public static void writeTranslations(Resource srcDoc,
-            final TranslationsResource doc, final File baseDir,
-            String bundleName, String locale, final CHARSET charset,
-            boolean createSkeletons, boolean approvedOnly) throws IOException {
+    public static void writeTranslations(Resource srcDoc, final TranslationsResource doc,
+        final File baseDir, String bundleName, String locale,
+        final CHARSET charset, boolean createSkeletons) throws IOException {
         File langFile =
             new File(baseDir, bundleName + "_" + locale + ".properties");
         PathUtil.makeDirs(langFile.getParentFile());
         log.debug("Creating target file {}", langFile);
 
-        writeTranslationsFile(srcDoc, doc, langFile, charset, createSkeletons, approvedOnly);
+        writeTranslationsFile(srcDoc, doc, langFile, charset, createSkeletons);
     }
 
     private static void storeProps(Properties props, File file, CHARSET charset)
@@ -156,20 +153,12 @@ public class PropWriter {
         }
     }
 
-    private static boolean hasATranslation(@Nullable TextFlowTarget target) {
-        return target != null && !target.getContents().isEmpty();
-    }
-
-    private static boolean usable(@Nullable TextFlowTarget target, boolean approvedOnly) {
-        return hasATranslation(target)
-                && (target.getState().isApproved() ||
-                (!approvedOnly && target.getState().isTranslated()));
-    }
-
     private static void textFlowTargetToProperty(String resId,
             TextFlowTarget target, Properties targetProp,
-            boolean createSkeletons, boolean approvedOnly) {
-        if (!usable(target, approvedOnly)) {
+            boolean createSkeletons) {
+        if (target == null || !target.getState().isTranslated()
+                || target.getContents() == null
+                || target.getContents().size() == 0) {
             // don't save fuzzy or empty values
             if (createSkeletons) {
                 targetProp.setProperty(resId, "");

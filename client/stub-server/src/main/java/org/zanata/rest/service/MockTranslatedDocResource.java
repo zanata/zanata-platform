@@ -41,16 +41,15 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
     @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
-            Set<String> extensions, boolean createSkeletons, boolean markTranslatedAsApproved,
+            Set<String> extensions, boolean createSkeletons,
             @HeaderParam("If-None-Match") String eTag) {
         return getTranslationsWithDocId(locale, idNoSlash, extensions,
-                createSkeletons, markTranslatedAsApproved, eTag);
+                createSkeletons, eTag);
     }
 
     @Override
     public Response getTranslationsWithDocId(LocaleId locale, String docId,
-            Set<String> extensions, boolean createSkeletons,
-            boolean markTranslatedAsApproved, String eTag) {
+            Set<String> extensions, boolean createSkeletons, String eTag) {
         MockResourceUtil.validateExtensions(extensions);
         TranslationsResource transResource = new TranslationsResource();
         transResource.getTextFlowTargets().add(new TextFlowTarget(docId));

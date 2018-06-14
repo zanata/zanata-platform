@@ -98,7 +98,7 @@ public class SlugValidatorTest {
     @Test
     public void validateSlug() throws Exception {
         assertThat(slugValidator.isValid(slug, context))
-                .as("Slug is validated correctly")
-                .isEqualTo(isAcceptable);
+                .isEqualTo(isAcceptable)
+                .as("Slug is validated correctly");
     }
 }

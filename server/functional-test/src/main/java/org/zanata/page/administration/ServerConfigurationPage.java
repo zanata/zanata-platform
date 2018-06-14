@@ -71,10 +71,11 @@ public class ServerConfigurationPage extends BasePage {
      * Wait until the field contains the expected text
      * @param by locator of field
      * @param expectedValue text to compare actual value to
+     * @return new ServerConfigurationPage
      */
-    public void expectFieldValue(final By by, final String expectedValue) {
+    public boolean expectFieldValue(final By by, final String expectedValue) {
         log.info("Wait for field {} value {}", by.toString(), expectedValue);
-        waitForAMoment().withMessage("text present: " + by.toString())
+        return waitForAMoment().withMessage("text present: " + by.toString())
                 .until(ExpectedConditions.textToBePresentInElementValue(
                         existingElement(by), expectedValue));
     }

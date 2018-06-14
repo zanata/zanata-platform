@@ -23,15 +23,19 @@ package org.zanata.model;
 import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.common.EntityStatus;
 import com.google.common.collect.Sets;
 
 /**
@@ -41,7 +45,7 @@ import com.google.common.collect.Sets;
 @Access(AccessType.FIELD)
 @Table(uniqueConstraints = @UniqueConstraint(name = "slug", columnNames = "slug"))
 public class HIterationGroup extends SlugEntityBase
-        implements HasUserFriendlyToString {
+        implements HasEntityStatus, HasUserFriendlyToString {
 
     private static final long serialVersionUID = 5682522115222479842L;
     @Size(max = 80)
@@ -66,6 +70,10 @@ public class HIterationGroup extends SlugEntityBase
             joinColumns = @JoinColumn(name = "iteration_group_id"),
             inverseJoinColumns = @JoinColumn(name = "locale_id"))
     private Set<HLocale> activeLocales = Sets.newHashSet();
+    @Type(type = "entityStatus")
+    @NotNull
+    @Column(columnDefinition = "char(1)")
+    private EntityStatus status = EntityStatus.ACTIVE;
 
     public void addMaintainer(HPerson maintainer) {
         this.getMaintainers().add(maintainer);
@@ -83,8 +91,8 @@ public class HIterationGroup extends SlugEntityBase
 
     @Override
     public String userFriendlyToString() {
-        return String.format("Version group(slug=%s, name=%s",
-                getSlug(), getName());
+        return String.format("Version group(slug=%s, name=%s, status=%s",
+                getSlug(), getName(), getStatus());
     }
 
     public void setName(final String name) {
@@ -108,6 +116,10 @@ public class HIterationGroup extends SlugEntityBase
         this.activeLocales = activeLocales;
     }
 
+    public void setStatus(final EntityStatus status) {
+        this.status = status;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -126,6 +138,11 @@ public class HIterationGroup extends SlugEntityBase
 
     public Set<HLocale> getActiveLocales() {
         return this.activeLocales;
+    }
+
+    @Override
+    public EntityStatus getStatus() {
+        return this.status;
     }
 
     @Override

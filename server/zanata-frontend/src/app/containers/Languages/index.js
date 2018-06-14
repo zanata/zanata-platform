@@ -11,12 +11,10 @@ import Helmet from 'react-helmet'
 import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
-import {LoaderText} from '../../components'
+import {Notification, LoaderText} from '../../components'
 import Button from 'antd/lib/button'
 import Layout from 'antd/lib/layout'
 import Icon from 'antd/lib/icon'
-import Notification from 'antd/lib/notification'
-import 'antd/lib/notification/style/css'
 
 import {
   initialLoad,
@@ -68,17 +66,6 @@ class Languages extends Component {
     this.props.handleInitLoad()
   }
 
-  componentDidUpdate (prevProps) {
-    const { notification } = this.props
-    if (notification && prevProps.notification !== notification) {
-      Notification[notification.severity]({
-        message: notification.message,
-        description: notification.description,
-        duration: null
-      })
-    }
-  }
-
   resetSearchText = (localeId) => {
     this.setState({
       searchText: ''
@@ -105,6 +92,7 @@ class Languages extends Component {
       user,
       loading,
       deleting,
+      notification,
       handleOnUpdatePageSize,
       handleOnUpdateSort,
       handlePageChanged,
@@ -120,8 +108,15 @@ class Languages extends Component {
 
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
-      <div className='bstrapReact languages'>
+      <div className='wideView bstrapReact languages'>
         <Layout>
+          {notification &&
+          (<Notification severity={notification.severity}
+            message={notification.message}
+            details={notification.details}
+            show={!!notification} />
+          )
+          }
           <Helmet title='Languages' />
           <div className='u-centerBlock'>
             <div className='clearfix'
@@ -193,8 +188,9 @@ class Languages extends Component {
                   {noResults &&
                     <div className='loader-loadingContainer'>
                       <span className='u-textLoadingMuted'>
-                        <Icon type='global' /> No results
+                        <Icon type='global' />
                       </span>
+                      <p className='glossaryText-muted'>No results</p>
                     </div>
                   }
                   {!loading && !noResults &&

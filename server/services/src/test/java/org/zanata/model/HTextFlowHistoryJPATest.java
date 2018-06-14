@@ -52,9 +52,8 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest {
 
         List<HTextFlowHistory> historyElems = getHistory(tf);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on persist")
-                .isEqualTo(0);
+        assertThat(historyElems.size()).isEqualTo(0)
+                .as("Incorrect History size on persist");
 
         d.incrementRevision();
         tf.setContents("hello world again");
@@ -63,9 +62,8 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest {
 
         historyElems = getHistory(tf);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on first update")
-                .isEqualTo(1);
+        assertThat(historyElems.size()).isEqualTo(1)
+                .as("Incorrect History size on first update");
         assertThat(historyElems.get(0).getContents())
                 .isEqualTo(Arrays.asList("hello world"));
 
@@ -76,9 +74,8 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest {
 
         historyElems = getHistory(tf);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on second update")
-                .isEqualTo(2);
+        assertThat(historyElems.size()).isEqualTo(2)
+                .as("Incorrect History size on second update");
         assertThat(historyElems.get(1).getContents())
                 .isEqualTo(Arrays.asList("hello world again"));
     }
@@ -101,9 +98,8 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest {
 
         List<HTextFlowHistory> historyElems = getHistory(tf);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on persist")
-                .isEqualTo(0);
+        assertThat(historyElems.size()).isEqualTo(0)
+                .as("Incorrect History size on persist");
 
         d.incrementRevision();
         tf.setPlural(true);
@@ -113,9 +109,8 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest {
 
         historyElems = getHistory(tf);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on first update")
-                .isEqualTo(1);
+        assertThat(historyElems.size()).isEqualTo(1)
+                .as("Incorrect History size on first update");
         assertThat(historyElems.get(0).getContents())
                 .isEqualTo(Arrays.asList("hello world"));
 
@@ -126,9 +121,8 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest {
 
         historyElems = getHistory(tf);
 
-        assertThat(historyElems.size())
-                .as("Incorrect History size on second update")
-                .isEqualTo(2);
+        assertThat(historyElems.size()).isEqualTo(2)
+                .as("Incorrect History size on second update");
         assertThat(historyElems.get(1).getContents())
                 .isEqualTo(Arrays.asList("hello world 1", "hello world 2"));
     }

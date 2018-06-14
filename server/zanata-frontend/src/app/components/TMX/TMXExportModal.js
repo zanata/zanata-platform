@@ -5,6 +5,8 @@ import * as PropTypes from 'prop-types'
 import {size} from 'lodash'
 import {connect} from 'react-redux'
 import {Icon} from '../index'
+import Badge from 'antd/lib/badge'
+import 'antd/lib/badge/style/index.less'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/index.less'
 import Col from 'antd/lib/col'
@@ -105,18 +107,17 @@ class TMXExportModal extends Component {
       const downloadTMX = handleExportTMX.bind(undefined,
         srcLang.localeDetails, project, version)
       return (
-        <Row type="flex" justify="center" className="mb3" key={localeId}>
+        <Row type="flex" justify="center">
           <Col span={6}>
             <Tooltip title={localeTooltipMsg}>
               <a href='#'>{localeId}</a>
             </Tooltip>
           </Col>
           <Col span={6}>
-            <Tooltip title={`${srcLang.docCount} Documents`}>
-              <span className='txt-info'>
-                <Icon name='document' className='n1' />
-                {srcLang.docCount}
-              </span>
+            <Tooltip title={`${srcLang.docCount} documents`}>
+              <Badge count={srcLang.docCount} offset={[-5, 9]}>
+                <Icon name='document' className='n1' /><span>Documents</span>
+              </Badge>
             </Tooltip>
           </Col>
           <Col span={6}>

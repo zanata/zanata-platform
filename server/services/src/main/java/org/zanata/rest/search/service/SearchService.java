@@ -39,6 +39,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -168,20 +169,30 @@ public class SearchService {
         int offset = (validatePage(page) - 1) * validatePageSize(sizePerPage);
         int totalCount;
         List<HIterationGroup> groups;
+        boolean includeObsolete =
+            identity.hasPermission("HIterationGroup", "view-obsolete");
+
+        final EntityStatus[] status =
+                includeObsolete ? new EntityStatus[] { EntityStatus.ACTIVE,
+                        EntityStatus.READONLY, EntityStatus.OBSOLETE }
+                        : new EntityStatus[] { EntityStatus.ACTIVE,
+                                EntityStatus.READONLY };
 
         if (StringUtils.isEmpty(query)) {
-            totalCount = versionGroupDAO.getAllGroupsCount();
+            totalCount = versionGroupDAO.getAllGroupsCount(status);
             groups = versionGroupDAO.getAllGroups(validatePageSize(sizePerPage),
-                    offset);
+                    offset, status);
         } else {
-            totalCount = versionGroupDAO.searchGroupBySlugAndNameCount(query);
+            totalCount = versionGroupDAO.searchGroupBySlugAndNameCount(query,
+                    status);
             groups = versionGroupDAO
                     .searchGroupBySlugAndName(query,
-                            validatePageSize(sizePerPage), offset);
+                            validatePageSize(sizePerPage), offset, status);
         }
         List<SearchResult> results = groups.stream().map(g -> {
                 GroupSearchResult result = new GroupSearchResult();
                 result.setId(g.getSlug());
+                result.setStatus(g.getStatus());
                 result.setTitle(g.getName());
                 result.setDescription(g.getDescription());
                 return result;

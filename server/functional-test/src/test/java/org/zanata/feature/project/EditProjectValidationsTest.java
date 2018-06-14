@@ -42,8 +42,8 @@ public class EditProjectValidationsTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("Admin is logged in");
     }
 
     @Trace(summary = "The administrator can change the validation levels " +
@@ -58,8 +58,8 @@ public class EditProjectValidationsTest extends ZanataTestCase {
 
         assertThat(projectTranslationTab
                 .isValidationLevel("Tab characters (\\t)", "Warning"))
-                .as("The level for tabs is currently Warning")
-                .isTrue();
+                .isTrue()
+                .as("The level for tabs is currently Warning");
 
         projectTranslationTab = projectTranslationTab
                 .setValidationLevel("HTML/XML tags", "Error");
@@ -87,28 +87,28 @@ public class EditProjectValidationsTest extends ZanataTestCase {
 
         assertThat(projectTranslationTab
                 .isValidationLevel("HTML/XML tags", "Error"))
-                .as("The validation changes were saved")
-                .isTrue();
+                .isTrue()
+                .as("The validation changes were saved");
         assertThat(projectTranslationTab
                 .isValidationLevel("Java variables", "Error"))
-                .as("The validation changes were saved")
-                .isTrue();
+                .isTrue()
+                .as("The validation changes were saved");
         assertThat(projectTranslationTab
                 .isValidationLevel("Leading/trailing newline (\\n)", "Error"))
-                .as("The validation changes were saved")
-                .isTrue();
+                .isTrue()
+                .as("The validation changes were saved");
         assertThat(projectTranslationTab
                 .isValidationLevel("Printf variables", "Error"))
-                .as("The validation changes were saved")
-                .isTrue();
+                .isTrue()
+                .as("The validation changes were saved");
         assertThat(projectTranslationTab
                 .isValidationLevel("Tab characters (\\t)", "Error"))
-                .as("The validation changes were saved")
-                .isTrue();
+                .isTrue()
+                .as("The validation changes were saved");
         assertThat(projectTranslationTab
                 .isValidationLevel("XML entity reference", "Error"))
-                .as("The validation changes were saved")
-                .isTrue();
+                .isTrue()
+                .as("The validation changes were saved");
     }
 
     @Trace(summary = "The system will only allow one of the two Printf " +
@@ -127,15 +127,14 @@ public class EditProjectValidationsTest extends ZanataTestCase {
         //        "Positional printf (XSI extension) to Error.");
 
         assertThat(projectTranslationTab
-                .isValidationLevel("Positional printf (XSI extension)",
-                        "Error"))
-                .as("The Positional printf level is Error")
-                .isTrue();
+                .isValidationLevel("Positional printf (XSI extension)", "Error"))
+                .isTrue()
+                .as("The Positional printf level is Error");
 
         assertThat(projectTranslationTab
                 .isValidationLevel("Printf variables", "Off"))
-                .as("The Printf level is Off")
-                .isTrue();
+                .isTrue()
+                .as("The Printf level is Off");
 
         projectTranslationTab = projectTranslationTab
                 .setValidationLevel("Printf variables", "Error");
@@ -146,12 +145,12 @@ public class EditProjectValidationsTest extends ZanataTestCase {
 
         assertThat(projectTranslationTab
                 .isValidationLevel("Printf variables", "Error"))
-                .as("The Printf level is Error")
-                .isTrue();
+                .isTrue()
+                .as("The Printf level is Error");
 
         assertThat(projectTranslationTab
                 .isValidationLevel("Positional printf (XSI extension)", "Off"))
-                .as("The Positional printf level is Off")
-                .isTrue();
+                .isTrue()
+                .as("The Positional printf level is Off");
     }
 }

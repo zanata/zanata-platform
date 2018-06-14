@@ -47,5 +47,5 @@ test('can require all local js files', () => {
     throw new Error('Modules were loaded as strings, not required/parsed')
   }
 
-  console.log('Loaded ' + count + ' modules.')
+  // console.log('Loaded ' + count + ' modules.')
 })

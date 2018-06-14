@@ -43,8 +43,8 @@ public class EditHomePageTest extends ZanataTestCase {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("Admin is logged in");
     }
 
     @Trace(summary = "The administrator can edit the home screen in " +
@@ -58,7 +58,7 @@ public class EditHomePageTest extends ZanataTestCase {
                 .update();
 
         assertThat(homePage.getMainBodyContent())
-                .as("Homepage text has been updated")
-                .isEqualTo("This text contains some markup");
+                .isEqualTo("This text contains some markup")
+                .as("Homepage text has been updated");
     }
 }

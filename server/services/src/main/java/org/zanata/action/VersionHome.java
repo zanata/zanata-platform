@@ -304,6 +304,18 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 message);
     }
 
+    @Transactional
+    public void updateRequireTranslationReview(String key, boolean checked) {
+        identity.checkPermission(getInstance(), "update");
+        getInstance().setRequireTranslationReview(checked);
+        update();
+        if (checked) {
+            setMessage(msgs.get("jsf.iteration.requireReview.enabled"));
+        } else {
+            setMessage(msgs.get("jsf.iteration.requireReview.disabled"));
+        }
+    }
+
     public List<ValidationAction> getValidationList() {
         List<ValidationAction> sortedList =
                 Lists.newArrayList(getValidations().values());

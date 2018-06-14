@@ -197,9 +197,7 @@ function parseArgs(args) {
       case '--integration-test':
         stderr('Enabling test-only configuration')
         opts.consoleLogLevel = 'INFO'
-        // user.dir is Maven's basedir (eg server/functional-test)
-        // see also LIQUIBASE_JVM_OPTS in functional-test/pom.xml
-        opts.fileDir = java.lang.System.getProperty('user.dir') + '/target/documents'
+        opts.fileDir = './target/documents'
         opts.zanataHomeDir = '${jboss.server.data.dir}/zanata'
         pushAll(opts.configCallbacks, configCallbacksForIntegrationTest())
         break

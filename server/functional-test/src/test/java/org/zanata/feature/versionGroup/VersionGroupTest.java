@@ -47,11 +47,10 @@ public class VersionGroupTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("Admin is logged in");
         dashboardGroupsTab =
-                new BasicWorkFlow().goToHome().goToMyDashboard()
-                        .gotoGroupsTab();
+            new BasicWorkFlow().goToHome().goToMyDashboard().gotoGroupsTab();
     }
 
     @Trace(summary = "The administrator can create a basic group")
@@ -60,15 +59,15 @@ public class VersionGroupTest extends ZanataTestCase {
         String groupID = "basic-group";
         String groupName = "A Basic Group";
         VersionGroupPage versionGroupPage = dashboardGroupsTab
-                .createNewGroup()
-                .inputGroupId(groupID)
-                .inputGroupName(groupName)
-                .inputGroupDescription("A basic group can be saved")
-                .saveGroup();
+            .createNewGroup()
+            .inputGroupId(groupID)
+            .inputGroupName(groupName)
+            .inputGroupDescription("A basic group can be saved")
+            .saveGroup();
 
         assertThat(versionGroupPage.getGroupName().trim())
-                .as("The group name is correct")
-                .isEqualTo(groupName);
+            .isEqualTo(groupName)
+            .as("The group name is correct");
     }
 
     @Trace(summary = "The administrator must fill in the required fields " +
@@ -84,24 +83,24 @@ public class VersionGroupTest extends ZanataTestCase {
                 .saveGroupFailure();
 
         assertThat(groupPage.getErrors())
-                .as("The two errors are value is required")
-                .contains(errorMsg, errorMsg);
+                .contains(errorMsg, errorMsg)
+                .as("The two errors are value is required");
 
         groupPage = groupPage.clearFields()
                 .inputGroupName(groupName)
                 .saveGroupFailure();
 
         assertThat(groupPage.getErrors())
-                .as("The value required error shown")
-                .contains(errorMsg);
+                .contains(errorMsg)
+                .as("The value required error shown");
 
         groupPage = groupPage.clearFields()
                 .inputGroupId(groupID)
                 .saveGroupFailure();
 
         assertThat(groupPage.getErrors())
-                .as("The value required error shown")
-                .contains(errorMsg);
+                .contains(errorMsg)
+                .as("The value required error shown");
     }
 
     @Trace(summary = "The administrator must enter valid data into the " +
@@ -124,20 +123,20 @@ public class VersionGroupTest extends ZanataTestCase {
                 .saveGroupFailure();
 
         assertThat(groupPage.getErrors())
-                .as("Invalid length error is shown")
-                .contains(CreateVersionGroupPage.LENGTH_ERROR);
+                .contains(CreateVersionGroupPage.LENGTH_ERROR)
+                .as("Invalid length error is shown");
 
         groupDescription = groupDescription.substring(0, 100);
         VersionGroupPage versionGroupPage = groupPage
-                .clearFields()
-                .inputGroupId("verifyDescriptionFieldSizeID")
-                .inputGroupName(groupName)
-                .inputGroupDescription(groupDescription)
-                .saveGroup();
+            .clearFields()
+            .inputGroupId("verifyDescriptionFieldSizeID")
+            .inputGroupName(groupName)
+            .inputGroupDescription(groupDescription)
+            .saveGroup();
 
         assertThat(versionGroupPage.getGroupName().trim())
-                .as("A group description of 100 chars is valid")
-                .isEqualTo(groupName);
+            .isEqualTo(groupName)
+            .as("A group description of 100 chars is valid");
     }
 
     @Trace(summary = "The administrator can add a project version to " +
@@ -158,8 +157,8 @@ public class VersionGroupTest extends ZanataTestCase {
                 .clickProjectsTab();
 
         assertThat(versionGroupPage.getProjectVersionsInGroup())
-                .as("The version group shows in the list")
-                .contains("about fedora\nmaster");
+                .contains("about fedora\nmaster")
+                .as("The version group shows in the list");
     }
 
     @Trace(summary = "The administrator can use numbers, letters, periods, " +
@@ -175,8 +174,8 @@ public class VersionGroupTest extends ZanataTestCase {
                 .saveGroup();
 
         assertThat(versionGroupPage.getGroupName())
-                .as("The group was created")
-                .isEqualTo(groupName);
+                .isEqualTo(groupName)
+                .as("The group was created");
     }
 
     @Trace(summary = "The administrator must use numbers, letters, periods, "
@@ -192,8 +191,8 @@ public class VersionGroupTest extends ZanataTestCase {
         groupPage.saveGroupFailure();
 
         assertThat(groupPage.getErrors())
-                .as("Validation error is displayed for " + inputText)
-                .contains(CreateVersionGroupPage.VALIDATION_ERROR);
+                .contains(CreateVersionGroupPage.VALIDATION_ERROR)
+                .as("Validation error is displayed for " + inputText);
     }
 
     @Test

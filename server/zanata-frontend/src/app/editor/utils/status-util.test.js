@@ -86,7 +86,6 @@ describe('status-util', () => {
   })
 
   it('transUnitStatusToPhraseStatus', () => {
-    // @ts-ignore
     expect(transUnitStatusToPhraseStatus(undefined))
       .toEqual(STATUS_UNTRANSLATED)
     expect(transUnitStatusToPhraseStatus(STATUS_NEW))

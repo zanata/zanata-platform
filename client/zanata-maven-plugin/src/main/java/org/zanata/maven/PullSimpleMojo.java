@@ -31,7 +31,6 @@ import org.zanata.client.commands.pull.PullOptions;
 @Mojo(name = "pull", requiresOnline = true, requiresProject = false)
 public class PullSimpleMojo extends AbstractPullMojo implements PullOptions {
 
-
     /**
      * Whether module processing should be enabled. This option is obsolete.
      * Please use pull-module instead.
@@ -50,4 +49,5 @@ public class PullSimpleMojo extends AbstractPullMojo implements PullOptions {
     public boolean getEnableModules() {
         return false;
     }
+
 }

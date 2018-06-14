@@ -180,7 +180,7 @@ public class TSAdapter extends OkapiFilterAdapter {
     protected void generateTranslatedFile(URI originalFile,
             Map<String, TextFlowTarget> translations,
             net.sf.okapi.common.LocaleId localeId, IFilterWriter writer,
-            Optional<String> params, boolean approvedOnly) {
+            Optional<String> params) {
         RawDocument rawDoc = new RawDocument(originalFile, "UTF-8",
                 net.sf.okapi.common.LocaleId.fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
@@ -215,10 +215,6 @@ public class TSAdapter extends OkapiFilterAdapter {
                                     encounteredIds.add(id);
                                     for (String translated : tft
                                             .getContents()) {
-                                        boolean finished = usable(tft.getState(), approvedOnly);
-                                        String propVal = finished ? "yes" : "no";
-                                        // Okapi will map approved=no to type=unfinished in the .TS file
-                                        tu.getTargetProperty(localeId, "approved").setValue(propVal);
                                         // TODO: Find a method of doing this in
                                         // one object, not a loop
                                         tu.setTargetContent(localeId,
@@ -248,11 +244,6 @@ public class TSAdapter extends OkapiFilterAdapter {
             filter.close();
             writer.close();
         }
-    }
-
-    private boolean usable(ContentState state, boolean approvedOnly) {
-        return state.isApproved() ||
-                (!approvedOnly && state.isTranslated());
     }
 
     @Override

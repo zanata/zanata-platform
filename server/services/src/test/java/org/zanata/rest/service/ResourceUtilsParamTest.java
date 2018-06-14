@@ -54,15 +54,13 @@ public class ResourceUtilsParamTest extends ZanataTest {
 
     @Test
     public void decodeDocIds() {
-        assertThat(resourceUtils.decodeDocId(encoded))
-                .as("Decoding " + encoded)
-                .isEqualTo(decoded);
+        assertThat(resourceUtils.decodeDocId(encoded)).isEqualTo(decoded)
+                .as("Decoding " + encoded);
     }
 
     @Test
     public void encodeDocIds() {
-        assertThat(resourceUtils.encodeDocId(decoded))
-                .as("Encoding " + decoded)
-                .isEqualTo(encoded);
+        assertThat(resourceUtils.encodeDocId(decoded)).isEqualTo(encoded)
+                .as("Encoding " + decoded);
     }
 }

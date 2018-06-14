@@ -48,8 +48,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
+                .isEqualTo("admin")
+                .as("Admin is logged in");
     }
 
     @Trace(summary = "The administrator can create a project version")
@@ -63,8 +63,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .saveVersion();
 
         assertThat(versionLanguagesPage.getProjectVersionName())
-                .as("The version is created with correct ID")
-                .isEqualTo("my-aboutfedora-version");
+                .isEqualTo("my-aboutfedora-version")
+                .as("The version is created with correct ID");
     }
 
     @Trace(summary = "The user must enter an id to create a project version")
@@ -78,8 +78,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
 
         List<String> errors = createVersionPage.getErrors();
         assertThat(errors)
-                .as("The empty value is rejected")
-                .contains("value is required");
+                .contains("value is required")
+                .as("The empty value is rejected");
     }
 
     @Trace(summary = "The user must enter an id that starts and ends with " +
@@ -93,31 +93,31 @@ public class CreateProjectVersionTest extends ZanataTestCase {
         createVersionPage.defocus(createVersionPage.projectVersionID);
 
         assertThat(createVersionPage.getErrors())
-                .as("The input is rejected")
-                .contains(CreateVersionPage.VALIDATION_ERROR);
+                .contains(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("B-");
         createVersionPage.defocus(createVersionPage.projectVersionID);
 
         assertThat(createVersionPage.getErrors())
-                .as("The input is rejected")
-                .contains(CreateVersionPage.VALIDATION_ERROR);
+                .contains(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("_C_");
         createVersionPage.defocus(createVersionPage.projectVersionID);
         createVersionPage = createVersionPage.expectNumErrors(1);
 
         assertThat(createVersionPage.getErrors())
-                .as("The input is rejected")
-                .contains(CreateVersionPage.VALIDATION_ERROR);
+                .contains(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("A-B_C");
         createVersionPage.defocus(createVersionPage.projectVersionID);
         createVersionPage = createVersionPage.expectNumErrors(0);
 
         assertThat(createVersionPage.getErrors())
-                .as("The input is acceptable")
-                .doesNotContain(CreateVersionPage.VALIDATION_ERROR);
+                .doesNotContain(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is acceptable");
     }
 
     @Trace(summary = "The system updates the project version counter " +
@@ -129,8 +129,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
         assertThat(new ProjectWorkFlow()
                 .createNewSimpleProject("version-nums", projectName)
                 .getProjectName())
-                .as("The project is created")
-                .isEqualTo(projectName);
+                .isEqualTo(projectName)
+                .as("The project is created");
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .createNewProjectVersion(projectName, "alpha")
@@ -138,8 +138,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
         projectVersionsPage.expectDisplayedVersions(1);
 
         assertThat(projectVersionsPage.getNumberOfDisplayedVersions())
-                .as("The version count is 1")
-                .isEqualTo(1);
+                .isEqualTo(1)
+                .as("The version count is 1");
 
         projectVersionsPage = new ProjectWorkFlow()
                 .createNewProjectVersion("version nums", "bravo")
@@ -147,7 +147,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
         projectVersionsPage.expectDisplayedVersions(2);
 
         assertThat(projectVersionsPage.getNumberOfDisplayedVersions())
-                .as("The version count is 2")
-                .isEqualTo(2);
+                .isEqualTo(2)
+                .as("The version count is 2");
     }
 }

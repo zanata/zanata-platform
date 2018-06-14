@@ -204,8 +204,8 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .register();
 
         assertThat(signInPage.getNotificationMessage())
-                .as("Sign up is successful")
-                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE);
+                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
+                .as("Sign up is successful");
 
         return signInPage;
     }

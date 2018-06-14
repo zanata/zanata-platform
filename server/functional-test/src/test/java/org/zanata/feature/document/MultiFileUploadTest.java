@@ -85,8 +85,8 @@ public class MultiFileUploadTest extends ZanataTestCase {
                         .submitUpload()
                         .clickUploadDone()
                         .gotoDocumentTab();
-        // check that document shows in table
-        versionDocumentsPage.expectSourceDocsContains(testFileName);
+        assertThat(versionDocumentsPage.expectSourceDocsContains(testFileName))
+                .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)

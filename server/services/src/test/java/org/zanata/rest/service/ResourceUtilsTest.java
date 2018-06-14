@@ -148,8 +148,7 @@ public class ResourceUtilsTest extends ZanataTest {
 
         // set up a textflow with the same id and different content
         TextFlow changedTF =
-                new TextFlow(originalTF.getResId(), LocaleId.EN,
-                        "changed text");
+                new TextFlow(originalTF.getResId(), LocaleId.EN, "changed text");
         List<TextFlow> from = new ArrayList<TextFlow>();
         from.add(changedTF);
 
@@ -169,19 +168,15 @@ public class ResourceUtilsTest extends ZanataTest {
         fuzzyTarg = targets.get(fuzzyLocId);
         assertThat(fuzzyTarg.getState()).isEqualTo(ContentState.NeedReview);
         assertThat(fuzzyTarg.getVersionNum()).isEqualTo(fuzzyTargVersionBefore);
-        assertThat(fuzzyTarg.getTextFlowRevision())
-                .isEqualTo(originalTFRevision);
+        assertThat(fuzzyTarg.getTextFlowRevision()).isEqualTo(originalTFRevision);
 
         apprTarg = targets.get(apprLocId);
-        assertThat(apprTarg.getState())
-                .as("approved targets should be set to fuzzy when source content changes")
-                .isEqualTo(ContentState.NeedReview);
-        assertThat(apprTarg.getVersionNum())
-                .isEqualTo(apprTargVersionBefore + 1);
+        assertThat(apprTarg.getState()).isEqualTo(ContentState.NeedReview)
+                .as("approved targets should be set to fuzzy when source content changes");
+        assertThat(apprTarg.getVersionNum()).isEqualTo(apprTargVersionBefore + 1);
         // Note: TFTRevision should be updated when target content or state is
         // changed in editor, not here.
-        assertThat(apprTarg.getTextFlowRevision())
-                .isEqualTo(originalTFRevision);
+        assertThat(apprTarg.getTextFlowRevision()).isEqualTo(originalTFRevision);
 
         assertThat(changed).isTrue();
     }

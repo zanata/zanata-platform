@@ -237,7 +237,7 @@ public class CopyTransServiceImplParameterizedTest {
     @Test
     @InRequestScope
     @SlowTest
-    public void testCopyTrans() {
+    public void testCopyTrans() throws Exception {
         // Get the project iteration
         HProjectIteration projectIteration;
         if (copyTransExecution.projectMatches) {
@@ -248,6 +248,9 @@ public class CopyTransServiceImplParameterizedTest {
                     "different-version");
         }
         assert projectIteration != null;
+        // Set require translation review
+        projectIteration.setRequireTranslationReview(
+                copyTransExecution.requireTranslationReview);
         // Change all targets to have the copyTransExecution's match state
         for (HDocument doc : projectIteration.getDocuments().values()) {
             for (HTextFlow tf : doc.getAllTextFlows().values()) {
@@ -339,7 +342,8 @@ public class CopyTransServiceImplParameterizedTest {
 
     private static ContentState
             getExpectedContentState(CopyTransExecution execution) {
-        ContentState expectedContentState = Translated;
+        ContentState expectedContentState =
+                execution.getRequireTranslationReview() ? Approved : Translated;
         expectedContentState = getExpectedContentState(
                 execution.getContextMatches(),
                 execution.getContextMismatchAction(), expectedContentState);
@@ -367,12 +371,14 @@ public class CopyTransServiceImplParameterizedTest {
     }
 
     private static Set<CopyTransExecution> generateExecutions() {
-        Set<CopyTransExecution> allExecutions = new HashSet<>();
+        Set<CopyTransExecution> allExecutions =
+                new HashSet<CopyTransExecution>();
         // NB combinations which affect the query parameters
         // (context match/mismatch, etc) are tested in TranslationFinderTest
         Set<Object[]> paramsSet = cartesianProduct(Arrays.asList(REJECT),
                 Arrays.asList(REJECT), Arrays.asList(REJECT),
                 Arrays.asList(true), Arrays.asList(true), Arrays.asList(true),
+                Arrays.asList(true, false),
                 Arrays.asList(Translated, Approved));
         for (Object[] params : paramsSet) {
             CopyTransExecution exec = new CopyTransExecution(
@@ -380,7 +386,8 @@ public class CopyTransServiceImplParameterizedTest {
                     (HCopyTransOptions.ConditionRuleAction) params[1],
                     (HCopyTransOptions.ConditionRuleAction) params[2],
                     (Boolean) params[3], (Boolean) params[4],
-                    (Boolean) params[5], (ContentState) params[6]);
+                    (Boolean) params[5], (Boolean) params[6],
+                    (ContentState) params[7]);
             ContentState expectedContentState = getExpectedContentState(exec);
             if (expectedContentState == New) {
                 exec.expectUntranslated();
@@ -400,6 +407,7 @@ public class CopyTransServiceImplParameterizedTest {
         private Boolean contextMatches;
         private Boolean projectMatches;
         private Boolean documentMatches;
+        private Boolean requireTranslationReview;
         private ContentState expectedTranslationState;
         private boolean expectUntranslated;
         private String[] expectedContents;
@@ -410,13 +418,15 @@ public class CopyTransServiceImplParameterizedTest {
                 HCopyTransOptions.ConditionRuleAction projectMismatchAction,
                 HCopyTransOptions.ConditionRuleAction documentMismatchAction,
                 Boolean contextMatches, Boolean projectMatches,
-                Boolean documentMatches, ContentState matchState) {
+                Boolean documentMatches, Boolean requireTranslationReview,
+                ContentState matchState) {
             this.contextMismatchAction = contextMismatchAction;
             this.projectMismatchAction = projectMismatchAction;
             this.documentMismatchAction = documentMismatchAction;
             this.contextMatches = contextMatches;
             this.projectMatches = projectMatches;
             this.documentMatches = documentMatches;
+            this.requireTranslationReview = requireTranslationReview;
             this.matchState = matchState;
         }
 
@@ -467,6 +477,10 @@ public class CopyTransServiceImplParameterizedTest {
 
         public Boolean getDocumentMatches() {
             return this.documentMatches;
+        }
+
+        public Boolean getRequireTranslationReview() {
+            return this.requireTranslationReview;
         }
 
         public ContentState getExpectedTranslationState() {
@@ -536,6 +550,15 @@ public class CopyTransServiceImplParameterizedTest {
             if (this$documentMatches == null ? other$documentMatches != null
                     : !this$documentMatches.equals(other$documentMatches))
                 return false;
+            final Object this$requireTranslationReview =
+                    this.getRequireTranslationReview();
+            final Object other$requireTranslationReview =
+                    other.getRequireTranslationReview();
+            if (this$requireTranslationReview == null
+                    ? other$requireTranslationReview != null
+                    : !this$requireTranslationReview
+                            .equals(other$requireTranslationReview))
+                return false;
             final Object this$expectedTranslationState =
                     this.getExpectedTranslationState();
             final Object other$expectedTranslationState =
@@ -587,6 +610,10 @@ public class CopyTransServiceImplParameterizedTest {
             final Object $documentMatches = this.getDocumentMatches();
             result = result * PRIME + ($documentMatches == null ? 43
                     : $documentMatches.hashCode());
+            final Object $requireTranslationReview =
+                    this.getRequireTranslationReview();
+            result = result * PRIME + ($requireTranslationReview == null ? 43
+                    : $requireTranslationReview.hashCode());
             final Object $expectedTranslationState =
                     this.getExpectedTranslationState();
             result = result * PRIME + ($expectedTranslationState == null ? 43
@@ -610,7 +637,9 @@ public class CopyTransServiceImplParameterizedTest {
                     + this.getDocumentMismatchAction() + ", contextMatches="
                     + this.getContextMatches() + ", projectMatches="
                     + this.getProjectMatches() + ", documentMatches="
-                    + this.getDocumentMatches() + ", expectedTranslationState="
+                    + this.getDocumentMatches() + ", requireTranslationReview="
+                    + this.getRequireTranslationReview()
+                    + ", expectedTranslationState="
                     + this.getExpectedTranslationState()
                     + ", expectUntranslated=" + this.isExpectUntranslated()
                     + ", expectedContents="

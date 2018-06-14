@@ -24,7 +24,10 @@ package org.zanata.client.commands.pull;
 import java.io.File;
 
 import org.kohsuke.args4j.Option;
-import org.zanata.client.commands.*;
+import org.zanata.client.commands.AbstractPushPullOptionsImpl;
+import org.zanata.client.commands.BooleanValueHandler;
+import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.commands.PushPullType;
 import com.google.common.base.Preconditions;
 
 /**
@@ -41,7 +44,6 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private static final boolean DEFAULT_USE_CACHE = true;
     private static final boolean DEFAULT_PURGE_CACHE = false;
     private static final boolean DEFAULT_CONTINUE_AFTER_ERROR = false;
-    private static final boolean DEFAULT_APPROVED_ONLY = false;
 
     private String pullType = DEFAULT_PULL_TYPE;
 
@@ -51,7 +53,6 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private boolean useCache = DEFAULT_USE_CACHE;
     private boolean purgeCache = DEFAULT_PURGE_CACHE;
     private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
-    private boolean approvedOnly = DEFAULT_APPROVED_ONLY;
     private int minDocPercent = 0;
     private File cacheDir = new File(".");
 
@@ -111,18 +112,6 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     public
             void setCreateSkeletons(boolean createSkeletons) {
         this.createSkeletons = createSkeletons;
-    }
-
-    @Override
-    public boolean getApprovedOnly() {
-        return approvedOnly;
-    }
-
-    @Option(
-            name = "--approved-only",
-            usage = "Only include Approved translations (not Translated, Fuzzy or New)")
-    public void setApprovedOnly(boolean approved) {
-        this.approvedOnly = approved;
     }
 
     @Override
@@ -224,5 +213,4 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     public File getCacheDir() {
         return this.cacheDir;
     }
-
 }

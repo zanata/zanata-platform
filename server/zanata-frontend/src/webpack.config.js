@@ -290,7 +290,7 @@ module.exports = function (env, isEditor, devServerPort) {
             to: 'messages',
             toType: 'dir',
             flatten: true,
-            transform (content, _path) {
+            transform (content, path) {
               // Minimize the JSON files
               return JSON.stringify(JSON.parse(content))
             }

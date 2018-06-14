@@ -9,13 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
-import org.zanata.common.ContentState;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 import org.zanata.rest.dto.resource.Resource;
@@ -65,8 +63,8 @@ public class XliffWriter extends XliffCommon {
     }
 
     private static void writeTransUnits(XMLStreamWriter writer,
-            Resource doc, @Nullable TranslationsResource targetDoc,
-            boolean createSkeletons, boolean approvedOnly) throws XMLStreamException {
+            Resource doc, TranslationsResource targetDoc,
+            boolean createSkeletons) throws XMLStreamException {
         Map<String, TextFlowTarget> targets = Collections.emptyMap();
         if (targetDoc != null) {
             targets = new HashMap<>();
@@ -83,20 +81,13 @@ public class XliffWriter extends XliffCommon {
             writer.writeStartElement(ELE_TRANS_UNIT);
             writer.writeAttribute(ATTRI_ID, textFlow.getId());
             writeTransUnitSource(writer, textFlow);
-            if (target != null) {
-                if (usable(target.getState(), approvedOnly)) {
-                    writeTransUnitTarget(writer, target);
-                }
+            if (target != null && target.getState().isTranslated()) {
+                writeTransUnitTarget(writer, target);
             }
             writeTransUnitContext(writer, textFlow);
             // end trans-unit tag
             writer.writeEndElement();
         }
-    }
-
-    private static boolean usable(ContentState state, boolean approvedOnly) {
-        return state.isApproved() ||
-                (!approvedOnly && state.isTranslated());
     }
 
     private static void writeTransUnitSource(XMLStreamWriter writer,
@@ -180,11 +171,11 @@ public class XliffWriter extends XliffCommon {
      *            may be null
      */
     public static void write(File baseDir, Resource doc, String locale,
-            @Nullable TranslationsResource targetDoc, boolean createSkeletons, boolean approvedOnly) {
+            TranslationsResource targetDoc, boolean createSkeletons) {
         File outFile =
                 new File(baseDir, doc.getName() + "_"
                         + locale.replace('-', '_') + ".xml");
-        writeFile(outFile, doc, locale, targetDoc, createSkeletons, approvedOnly);
+        writeFile(outFile, doc, locale, targetDoc, createSkeletons);
     }
 
     /**
@@ -196,8 +187,7 @@ public class XliffWriter extends XliffCommon {
      * @param locale (use hyphen, not underscore)
      */
     public static void writeFile(File file, Resource doc, String locale,
-            @Nullable TranslationsResource targetDoc, boolean createSkeletons,
-            boolean approvedOnly) {
+        TranslationsResource targetDoc, boolean createSkeletons) {
 
         try {
             PathUtil.makeParents(file);
@@ -212,7 +202,7 @@ public class XliffWriter extends XliffCommon {
                             output.createXMLStreamWriter(fileStream, "utf-8"));
             try {
                 writeHeader(writer, doc, locale);
-                writeTransUnits(writer, doc, targetDoc, createSkeletons, approvedOnly);
+                writeTransUnits(writer, doc, targetDoc, createSkeletons);
                 // end body tag
                 writer.writeEndElement();
                 // end file tag
@@ -237,7 +227,7 @@ public class XliffWriter extends XliffCommon {
      *            (use hyphen, not underscore)
      */
     public static void write(File baseDir, Resource doc, String locale) {
-        write(baseDir, doc, locale, null, true, false);
+        write(baseDir, doc, locale, null, true);
     }
 
 }

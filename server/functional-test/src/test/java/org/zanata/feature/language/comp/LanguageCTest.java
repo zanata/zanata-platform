@@ -52,10 +52,9 @@ public class LanguageCTest extends ZanataTestCase {
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        assertThat(new LoginWorkFlow().signIn("translator", "translator")
-                .loggedInAs())
-                .as("translator is logged in")
-                .isEqualTo("translator");
+        assertThat(new LoginWorkFlow().signIn("translator", "translator").loggedInAs())
+                .isEqualTo("translator")
+                .as("translator is logged in");
     }
 
     @Trace(summary = "Translator can search for language",
@@ -68,8 +67,8 @@ public class LanguageCTest extends ZanataTestCase {
                 .goToLanguages();
 
         assertThat(languagesPage.getLanguageLocales())
-                .as("The language is listed")
-                .contains(language);
+                .contains(language)
+                .as("The language is listed");
 
     }
 
@@ -89,26 +88,25 @@ public class LanguageCTest extends ZanataTestCase {
         List<WiserMessage> messages = emailRule.getMessages();
 
         assertThat(messages.size())
-                .as("One email was sent")
-                .isGreaterThanOrEqualTo(1);
+                .isGreaterThanOrEqualTo(1)
+                .as("One email was sent");
 
         WiserMessage wiserMessage = messages.get(0);
 
         assertThat(wiserMessage.getEnvelopeReceiver())
-                .as("The email recipient is the Coordinator")
-                .isEqualTo("admin@example.com");
+                .isEqualTo("admin@example.com")
+                .as("The email recipient is the Coordinator");
 
         String content = HasEmailRule.getEmailContent(wiserMessage);
 
         assertThat(content)
                 .contains("Dear Language Team Coordinator")
-                .contains(
-                        "Zanata user \"translator\" with id \"translator\" is requesting to join ")
+                .contains("Zanata user \"translator\" with id \"translator\" is requesting to join ")
                 .as("The email is to the language team coordinator");
 
         assertThat(languagePage.getNotificationMessage())
-                .as("The user is informed the message was sent")
-                .contains("Your message has been sent to the administrator");
+                .contains("Your message has been sent to the administrator")
+                .as("The user is informed the message was sent");
 
     }
 
@@ -127,8 +125,8 @@ public class LanguageCTest extends ZanataTestCase {
                 .cancelRequest();
 
         assertThat(languagePage.getNotificationMessage())
-                .as("Request to join language team is cancel")
-                .contains("Request cancelled by translator");
+                .contains("Request cancelled by translator")
+                .as("Request to join language team is cancel");
     }
 
     @Trace(summary = "Translator can leave language team",
@@ -143,8 +141,8 @@ public class LanguageCTest extends ZanataTestCase {
                 .leaveTeam();
 
         assertThat(languagePage.getNotificationMessage())
-                .as("Leaved language team " + language)
-                .contains("You have left the français language team");
+                .contains("You have left the français language team")
+                .as("Leaved language team " + language);
     }
 
 }

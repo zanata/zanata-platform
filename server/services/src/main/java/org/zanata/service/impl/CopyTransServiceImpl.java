@@ -107,10 +107,12 @@ public class CopyTransServiceImpl implements CopyTransService {
         // number of copy targets), it's better to inverse the process, i.e.
         // iterate through candidates and inject matches
         if (hasTranslationToCopy) {
+            boolean requireTranslationReview = document.getProjectIteration()
+                    .getRequireTranslationReview();
             while (start < document.getTextFlows().size()) {
                 numCopied += copyTransForBatch(document, start,
                         COPY_TRANS_BATCH_SIZE, targetLocale, options,
-                        taskHandleOpt);
+                        taskHandleOpt, requireTranslationReview);
                 start += COPY_TRANS_BATCH_SIZE;
                 documentDAO.clear();
             }
@@ -134,6 +136,8 @@ public class CopyTransServiceImpl implements CopyTransService {
     /**
      * Perform copy trans on a batch of text flows for a document.
      *
+     * @param requireTranslationReview
+     *            whether the project iteration requires translation review
      * @param batchStart
      *            USE_HIBERNATE_SEARCH The text flow position to start copying.
      * @param batchLength
@@ -144,7 +148,8 @@ public class CopyTransServiceImpl implements CopyTransService {
     private int copyTransForBatch(HDocument document, final int batchStart,
             final int batchLength, final HLocale targetLocale,
             final HCopyTransOptions options,
-            Optional<CopyTransTaskHandle> taskHandleOpt) throws Exception {
+            Optional<CopyTransTaskHandle> taskHandleOpt,
+            boolean requireTranslationReview) throws Exception {
         HDocument hDocument = documentDAO.findById(document.getId());
         List<HTextFlow> docTextFlows = hDocument.getTextFlows();
         int batchEnd = Math.min(batchStart + batchLength, docTextFlows.size());
@@ -153,7 +158,7 @@ public class CopyTransServiceImpl implements CopyTransService {
                 docTextFlows.subList(batchStart, batchEnd);
         Integer numCopied =
                 copyTransWorkFactory.runCopyTransInNewTx(targetLocale, options,
-                        document, copyTargets);
+                        document, requireTranslationReview, copyTargets);
         if (taskHandleOpt.isPresent()) {
             taskHandleOpt.get().increaseProgress(batchSize);
         }

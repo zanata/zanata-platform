@@ -20,7 +20,6 @@
  */
 package org.zanata.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.Term;
@@ -131,10 +129,6 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * If all filters are false, return all projects accessible to logged-in
-     * user.
-     */
     public int getFilterProjectSize(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete) {
         HPerson person = currentUser.isLoggedIn() ?
@@ -157,10 +151,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     /**
-     * May return private projects only if person is non-null and is one of
-     * the project members
-     * IMPORTANT: This method potentially returns duplicate results.
-     * Callers must use 'distinct' to filter out duplication
+     * IMPORTANT: This method will potentially returns duplicate results.
+     * Caller are required to use 'distinct' to filter out duplication
      */
     private String constructFilterCondition(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete,
@@ -507,68 +499,20 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return list;
     }
 
-    @NativeQuery
-    public List<HProject> getProjectsForMember(HPerson person,
-            String filter, int firstResult, int maxResults) {
-        final String sqlFilter = StringUtils.isBlank(filter) ? "" : filter.toLowerCase();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("select distinct * from (")
-                .append("(select project.* from HProject project ")
-                .append("join HProject_Member m on m.projectId = project.id ")
-                .append("where m.personId = :personId ")
-                .append("and project.status <> :obsolete ")
-                .append("and (lower(project.name) like :filter ")
-                .append("or lower(project.slug) like :filter)) ")
-                .append("union all ")
-                .append("(select project.* from HProject project ")
-                .append("join HProject_LocaleMember lm on lm.projectId = project.id ")
-                .append("where lm.personId = :personId ")
-                .append("and project.status <> :obsolete ")
-                .append("and (lower(project.name) like :filter ")
-                .append("or lower(project.slug) like :filter))")
-                .append(") as projects order by name");
-
-        Query q = getSession().createSQLQuery(sb.toString())
-                .addEntity("project", HProject.class)
-                .setParameter("personId", person.getId())
-                .setParameter("obsolete", EntityStatus.OBSOLETE.getInitial())
-                .setParameter("filter", "%" + sqlFilter + "%")
-                .setFirstResult(firstResult)
-                .setMaxResults(maxResults);
-        @SuppressWarnings("unchecked")
-        List<HProject> list = q.list();
-        return list;
-    }
-
-    @NativeQuery
-    public int getProjectsForMemberCount(HPerson person, String filter) {
-        final String sqlFilter = StringUtils.isBlank(filter) ? "" : filter.toLowerCase();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("select count(1) from (");
-        sb.append("select distinct * from (")
-                .append("(select project.* from HProject project ")
-                .append("join HProject_Member m on m.projectId = project.id ")
-                .append("where m.personId = :personId ")
-                .append("and project.status <> :obsolete ")
-                .append("and (lower(project.name) like :filter ")
-                .append("or lower(project.slug) like :filter)) ")
-                .append("union all ")
-                .append("(select project.* from HProject project ")
-                .append("join HProject_LocaleMember lm on lm.projectId = project.id ")
-                .append("where lm.personId = :personId ")
-                .append("and project.status <> :obsolete ")
-                .append("and (lower(project.name) like :filter ")
-                .append("or lower(project.slug) like :filter))")
-                .append(") as projects");
-        sb.append(") as counts");
-
-        Query q = getSession().createSQLQuery(sb.toString())
-                .setParameter("personId", person.getId())
-                .setParameter("obsolete", EntityStatus.OBSOLETE.getInitial())
+    public int getMaintainedProjectCount(HPerson maintainer, String filter) {
+        final String sqlFilter = filter == null ? "" : filter.toLowerCase();
+        Query q = getSession().createQuery(
+                "select count(m) from HProjectMember m " +
+                        "where m.person = :maintainer " +
+                        "and m.role = :role " +
+                        "and m.project.status <> :obsolete " +
+                        "and (lower(m.project.name) like :filter " +
+                        "or lower(m.project.slug) like :filter)")
+                .setParameter("maintainer", maintainer)
+                .setParameter("role", ProjectRole.Maintainer)
+                .setParameter("obsolete", EntityStatus.OBSOLETE)
                 .setParameter("filter", "%" + sqlFilter + "%");
-        return ((BigInteger) q.uniqueResult()).intValue();
+        return ((Long) q.uniqueResult()).intValue();
     }
 
     public int getTotalDocCount(String projectSlug) {

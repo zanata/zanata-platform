@@ -22,8 +22,6 @@ package org.zanata.rest.client;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +31,11 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 
+import com.google.common.base.Charsets;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -67,28 +64,24 @@ public class TraceDebugFilter implements ClientRequestFilter,
         this(logHttp, LoggerFactory.getLogger(TraceDebugFilter.class));
     }
 
-    /**
-     * Appends an InputStream's data to the StringBuilder (decoding as UTF-8),
-     * returning another copy of the data as a second InputStream. (A bit like
-     * TeeInputStream.) Warning: uses a lot of memory if the stream is large.
-     * <p>
-     *     We have to copy to another entity stream, because otherwise the
-     *     stream contents we consumed wouldn't be available to the
-     *     application.
-     * </p>
-     */
-    private InputStream copyStream(InputStream entityStream, StringBuilder sb)
-            throws IOException {
-        if (entityStream != null) {
-            try (ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
-                IOUtils.copy(entityStream, bytes);
-                sb.append(bytes.toString(StandardCharsets.UTF_8));
-                return new ByteArrayInputStream(bytes.toByteArray());
+    private String getPayloadAsString(ClientResponseContext response) {
+        ByteArrayInputStream entityInputStream = null;
+        try {
+            entityInputStream =
+                    (ByteArrayInputStream) response.getEntityStream();
+            int available = entityInputStream.available();
+            byte[] data = new byte[available];
+            entityInputStream.read(data);
+            return new String(data, 0, available, Charsets.UTF_8);
+        } catch (Exception e) {
+            log.warn("can't read response payload");
+            return "[error reading response]";
+        } finally {
+            if (entityInputStream != null) {
+                entityInputStream.reset();
             }
-        } else {
-            sb.append("<null stream>");
-            return null;
         }
+
     }
 
     @SuppressFBWarnings(value = "SLF4J_FORMAT_SHOULD_BE_CONST")
@@ -153,14 +146,6 @@ public class TraceDebugFilter implements ClientRequestFilter,
             log("<< Header: " + key + " = " +
                     responseContext.getHeaders().get(key));
         }
-        log(">> Media Type: " + responseContext.getMediaType());
-        if (responseContext.hasEntity()) {
-            StringBuilder sb = new StringBuilder();
-            // replace the response's entity stream with a copy so that we can
-            // log the original stream's contents
-            responseContext.setEntityStream(
-                    copyStream(responseContext.getEntityStream(), sb));
-            log(">> Entity:\n" + sb);
-        }
+        log(">> Body: " + getPayloadAsString(responseContext));
     }
 }

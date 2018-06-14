@@ -38,9 +38,9 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
     const modifiedTimeIcon = isUndefined(lastModifiedTime) &&
       <Icon name="clock" className="n1" />
     const modifiedDate = isUndefined(lastModifiedTime) &&
-      <FormattedDate value={lastModifiedTime!} format="medium" />
+      <FormattedDate value={lastModifiedTime} format="medium" />
     const modifiedTime = isUndefined(lastModifiedTime) &&
-      <FormattedTime value={lastModifiedTime!} />
+      <FormattedTime value={lastModifiedTime} />
     return (
       <span>
         {modifiedByIcon} {lastModifiedBy} {modifiedTimeIcon
@@ -54,7 +54,7 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
     sourceComment,
     sourceFlags,
     sourceReferences,
-  } = selectedPhrase!
+  } = selectedPhrase
   const directionClass = isRTL ? 'rtl' : 'ltr'
   return (
     <ul className={directionClass + ' SidebarEditor-details'}>
@@ -76,7 +76,7 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
     {detailItem(<FormattedMessage
       id='TranslationInfoPanel.details.lastmodified'
       defaultMessage='Last Modified' />,
-        lastModifiedDisplay(selectedPhrase!.lastModifiedBy, selectedPhrase!.lastModifiedTime))}
+        lastModifiedDisplay(selectedPhrase.lastModifiedBy, selectedPhrase.lastModifiedTime))}
     </ul>
   )
 }

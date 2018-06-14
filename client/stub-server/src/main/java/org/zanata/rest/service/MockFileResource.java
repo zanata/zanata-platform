@@ -118,7 +118,7 @@ public class MockFileResource implements FileResource {
             @Override
             public void write(OutputStream output)
                     throws IOException, WebApplicationException {
-                PoWriter2 writer = new PoWriter2.Builder().create();
+                PoWriter2 writer = new PoWriter2(false, false);
                 Resource doc = sampleResource(docId);
                 writer.writePot(output, "UTF-8", doc);
             }
@@ -141,15 +141,13 @@ public class MockFileResource implements FileResource {
     @Override
     public Response downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileExtension,
-            final String docId, final boolean approvedOnly) {
+            final String docId) {
         StreamingOutput output = new StreamingOutput() {
 
             @Override
             public void write(OutputStream output)
                     throws IOException, WebApplicationException {
-                PoWriter2 writer =
-                        new PoWriter2.Builder().approvedOnly(approvedOnly)
-                                .create();
+                PoWriter2 writer = new PoWriter2(false, false);
                 writer.writePo(output, "UTF-8", sampleResource(docId),
                         sampleTransResource());
             }
@@ -179,7 +177,7 @@ public class MockFileResource implements FileResource {
             @Override
             public void write(OutputStream output)
                     throws IOException, WebApplicationException {
-                PoWriter2 writer = new PoWriter2.Builder().create();
+                PoWriter2 writer = new PoWriter2(false, false);
                 writer.writePo(output, "UTF-8", sampleResource(downloadId),
                         sampleTransResource());
             }

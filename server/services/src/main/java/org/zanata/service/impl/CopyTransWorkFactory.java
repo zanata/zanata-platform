@@ -84,14 +84,15 @@ public class CopyTransWorkFactory implements Serializable {
 
     public Integer runCopyTransInNewTx(HLocale targetLocale,
             HCopyTransOptions options, HDocument document,
-            List<HTextFlow> copyTargets)
+            boolean requireTranslationReview, List<HTextFlow> copyTargets)
             throws Exception {
         return runInTransaction(() -> runCopyTrans(targetLocale, options,
-                document, copyTargets));
+                document, requireTranslationReview, copyTargets));
     }
 
     public Integer runCopyTrans(HLocale targetLocale, HCopyTransOptions options,
-            HDocument document, List<HTextFlow> copyTargets) {
+            HDocument document, boolean requireTranslationReview,
+            List<HTextFlow> copyTargets) {
         int numCopied = 0;
         boolean checkContext = false;
         boolean checkProject = false;
@@ -111,7 +112,8 @@ public class CopyTransWorkFactory implements Serializable {
         }
         Long actorId = authenticatedAccount.getPerson().getId();
         for (HTextFlow textFlow : copyTargets) {
-            if (shouldFindMatch(textFlow, targetLocale)) {
+            if (shouldFindMatch(textFlow, targetLocale,
+                    requireTranslationReview)) {
                 Optional<HTextFlowTarget> bestMatch =
                         translationFinder.searchBestMatchTransMemory(textFlow,
                                 targetLocale.getLocaleId(),
@@ -120,7 +122,7 @@ public class CopyTransWorkFactory implements Serializable {
                 if (bestMatch.isPresent()) {
                     numCopied++;
                     saveCopyTransMatch(actorId, bestMatch.get(), textFlow,
-                            options);
+                            options, requireTranslationReview);
                 }
             }
         }
@@ -163,6 +165,9 @@ public class CopyTransWorkFactory implements Serializable {
      *
      * @param pairs
      *            List of evaluated rules and their result.
+     * @param requireTranslationReview
+     *            Whether the project to copy the translation to requires
+     *            translations to be reviewed.
      * @param matchingTargetState
      *            The initial state of the matching translation (the translation
      *            that will be copied over).
@@ -170,10 +175,12 @@ public class CopyTransWorkFactory implements Serializable {
      *         indicates that the translation should not copied.
      */
     static ContentState determineContentStateFromRuleList(
-            List<MatchRulePair> pairs, ContentState matchingTargetState) {
-        assert matchingTargetState == Translated ||
-            matchingTargetState == Approved;
-        return determineContentStateFromMatchRules(pairs, Translated);
+            List<MatchRulePair> pairs, boolean requireTranslationReview,
+            ContentState matchingTargetState) {
+        assert matchingTargetState == Translated
+                || matchingTargetState == Approved;
+        return determineContentStateFromMatchRules(pairs,
+                requireTranslationReview ? matchingTargetState : Translated);
     }
 
     /**
@@ -190,6 +197,9 @@ public class CopyTransWorkFactory implements Serializable {
      *            copy-target text flows.
      * @param options
      *            The copy trans options that are effective.
+     * @param requireTranslationReview
+     *            Whether the project to copy the translation to requires
+     *            translations to be reviewed.
      * @param matchingTargetState
      *            he initial state of the matching translation (the translation
      *            that will be copied over).
@@ -198,7 +208,7 @@ public class CopyTransWorkFactory implements Serializable {
      */
     static ContentState determineContentState(Supplier<Boolean> contextMatches,
             Supplier<Boolean> projectMatches, Supplier<Boolean> docIdMatches,
-            HCopyTransOptions options,
+            HCopyTransOptions options, boolean requireTranslationReview,
             ContentState matchingTargetState) {
         List<MatchRulePair> rules = ImmutableList.of(
                 new MatchRulePair(contextMatches,
@@ -207,12 +217,14 @@ public class CopyTransWorkFactory implements Serializable {
                         options.getProjectMismatchAction()),
                 new MatchRulePair(docIdMatches,
                         options.getDocIdMismatchAction()));
-        return determineContentStateFromRuleList(rules, matchingTargetState);
+        return determineContentStateFromRuleList(rules,
+                requireTranslationReview, matchingTargetState);
     }
 
     private void saveCopyTransMatch(Long actorId,
             final HTextFlowTarget matchingTarget, final HTextFlow originalTf,
-            final HCopyTransOptions options) {
+            final HCopyTransOptions options,
+            final boolean requireTranslationReview) {
         final HProjectIteration matchingTargetProjectIteration = matchingTarget
                 .getTextFlow().getDocument().getProjectIteration();
         // lazy evaluation of some conditions
@@ -242,7 +254,7 @@ public class CopyTransWorkFactory implements Serializable {
             }
         };
         final ContentState copyState = determineContentState(contextMatches,
-                projectMatches, docIdMatches, options,
+                projectMatches, docIdMatches, options, requireTranslationReview,
                 matchingTarget.getState());
         boolean hasValidationError = validationTranslations(copyState,
                 matchingTargetProjectIteration, originalTf.getContents(),
@@ -308,18 +320,24 @@ public class CopyTransWorkFactory implements Serializable {
      * Indicates if a given text flow should have a match found for a given
      * target locale, or if it is already good enough.
      */
-    private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale) {
+    private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale,
+            boolean requireTranslationReview) {
         // TODO getTargets will fill up Hibernate cache for large textflows
         // and locales. Check which one is more efficient
         HTextFlowTarget targetForLocale =
                 textFlow.getTargets().get(locale.getId());
 
+        // HTextFlowTarget targetForLocale =
+        // textFlowTargetDAO.getTextFlowTarget(
+        // textFlow, locale);
         if (targetForLocale == null
                 || targetForLocale.getState() == ContentState.NeedReview) {
             return true;
-        } else if (targetForLocale.getState() != ContentState.Approved) {
+        } else if (requireTranslationReview
+                && targetForLocale.getState() != ContentState.Approved) {
             return true;
-        } else if (targetForLocale.getState() != ContentState.Translated) {
+        } else if (!requireTranslationReview
+                && targetForLocale.getState() != ContentState.Translated) {
             return true;
         } else {
             return false;

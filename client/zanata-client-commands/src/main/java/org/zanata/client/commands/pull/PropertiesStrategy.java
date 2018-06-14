@@ -66,7 +66,8 @@ public class PropertiesStrategy extends AbstractPullStrategy {
         File transFileToWrite = getTransFileToWrite(docName, localeMapping);
         PropWriter.writeTranslationsFile(createSkeletons ? doc : null,
                 targetDoc, transFileToWrite, PropWriter.CHARSET.Latin1,
-                createSkeletons, getOpts().getApprovedOnly());
+                createSkeletons);
+
         return null;
     }
 

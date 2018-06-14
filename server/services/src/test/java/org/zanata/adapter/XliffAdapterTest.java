@@ -76,7 +76,7 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
         File tempFile = File.createTempFile("test-xliff-translated", ".xlf");
         // Xliff implementation deletes the file
         FileUtils.copyFile(translationFile, tempFile);
-        assertThat(tempFile.exists()).isTrue();
+        assertThat(tempFile.exists());
         LocaleId sourceLocale = LocaleId.fromJavaName("en");
 
         TranslationsResource translationsResource =
@@ -92,15 +92,6 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
 
     @Test
     public void testTranslatedXliffDocument() throws Exception {
-        testTranslatedXliffDocument(false);
-    }
-
-    @Test
-    public void testTranslatedXliffDocumentApprovedOnly() throws Exception {
-        testTranslatedXliffDocument(true);
-    }
-
-    public void testTranslatedXliffDocument(boolean approvedOnly) throws Exception {
         Resource resource = parseTestFile("test-xliff.xlf");
         TranslationsResource translationsResource = new TranslationsResource();
         addTranslation(translationsResource,
@@ -119,23 +110,16 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
         File outputFile = File.createTempFile("test-xliff-translated", ".xlf");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         adapter.writeTranslatedFile(output, null,
-                resource, translationsResource, "dv-DL", Optional.absent(),
-                approvedOnly);
+                resource, translationsResource, "dv-DL", Optional.absent());
         output.writeTo(new FileOutputStream(outputFile));
 
         assertThat(output.toString()).contains(
                 "        <source>Line One</source>\n" +
-                        "        <target>Dakta Amna</target>");
-        if (approvedOnly) {
-            assertThat(output.toString()).contains(
-                    "        <source>Line Two</source>\n        <context-group");
-        } else {
-            assertThat(output.toString()).contains(
-                    "        <source>Line Two</source>\n" +
-                            "        <target>Dakta Tba</target>");
-        }
+                "        <target>Dakta Amna</target>");
+        assertThat(output.toString()).contains(
+                "        <source>Line Two</source>\n" +
+                "        <target>Dakta Tba</target>");
         // Assert fuzzy is not copied anywhere to output
         assertThat(output.toString()).doesNotContain("<target>Dakta Kba</target>");
     }
-
 }

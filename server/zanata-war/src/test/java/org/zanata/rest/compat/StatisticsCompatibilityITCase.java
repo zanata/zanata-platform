@@ -94,33 +94,28 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                             + langStats.getDraft()
                             + langStats.getTranslatedAndApproved());
             assertThat(langStats.getTotal())
-                    .isEqualTo(
-                            langStats.getUntranslated() + langStats.getDraft()
-                                    + langStats.getTranslatedAndApproved());
+                    .isEqualTo(langStats.getUntranslated() + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved());
             assertThat(
                     langStats.getTotal())
-                    .isEqualTo(
-                            langStats.getUntranslated() + langStats.getFuzzy()
-                                    + langStats.getRejected()
-                                    + langStats.getTranslatedOnly()
-                                    + langStats.getApproved());
+                    .isEqualTo(langStats.getUntranslated() + langStats.getFuzzy()
+                            + langStats.getRejected()
+                            + langStats.getTranslatedOnly()
+                            + langStats.getApproved());
             // MatcherAssert.assertThat( 100,
             // Matchers.equalTo( asStats.getPercentNeedReview() +
             // asStats.getPercentUntranslated() + asStats.getPercentTranslated()
             // ));
             wordStatCount +=
-                    (langStats.getUnit() ==
-                            TranslationStatistics.StatUnit.WORD ? 1
+                    (langStats.getUnit() == TranslationStatistics.StatUnit.WORD ? 1
                             : 0);
             mssgStatCount +=
-                    (langStats.getUnit() ==
-                            TranslationStatistics.StatUnit.MESSAGE ? 1
+                    (langStats.getUnit() == TranslationStatistics.StatUnit.MESSAGE ? 1
                             : 0);
         }
 
-        assertThat(wordStatCount)
-                .as("Word and Message level stat count should match")
-                .isEqualTo(mssgStatCount);
+        assertThat(wordStatCount).isEqualTo(mssgStatCount)
+                .as("Word and Message level stat count should match");
     }
 
     @Test
@@ -141,33 +136,28 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                             + langStats.getDraft()
                             + langStats.getTranslatedAndApproved());
             assertThat(langStats.getTotal())
-                    .isEqualTo(
-                            langStats.getUntranslated() + langStats.getDraft()
-                                    + langStats.getTranslatedAndApproved());
+                    .isEqualTo(langStats.getUntranslated() + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved());
             assertThat(
                     langStats.getTotal())
-                    .isEqualTo(
-                            langStats.getUntranslated() + langStats.getFuzzy()
-                                    + langStats.getRejected()
-                                    + langStats.getTranslatedOnly()
-                                    + langStats.getApproved());
+                    .isEqualTo(langStats.getUntranslated() + langStats.getFuzzy()
+                            + langStats.getRejected()
+                            + langStats.getTranslatedOnly()
+                            + langStats.getApproved());
             // MatcherAssert.assertThat( 100,
             // Matchers.equalTo( asStats.getPercentNeedReview() +
             // asStats.getPercentUntranslated() + asStats.getPercentTranslated()
             // ));
             wordStatCount +=
-                    (langStats.getUnit() ==
-                            TranslationStatistics.StatUnit.WORD ? 1
+                    (langStats.getUnit() == TranslationStatistics.StatUnit.WORD ? 1
                             : 0);
             mssgStatCount +=
-                    (langStats.getUnit() ==
-                            TranslationStatistics.StatUnit.MESSAGE ? 1
+                    (langStats.getUnit() == TranslationStatistics.StatUnit.MESSAGE ? 1
                             : 0);
         }
 
-        assertThat(wordStatCount)
-                .as("Word and Message level stat count should match")
-                .isEqualTo(mssgStatCount);
+        assertThat(wordStatCount).isEqualTo(mssgStatCount)
+                .as("Word and Message level stat count should match");
     }
 
     @Test

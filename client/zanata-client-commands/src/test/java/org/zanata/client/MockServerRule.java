@@ -22,7 +22,6 @@
 package org.zanata.client;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -269,7 +268,7 @@ public class MockServerRule extends ExternalResource {
         when(
                 transDocClient.getTranslations(anyString(),
                         any(LocaleId.class), anySetOf(String.class),
-                        eq(getPullOpts().getCreateSkeletons()), any(String.class)))
+                        eq(getPullOpts().getCreateSkeletons()), anyString()))
                 .thenReturn(transResourceResponse);
         when(transResourceResponse.getStatus()).thenReturn(200);
 
@@ -364,7 +363,7 @@ public class MockServerRule extends ExternalResource {
         // return provide translation stream
         when(fileResourceClient.downloadTranslationFile(eq(pullOpts.getProj()),
                 eq(pullOpts.getProjectVersion()), anyString(), anyString(),
-                anyString(), anyBoolean())).thenReturn(downloadTransResponse);
+                anyString())).thenReturn(downloadTransResponse);
         when(downloadTransResponse.getStatus()).thenReturn(200);
         when(downloadTransResponse.getHeaders()).thenReturn(new MultivaluedMapImpl<>());
         when(downloadTransResponse.getStatusInfo()).thenReturn(

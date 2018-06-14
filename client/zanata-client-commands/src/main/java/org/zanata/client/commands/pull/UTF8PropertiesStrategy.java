@@ -52,9 +52,9 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy {
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
         File transFileToWrite = getTransFileToWrite(docName, localeMapping);
-        PropWriter.writeTranslationsFile(doc, targetDoc, transFileToWrite,
-                PropWriter.CHARSET.UTF8, createSkeletons,
-                getOpts().getApprovedOnly());
+        PropWriter.writeTranslationsFile(doc, targetDoc,
+            transFileToWrite,
+            PropWriter.CHARSET.UTF8, createSkeletons);
         return null;
     }
 

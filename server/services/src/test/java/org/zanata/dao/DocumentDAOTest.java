@@ -93,9 +93,8 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
             String unchangedHash =
                     documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                             ITERATION_SLUG, DOC_ID, as);
-            assertThat(unchangedHash)
-                    .as("Translated Document state hash function not repeatable")
-                    .isEqualTo(docHash);
+            assertThat(unchangedHash).isEqualTo(docHash)
+                    .as("Translated Document state hash function not repeatable");
         }
     }
 
@@ -118,13 +117,11 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
                 documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                         ITERATION_SLUG, DOC_ID, as);
         if (expectHashChange) {
-            assertThat(changedDocHash)
-                    .as("Translated document hash must change when something is changed")
-                    .isNotEqualTo(docHash);
+            assertThat(changedDocHash).isNotEqualTo(docHash)
+                    .as("Translated document hash must change when something is changed");
         } else {
-            assertThat(changedDocHash)
-                    .as("Translated document hash must not change when nothing is changed")
-                    .isEqualTo(docHash);
+            assertThat(changedDocHash).isEqualTo(docHash)
+                    .as("Translated document hash must not change when nothing is changed");
         }
     }
 
