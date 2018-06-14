@@ -1,8 +1,4 @@
 @import "./variables.less";
-.nav-icon svg.s1 {
-  width: 19px !important;
-  height: 19px !important;
-}
 
 @media (max-width: 29.375rem) {
   #nav {
@@ -12,14 +8,10 @@
     bottom: 0;
     z-index: 1000;
   }
-  .nav-icon {
-    width: inherit;
-    height: inherit;
-  }
   .nav-bar {
     order: 1;
     width: 100%;
-    height: 63px;
+    height: 3.5rem;
   }
   .nav-link {
     display: none;
@@ -28,7 +20,7 @@
     display: inline-flex;
     flex-grow: 1;
     -webkit-flex-grow: 1;
-    padding: 6px;
+    padding: @spacing-rh;
   }
 }
 @media (min-width: 29.376rem) {
@@ -37,16 +29,12 @@
     top: 0;
     overflow: hidden;
   }
-  .nav-icon {
-    width: 19px !important;
-    height: 22.25px !important;
-  }
   .nav-bar {
     flex-direction: column;
     -webkit-flex-direction: column;
     height: 100%;
     order: 0;
-    width: 63px;
+    width: 4.5rem;
   }
   .nav-link {
     display: flex;
@@ -56,7 +44,8 @@
     display: -o-flex;
     flex-grow: 0;
     -webkit-flex-grow: 0;
-    padding-top: 10.5px;
-    padding-bottom: 10.5px;
+    padding-top: @spacing-rq;
+    padding-bottom: @spacing-rq;
   }
 }
+

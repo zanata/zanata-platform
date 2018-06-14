@@ -108,7 +108,7 @@ class Languages extends Component {
 
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
-      <div className='bstrapReact languages'>
+      <div className='wideView bstrapReact languages'>
         <Layout>
           {notification &&
           (<Notification severity={notification.severity}
@@ -188,8 +188,9 @@ class Languages extends Component {
                   {noResults &&
                     <div className='loader-loadingContainer'>
                       <span className='u-textLoadingMuted'>
-                        <Icon type='global' /> No results
+                        <Icon type='global' />
                       </span>
+                      <p className='glossaryText-muted'>No results</p>
                     </div>
                   }
                   {!loading && !noResults &&

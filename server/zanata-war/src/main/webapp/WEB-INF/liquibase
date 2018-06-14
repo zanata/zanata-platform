@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash
 ### USAGE
 ###     liquibase [liquibase options] <command>
 ###
@@ -13,51 +13,18 @@
 ###     This is a convenience script to run liquibase with suitable
 ###     Zanata settings
 ###     see http://liquibase.org/manual/command_line
-###
-###     It requires an exploded zanata war.
-###
-###     This script will download mysql-connector-java and slf4j if required, but
-###     on Fedora/RHEL you can avoid this: yum install mysql-connector-java slf4j
+
+# If you need mysql/slf4j jars: yum install mysql-connector-java slf4j
 
 SCRIPT_PATH=`dirname ${BASH_SOURCE[0]}`
 war=$SCRIPT_PATH/..
 
-mysql_jar=/usr/share/java/mysql-connector-java.jar
-if [[ ! -r ${mysql_jar} ]]; then
-  mysql_jar=$(mktemp --tmpdir)
-  trap "rm -f ${mysql_jar}" EXIT
-  g=mysql
-  a=mysql-connector-java
-  v=5.1.46
-  curl "https://repo1.maven.org/maven2/$g/$a/$v/$a-$v.jar" -o ${mysql_jar}
-fi
-
-slf4j_api_jar=/usr/share/java/slf4j/api.jar
-if [[ ! -r ${slf4j_api_jar} ]]; then
-  slf4j_api_jar=$(mktemp --tmpdir)
-  trap "rm -f ${slf4j_api_jar}" EXIT
-  g=org/slf4j
-  a=slf4j-api
-  v=1.7.25
-  curl "https://repo1.maven.org/maven2/$g/$a/$v/$a-$v.jar" -o ${slf4j_api_jar}
-fi
-
-slf4j_simple_jar=/usr/share/java/slf4j/simple.jar
-if [[ ! -r ${slf4j_simple_jar} ]]; then
-  slf4j_simple_jar=$(mktemp --tmpdir)
-  trap "rm -f ${slf4j_simple_jar}" EXIT
-  g=org/slf4j
-  a=slf4j-simple
-  v=1.7.25
-  curl "https://repo1.maven.org/maven2/$g/$a/$v/$a-$v.jar" -o ${slf4j_simple_jar}
-fi
-
 classpath=\
 $(echo \
    $war/WEB-INF/classes/ \
-   ${mysql_jar} \
-   ${slf4j_simple_jar} \
-   ${slf4j_api_jar} \
+   /usr/share/java/mysql-connector-java.jar \
+   /usr/share/java/slf4j/simple.jar \
+   /usr/share/java/slf4j/api.jar \
    $war/WEB-INF/lib/*.jar \
  | sed 's/ /:/g')
 
@@ -70,7 +37,7 @@ else
   defs=--defaultsFile=$HOME/.config/liquibase.properties
 fi
 
-exec java $LIQUIBASE_JVM_OPTS \
+java $LIQUIBASE_JVM_OPTS \
 -jar $war/WEB-INF/lib/liquibase-core*.jar \
 --classpath $classpath \
 --changeLogFile db/db.changelog.xml \

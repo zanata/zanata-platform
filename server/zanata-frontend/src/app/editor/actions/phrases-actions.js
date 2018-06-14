@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {savePhrase, fetchTransUnitHistory} from '../api'
+import { savePhrase, fetchTransUnitHistory } from '../api'
 import { toggleDropdown } from '.'
 import { createAction } from 'redux-actions'
 import {
@@ -25,7 +25,6 @@ import {
   STATUS_NEEDS_WORK
 } from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
-import { fetchStatisticsInfo } from './header-actions'
 
 /**
  * Copy from source text to the focused translation input.
@@ -197,11 +196,7 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
                   phrase.id,
                   stateBefore.context.projectSlug,
                   stateBefore.context.versionSlug
-                )).then(
-                  fetchStatisticsInfo(dispatch, getState().context.projectSlug,
-                    getState().context.versionSlug, getState().context.docId,
-                    getState().context.lang)
-                )
+                ))
               )
             })
           }

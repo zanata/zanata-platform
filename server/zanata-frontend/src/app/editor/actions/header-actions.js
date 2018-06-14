@@ -186,8 +186,10 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
           }
 
           // TODO trigger in new-context-fetch.js instead
-          fetchStatisticsInfo(dispatch, projectSlug, versionSlug, selectedDocId,
+          fetchStatistics(projectSlug, versionSlug, selectedDocId,
             selectedLocaleId)
+            .then(checkResponse('fetch statistics failed'))
+            .then(stats => dispatch(statsFetched(stats)))
 
           fetchValidationSettings(dispatch, projectSlug, versionSlug)
 
@@ -204,14 +206,4 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
           // return {type: FETCH_FAILED, error: err}
         })
   }
-}
-
-export function fetchStatisticsInfo (dispatch, projectSlug, versionSlug, docId,
-                                    localeId) {
-  const checkResponse = curry(unwrapResponse)(dispatch)
-
-  // TODO trigger in new-context-fetch.js instead
-  fetchStatistics(projectSlug, versionSlug, docId, localeId)
-    .then(checkResponse('fetch statistics failed'))
-    .then(stats => dispatch(statsFetched(stats)))
 }

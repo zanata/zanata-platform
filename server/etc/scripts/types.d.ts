@@ -7,7 +7,6 @@ declare namespace java {
     namespace System {
       const err: PrintStream
       const out: PrintStream
-      const getProperty: (name: string) => string
     }
   }
 }

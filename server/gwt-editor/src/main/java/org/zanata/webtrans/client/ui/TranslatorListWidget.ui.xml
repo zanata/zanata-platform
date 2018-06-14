@@ -5,8 +5,8 @@
     .userLabel {
       text-overflow: ellipsis;
       overflow: hidden;
-      background-color: rgba(0,0,0,1) !important;
     }
+
   </ui:style>
 
   <g:HTMLPanel tag="ul" ui:field="container"
