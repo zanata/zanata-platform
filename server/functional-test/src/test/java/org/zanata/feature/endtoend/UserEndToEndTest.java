@@ -307,8 +307,9 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .selectUserFromAddList("translator")
                 .clickTranslatorCheckboxFor("English (United States)")
                 .clickAddPerson();
-        assertThat(projectPeoplePage.getPeople().contains("translator|Translator"))
-                .as("The user was added to the project");
+        assertThat(projectPeoplePage.getPeople())
+                .as("The user was added to the project")
+                .contains("translator|Translator");
         return projectPeoplePage;
     }
 
