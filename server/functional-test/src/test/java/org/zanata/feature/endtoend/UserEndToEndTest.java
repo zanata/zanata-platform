@@ -185,13 +185,17 @@ public class UserEndToEndTest extends ZanataTestCase {
 
         List<String> errors = registerPage.getErrors(4);
 
-        assertThat(errors).contains(
+        assertThat(errors)
+                .as("The registration page contains multiple errors")
+                .contains(
                 RegisterPage.USERDISPLAYNAME_LENGTH_ERROR,
                 RegisterPage.MALFORMED_EMAIL_ERROR,
                 RegisterPage.PASSWORD_LENGTH_ERROR);
         // May be one or the other
         assertThat(errors.contains(RegisterPage.USERNAME_VALIDATION_ERROR)
-                || errors.contains(RegisterPage.USERNAME_LENGTH_ERROR)).isTrue();
+                || errors.contains(RegisterPage.USERNAME_LENGTH_ERROR))
+                .as("The register page contains a username validation error")
+                .isTrue();
         return registerPage;
     }
 
@@ -204,8 +208,8 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .register();
 
         assertThat(signInPage.getNotificationMessage())
-                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
-                .as("Sign up is successful");
+                .as("Sign up is successful")
+                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE);
 
         return signInPage;
     }
@@ -242,7 +246,9 @@ public class UserEndToEndTest extends ZanataTestCase {
         signInPage = signInPage.enterUsername("incorrect")
                 .enterPassword("incorrect")
                 .clickSignInExpectError();
-        assertThat(signInPage.getErrors()).contains(SignInPage.LOGIN_FAILED_ERROR);
+        assertThat(signInPage.getErrors())
+                .as("The page shows a login failed message")
+                .contains(SignInPage.LOGIN_FAILED_ERROR);
         return signInPage;
     }
 
@@ -251,6 +257,7 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .enterPassword(PASSWORD)
                 .clickSignIn();
         assertThat(dashboardBasePage.getNotificationMessage())
+                .as("The page shows a welcome message")
                 .contains("Welcome, ".concat(USERNAME).concat("!"));
         return dashboardBasePage;
     }
@@ -264,6 +271,7 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .enterDescription("")
                 .pressCreateProjectAndExpectFailure();
         assertThat(createProjectPage.getErrors())
+                .as("A value is required error is shown")
                 .containsExactly("value is required", "value is required");
         return createProjectPage;
     }
@@ -274,7 +282,9 @@ public class UserEndToEndTest extends ZanataTestCase {
             .enterProjectName(PROJECTNAME)
             .enterDescription(PROJECTDESCRIPTION)
             .pressCreateProject();
-        assertThat(projectVersionsPage.getNumberOfDisplayedVersions()).isEqualTo(0);
+        assertThat(projectVersionsPage.getNumberOfDisplayedVersions())
+                .as("A project is created, with no versions")
+                .isEqualTo(0);
         return projectVersionsPage;
     }
 
@@ -283,7 +293,9 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
                 .addLanguage(ADDEDLOCALE);
-        assertThat(projectLanguagesTab.getEnabledLocaleList()).contains(ADDEDLOCALE);
+        assertThat(projectLanguagesTab.getEnabledLocaleList())
+                .as("The locale was added to the project")
+                .contains(ADDEDLOCALE);
         return projectLanguagesTab;
     }
 
@@ -295,7 +307,8 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .selectUserFromAddList("translator")
                 .clickTranslatorCheckboxFor("English (United States)")
                 .clickAddPerson();
-        assertThat(projectPeoplePage.getPeople().contains("translator|Translator"));
+        assertThat(projectPeoplePage.getPeople().contains("translator|Translator"))
+                .as("The user was added to the project");
         return projectPeoplePage;
     }
 
@@ -305,7 +318,9 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .clickCreateVersionLink()
                 .inputVersionId("")
                 .saveExpectingError();
-        assertThat(createVersionPage.getErrors()).containsExactly("value is required");
+        assertThat(createVersionPage.getErrors())
+                .as("A value is required error is shown")
+                .containsExactly("value is required");
         return createVersionPage;
     }
 
@@ -313,7 +328,9 @@ public class UserEndToEndTest extends ZanataTestCase {
         VersionLanguagesPage versionLanguagesPage = createVersionPage
                 .inputVersionId("mister")
                 .saveVersion();
-        assertThat(versionLanguagesPage.getProjectVersionName()).isEqualTo("mister");
+        assertThat(versionLanguagesPage.getProjectVersionName())
+                .as("The new version is displayed")
+                .isEqualTo("mister");
         return versionLanguagesPage;
     }
 
@@ -323,7 +340,9 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .gotoSettingsGeneral()
                 .enterVersionID("master")
                 .updateVersion();
-        assertThat(versionLanguagesPage.getVersionID()).isEqualTo("master");
+        assertThat(versionLanguagesPage.getVersionID())
+                .as("The version name was updated to master")
+                .isEqualTo("master");
         return versionLanguagesPage;
     }
 
@@ -333,7 +352,9 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
                 .enterFilePath(pdfFile.getAbsolutePath());
-        assertThat(versionDocumentsTab.canSubmitDocument()).isFalse();
+        assertThat(versionDocumentsTab.canSubmitDocument())
+                .as("The user cannot submit the upload form")
+                .isFalse();
         return versionDocumentsTab;
     }
 
@@ -343,7 +364,9 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .enterFilePath(testFile.getAbsolutePath())
                 .submitUpload()
                 .clickUploadDone();
-        assertThat(versionDocumentsTab.getSourceDocumentsList()).contains(testFile.getName());
+        assertThat(versionDocumentsTab.getSourceDocumentsList())
+                .as("The source documents list contains the document")
+                .contains(testFile.getName());
         return versionDocumentsTab;
     }
 
@@ -353,6 +376,7 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .clickLocale(ADDEDLOCALE)
                 .clickDocument(testFile.getName());
         assertThat(editorPage.getMessageSourceAtRowIndex(0))
+                .as("The first textflow entry is displayed")
                 .contains("Line One");
         return editorPage;
     }
@@ -366,6 +390,7 @@ public class UserEndToEndTest extends ZanataTestCase {
         editorPage.reload();
         editorPage = new EditorPage(editorPage.getDriver());
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0))
+                .as("The first translation was successfully saved")
                 .contains("Lyn Wun");
         return editorPage;
     }
@@ -377,7 +402,8 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .clickVersionBreadcrumb("master")
                 .clickLocale("en-US")
                 .clickDownloadTranslatedFile(testFile.getName(), "txt");
-        assertThat(new File("/tmp/" + testFile.getName()).exists());
+        assertThat(new File("/tmp/" + testFile.getName()).exists())
+                .as("The file was successfully downloaded");
         return versionLanguagesPage;
     }
 
