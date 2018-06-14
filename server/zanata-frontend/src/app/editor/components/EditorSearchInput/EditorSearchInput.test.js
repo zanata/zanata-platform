@@ -93,17 +93,6 @@ describe('EditorSearchInputTest', () => {
               className="u-bgHighest u-sizeFull u-inputFlat u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
               value="England and France" />
           </div>
-          <div title="translation comment text"
-            className="u-sPB-1-2">
-            <label className="u-textSecondary u-sPB-1-4">
-              Translation comment
-            </label>
-            <input type="text"
-              onChange={callback}
-              placeholder="translation comment text"
-              className="u-bgHighest u-sizeFull u-inputFlat u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
-              value="blurst of times?! You stupid monkey!" />
-          </div>
           <div title="exact Message Context for a string"
             className="u-sPB-1-2">
             <label className="u-textSecondary u-sPB-1-4">
@@ -123,6 +112,22 @@ describe('EditorSearchInputTest', () => {
       </div>
       /* eslint-enable max-len */
     )
+// When we uncomment transComment in EditorSearchInput/index.js, this
+// should go after the diff for "source comment text" above:
+/*
+          <div title="translation comment text"
+            className="u-sPB-1-2">
+            <label className="u-textSecondary u-sPB-1-4">
+              Translation comment
+            </label>
+            <input type="text"
+              onChange={callback}
+              placeholder="translation comment text"
+              className="u-bgHighest u-sizeFull u-inputFlat u-sP-1-2 u-rounded u-sMH-1-4 u-sMV-1-8"
+              value="blurst of times?! You stupid monkey!" />
+          </div>
+*/
+
     expect(actual).toEqual(expected)
   })
 
