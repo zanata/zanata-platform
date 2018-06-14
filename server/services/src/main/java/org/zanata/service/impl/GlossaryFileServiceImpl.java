@@ -275,17 +275,37 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         GlossaryTerm srcTerm = getSrcGlossaryTerm(from);
         LocaleId srcLocale = from.getSrcLang();
         String contentHash = getContentHash(from);
+        String srcDescription = from.getDescription();
         HGlossaryEntry sameHashEntry = glossaryDAO.getEntryByContentHash(
                 contentHash, from.getQualifiedName().getName());
-        if (sameHashEntry == null) {
-            return Optional.empty();
+        HGlossaryEntry sameTermEntry = null;
+        if (srcTerm != null) {
+            sameTermEntry = glossaryDAO.getEntryByTerm(
+                    srcTerm.getContent(), from.getQualifiedName().getName());
         }
-        // Different entry with same source content, pos and description
-        if (!sameHashEntry.getId().equals(from.getId())) {
-            return Optional.of("Duplicate glossary entry in source locale \'"
-                    + srcLocale + "\', source content \'" + srcTerm.getContent()
-                    + "\', pos \'" + from.getPos() + "\', description \'"
-                    + from.getDescription() + "\'");
+        if (sameHashEntry != null) {
+            // Different entry with same source content, pos and description
+            if (!sameHashEntry.getId().equals(from.getId())) {
+                return Optional
+                        .of("Duplicate glossary entry in source locale \'"
+                                + srcLocale + "\', source content \'" +
+                                srcTerm.getContent()
+                                + "\', pos \'" + from.getPos() +
+                                "\', description \'"
+                                + srcDescription + "\'");
+            }
+        }
+        if (sameTermEntry != null) {
+            // Different entry with same source content, pos, but null description
+            // Treat null descriptions as similar
+            if (srcDescription == null ||
+                    sameTermEntry.getDescription() == null) {
+                return Optional.of("Similar glossary entry in source locale \'"
+                        + srcLocale + "\', source content \'" +
+                        srcTerm.getContent()
+                        + "\', pos \'" + from.getPos() + "\', description \'"
+                        + sameTermEntry.getDescription() + "\'");
+            }
         }
         return Optional.empty();
     }

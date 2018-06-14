@@ -238,6 +238,19 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
         List<HGlossaryTerm> result = query.list();
         return result;
     }
+    public HGlossaryEntry getEntryByTerm(String term, String qualifiedName) {
+        StringBuilder queryString = new StringBuilder();
+        queryString.append("select term.glossaryEntry from HGlossaryTerm as term ")
+                .append("where term.locale.localeId = term.glossaryEntry.srcLocale.localeId ")
+                .append("and term.glossaryEntry.glossary.qualifiedName =:qualifiedName ")
+                .append("and term.content =:term ");
+        Query query = getSession().createQuery(queryString.toString());
+        query.setParameter("qualifiedName", qualifiedName)
+                .setParameter("term", term)
+                .setComment("GlossaryDAO.getEntries")
+                .setMaxResults(1);
+        return (HGlossaryEntry) query.uniqueResult();
+    }
 
     public HGlossaryEntry getEntryByContentHash(String contentHash,
             String qualifiedName) {
