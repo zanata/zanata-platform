@@ -669,7 +669,10 @@
               <socket>${mysql.socket}</socket>
               <clearexistingdata>false</clearexistingdata>
               <options>
+                <option>debug-check</option>
+                <option>debug-info</option>
                 <option>lower_case_table_names=${mysql.lower_case_table_names}</option>
+                <!--<option>verbose</option>-->
               </options>
             </configuration>
             <executions>
