@@ -493,10 +493,6 @@
     color: @color-dark;
     font-size: 1.1rem;
   }
-  button .loaderText .loader {
-    display: none;
-    visibility: hidden
-  }
   .loader {
     vertical-align: middle;
     display: inline-block;
@@ -747,7 +743,7 @@
     -webkit-appearance: button;
   }
   button[disabled], html input[disabled] {
-    cursor: default;
+    cursor: not-allowed;
   }
   button::-moz-focus-inner, input::-moz-focus-inner {
     padding: 0;
