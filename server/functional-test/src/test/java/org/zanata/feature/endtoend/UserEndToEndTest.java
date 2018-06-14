@@ -403,7 +403,8 @@ public class UserEndToEndTest extends ZanataTestCase {
                 .clickLocale("en-US")
                 .clickDownloadTranslatedFile(testFile.getName(), "txt");
         assertThat(new File("/tmp/" + testFile.getName()).exists())
-                .as("The file was successfully downloaded");
+                .as("The file was successfully downloaded")
+                .isTrue();
         return versionLanguagesPage;
     }
 
