@@ -3,7 +3,7 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
-import { EditableText, Icon, LoaderText, Modal } from '../../components'
+import { EditableText, Icon, Modal } from '../../components'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 
@@ -169,17 +169,11 @@ class EntryModal extends Component {
               }>
               Cancel
             </Button>
-            {isSaving
-              ? (<Button className='btn-primary' aria-label='button'
-                type='primary' disabled>
-                <LoaderText loading loadingText='Updating'>Update</LoaderText>
-              </Button>)
-              : (<Button className='btn-primary' aria-label='button'
-                type='primary' onClick={() => handleUpdateTerm(entry)}
-                disabled={!canUpdate}>
-                  Update
-              </Button>)
-            }
+            <Button className='btn-primary' aria-label='button'
+              type='primary' onClick={() => handleUpdateTerm(entry)}
+              disabled={!canUpdate || isSaving} loading={isSaving}>
+              Update
+            </Button>
           </div>
         </Modal.Footer>
       </Modal>

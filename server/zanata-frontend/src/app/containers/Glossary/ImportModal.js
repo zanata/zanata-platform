@@ -8,11 +8,7 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
-
-import {
-  LoaderText,
-  Select
-} from '../../components'
+import { Select } from '../../components'
 
 import {
   glossaryImportFile,
@@ -98,22 +94,14 @@ class ImportModal extends Component {
         width={'46rem'}
         onCancel={() => handleImportFileDisplay(false)}
         footer={[
-          <Button
-            key='back'
-            aria-label='button'
-            disabled={isUploading}
+          <Button key='back' aria-label='button' disabled={isUploading}
             onClick={() => handleImportFileDisplay(false)}>
             Cancel
           </Button>,
-          <Button
-            key='ok'
-            aria-label='button'
-            type='primary'
-            disabled={disableUpload}
-            onClick={handleImportFile}>
-            <LoaderText loading={isUploading} loadingText='Importing'>
-              Import
-            </LoaderText>
+          <Button key='ok' aria-label='button' type='primary'
+            className='btn-primary' disabled={disableUpload || isUploading}
+            onClick={handleImportFile} loading={isUploading}>
+            Import
           </Button>
         ]}
         >

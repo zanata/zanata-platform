@@ -94,11 +94,9 @@ class Entry extends Component {
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
       <Button type='primary' className='btn-primary'
-        disabled={isSaving} aria-label='button'
+        disabled={isSaving} aria-label='button' loading={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
-        <LoaderText loading={isSaving} loadingText='Updating'>
-          Update
-        </LoaderText>
+        Update
       </Button>
     )
 

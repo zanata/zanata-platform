@@ -3,7 +3,6 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { LoaderText } from '../../components'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Modal from 'antd/lib/modal'
@@ -89,10 +88,8 @@ class ExportModal extends Component {
             aria-label='button'
             type='primary'
             disabled={isExporting}
-            onClick={handleExport}>
-            <LoaderText loading={isExporting} loadingText='Exporting'>
-              Export
-            </LoaderText>
+            onClick={handleExport} loading={isExporting}>
+            Export
           </Button>
         ]} >
         <Select
