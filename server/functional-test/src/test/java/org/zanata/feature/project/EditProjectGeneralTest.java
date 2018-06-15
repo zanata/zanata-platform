@@ -76,14 +76,14 @@ public class EditProjectGeneralTest extends ZanataTestCase {
             "to writable")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToWritable() throws Exception {
-        assertThat(new ProjectWorkFlow()
+        new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .lockProject()
                 .gotoExplore()
                 .enterSearch("about fedora")
-                .expectProjectListContains("about fedora"));
+                .expectProjectListContains("about fedora");
         // TODO check whether "about fedora" in the list has a lock icon (locked project)
 
         ExplorePage explorePage = new BasicWorkFlow()
