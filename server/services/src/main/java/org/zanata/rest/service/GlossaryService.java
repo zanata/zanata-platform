@@ -337,12 +337,6 @@ public class GlossaryService implements GlossaryResource {
         }
         GlossaryResults results = saveOrUpdateGlossaryEntries(glossaryEntries,
                 Optional.of(localeId));
-        List<String> warnings = results.getWarnings();
-        if (!warnings.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(warnings)
-                    .build();
-        }
         return Response.ok(results).build();
     }
 

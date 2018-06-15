@@ -535,20 +535,37 @@ const glossary = handleActions({
   },
   [GLOSSARY_CREATE_SUCCESS]: (state, action) => {
     const newEntry = state.newEntry
-    return {
-      ...state,
-      newEntry: {
-        ...newEntry,
-        isSaving: false,
-        entry: GlossaryHelper.generateEmptyEntry(state.src),
-        show: false
-      },
-      notification: {
-        severity: SEVERITY.INFO,
-        message: 'Glossary term created.',
-        duration: 5
+    return (action.payload.warnings.length > 0)
+      ? {
+        ...state,
+        newEntry: {
+          ...newEntry,
+          isSaving: false,
+          entry: GlossaryHelper.generateEmptyEntry(state.src),
+          show: false
+        },
+        notification: {
+          severity: SEVERITY.ERROR,
+          message:
+            'We were unable to save the glossary entry.',
+          description: action.payload.warnings,
+          duration: null
+        }
       }
-    }
+      : {
+        ...state,
+        newEntry: {
+          ...newEntry,
+          isSaving: false,
+          entry: GlossaryHelper.generateEmptyEntry(state.src),
+          show: false
+        },
+        notification: {
+          severity: SEVERITY.INFO,
+          message: 'Glossary term created.',
+          duration: 3.5
+        }
+      }
   },
   [GLOSSARY_CREATE_FAILURE]: (state, action) => {
     const newEntry = state.newEntry
