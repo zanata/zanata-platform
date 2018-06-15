@@ -13,6 +13,7 @@ import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 import DetailsPane from './DetailsPane'
+import ConcurrentModal from '../../components/ConcurrentModal'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
 
@@ -43,6 +44,7 @@ class TranslationInfoPanel extends React.Component {
     activityVisible: PropTypes.bool.isRequired,
     /* close the sidebar */
     close: PropTypes.func.isRequired,
+    conflict: PropTypes.any,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
@@ -165,6 +167,7 @@ class TranslationInfoPanel extends React.Component {
       : activityTabKey
     return (
       <div>
+        <ConcurrentModal />
         <h1 className="SidebarEditor-heading">
           <Icon name="info" className="s1" parentClassName='details-svg' />
           <span className="hide-md">

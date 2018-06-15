@@ -199,29 +199,57 @@ export const phraseReducer = handleActions({
         revision: {$set: revision}
       }),
 
-  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo, response } }) =>
-    update(state, {
-      notification: {
-        $set: {
-          severity: SEVERITY.ERROR,
-          message: `Save Translation Failed`,
-          description:
-            <p>
-            Unable to save phraseId {phraseId}
-            {isEmpty(saveInfo.translations)
-                ? null
-                : ` as ${saveInfo.translations[0]}`}
-              <br />
-            Status {response.status} {response.statusText}
-            </p>
+  [SAVE_FAILED]: (state, action) => {
+    const { phraseId, saveInfo, response } = action.payload
+    // Conflict status (409) detected
+    if (response.status === 409) {
+      update(state, {
+        notification: {
+          $set: {
+            severity: SEVERITY.ERROR,
+            message: `Save Translation Failed`,
+            description:
+              <p>
+                Unable to save phraseId {phraseId}
+                {isEmpty(saveInfo.translations)
+                  ? null
+                  : ` as ${saveInfo.translations[0]}`}
+                <br />
+                Status {response.status} {response.statusText}
+              </p>
+          }
+        },
+        detail: {
+          [phraseId]: {
+            inProgressSave: { $set: undefined }
+          }
         }
-      },
-      detail: {
-        [phraseId]: {
-          inProgressSave: { $set: undefined }
+      })
+    } else {
+      update(state, {
+        notification: {
+          $set: {
+            severity: SEVERITY.ERROR,
+            message: `Save Translation Failed`,
+            description:
+              <p>
+              Unable to save phraseId {phraseId}
+              {isEmpty(saveInfo.translations)
+                  ? null
+                  : ` as ${saveInfo.translations[0]}`}
+                <br />
+              Status {response.status} {response.statusText}
+              </p>
+          }
+        },
+        detail: {
+          [phraseId]: {
+            inProgressSave: { $set: undefined }
+          }
         }
-      }
-    }),
+      })
+    }
+  },
 
   [SAVE_INITIATED]: (state, {getState, payload: {phraseId, saveInfo}}) =>
     updatePhrase(state, getSelectedDocId(getState()), phraseId,

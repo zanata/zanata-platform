@@ -127,7 +127,14 @@ public class TranslationService implements TranslationResource {
                 .translate(new LocaleId(localeId), Lists.newArrayList(request));
         TranslationResult result = translationResults.get(0);
         if (result.isVersionNumConflict()) {
-            return Response.status(Response.Status.CONFLICT).build();
+            // TODO: include latest translator user name in response
+            HTextFlowTarget latest = result.getTranslatedTextFlowTarget();
+            requestData.setContents(latest.getContents());
+            return Response
+                    .status(Response.Status.CONFLICT)
+                    .entity(requestData)
+                    .type("application/problem+json")
+                    .build();
         } else if (!result.isTranslationSuccessful()) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .build();
