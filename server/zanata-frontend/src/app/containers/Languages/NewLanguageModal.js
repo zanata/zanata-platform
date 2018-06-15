@@ -214,6 +214,7 @@ class NewLanguageModal extends Component {
               <Input
                 // id='displayName' set by getFieldDecorator
                 maxLength={100}
+                className='textInput'
                 onChange={(e) => this.updateField('displayName', e)}
                 placeholder='Display name' />
             )}
@@ -227,6 +228,7 @@ class NewLanguageModal extends Component {
               <Input
                 // id='nativeName' set by getFieldDecorator
                 maxLength={100}
+                className='textInput'
                 onChange={(e) => this.updateField('nativeName', e)}
                 placeholder='Native name' />
             )}
@@ -254,6 +256,7 @@ class NewLanguageModal extends Component {
               })(
                 <Input
                   maxLength={255}
+                  className='textInput'
                   onChange={(e) => this.updateField('pluralForms', e)}
                   placeholder='Plural forms' />
               )}

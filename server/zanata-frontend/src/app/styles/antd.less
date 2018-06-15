@@ -19,8 +19,25 @@
   display: flex;
 }
 
+.ant-modal-title {
+  color: @info-color;
+}
+
+.ant-form-item-label label {
+  color: @primary-color;
+}
+
 input.react-autosuggest__input {
   background-color: transparent;
+  border-bottom: solid 1px @primary-color;
+}
+
+.ant-input.textInput {
+  border: solid 1px @primary-color;
+}
+
+.ant-input.textInput:focus, .ant-input.textInput:hover {
+  border: 2px solid @info-color;
 }
 
 // pagination alignment on Explore page
