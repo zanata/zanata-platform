@@ -398,7 +398,7 @@ public class UserEndToEndTest extends ZanataTestCase {
 
     private VersionLanguagesPage downloadTranslatedDocuments(EditorPage editorPage) {
         // Make sure we don't verify the source
-        assertThat(testFile.delete());
+        assertThat(testFile.delete()).isTrue();
         VersionLanguagesPage versionLanguagesPage = editorPage
                 .clickVersionBreadcrumb("master")
                 .clickLocale("en-US")

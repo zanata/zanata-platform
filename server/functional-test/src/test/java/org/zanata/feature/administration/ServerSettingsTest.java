@@ -107,7 +107,7 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage();
 
         assertThat(serverConfigurationPage.expectFieldValue(
-                ServerConfigurationPage.fromEmailField, email));
+                ServerConfigurationPage.fromEmailField, email)).isTrue();
 
         serverConfigurationPage.goToHomePage().logout();
         new RegisterWorkFlow().registerInternal("test1", "test1", "test123",
