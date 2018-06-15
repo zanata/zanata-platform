@@ -152,6 +152,7 @@ class Languages extends Component {
                     <FormGroup className='searchBox'>
                       <InputGroup>
                         <FormControl type='text'
+                          className='textInput'
                           value={this.state.searchText}
                           onChange={this.onUpdateSearch} />
                         <InputGroup.Addon>

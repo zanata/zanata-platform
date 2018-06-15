@@ -116,6 +116,7 @@ class NewEntryModal extends Component {
         <Form layout='vertical'>
           <Form.Item label={'Term'} title={'Term'}>
             <Input
+              className='textInput'
               maxLength={500}
               onChange={this.handleContentChanged.bind(this)}
               placeholder='The new term'
@@ -123,6 +124,7 @@ class NewEntryModal extends Component {
           </Form.Item>
           <Form.Item label={'Part of speech'} title={'Part of speech'}>
             <Input
+              className='textInput'
               maxLength={255}
               onChange={this.handlePosChanged.bind(this)}
               placeholder='Noun, Verb, etc'
@@ -130,6 +132,7 @@ class NewEntryModal extends Component {
           </Form.Item>
           <Form.Item label={'Description'} title={'Description'}>
             <Input
+              className='textInput'
               maxLength={500}
               onChange={this.handleDescChanged.bind(this)}
               placeholder='The definition of this term'
