@@ -83,8 +83,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .lockProject()
                 .gotoExplore()
                 .enterSearch("about fedora")
-                .expectProjectListContains("about fedora"))
-                .as("The project is locked");
+                .expectProjectListContains("about fedora"));
+        // TODO check whether "about fedora" in the list has a lock icon (locked project)
 
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()

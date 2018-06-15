@@ -59,19 +59,23 @@ public class ManageSearchTest extends ZanataTestCase {
                 .clickSelectAll();
 
         assertThat(manageSearchPage.allActionsSelected())
-                .as("All actions are selected");
+                .as("All actions are selected")
+                .isTrue();
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running");
+                .as("No operations are running")
+                .isTrue();
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
                 .expectActionsToFinish();
 
         assertThat(manageSearchPage.completedIsDisplayed())
-                .as("Completed is displayed");
+                .as("Completed is displayed")
+                .isTrue();
 
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running");
+                .as("No operations are running")
+                .isTrue();
     }
 
     @Trace(summary = "The administrator can abort the regeneration of the " +
@@ -85,15 +89,18 @@ public class ManageSearchTest extends ZanataTestCase {
                 .clickSelectAll();
 
         assertThat(manageSearchPage.allActionsSelected())
-                .as("All actions are selected");
+                .as("All actions are selected")
+                .isTrue();
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running");
+                .as("No operations are running")
+                .isTrue();
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
                 .abort();
 
         assertThat(manageSearchPage.abortedIsDisplayed())
-                .as("Aborted is displayed");
+                .as("Aborted is displayed")
+                .isTrue();
     }
 }
