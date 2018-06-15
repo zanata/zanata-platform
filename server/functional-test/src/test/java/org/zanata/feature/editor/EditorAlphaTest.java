@@ -47,7 +47,7 @@ public class EditorAlphaTest extends ZanataTestCase {
                 .pressAlphaEditorButton()
                 .switchToEditorWindow();
 
-        assertThat(reactEditorPage.isReactEditor());
+        assertThat(reactEditorPage.isReactEditor()).isTrue();
 
         // Wait for the phrases to load
         reactEditorPage.expectNumberOfTargets(1);

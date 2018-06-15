@@ -72,7 +72,8 @@ public class ServerSettingsTest extends ZanataTestCase {
 
         assertThat(serverConfigurationPage.expectFieldValue(
                 ServerConfigurationPage.registerUrlField, url))
-                        .as("The expected url was displayed");
+                .as("The expected url was displayed")
+                .isTrue();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -107,7 +108,7 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage();
 
         assertThat(serverConfigurationPage.expectFieldValue(
-                ServerConfigurationPage.fromEmailField, email));
+                ServerConfigurationPage.fromEmailField, email)).isTrue();
 
         serverConfigurationPage.goToHomePage().logout();
         new RegisterWorkFlow().registerInternal("test1", "test1", "test123",

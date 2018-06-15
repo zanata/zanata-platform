@@ -86,7 +86,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
     public void testTSWithPlurals() {
         Resource resource = parseTestFile("test-ts-plurals.ts");
         assertThat(resource.getTextFlows()).hasSize(1);
-        assertThat(resource.getTextFlows().get(0).isPlural());
+        assertThat(resource.getTextFlows().get(0).isPlural()).isTrue();
         assertThat(resource.getTextFlows().get(0).getContents().size()).isEqualTo(2);
     }
 

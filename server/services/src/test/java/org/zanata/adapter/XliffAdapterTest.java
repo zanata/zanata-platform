@@ -76,7 +76,7 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
         File tempFile = File.createTempFile("test-xliff-translated", ".xlf");
         // Xliff implementation deletes the file
         FileUtils.copyFile(translationFile, tempFile);
-        assertThat(tempFile.exists());
+        assertThat(tempFile.exists()).isTrue();
         LocaleId sourceLocale = LocaleId.fromJavaName("en");
 
         TranslationsResource translationsResource =

@@ -79,7 +79,7 @@ public class DashboardTest extends ZanataTestCase {
 
     private boolean activityListExpands() throws Exception {
         DashboardActivityTab activityTab = dashboard.gotoActivityTab();
-        assertThat(activityTab.isMoreActivity());
+        assertThat(activityTab.isMoreActivity()).isTrue();
         assertThat(activityTab.getMyActivityList()).isNotEmpty();
         return activityTab.clickMoreActivity();
     }
@@ -95,7 +95,7 @@ public class DashboardTest extends ZanataTestCase {
         dashboard.goToSettingsTab().gotoSettingsAccountTab()
                 .typeNewAccountEmailAddress("new@fakeemail.com")
                 .clickUpdateEmailButton();
-        assertThat(dashboard.expectNotification(DashboardBasePage.EMAIL_SENT));
+        assertThat(dashboard.expectNotification(DashboardBasePage.EMAIL_SENT)).isTrue();
     }
 
     @Trace(summary = "The user can change their password")
@@ -105,7 +105,7 @@ public class DashboardTest extends ZanataTestCase {
                 .enterOldPassword("admin").enterNewPassword("admin2")
                 .clickUpdatePasswordButton();
         assertThat(dashboard
-                .expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS));
+                .expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS)).isTrue();
     }
 
     @Trace(
