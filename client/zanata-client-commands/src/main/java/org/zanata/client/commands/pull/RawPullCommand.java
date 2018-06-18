@@ -237,7 +237,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
             response = fileResourceClient.downloadTranslationFile(getOpts()
                                     .getProj(), getOpts()
                                     .getProjectVersion(), locale.getId(),
-                            fileExtension, qualifiedDocName);
+                            fileExtension, qualifiedDocName, getOpts().getApprovedOnly());
             InputStream transDoc = response.readEntity(InputStream.class);
             if (transDoc != null) {
                 try {

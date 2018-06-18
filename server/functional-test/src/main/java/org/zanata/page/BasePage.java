@@ -158,6 +158,6 @@ public class BasePage extends CorePage {
     }
 
     public void closeNotification() {
-        getDriver().findElement(By.id("btn-notification-close")).click();
+        getDriver().findElement(By.className("ant-notification-notice-close")).click();
     }
 }

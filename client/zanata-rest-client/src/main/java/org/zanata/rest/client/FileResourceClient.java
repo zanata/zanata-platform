@@ -138,13 +138,20 @@ public class FileResourceClient {
     }
 
     public Response downloadTranslationFile(String projectSlug,
-            String iterationSlug, String locale, String fileExtension,
-            String docId) {
+                                            String iterationSlug, String locale, String fileExtension,
+                                            String docId) {
+        return downloadTranslationFile(projectSlug, iterationSlug, locale, fileExtension, docId, false);
+    }
+
+    public Response downloadTranslationFile(String projectSlug,
+                                            String iterationSlug, String locale, String fileExtension,
+                                            String docId, boolean approvedOnly) {
         WebTarget webResource = factory.getClient().target(baseUri)
                 .path(FileResource.SERVICE_PATH).path("translation")
                 .path(projectSlug).path(iterationSlug).path(locale)
                 .path(fileExtension);
         return webResource.queryParam("docId", docId)
+                          .queryParam("approvedOnly", approvedOnly)
                 .request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get();
     }
 

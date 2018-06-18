@@ -4,7 +4,6 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
-import { LoaderText } from '../../components'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/index.less'
 import Form from 'antd/lib/form'
@@ -104,20 +103,20 @@ class NewEntryModal extends Component {
             key='ok'
             aria-label='button'
             type='primary'
-            disabled={!isAllowSave || isSaving}
+            className='btn-primary'
+            disabled={!isAllowSave || isSaving} loading={isSaving}
             onClick={
               () => {
                 handleNewEntryCreate(this.state.entry); this.resetFields()
               }
             }>
-            <LoaderText loading={isSaving} loadingText='Saving'>
-              Save
-            </LoaderText>
+            Save
           </Button>
         ]}>
         <Form layout='vertical'>
           <Form.Item label={'Term'} title={'Term'}>
             <Input
+              className='textInput'
               maxLength={500}
               onChange={this.handleContentChanged.bind(this)}
               placeholder='The new term'
@@ -125,6 +124,7 @@ class NewEntryModal extends Component {
           </Form.Item>
           <Form.Item label={'Part of speech'} title={'Part of speech'}>
             <Input
+              className='textInput'
               maxLength={255}
               onChange={this.handlePosChanged.bind(this)}
               placeholder='Noun, Verb, etc'
@@ -132,6 +132,7 @@ class NewEntryModal extends Component {
           </Form.Item>
           <Form.Item label={'Description'} title={'Description'}>
             <Input
+              className='textInput'
               maxLength={500}
               onChange={this.handleDescChanged.bind(this)}
               placeholder='The definition of this term'

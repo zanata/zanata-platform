@@ -57,6 +57,12 @@ abstract class AbstractPullMojo extends
     private boolean createSkeletons;
 
     /**
+     * If true, only include Approved translations (not Translated, Fuzzy or New)
+     */
+    @Parameter(property = "zanata.approvedOnly")
+    private boolean approvedOnly;
+
+    /**
      * Whether to include fuzzy translations in translation files when using
      * project type 'file'. If this option is false, source text will be used
      * for any string that does not have an approved translation.
@@ -136,6 +142,11 @@ abstract class AbstractPullMojo extends
     @Override
     public boolean getCreateSkeletons() {
         return createSkeletons;
+    }
+
+    @Override
+    public boolean getApprovedOnly() {
+        return approvedOnly;
     }
 
     @Override

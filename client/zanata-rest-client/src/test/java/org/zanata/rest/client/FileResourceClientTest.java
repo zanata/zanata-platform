@@ -217,7 +217,7 @@ public class FileResourceClientTest {
     public void testDownloadTranslationFile() throws Exception {
         InputStream inputStream =
                 client.downloadTranslationFile("about-fedora", "master", "es",
-                        "po", "About-Fedora").readEntity(InputStream.class);
+                        "po", "About-Fedora", false).readEntity(InputStream.class);
         PoReader2 reader = new PoReader2();
         TranslationsResource translationsResource = executeWithIODebug(
                 inputStream, in ->
