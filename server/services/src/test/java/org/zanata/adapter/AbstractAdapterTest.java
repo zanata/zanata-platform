@@ -97,7 +97,7 @@ abstract class AbstractAdapterTest <T extends FileFormatAdapter> {
      */
     File createTempPropertiesFile(Charset charset) throws Exception {
         File testFile = File.createTempFile("test-properties-temp-" + charset, ".properties");
-        assertThat(testFile.exists());
+        assertThat(testFile.exists()).isTrue();
         Map<String, String> entries = new LinkedHashMap<>();
         if (charset == StandardCharsets.ISO_8859_1) {
             entries.put("line1", "ÀLine One");
