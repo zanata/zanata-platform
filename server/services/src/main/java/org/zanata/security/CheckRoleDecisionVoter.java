@@ -50,6 +50,10 @@ public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
                         .getMetaDataFor(CheckRole.class.getName(),
                                 CheckRole.class);
         if (hasRole != null) {
+            boolean isAdmin = identity.hasRole("admin");
+            if (isAdmin) {
+                return;
+            }
             boolean result = identity.hasRole(hasRole.value());
 
             if (!result) {
