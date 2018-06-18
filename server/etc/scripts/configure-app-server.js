@@ -448,7 +448,8 @@ function configureLogHandlers(consoleLogLevel) {
   // We don't remove the existing CONSOLE handler in case this script is ever
   // used against running servers in future. Plus the default CONSOLE handler
   // is colour.
-  tryExec('/subsystem=logging/console-handler=CONSOLE:add(formatter=PATTERN,level='+consoleLogLevel+')')
+  tryExec('/subsystem=logging/console-handler=CONSOLE:add(name=PATTERN,level='+consoleLogLevel+')')
+  tryExec('/subsystem=logging/root-logger=ROOT:root-logger-assign-handler(name="CONSOLE") ')
 }
 
 function suppressAnnoyingLogging() {
