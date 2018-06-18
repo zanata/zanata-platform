@@ -8,6 +8,7 @@ import RejectionsForm, {MAJOR, MINOR, CRITICAL}
 import {
   fetchAllCriteria, addNewCriterion, editCriterion, removeCriterion
 } from '../../actions/review-actions'
+import { Link } from '../../components'
 import {selectors} from '../../reducers/admin-reducer'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
@@ -85,7 +86,7 @@ class AdminReview extends Component {
       <Layout>
         <Breadcrumb>
           <Breadcrumb.Item href='home'>
-            <a href='home'>Administration</a>
+            <Link link='/admin/home'>Administration</Link>
           </Breadcrumb.Item>
         </Breadcrumb>
         <h1>Reject translations settings</h1>

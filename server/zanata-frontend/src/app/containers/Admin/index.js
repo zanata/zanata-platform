@@ -26,14 +26,12 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 import { isAdmin } from '../../config'
-import { Icon } from '../../components'
+import { Link, Icon } from '../../components'
 import Helmet from 'react-helmet'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
-import Card from 'antd/lib/card'
-import 'antd/lib/card/style/css'
 
 import {
   showExportTMXModal
@@ -60,11 +58,6 @@ class Admin extends Component {
         </div>
       )
     }
-    const style = {
-      backgroundColor: 'rgb(250,250,250)',
-      fontSize: 16,
-      marginBottom: 5
-    }
     return (
       <div>
         <Helmet title='Administration' />
@@ -73,117 +66,104 @@ class Admin extends Component {
             <h1>Administration</h1>
             <Row gutter={6}>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Admin_Server_configuration_home'
-                  href='/admin/server_configuration'>
-                  <Card style={style} hoverable>
-                    <Icon name='settings' className='s2 mr2 mr2' />
-                    Server configuration
-                  </Card>
-                </a>
+                <Link id='Admin_Server_configuration_home'
+                  link='/admin/server_configuration'
+                  useHref className='list-group-item'>
+                  <Icon name='settings' className='s2' />
+                  Server configuration
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Admin_Manage_users_home'
-                  href='/admin/usermanager'>
-                  <Card style={style} hoverable>
-                    <Icon name='user' className='s2 mr2' />
-                    Manage users
-                  </Card>
-                </a>
+                <Link id='Admin_Manage_users_home'
+                  className='list-group-item'
+                  link='/admin/usermanager' useHref>
+                  <Icon name='user' className='s2' />
+                  Manage users
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Admin_Manage_roles_home'
-                  href='/admin/rolemanager'>
-                  <Card style={style} hoverable>
-                    <Icon name='users' className='s2 mr2' />
-                    Manage roles
-                  </Card>
-                </a>
+                <Link id='Admin_Manage_roles_home'
+                  className='list-group-item'
+                  link='/admin/rolemanager' useHref>
+                  <Icon name='users' className='s2' />
+                  Manage roles
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Admin_Manage_search_home'
-                  href='/admin/search'>
-                  <Card style={style} hoverable>
-                    <Icon name='search' className='s2 mr2' />
-                    Manage search
-                  </Card>
-                </a>
+                <Link id='Admin_Manage_search_home'
+                  className='list-group-item'
+                  link='/admin/search' useHref>
+                  <Icon name='search' className='s2' />
+                  Manage search
+                </Link>
               </Col>
             </Row>
             <Row gutter={6}>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Admin_Role_Assignment_Rules_home'
-                  href='/admin/rolerules'>
-                  <Card style={style} hoverable>
-                    <Icon name='assign' className='s2 mr2' />
-                    Role assignment rules
-                  </Card>
-                </a>
+                <Link id='Admin_Role_Assignment_Rules_home'
+                  className='list-group-item'
+                  link='/admin/rolerules' useHref>
+                  <Icon name='assign' className='s2' />
+                  Role assignment rules
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Translation_Memory_home'
-                  href='/tm/home.xhtml'>
-                  <Card style={style} hoverable>
-                    <Icon name='tm' className='s2 mr2' />
-                    Translation memory
-                  </Card>
-                </a>
+                <Link id='Translation_Memory_home'
+                  className='list-group-item'
+                  link='/tm' useHref>
+                  <Icon name='tm' className='s2' />
+                  Translation memory
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Process_Management_home'
-                  href='/admin/processmanager'>
-                  <Card style={style} hoverable>
-                    <Icon name='clock' className='s2 mr2' />
-                    Process manager
-                  </Card>
-                </a>
+                <Link id='Process_Management_home'
+                  className='list-group-item'
+                  link='/admin/processmanager' useHref>
+                  <Icon name='clock' className='s2 mr2' />
+                  Process manager
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Admin_Manage_stats_home'
-                  href='/admin/stats'>
-                  <Card style={style} hoverable>
-                    <Icon name='piestats' className='s2 mr2' />
-                    Overall statistics
-                  </Card>
-                </a>
+                <Link id='Admin_Manage_stats_home'
+                  className='list-group-item'
+                  link='/admin/stats' useHref>
+                  <Icon name='piestats' className='s2 mr2' />
+                  Overall statistics
+                </Link>
               </Col>
             </Row>
             <Row gutter={6}>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Admin_Monitoring_home'
-                  href='/admin/monitoring'>
-                  <Card style={style} hoverable>
-                    <Icon name='servmon' className='s2 mr2' />
-                    Server monitoring
-                  </Card>
-                </a>
+                <Link id='Admin_Monitoring_home'
+                  className='list-group-item'
+                  link='/admin/monitoring' useHref>
+                  <Icon name='servmon' className='s2 mr2' />
+                  Server monitoring
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='Cache_Stats_Home'
-                  href='/admin/cachestats'>
-                  <Card style={style} hoverable>
-                    <Icon name='document' className='s2 mr2' />
-                    Cache statistics
-                  </Card>
-                </a>
+                <Link id='Cache_Stats_Home'
+                  className='list-group-item'
+                  link='/admin/cachestats' useHref>
+                  <Icon name='document' className='s2 mr2' />
+                  Cache statistics
+                </Link>
               </Col>
               <Col xs={24} sm={12} lg={6}>
                 <a id='exportTMXAllLink'
+                  className='list-group-item'
                   href='#'
                   onClick={this.props.toggleTMXExportModal}>
-                  <Card style={style} hoverable>
-                    <Icon name='export' className='s2 mr2' />
-                    Export all to TMX
-                  </Card>
+                  <Icon name='export' className='s2 mr2' />
+                  Export all to TMX
                 </a>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <a id='reviewCriteria'
-                  href='/admin/review'>
-                  <Card style={style} hoverable>
-                    <Icon name='tick' className='s2 mr2' />
-                    Review criteria
-                  </Card>
-                </a>
+                <Link id='reviewCriteria'
+                  className='list-group-item' link='/admin/review'>
+                  <Icon name='tick' className='s2 mr2' />
+                  Review criteria
+                </Link>
               </Col>
             </Row>
             <TMXExportModal />
