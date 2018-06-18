@@ -61,6 +61,7 @@ class TransUnitTranslationFooter extends React.Component {
     phrase: PropTypes.object.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
+    toggleConcurrentModal: PropTypes.func.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
     suggestionCount: PropTypes.number.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
@@ -153,6 +154,7 @@ class TransUnitTranslationFooter extends React.Component {
       showSuggestions,
       suggestionCount,
       suggestionSearchType,
+      toggleConcurrentModal,
       toggleGlossary,
       toggleSuggestionPanel,
       permissions
@@ -252,13 +254,21 @@ class TransUnitTranslationFooter extends React.Component {
           </ul>
         </div>
         <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
-          {saveAsLabel}
-          <SplitDropdown
-            onToggle={this.toggleDropdown}
-            isOpen={dropdownIsOpen}
-            actionButton={actionButton}
-            toggleButton={dropdownToggleButton}
-            content={otherActionButtonList} />
+          {typeof phrase.conflict === 'undefined' ? saveAsLabel : null}
+          {typeof phrase.conflict === 'undefined'
+            ? <SplitDropdown
+              onToggle={this.toggleDropdown}
+              isOpen={dropdownIsOpen}
+              actionButton={actionButton}
+              toggleButton={dropdownToggleButton}
+              content={otherActionButtonList} />
+            : <Button
+              className={cx('EditorButton u-sizeHeight-1_1-4 u-textCapitalize u-rounded Button--warning')}
+              disabled={false}
+              title={'Resolve Conflict'}
+              onClick={toggleConcurrentModal}>
+              {'Resolve Conflict'}
+            </Button>}
         </div>
       </div>
       /* eslint-enable max-len */

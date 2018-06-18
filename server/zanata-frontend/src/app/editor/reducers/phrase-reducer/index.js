@@ -30,6 +30,7 @@ import {
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
+  TOGGLE_CONCURRENT_MODAL,
   UNDO_EDIT
 } from '../../actions/phrases-action-types'
 import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
@@ -68,6 +69,7 @@ export const defaultState = {
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
   notification: undefined,
+  showConflictModal: false,
   selectedPhraseId: undefined,
   /* Cursor/selection position within the currently editing translation, used
    * for inserting terms from glossary etc. */
@@ -200,7 +202,7 @@ export const phraseReducer = handleActions({
         revision: {$set: revision}
       }),
 
-  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo, response } }) =>
+  [SAVE_FAILED]: (state, { getState, payload: { phraseId, saveInfo, response } }) =>
     update(state, {
       notification: {
         $set: {
@@ -224,28 +226,26 @@ export const phraseReducer = handleActions({
       }
     }),
 
-  [SAVE_CONFLICT]: (state, { payload: { phraseId, saveInfo, response } }) =>
+  [SAVE_CONFLICT]: (state, { getState, payload: { phraseId, saveInfo, response } }) =>
     update(state, {
       notification: {
         $set: {
           severity: SEVERITY.ERROR,
-          message: `Save Translation Failed`,
-          description:
-            <p>
-              Unable to save phraseId {phraseId}
-              {isEmpty(saveInfo.translations)
-                ? null
-                : ` as ${saveInfo.translations[0]}`}
-              <br />
-              Status {response.status} {response.statusText}
-            </p>
+          message: 'Concurrent edit detected',
+          description: 'Reset value for current row, please resolve conflicts'
         }
       },
       detail: {
         [phraseId]: {
-          inProgressSave: { $set: undefined }
+          inProgressSave: { $set: undefined },
+          conflict: { $set: { response, saveInfo } }
         }
       }
+    }),
+
+  [TOGGLE_CONCURRENT_MODAL]: (state) =>
+    update(state, {
+      showConflictModal: {$set: !state.showConflictModal}
     }),
 
   [SAVE_INITIATED]: (state, {getState, payload: {phraseId, saveInfo}}) =>

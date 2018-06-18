@@ -16,7 +16,8 @@ import {
   PENDING_SAVE_INITIATED,
   SAVE_FINISHED,
   SAVE_FAILED,
-  SAVE_CONFLICT
+  SAVE_CONFLICT,
+  TOGGLE_CONCURRENT_MODAL
 } from './phrases-action-types'
 import {
   defaultSaveStatus,
@@ -149,6 +150,8 @@ const saveConflict = createAction(SAVE_CONFLICT,
     saveInfo,
     response
   }))
+
+export const toggleConcurrentModal = createAction(TOGGLE_CONCURRENT_MODAL)
 
 export function savePhraseWithStatus (phrase, status, reviewComment) {
   return (dispatch, getState) => {
