@@ -4,97 +4,134 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Validation from './index.tsx'
 
-
-// TODO: Generate these with validation factory
-const messages = [
-  {
-    id: 'html-xml-tags',
-    label: 'HTML/XML tags',
-    defaultMessage: 'Check that XML/HTML tags are consistent.'
-  },
-  {
-    id: 'html-xml-tags',
-    label: 'HTML/XML tags',
-    defaultMessage: 'Check that XML entity are complete.'
-  },
-  {
-    id: 'java-variables',
-    label: 'Java Variables',
-    defaultMessage: 'Number of apostrophes (\' \') in source does not match number in translation. This may lead to other warnings.',
-    description: 'Lists variables that appear a different number of times between source and target strings'
-  },
-  {
-    id: 'java-variables',
-    label: 'Java Variables',
-    defaultMessage: 'Inconsistent count for variables: x, y ,z'
-  }
-]
-
 const validations =
   [
     {
-      id: 'html-xml-tags',
+      id: 'HTML_XML',
       label: 'HTML/XML tags',
       active: true,
       disabled: true
     },
     {
-      id: 'java-variables',
+      id: 'JAVA_VARIABLES',
       label: 'Java variables',
       active: true,
       disabled: false
     },
     {
-      id: 'leading-trailing-newline',
+      id: 'NEW_LINE',
       label: 'Leading/trailing newline',
       active: true,
       disabled: false
     },
     {
-      id: 'positional-printf',
+      id: 'PRINTF_XSI_EXTENSION',
       label: 'Positional printf (XSI extension)',
-      active: false,
+      active: true,
       disabled: false
     },
     {
-      id: 'printf-variables',
+      id: 'PRINTF_VARIABLES',
       label: 'Printf variables',
-      active: false,
+      active: true,
       disabled: false
     },
     {
-      id: 'tab-characters',
+      id: 'TAB',
       label: 'Tab characters',
       active: true,
       disabled: false
     },
     {
-      id: 'xml-entity-reference',
+      id: 'XML_ENTITY',
       label: 'XML entity reference',
-      active: false,
+      active: true,
       disabled: false
     }
   ]
+
+// HtmlXmlTag Validator
+const HXTSource = '<group><users><user>1</user></users></group>'
+const HXTTarget = '<group><users><user>1</user></users><foo></group>'
+
+// JavaVariablesValidation
+const JavaSource = "Testing string with variable {0}"
+const JavaTarget = "Testing string with no variables"
+
+// NewLineLeadTrailValidation
+const NLSource = '\nTesting string with leading new line'
+const NLTarget = 'Different string with the newline removed'
+
+// PrintfVariablesValidation
+const PFsource = 'Testing string with variable %1v'
+const PFtarget = 'Testing string with no variables'
+
+// PrintXSIExtensionValidation
+const PXIsource = '%s: Read error at byte %s, while reading %lu byte'
+const PXItarget = '%1$s：Read error while reading %3$lu bytes，at %2$s'
+
+// TabValidation
+const tabSource = `with two\t\ttabs`
+const tabTarget = `with one\ttab`
+
+// XMLEnitityValidation
+const XMLsource = 'Source string'
+const XMLtarget = 'Target string: bla bla &test'
 
 /*
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('Validation', module)
-  .add('default', () => (
+  .add('All Validators', () => (
     <div>
-      <h2>Validation Messages Default</h2>
-      <Validation messages={messages.slice(0, 1)}
+      <h2>Validation Messages for HtmlXmlTagValidation</h2>
+      <p>source: <input value={HXTSource} /> </p>
+      <p>target: <input value={HXTTarget} /> </p>
+      <Validation
+        source={HXTSource}
+        target={HXTTarget}
         validationOptions={validations} />
-      <h2>Validation Messages with Description Tooltip</h2>
-      <Validation messages={messages.slice(2, 3)}
+      <h2>Validation Messages for JavaVariablesValidation</h2>
+      <p>source: <input value={JavaSource} /> </p>
+      <p>target: <input value={JavaTarget} /> </p>
+      <Validation
+        source={JavaSource}
+        target={JavaTarget}
         validationOptions={validations} />
-      <h2>Validation Messages Warnings</h2>
-      <Validation messages={messages.slice(2, 4)}
+      <h2>Validation Messages for NewLineLeadTrailValidation</h2>
+      <p>source: <input value={NLSource} /> </p>
+      <p>target: <input value={NLTarget} /> </p>
+      <Validation
+        source={NLSource}
+        target={NLTarget}
         validationOptions={validations} />
-      <h2>Validation Messages Errors</h2>
-      <Validation messages={messages.slice(0, 2)}
+      <h2>Validation Messages for PrintfVariablesValidation</h2>
+      <p>source: <input value={PFsource} /> </p>
+      <p>target: <input value={PFtarget} /> </p>
+      <Validation
+        source={PFsource}
+        target={PFtarget}
         validationOptions={validations} />
-      <h2>Validation Messages Mixed</h2>
-      <Validation messages={messages} validationOptions={validations} />
+      <h2>Validation Messages for PrintXSIExtensionValidation</h2>
+      <p>source: <input value={PXIsource} /> </p>
+      <p>target: <input value={PXItarget} /> </p>
+      <Validation
+        source={PXIsource}
+        target={PXItarget}
+        validationOptions={validations} />
+      <h2>Validation Messages for TabValidation</h2>
+      <p>source: <input value={tabSource} /> </p>
+      <p>target: <input value={tabTarget} /> </p>
+      <Validation
+        source={tabSource}
+        target={tabTarget}
+        validationOptions={validations} />
+      <h2>Validation Messages for XMLEnitityValidation</h2>
+      <p>source: <input value={XMLsource} /> </p>
+      <p>target: <input value={XMLtarget} /> </p>
+      <Validation
+        source={XMLsource}
+        target={XMLtarget}
+        validationOptions={validations} />
     </div>
   ))

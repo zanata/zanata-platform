@@ -7556,11 +7556,25 @@ exports[`Editor Storyshots TextDiff default 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots Validation default 1`] = `
+exports[`Editor Storyshots Validation All Validators 1`] = `
 <div>
   <h2>
-    Validation Messages Default
+    Validation Messages for HtmlXmlTagValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="<group><users><user>1</user></users></group>"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="<group><users><user>1</user></users><foo></group>"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7583,14 +7597,33 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 0, Errors: 1
+          <span>
+             
+            <option>
+              Errors: 1
+            </option>
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages with Description Tooltip
+    Validation Messages for JavaVariablesValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable {0}"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7613,14 +7646,34 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 1, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages Warnings
+    Validation Messages for NewLineLeadTrailValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="
+Testing string with leading new line"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Different string with the newline removed"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7643,14 +7696,33 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 2, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages Errors
+    Validation Messages for PrintfVariablesValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable %1v"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7673,14 +7745,33 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 0, Errors: 2
+          <span>
+            <option>
+              Warnings: 2
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages Mixed
+    Validation Messages for PrintXSIExtensionValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="%s: Read error at byte %s, while reading %lu byte"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="%1$s：Read error while reading %3$lu bytes，at %2$s"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7703,7 +7794,110 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 2, Errors: 2
+          <span>
+            <option>
+              Warnings: 2
+            </option>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for TabValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="with two		tabs"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="with one	tab"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for XMLEnitityValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Source string"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Target string: bla bla &test"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
