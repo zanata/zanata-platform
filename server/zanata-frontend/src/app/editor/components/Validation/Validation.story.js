@@ -82,11 +82,7 @@ const XMLtarget = 'Target string: bla bla &test'
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('Validation', module)
-<<<<<<< HEAD
-  .add('default (no test)', () => (
-=======
   .add('All Validators', () => (
->>>>>>> c9af7c3958923c2a827b6d6933837a30dd333356
     <div>
       <h2>Validation Messages for HtmlXmlTagValidation</h2>
       <p>source: <input value={HXTSource} /> </p>
