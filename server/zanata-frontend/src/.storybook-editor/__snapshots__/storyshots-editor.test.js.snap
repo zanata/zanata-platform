@@ -6138,7 +6138,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="info-icon"
       >
         <Button
-          className="Button--link s1"
+          className="Button--link s1 v-btm"
           icon="info-circle-o"
           onClick={[Function]}
           title="Details"
@@ -6222,7 +6222,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="info-icon"
       >
         <Button
-          className="Button--link s1"
+          className="Button--link s1 v-btm"
           icon="info-circle-o"
           onClick={[Function]}
           title="Details"
@@ -6306,7 +6306,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="info-icon"
       >
         <Button
-          className="Button--link s1"
+          className="Button--link s1 v-btm"
           icon="info-circle-o"
           onClick={[Function]}
           title="Details"
@@ -6413,7 +6413,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="info-icon"
       >
         <Button
-          className="Button--link s1"
+          className="Button--link s1 v-btm"
           icon="info-circle-o"
           onClick={[Function]}
           title="Details"
@@ -6497,7 +6497,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="info-icon"
       >
         <Button
-          className="Button--link s1"
+          className="Button--link s1 v-btm"
           icon="info-circle-o"
           onClick={[Function]}
           title="Details"
@@ -6581,7 +6581,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="info-icon"
       >
         <Button
-          className="Button--link s1"
+          className="Button--link s1 v-btm"
           icon="info-circle-o"
           onClick={[Function]}
           title="Details"
@@ -6672,7 +6672,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
         className="info-icon"
       >
         <Button
-          className="Button--link s1"
+          className="Button--link s1 v-btm"
           icon="info-circle-o"
           onClick={[Function]}
           title="Details"
