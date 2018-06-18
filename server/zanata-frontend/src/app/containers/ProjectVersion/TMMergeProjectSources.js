@@ -111,7 +111,7 @@ class TMMergeProjectSources extends Component {
         <Search
           placeholder='input search text'
           onPressEnter={flushProjectSearch}
-          onSearch={this.projectSearchTermChange}
+          onSearch={this.projectSearchTermChanged}
           enterButton />
         <Row>
           <Col span={11} className='mr2'>
