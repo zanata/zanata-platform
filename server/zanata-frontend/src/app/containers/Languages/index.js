@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react'
+import * as ReactDOM from 'react-dom'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
@@ -77,6 +78,7 @@ class Languages extends Component {
         duration: null
       })
     }
+    this.focusToSearchInput()
   }
 
   resetSearchText = (localeId) => {
@@ -92,6 +94,13 @@ class Languages extends Component {
       searchText
     })
     this.handleUpdateSearch(searchText)
+  }
+
+  focusToSearchInput = () => {
+    let node = ReactDOM.findDOMNode(this.refs.languageSearchInput)
+    if (node && node.focus instanceof Function) {
+      node.focus()
+    }
   }
 
   render () {
@@ -152,6 +161,7 @@ class Languages extends Component {
                     <FormGroup className='searchBox'>
                       <InputGroup>
                         <FormControl type='text'
+                          ref='languageSearchInput'
                           className='textInput'
                           value={this.state.searchText}
                           onChange={this.onUpdateSearch} />
