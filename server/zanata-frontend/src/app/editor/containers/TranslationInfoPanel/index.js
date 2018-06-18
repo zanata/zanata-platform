@@ -177,7 +177,7 @@ class TranslationInfoPanel extends React.Component {
             </TabPane>
             <TabPane key={glossaryTabKey} tab={
               <span><Icon name="glossary" className="s1 gloss-tab-svg" />
-                <span className="hide-md">
+                <span className="hide-md mr2">
                   <FormattedMessage id='TranslationInfoPanel.glossaryTitle'
                     description={'Title for the Glossary Panel'}
                     defaultMessage='Glossary' />

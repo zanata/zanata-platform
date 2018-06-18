@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import Card from 'antd/lib/card'
-import 'antd/lib/card/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
 import { FormattedDate, FormattedTime } from 'react-intl'
@@ -100,32 +100,35 @@ class GlossaryTermModal extends React.Component {
         id='GlossaryTermModal'
         width={'90%'}
         footer={null}>
-        <Card className={directionClassSource + ' split-panel'}>
-          <h3>Source Term : {sourceLocale}</h3>
-          <span className="modal-term">{term.source}</span>
-        </Card>
-        <Card className={directionClassTarget + ' split-panel'}>
-          <h3>Translation : {targetLocale}</h3>
-          <span className={
-            cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
-              {isEmpty(term.target) ? '-none-' : term.target}
-          </span>
-        </Card>
-        <br />
-        <Card className="gloss-details-panel">
-          <table className={directionClassTarget + ' GlossaryDetails-table'}>
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>Part of speech</th>
-                <th>Target comment</th>
-              </tr>
-            </thead>
-            <tbody>
-              {detailsDisplay}
-            </tbody>
-          </table>
-        </Card>
+        <Row className='mb4'>
+          <Col span={12} className={directionClassSource}>
+            <h3>Source Term : {sourceLocale}</h3>
+            <span className="modal-term">{term.source}</span>
+          </Col>
+          <Col span={12} className={directionClassTarget}>
+            <h3 className='txt-info'>Translation : {targetLocale}</h3>
+            <span className={
+              cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
+                {isEmpty(term.target) ? '-none-' : term.target}
+            </span>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="mb2">
+            <table className={directionClassTarget + ' GlossaryDetails-table'}>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Part of speech</th>
+                  <th>Target comment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {detailsDisplay}
+              </tbody>
+            </table>
+          </Col>
+        </Row>
         <span className="u-pullRight u-textMeta">
         {lastModifiedRow}
         </span>

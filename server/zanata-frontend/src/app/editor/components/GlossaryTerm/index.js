@@ -89,7 +89,7 @@ class GlossaryTerm extends React.Component {
           <Button
             icon="info-circle-o"
             title="Details"
-            className="Button--link s1"
+            className="Button--link s1 v-btm"
             onClick={this.showDetails}
           />
         </td>

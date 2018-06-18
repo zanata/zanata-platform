@@ -97,7 +97,7 @@ class GlossaryTab extends React.Component {
             <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className='v-top'>
           {resultsDisplay}
         </tbody>
       </table>
