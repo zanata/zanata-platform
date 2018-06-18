@@ -67,7 +67,6 @@ const MergeOptions = (
     onPercentSelection,
     onLanguageSelection,
     onProjectSearchChange,
-    flushProjectSearch,
     onVersionCheckboxChange,
     onAllVersionCheckboxChange,
     onFromAllProjectsChange,
@@ -163,8 +162,8 @@ const MergeOptions = (
       <Col>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
-          flushProjectSearch, onAllVersionCheckboxChange,
-          onVersionCheckboxChange, onDragMoveEnd, removeProjectVersion}}
+          onAllVersionCheckboxChange, onVersionCheckboxChange, onDragMoveEnd,
+          removeProjectVersion}}
           thisProjectSlug={projectSlug}
           {...mergeOptions}
           {...{onDifferentDocIdChange, onDifferentContextChange,
@@ -195,7 +194,6 @@ MergeOptions.propTypes = {
   onPercentSelection: PropTypes.func.isRequired,
   onLanguageSelection: PropTypes.func.isRequired,
   onProjectSearchChange: PropTypes.func.isRequired,
-  flushProjectSearch: PropTypes.func.isRequired,
   onVersionCheckboxChange: PropTypes.func.isRequired,
   onAllVersionCheckboxChange: PropTypes.func.isRequired,
   onDragMoveEnd: PropTypes.func.isRequired,
@@ -324,11 +322,7 @@ class TMMergeModal extends Component {
       projectSearchTerm: textEntered
     })
   }
-  flushProjectSearch = (event) => {
-    if (event.key === 'Enter') {
-      this.throttleHandleSearch.flush()
-    }
-  }
+
   // Sorts the selectedVersion list after a reorder of the Draggable List
   onDragMoveEnd = ({oldIndex, newIndex}) => {
     this.setState((prevState, props) => ({
@@ -461,7 +455,6 @@ class TMMergeModal extends Component {
           onVersionCheckboxChange={this.onVersionCheckboxChange}
           onLanguageSelection={this.onLanguageSelection}
           onProjectSearchChange={this.onProjectSearchChange}
-          flushProjectSearch={this.flushProjectSearch}
           onDragMoveEnd={this.onDragMoveEnd}
           removeProjectVersion={this.removeProjectVersion}
         />

@@ -53,7 +53,6 @@ class TMMergeProjectSources extends Component {
     }).isRequired,
     onFromAllProjectsChange: PropTypes.func.isRequired,
     onProjectSearchChange: PropTypes.func.isRequired,
-    flushProjectSearch: PropTypes.func.isRequired,
     onVersionCheckboxChange: PropTypes.func.isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired,
     onDragMoveEnd: PropTypes.func.isRequired,
@@ -80,9 +79,8 @@ class TMMergeProjectSources extends Component {
       this.props.onProjectSearchChange(this.props.thisProjectSlug)
     }
   }
-  projectSearchTermChanged = e => {
-    const text = e.target.value
-    this.props.onProjectSearchChange(text)
+  projectSearchTermChanged = value => {
+    this.props.onProjectSearchChange(value)
   }
   toggleChange = (e) => {
     const checked = e.target.checked
@@ -95,7 +93,6 @@ class TMMergeProjectSources extends Component {
       projectVersions,
       fetchingProject,
       mergeOptions,
-      flushProjectSearch,
       onVersionCheckboxChange,
       onAllVersionCheckboxChange,
       onDragMoveEnd,
@@ -110,7 +107,6 @@ class TMMergeProjectSources extends Component {
       <span>
         <Search
           placeholder='input search text'
-          onPressEnter={flushProjectSearch}
           onSearch={this.projectSearchTermChanged}
           enterButton />
         <Row>
