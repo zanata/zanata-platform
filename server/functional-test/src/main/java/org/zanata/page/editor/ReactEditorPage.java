@@ -21,8 +21,10 @@
 package org.zanata.page.editor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -52,19 +54,38 @@ public class ReactEditorPage extends CorePage {
 
     public ReactEditorPage switchToEditorWindow() {
         log.info("Switching to new window (from {})", getDriver().getWindowHandle());
+        String mainHandle = getDriver().getWindowHandle();
         waitForAMoment().withMessage("second window to be present")
                 .until(it -> getAllWindowHandles().size() > 1);
-        Iterator<String> allWindows = getAllWindowHandles().iterator();
-        boolean foundEditor = false;
-        while (allWindows.hasNext()) {
-            getDriver().switchTo().window(allWindows.next());
-            if (isReactEditor()) {
-                foundEditor = true;
-                log.info("React Editor Window: {}", getDriver().getWindowHandle());
-                break;
+        Set<String> allWindowHandles = new HashSet<>(getAllWindowHandles());
+        log.info("main window handle: {}", mainHandle);
+        for (Iterator<String> iter = allWindowHandles.iterator(); iter.hasNext(); ) {
+            String handle = iter.next();
+            if (handle.equals(mainHandle)) {
+                log.info("stripping main handle: {}", mainHandle);
+                iter.remove();
             }
         }
-        assert foundEditor;
+        String handle = allWindowHandles.stream()
+                .filter(it -> !it.equals(mainHandle))
+                .findAny()
+                .get();
+        log.info("found target window: {}", handle);
+        waitForAMoment().withMessage("waiting for window")
+                .until(it -> {
+                    getDriver().switchTo().window(handle);
+                    return getDriver().getWindowHandle().equals(handle);
+                });
+        waitForPageSilence();
+        waitForAMoment().withMessage("waiting for editor")
+                .until(it -> {
+                    if (isReactEditor()) {
+                        log.info("React Editor Window: {}",
+                                getDriver().getWindowHandle());
+                        return true;
+                    }
+                    return false;
+                });
         return new ReactEditorPage(getDriver());
     }
 

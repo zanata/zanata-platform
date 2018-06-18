@@ -133,6 +133,11 @@ public class SideMenuView extends Composite implements SideMenuDisplay {
 
     @Override
     public void setNotificationText(int count, Severity severity) {
+        if (count == 0) {
+            notificationLabel.addStyleName("is-hidden");
+        } else {
+            notificationLabel.removeStyleName("is-hidden");
+        }
         notificationLabel.setText(String.valueOf(count));
     }
 
