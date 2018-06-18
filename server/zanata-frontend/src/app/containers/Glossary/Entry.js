@@ -5,7 +5,7 @@ import * as PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
-import { EditableText, LoaderText } from '../../components'
+import { EditableText } from '../../components'
 import { Row, Table } from 'react-bootstrap'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
@@ -92,11 +92,9 @@ class Entry extends Component {
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
       <Button type='primary' className='btn-primary btn-sm'
-        disabled={isSaving} aria-label='button'
+        disabled={isSaving} aria-label='button' loading={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
-        <LoaderText loading={isSaving} loadingText='Updating'>
-          Update
-        </LoaderText>
+        Update
       </Button>
     )
 

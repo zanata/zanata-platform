@@ -102,7 +102,7 @@ class TMMergeProjectSources extends Component {
             </InputGroup.Addon>
             <FormControl type='text'
               value={mergeOptions.projectSearchTerm}
-              className='versionMergeSearch-input'
+              className='versionMergeSearch-input textInput'
               onChange={this.projectSearchTermChanged}
               onKeyDown={flushProjectSearch}
             />

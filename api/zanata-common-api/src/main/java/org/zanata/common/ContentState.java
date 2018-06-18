@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.zanata.common;
 
 import java.util.Arrays;
@@ -44,5 +41,22 @@ public enum ContentState {
 
     public boolean isApproved() {
         return this == Approved;
+    }
+
+    /**
+     * Parses a ContentState value from a string case-insensitively.
+     *
+     * @param name
+     *            The string to parse.
+     * @return The parsed ContentState enum value, or null if the string did not
+     *         match a value.
+     */
+    public static ContentState valueOfIgnoreCase(String name) {
+        for (ContentState state : values()) {
+            if (state.toString().equalsIgnoreCase(name)) {
+                return state;
+            }
+        }
+        return null;
     }
 }

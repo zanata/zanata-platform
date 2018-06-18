@@ -85,15 +85,6 @@ class EntryModal extends Component {
       handleEntryModalDisplay(false)
     }
 
-    const updateBtn = isSaving
-      ? (<Button className='btn-primary' aria-label='button'
-        type='primary' disabled />)
-      : (<Button className='btn-primary' aria-label='button'
-        type='primary' onClick={onSubmit}
-        disabled={!canUpdate}>
-        Update
-      </Button>)
-
     return (
       <Modal
         title={
@@ -117,9 +108,14 @@ class EntryModal extends Component {
           <React.Fragment>
             <Button className='btn-link' aria-label='button'
               onClick={onCancel}>
-            Cancel
+              Cancel
             </Button>
-            {updateBtn}
+            <Button className='btn-primary' aria-label='button'
+              type='primary' onClick={onSubmit}
+              loading={isSaving}
+              disabled={!canUpdate}>
+              Update
+            </Button>
           </React.Fragment>
         }>
         <Form layout='vertical'>

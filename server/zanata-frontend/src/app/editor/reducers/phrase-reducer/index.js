@@ -1,4 +1,5 @@
 // @ts-nocheck
+import React from 'react'
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import phraseFilterReducer, { defaultState as defaultFilterState }
@@ -8,6 +9,7 @@ import {
   CLAMP_PAGE,
   UPDATE_PAGE
 } from '../../actions/controls-header-actions'
+import { SEVERITY } from '../../../actions/common-actions'
 import { COPY_GLOSSARY_TERM } from '../../actions/glossary-action-types'
 import {
   CANCEL_EDIT,
@@ -22,6 +24,7 @@ import {
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
   SAVE_FINISHED,
+  SAVE_FAILED,
   SAVE_INITIATED,
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
@@ -39,7 +42,9 @@ import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
 } from '../../actions/phrase-navigation-actions'
-import { findIndex } from 'lodash'
+import { findIndex, isEmpty } from 'lodash'
+
+/* eslint-disable max-len */
 
 // FIXME this reducer is too big. See if it can be split up.
 
@@ -61,6 +66,7 @@ export const defaultState = {
 
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
+  notification: undefined,
   selectedPhraseId: undefined,
   /* Cursor/selection position within the currently editing translation, used
    * for inserting terms from glossary etc. */
@@ -192,6 +198,30 @@ export const phraseReducer = handleActions({
         status: {$set: status},
         revision: {$set: revision}
       }),
+
+  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo, response } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Save Translation Failed`,
+          description:
+            <p>
+            Unable to save phraseId {phraseId}
+            {isEmpty(saveInfo.translations)
+                ? null
+                : ` as ${saveInfo.translations[0]}`}
+              <br />
+            Status {response.status} {response.statusText}
+            </p>
+        }
+      },
+      detail: {
+        [phraseId]: {
+          inProgressSave: { $set: undefined }
+        }
+      }
+    }),
 
   [SAVE_INITIATED]: (state, {getState, payload: {phraseId, saveInfo}}) =>
     updatePhrase(state, getSelectedDocId(getState()), phraseId,
