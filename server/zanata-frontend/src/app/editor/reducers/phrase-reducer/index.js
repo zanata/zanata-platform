@@ -26,6 +26,7 @@ import {
   SAVE_FINISHED,
   SAVE_FAILED,
   SAVE_INITIATED,
+  SAVE_CONFLICT,
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
@@ -199,57 +200,53 @@ export const phraseReducer = handleActions({
         revision: {$set: revision}
       }),
 
-  [SAVE_FAILED]: (state, action) => {
-    const { phraseId, saveInfo, response } = action.payload
-    // Conflict status (409) detected
-    if (response.status === 409) {
-      update(state, {
-        notification: {
-          $set: {
-            severity: SEVERITY.ERROR,
-            message: `Save Translation Failed`,
-            description:
-              <p>
-                Unable to save phraseId {phraseId}
-                {isEmpty(saveInfo.translations)
-                  ? null
-                  : ` as ${saveInfo.translations[0]}`}
-                <br />
-                Status {response.status} {response.statusText}
-              </p>
-          }
-        },
-        detail: {
-          [phraseId]: {
-            inProgressSave: { $set: undefined }
-          }
-        }
-      })
-    } else {
-      update(state, {
-        notification: {
-          $set: {
-            severity: SEVERITY.ERROR,
-            message: `Save Translation Failed`,
-            description:
-              <p>
+  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo, response } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Save Translation Failed`,
+          description:
+            <p>
               Unable to save phraseId {phraseId}
               {isEmpty(saveInfo.translations)
-                  ? null
-                  : ` as ${saveInfo.translations[0]}`}
-                <br />
+                ? null
+                : ` as ${saveInfo.translations[0]}`}
+              <br />
               Status {response.status} {response.statusText}
-              </p>
-          }
-        },
-        detail: {
-          [phraseId]: {
-            inProgressSave: { $set: undefined }
-          }
+            </p>
         }
-      })
-    }
-  },
+      },
+      detail: {
+        [phraseId]: {
+          inProgressSave: { $set: undefined }
+        }
+      }
+    }),
+
+  [SAVE_CONFLICT]: (state, { payload: { phraseId, saveInfo, response } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Save Translation Failed`,
+          description:
+            <p>
+              Unable to save phraseId {phraseId}
+              {isEmpty(saveInfo.translations)
+                ? null
+                : ` as ${saveInfo.translations[0]}`}
+              <br />
+              Status {response.status} {response.statusText}
+            </p>
+        }
+      },
+      detail: {
+        [phraseId]: {
+          inProgressSave: { $set: undefined }
+        }
+      }
+    }),
 
   [SAVE_INITIATED]: (state, {getState, payload: {phraseId, saveInfo}}) =>
     updatePhrase(state, getSelectedDocId(getState()), phraseId,

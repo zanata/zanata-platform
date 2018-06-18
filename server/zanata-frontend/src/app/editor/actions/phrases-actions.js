@@ -15,7 +15,8 @@ import {
   SAVE_INITIATED,
   PENDING_SAVE_INITIATED,
   SAVE_FINISHED,
-  SAVE_FAILED
+  SAVE_FAILED,
+  SAVE_CONFLICT
 } from './phrases-action-types'
 import {
   defaultSaveStatus,
@@ -142,6 +143,13 @@ const saveFailed = createAction(SAVE_FAILED,
     response
   }))
 
+const saveConflict = createAction(SAVE_CONFLICT,
+  (phraseId, saveInfo, response) => ({
+    phraseId,
+    saveInfo,
+    response
+  }))
+
 export function savePhraseWithStatus (phrase, status, reviewComment) {
   return (dispatch, getState) => {
     // save dropdowns (and others) should always close when save starts.
@@ -193,7 +201,11 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
         .then(response => {
           if (isErrorResponse(response)) {
             console.error('Failed to save phrase')
-            dispatch(saveFailed(phrase.id, saveInfo, response))
+            response.status === 409
+              ? response.json().then((json) => {
+                dispatch(saveConflict(phrase.id, saveInfo, json))
+              })
+              : dispatch(saveFailed(phrase.id, saveInfo, response))
           } else {
             response.json().then(({ revision, status }) => {
               dispatch(saveFinished(phrase.id, status, revision)).then(
