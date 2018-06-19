@@ -15,26 +15,41 @@ import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import Textarea from 'react-textarea-autosize'
 
 interface ConcurrentModalProps {
-  show: boolean,
-  selectedPhrase: any,
   closeConcurrentModal: () => void
+  revision?: number
+  saveResolveConflict: () => void
+  show: boolean
+  selectedPhrase?: any
+  transUnitID: number
+  localeId: string
 }
 
 class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
   public static propTypes = {
-    show: PropTypes.bool,
+    closeConcurrentModal: PropTypes.func,
+    // Initial flyweight fetch of phrases does not include the revision detail
+    revision: PropTypes.number,
+    saveResolveConflict: PropTypes.func.isRequired
     selectedPhrase: PropTypes.any,
-    closeConcurrentModal: PropTypes.func
+    show: PropTypes.bool.isRequired,
+    transUnitID: PropTypes.number.isRequired,
+    localeId: PropTypes.string.isRequired,
   }
   public render () {
-    const { show, selectedPhrase, closeConcurrentModal } = this.props
+    const {
+      closeConcurrentModal, revision, saveResolveConflict, show, selectedPhrase, transUnitID, localeId
+    } = this.props
     if (!selectedPhrase.conflict) {
       return null
     }
-    const original = selectedPhrase.conflict.response.content
-    const latest = selectedPhrase.conflict.saveInfo.translations[0]
+    const original = selectedPhrase.conflict.saveInfo
+    const latest = selectedPhrase.conflict.response
     const lastModifiedTime = new Date(2016, 12, 4, 2, 19)
     const onCancel = () => closeConcurrentModal()
+    const saveOriginal = () => {
+      // const updatedRevision = {...original, revision: latest.revision + 1}
+      saveResolveConflict(latest, original)
+    }
     return (
       /* eslint-disable max-len */
       <Modal
@@ -54,8 +69,7 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
             <span className='revisionBox'>
               <Textarea
                 className='form-control'
-                value={latest}
-                placeholder={latest} />
+                value={latest.content}/>
             </span>
             <span className='u-floatLeft'>
               <DateAndTimeDisplay dateTime={lastModifiedTime}
@@ -74,8 +88,7 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
             <span className='revisionBox'>
               <Textarea
                 className='form-control'
-                value={original}
-                placeholder={original} />
+                value={original.translations[0]} />
             </span>
             <span className='u-sizeHeight-1_1-2'>
               <span className='u-floatLeft'>
@@ -84,6 +97,7 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
               </span>
               <span className='u-floatRight'>
                 <Button
+                  onClick={saveOriginal}
                   className='EditorButton Button--primary u-rounded'>
                   Use original
                 </Button>

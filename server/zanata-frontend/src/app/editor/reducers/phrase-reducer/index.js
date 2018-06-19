@@ -27,6 +27,7 @@ import {
   SAVE_FAILED,
   SAVE_INITIATED,
   SAVE_CONFLICT,
+  SAVE_CONFLICT_RESOLVED,
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
@@ -232,13 +233,31 @@ export const phraseReducer = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: 'Concurrent edit detected',
-          description: 'Reset value for current row, please resolve conflicts'
+          description: 'Please resolve conflicts'
         }
       },
       detail: {
         [phraseId]: {
+          conflict: { $set: { response, saveInfo } },
+          inProgressSave: { $set: undefined }
+        }
+      }
+    }),
+
+  [SAVE_CONFLICT_RESOLVED]: (state, { getState, payload: { phraseId, status, revision } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.INFO,
+          message: 'Concurrent edit successfully resolved',
+          duration: 3.5
+        }
+      },
+      detail: {
+        [phraseId]: {
+          conflict: { $set: undefined },
           inProgressSave: { $set: undefined },
-          conflict: { $set: { response, saveInfo } }
+          translations: { $set: state.detail[phraseId].newTranslations }
         }
       }
     }),

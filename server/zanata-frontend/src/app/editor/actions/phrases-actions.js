@@ -17,6 +17,7 @@ import {
   SAVE_FINISHED,
   SAVE_FAILED,
   SAVE_CONFLICT,
+  SAVE_CONFLICT_RESOLVED,
   TOGGLE_CONCURRENT_MODAL
 } from './phrases-action-types'
 import {
@@ -151,7 +152,49 @@ const saveConflict = createAction(SAVE_CONFLICT,
     response
   }))
 
+const saveConflictResolved = createAction(SAVE_CONFLICT_RESOLVED,
+  (phraseId, saveInfo, response) => ({
+    phraseId,
+    saveInfo,
+    response
+  }))
+
 export const toggleConcurrentModal = createAction(TOGGLE_CONCURRENT_MODAL)
+
+export function saveResolveConflict (latest, original) {
+  return (dispatch, getState) => {
+    const stateBefore = getState()
+    const latestData = {...latest, revision: (latest.revision + 1)}
+    const phrase = {
+      ...latest,
+      ...original,
+      translations: original.translations,
+      revision: (latest.revision + 1)
+    }
+    savePhrase(latestData, phrase)
+      .then(response => {
+        if (isErrorResponse(response)) {
+          console.error('Failed to save phrase')
+          dispatch(saveFailed(phrase.id, phrase, response))
+        } else {
+          response.json().then(({ revision, status }) => {
+            dispatch(saveConflictResolved(phrase.id, status, revision)).then(
+              dispatch(fetchTransUnitHistory(
+                phrase.localeId,
+                phrase.id,
+                stateBefore.context.projectSlug,
+                stateBefore.context.versionSlug
+              )).then(
+                fetchStatisticsInfo(dispatch, getState().context.projectSlug,
+                  getState().context.versionSlug, getState().context.docId,
+                  getState().context.lang)
+              )
+            )
+          })
+        }
+      })
+  }
+}
 
 export function savePhraseWithStatus (phrase, status, reviewComment) {
   return (dispatch, getState) => {
