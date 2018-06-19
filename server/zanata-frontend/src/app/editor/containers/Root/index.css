@@ -20,6 +20,26 @@
   --Editor-border-radius: 0.25rem;
 }
 
+/* Antd overrides */
+
+.ant-checkbox-checked .ant-checkbox-inner,
+.ant-checkbox-indeterminate .ant-checkbox-inner {
+  background-color: var(--Editor-color-bright);
+  border-color: var(--Editor-color-bright);
+}
+
+/* ------------- */
+
+.transparent {
+  border: transparent !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+a {
+  color: var(--Editor-color-bright);
+}
+
 input, textarea, select, button  {
   font-size: 1rem;
 }
@@ -281,7 +301,7 @@ li.DocName span.ellipsis {
   background-repeat: no-repeat;
   background-size: var(--rhythm) 100%;
   min-height: 100%;
-  padding: calc(var(--Editor-rhythm) * 2) 0;
+  padding: 4rem 0;
 }
 
 .Editor-currentDoc {
@@ -672,8 +692,9 @@ h4.modal-title {
 }
 
 .Editor-mainNav .Dropdown-toggleIcon {
-  vertical-align: sub;
+  vertical-align: middle;
 }
+
 .icon-history svg, .icon-comment svg {
   vertical-align: sub;
 }
@@ -979,7 +1000,6 @@ label span.n1 {
 .alert-danger .s2 svg {
   vertical-align: middle;
   padding-right: 0.5rem;
-
 }
 
 .alert-danger strong {
@@ -1019,8 +1039,8 @@ label span.n1 {
 
 @media (--gtemd-viewport) {
   .Editor-translations {
-    background: linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
-    linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
+    background: linear-gradient(to right,var(--Editor-color-status-bg),var(--Editor-color-status-bg)),
+    linear-gradient(to right,var(--Editor-color-translation-bg),var(--Editor-color-translation-bg));
     background-position: center, right;
     background-repeat: no-repeat;
     background-size: var(--rhythm) 100%, 50% 100%;
@@ -1150,5 +1170,23 @@ label span.n1 {
 
   #SidebarEditor-tabsPane1 table tbody tr {
     display: table-row !important;
+  }
+}
+
+.ant-btn {
+  border-color: transparent !important
+}
+
+.ant-btn-lg {
+  font-size: 1.4rem !important;
+}
+
+.TransUnit-panelFooter ul.EditorDropdown-content {
+  background-color: transparent !important;
+}
+
+@media (min-width:609px) {
+  .Editor-translations {
+    padding: 2rem 0;
   }
 }

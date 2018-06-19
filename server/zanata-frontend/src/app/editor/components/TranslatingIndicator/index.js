@@ -22,7 +22,6 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../../components'
-import { Row } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
 
 /**
@@ -76,12 +75,10 @@ class TranslatingIndicator extends React.Component {
     return (
       /* eslint-disable max-len */
       <button className='Link--neutral u-sPV-1-6 u-floatLeft u-sMR-1-4'>
-        <Row>
-          <Icon name={iconName} className={iconStyle} /> <span
-            className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
-            {modeMessage}
-          </span>
-        </Row>
+        <Icon name={iconName} className={iconStyle} /> <span
+          className='u-ltemd-hidden TransIndicator u-sMR-1-4'>
+          {modeMessage}
+        </span>
       </button>
       /* eslint-enable max-len */
     )

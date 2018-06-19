@@ -1,11 +1,22 @@
 @import "~antd/dist/antd.less";
 @import "./ant-theme-vars.less";
 
+// antd style overrides
+
 // Override new-zanata modal namespace styles
 .ant-modal-close {
   border: none !important;
   background-color: initial !important;
   padding: initial !important;
+}
+
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
+  vertical-align: inherit;
+  width: inherit;
+}
+
+.ant-form-inline .ant-form-item {
+  display: flex;
 }
 
 .ant-modal-title {
@@ -34,4 +45,10 @@ input.react-autosuggest__input {
   display: flex;
   flex-direction: row;
   align-items: baseline;
+}
+
+// needed for new-zanata overrides on button styling
+.ant-btn-primary {
+  background-color: @primary-color;
+  color: @normal-color
 }

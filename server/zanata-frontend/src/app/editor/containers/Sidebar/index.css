@@ -38,7 +38,7 @@ const margin = this.props.headerOpen ? '6rem' : '3rem' */
 
 .sidebar-editor-contract {
   height: 91% !important;
-  margin-top: 6rem !important;
+  margin-top: 8.4rem !important;
 }
 
 .sidebar-editor-expand {
@@ -464,6 +464,10 @@ select.SettingsSelect {
   padding-top: 0.5rem;
 }
 
+h1.SidebarEditor-heading {
+  font-size: 1rem;
+}
+
 h1.SidebarEditor-heading button svg {
   fill: var(--Sidebar-panel-dark) !important;
 }
@@ -481,7 +485,6 @@ h1.SidebarEditor-heading button svg {
   color: var(--Sidebar-color-text);
   margin-top: 1rem;
   padding-bottom: 0.375rem;
-
 }
 
 .RevisionBox img {
@@ -513,7 +516,7 @@ img.ActivityAvatar {
   width: 1.2rem;
 }
 
-.RevisionBox .well {
+.RevisionBox .card {
   background-color: var(--Sidebar-well);
   margin-left: 0.75rem;
   padding: 0.75rem;
@@ -535,7 +538,7 @@ img.ActivityAvatar {
   border-left: solid 5px var(--Editor-color-approved);
 }
 
-.RevisionBox .well-sm {
+.RevisionBox .ant-card {
   background-color: rgba(255, 255, 255, 0.35) !important;
 }
 
@@ -588,6 +591,22 @@ h3.SettingsHeading {
   vertical-align: sub;
 }
 
+.ant-tabs {
+  color: var(--Sidebar-panel-dark);
+}
+
+.ant-tabs-nav .ant-tabs-tab-active {
+  color: var(--Sidebar-color-text);
+}
+
+.ant-tabs-nav .ant-tabs-tab-hover {
+  color: var(--Sidebar-color-highlight) !important;
+}
+
+.ant-tabs-ink-bar {
+  background-color: var(--Sidebar-color-text);
+}
+
 /* Media queries */
 
 @media (max-width: 740px) {
@@ -611,5 +630,17 @@ h3.SettingsHeading {
   }
   .InlineSearch .form-group select.form-control {
     vertical-align: sub;
+  }
+}
+
+@media (min-width:609px) {
+ .sidebar-editor-contract {
+   margin-top: 5.4rem !important;
+ }
+}
+
+@media (min-width:960px) and (max-width: 995px) {
+  .sidebar-editor-contract {
+    margin-top: 8.4rem !important;
   }
 }

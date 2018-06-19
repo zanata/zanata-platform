@@ -10,25 +10,10 @@
 @highlight-color: @info-color;
 @warning-color: #ffa800;
 @normal-color: #d9d9d9;
-
+@unsure-color: #E9DF1B;
 @layout-body-background: #fff;
 @label-color: @primary-color;
 @btn-primary-bg: @primary-color;
-
-// needed for new-zanata overrides on button styling
-.ant-btn-primary {
-  background-color: @primary-color;
-  color: @normal-color
-}
-
-.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
-  vertical-align: inherit;
-  width: inherit;
-}
-
-.ant-form-inline .ant-form-item {
-  display: flex;
-}
 
 // Utility classes not included in Tachiyons
 //  https://github.com/tachyons-css/tachyons/blob/master/css/tachyons.css
@@ -73,6 +58,9 @@
   background-color: @warning-color;
 }
 
+.bg-unsure {
+  background-color: @unsure-color;
+}
 .bg-error {
   background-color: @error-color;
 }
