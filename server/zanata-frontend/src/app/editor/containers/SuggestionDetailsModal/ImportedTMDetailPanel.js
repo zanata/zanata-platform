@@ -1,14 +1,15 @@
 // @ts-nocheck
-/**
- * A react-bootstrap Panel that displays details for an IMPORTED_TM suggestion
- * match.
- */
 
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../../components'
-import { Panel, Label, Row } from 'react-bootstrap'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 import { MATCH_TYPE } from '../../utils/suggestion-util'
 
@@ -36,10 +37,9 @@ class ImportedTMDetailPanel extends Component {
     const lastChangedDate = new Date(lastChanged)
 
     return (
-      <Panel
-        header={header}
-        {...props}
-        bsStyle="info">
+      <Card
+        title={header}
+        {...props}>
         <div className="TransUnit-details">
           <ul className="u-listInline u-sMB-1-4">
             <li>
@@ -49,7 +49,7 @@ class ImportedTMDetailPanel extends Component {
                 </span>
               </Row>
             </li>
-            <Label bsStyle="primary">Imported</Label>
+            <Tag color="blue">Imported</Tag>
           </ul>
         </div>
         <ul>
@@ -67,7 +67,7 @@ class ImportedTMDetailPanel extends Component {
             </ul>
           </li>
         </ul>
-      </Panel>
+      </Card>
     )
   }
 }

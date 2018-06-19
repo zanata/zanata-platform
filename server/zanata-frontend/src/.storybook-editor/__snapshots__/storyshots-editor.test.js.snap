@@ -43,36 +43,41 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     </span>
   </p>
   <div
-    className="well-approved well"
+    className="ant-card well-approved"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -142,36 +147,41 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     </span>
   </p>
   <div
-    className="well"
+    className="ant-card"
   >
-    What in the world does this mean?
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      What in the world does this mean?
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -248,36 +258,41 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     </span>
   </p>
   <div
-    className="well"
+    className="ant-card well-fuzzy"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -356,16 +371,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -375,42 +433,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -489,16 +514,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -508,42 +576,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -622,16 +657,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -641,42 +719,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -753,36 +798,41 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     </span>
   </p>
   <div
-    className="well-translated well"
+    className="ant-card well-translated"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-project\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -818,14 +868,13 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
 
 exports[`Editor Storyshots ActivitySelectList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary mr2 mb2 is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -846,12 +895,11 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary mr2 mb2"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -872,12 +920,11 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary mr2 mb2"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -898,7 +945,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
@@ -5587,53 +5634,44 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
 
 exports[`Editor Storyshots CommentBox default 1`] = `
 <div
-  className="TransUnit-commentBox"
+  className="TransUnit-commentBox mb4"
 >
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formControlsTextarea"
+  <span>
+    <span
+      className=""
     >
-      <span
-        className=""
-      >
-        <svg
-          className="s0"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-comment\\" />",
-            }
+      <svg
+        className="s0"
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-comment\\" />",
           }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
           }
-        />
-      </span>
-       Post a comment
-    </label>
-    <br />
-    <textarea
-      className="form-control"
-      id="formControlsTextarea"
-      maxLength={undefined}
-      onChange={[Function]}
-      placeholder="..."
-      type={undefined}
-      value=""
-    />
-  </div>
-  <button
-    className="EditorButton Button--small u-rounded Button--primary u-pullRight btn btn-default"
+        }
+      />
+    </span>
+     Post a comment
+  </span>
+  <br />
+  <textarea
+    className="ant-input"
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="..."
+    style={Object {}}
+    value=""
+  />
+  <Button
+    className="EditorButton Button--small u-rounded Button--primary u-pullRight mt2"
     disabled={true}
     onClick={[Function]}
-    type="button"
   >
     Post comment
-  </button>
+  </Button>
 </div>
 `;
 
@@ -5918,9 +5956,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
-<table
-  className="table"
->
+<table>
   <thead>
     <tr>
       <th>
@@ -5943,15 +5979,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -5965,21 +6002,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -5995,48 +6033,29 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6044,15 +6063,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6066,21 +6086,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Hospital
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6096,48 +6117,29 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6145,15 +6147,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6167,21 +6170,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Doctor
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6197,48 +6201,29 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
   </tbody>
@@ -6246,9 +6231,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
-<table
-  className="table"
->
+<table>
   <thead>
     <tr>
       <th>
@@ -6271,15 +6254,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6293,21 +6277,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6323,48 +6308,29 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Krankenwagen
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6372,15 +6338,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6394,21 +6361,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Hospital
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6424,48 +6392,29 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Krankenhaus
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
     <tr>
@@ -6473,15 +6422,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6495,21 +6445,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Doctor
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6525,48 +6476,29 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Arzt
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
   </tbody>
@@ -6574,24 +6506,23 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
-<table
-  className="table"
->
+<table>
   <tbody>
     <tr>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6605,21 +6536,22 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6635,48 +6567,29 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
               Krankenwagen
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
           onClick={[Function]}
           title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+        />
       </td>
     </tr>
   </tbody>
@@ -6847,14 +6760,13 @@ exports[`Editor Storyshots GlossaryTermModal with 3 detail items 1`] = `
 
 exports[`Editor Storyshots LanguageSelectList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--primary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--primary is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -6875,12 +6787,11 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     Current
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--primary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--primary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -6901,12 +6812,11 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--primary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--primary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -6927,7 +6837,7 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     Source
-  </button>
+  </Button>
 </div>
 `;
 
@@ -7196,11 +7106,10 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
 `;
 
 exports[`Editor Storyshots SelectButton active 1`] = `
-<button
-  className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-  disabled={false}
+<Button
+  className="Button Button--small u-rounded Button--secondary is-active"
   onClick={[Function]}
-  type="button"
+  size="small"
 >
   <span
     className=""
@@ -7221,15 +7130,14 @@ exports[`Editor Storyshots SelectButton active 1`] = `
   </span>
    
   All
-</button>
+</Button>
 `;
 
 exports[`Editor Storyshots SelectButton default 1`] = `
-<button
-  className="Button Button--small u-rounded Button--secondary btn btn-default"
-  disabled={false}
+<Button
+  className="Button Button--small u-rounded Button--secondary"
   onClick={[Function]}
-  type="button"
+  size="small"
 >
   <span
     className=""
@@ -7250,19 +7158,18 @@ exports[`Editor Storyshots SelectButton default 1`] = `
   </span>
    
   All
-</button>
+</Button>
 `;
 
 exports[`Editor Storyshots SelectButtonList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7283,12 +7190,11 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7309,12 +7215,11 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7335,20 +7240,19 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
 exports[`Editor Storyshots SelectButtonList first button active 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7369,12 +7273,11 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7395,12 +7298,11 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7421,7 +7323,7 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
@@ -7462,11 +7364,25 @@ exports[`Editor Storyshots TextDiff default 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots Validation default 1`] = `
+exports[`Editor Storyshots Validation All Validators 1`] = `
 <div>
   <h2>
-    Validation Messages Default
+    Validation Messages for HtmlXmlTagValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="<group><users><user>1</user></users></group>"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="<group><users><user>1</user></users><foo></group>"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7489,14 +7405,33 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 0, Errors: 1
+          <span>
+             
+            <option>
+              Errors: 1
+            </option>
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages with Description Tooltip
+    Validation Messages for JavaVariablesValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable {0}"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7519,14 +7454,34 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 1, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages Warnings
+    Validation Messages for NewLineLeadTrailValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="
+Testing string with leading new line"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Different string with the newline removed"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7549,14 +7504,33 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 2, Errors: 0
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages Errors
+    Validation Messages for PrintfVariablesValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable %1v"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7579,14 +7553,33 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 0, Errors: 2
+          <span>
+            <option>
+              Warnings: 2
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>
   </div>
   <h2>
-    Validation Messages Mixed
+    Validation Messages for PrintXSIExtensionValidation
   </h2>
+  <p>
+    source: 
+    <input
+      value="%s: Read error at byte %s, while reading %lu byte"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="%1$s：Read error while reading %3$lu bytes，at %2$s"
+    />
+     
+  </p>
   <div
     className="TextflowValidation"
   >
@@ -7609,7 +7602,110 @@ exports[`Editor Storyshots Validation default 1`] = `
           <i
             className="arrow"
           />
-          Warnings: 2, Errors: 2
+          <span>
+            <option>
+              Warnings: 2
+            </option>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for TabValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="with two		tabs"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="with one	tab"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for XMLEnitityValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Source string"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Target string: bla bla &test"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+            <option>
+              Warnings: 1
+            </option>
+             
+          </span>
         </div>
       </div>
     </div>

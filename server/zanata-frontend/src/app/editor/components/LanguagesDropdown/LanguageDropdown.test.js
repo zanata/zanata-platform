@@ -4,7 +4,6 @@ import * as ReactDOMServer from 'react-dom/server'
 import LanguagesDropdown from '.'
 import Dropdown from '../Dropdown'
 import { Icon } from '../../../components'
-import { Row } from 'react-bootstrap'
 
 describe('LanguageDropdownTest', () => {
   it('LanguagesDropdown markup', () => {
@@ -50,12 +49,10 @@ describe('LanguageDropdownTest', () => {
                 isOpen={true}>
         <Dropdown.Button>
           <button className="Link--invert">
-            <Row>
-              Khuzdul
-              <div className="u-sML-1-8 Dropdown-toggleIcon">
-                <Icon name="chevron-down" className="s1" />
-              </div>
-            </Row>
+            Khuzdul
+            <div className="u-sML-1-8 Dropdown-toggleIcon">
+              <Icon name="chevron-down" className="s1" />
+            </div>
           </button>
         </Dropdown.Button>
         <Dropdown.Content>

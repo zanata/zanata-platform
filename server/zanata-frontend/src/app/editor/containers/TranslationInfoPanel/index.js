@@ -4,8 +4,6 @@ import { setSidebarVisibility } from '../../actions'
 import { toggleGlossary, toggleActivity } from '../../actions/header-actions'
 import { getGlossaryVisible, getActivityVisible } from '../../reducers'
 import { postReviewComment } from '../../actions/review-trans-actions'
-import { Tabs, FormGroup, InputGroup, InputGroupAddon,
-  FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
 import { FormattedMessage } from 'react-intl'
@@ -13,12 +11,22 @@ import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
 import DetailsPane from './DetailsPane'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+import Tabs from 'antd/lib/tabs'
+import 'antd/lib/tabs/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
 
-/* React Bootstrap Tab keys for tracking active Tab */
-const activityTabKey = 1
-const glossaryTabKey = 2
+/* Tab keys for tracking active Tab */
+const activityTabKey = '1'
+const glossaryTabKey = '2'
+const { TextArea } = Input
+const TabPane = Tabs.TabPane
 
 const historyShape = PropTypes.shape({
   contents: PropTypes.arrayOf(PropTypes.string),
@@ -120,44 +128,22 @@ class TranslationInfoPanel extends React.Component {
   /* URL of the selected phrase, with copy button. */
   phraseLink = () => {
     return (
-      <FormGroup className="trans-link">
-        <InputGroup>
-          <InputGroupAddon>
+      <span className="trans-link">
+        <span>
+          <Input addonAfter={
             <Icon name="copy"
-              className="s1" />
-          </InputGroupAddon>
-          <FormControl type="text" />
-        </InputGroup>
-      </FormGroup>
+              className="s1" />}
+          />
+          <TextArea />
+        </span>
+      </span>
     )
   }
   render () {
     const { activityVisible, glossaryVisible, glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
-      // TODO kgough display as a badge instead of text in parens
-      ? <span className="badge">{this.props.glossaryCount}</span>
+      ? <Tag color="#20718A">{this.props.glossaryCount}</Tag>
       : undefined
-    const glossaryTitle = (
-      <span>
-        <Icon name="glossary" className="s1" parentClassName="gloss-tab-svg" />
-        <span className="hide-md">
-          <FormattedMessage id='TranslationInfoPanel.glossaryTitle'
-            description={'Title for the Glossary Panel'}
-            defaultMessage='Glossary' />
-        </span>{glossaryCountDisplay}
-      </span>
-    )
-    // Use this when activity tab is activated
-    const activityTitle = (
-      <span>
-        <Icon name="clock" className="s1 gloss-tab-svg" />
-        <span className="hide-md">
-          <FormattedMessage id='TranslationInfoPanel.activityTitle'
-            description={'Title for the Activity Panel'}
-            defaultMessage='Activity' />
-        </span>
-      </span>
-    )
     /* Activity Panel is open as default case, but not always visible.
      * eg: when entire info panel is hidden. */
     const activePanelKey =
@@ -173,9 +159,9 @@ class TranslationInfoPanel extends React.Component {
               description={'Title for the Details Panel'}
               defaultMessage='Details' />
           </span>
-          <span className="s1 u-pullRight">
-            <Button bsStyle="link" onClick={this.props.close}>
-              <Icon name="cross" />
+          <span className="u-pullRight s1">
+            <Button className="btn-link transparent" onClick={this.props.close}>
+              <Icon name='cross' />
             </Button>
           </span>
         </h1>
@@ -186,24 +172,43 @@ class TranslationInfoPanel extends React.Component {
             selectedPhrase={this.props.selectedPhrase}
             isRTL={this.props.isRTL} />
         </div>
-        <Tabs activeKey={activePanelKey}
-          onSelect={this.handleSelectTab}
-          id="SidebarEditor-tabsPane1">
-          <Tab eventKey={activityTabKey} title={activityTitle}>
-            <ActivityTab
-              // @ts-ignore
-              activeKey={this.state.key}
-              transHistory={this.props.transHistory}
-              selectedActivites={this.state.selectedActivites}
-              selectActivityTypeFilter={this.selectActivityTypeFilter}
-              postComment={this.postComment} />
-          </Tab>
-          <Tab eventKey={glossaryTabKey} title={glossaryTitle}>
-            <GlossaryTab
-              // @ts-ignore
-              activeKey={this.state.key} />
-          </Tab>
-        </Tabs>
+
+        <span id="SidebarEditor-tabsPane1">
+          <Tabs defaultActiveKey={activePanelKey}
+            onTabClick={this.handleSelectTab}>
+            <TabPane key={activityTabKey} tab={
+              <span>
+                <Icon name="clock" className="s1 gloss-tab-svg" />
+                <span className="hide-md">
+                  <FormattedMessage id='TranslationInfoPanel.activityTitle'
+                    description={'Title for the Activity Panel'}
+                    defaultMessage='Activity' />
+                </span>
+              </span>
+            }>
+              <ActivityTab
+                // @ts-ignore
+                activeKey={this.state.key}
+                transHistory={this.props.transHistory}
+                selectedActivites={this.state.selectedActivites}
+                selectActivityTypeFilter={this.selectActivityTypeFilter}
+                postComment={this.postComment} />
+            </TabPane>
+            <TabPane key={glossaryTabKey} tab={
+              <span><Icon name="glossary" className="s1 gloss-tab-svg" />
+                <span className="hide-md mr2">
+                  <FormattedMessage id='TranslationInfoPanel.glossaryTitle'
+                    description={'Title for the Glossary Panel'}
+                    defaultMessage='Glossary' />
+                </span>{glossaryCountDisplay}
+              </span>
+              }>
+              <GlossaryTab
+                // @ts-ignore
+                activeKey={this.state.key} />
+            </TabPane>
+          </Tabs>
+        </span>
       </div>
     )
   }

@@ -1,6 +1,8 @@
 @import "~antd/dist/antd.less";
 @import "./ant-theme-vars.less";
 
+// antd style overrides
+
 // Override new-zanata modal namespace styles
 .ant-modal-close {
   border: none !important;
@@ -8,8 +10,34 @@
   padding: initial !important;
 }
 
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
+  vertical-align: inherit;
+  width: inherit;
+}
+
+.ant-form-inline .ant-form-item {
+  display: flex;
+}
+
+.ant-modal-title {
+  color: @info-color;
+}
+
+.ant-form-item-label label {
+  color: @primary-color;
+}
+
 input.react-autosuggest__input {
   background-color: transparent;
+  border-bottom: solid 1px @primary-color;
+}
+
+.ant-input.textInput {
+  border: solid 1px @primary-color;
+}
+
+.ant-input.textInput:focus, .ant-input.textInput:hover {
+  border: 2px solid @info-color;
 }
 
 // pagination alignment on Explore page
@@ -17,4 +45,10 @@ input.react-autosuggest__input {
   display: flex;
   flex-direction: row;
   align-items: baseline;
+}
+
+// needed for new-zanata overrides on button styling
+.ant-btn-primary {
+  background-color: @primary-color;
+  color: @normal-color
 }

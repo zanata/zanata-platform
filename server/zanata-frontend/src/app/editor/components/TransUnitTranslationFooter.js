@@ -22,10 +22,10 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import cx from 'classnames'
-import Button from './Button'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
-import { Row } from 'react-bootstrap'
 import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
@@ -129,14 +129,13 @@ class TransUnitTranslationFooter extends React.Component {
         <Button
           className={cx('Button Button--snug Button--invisible u-roundish',
             { 'is-active': active })}
-          title=" Suggestions available"
           onClick={onClick}>
-          <Row>
+          <span>
             <Icon name={iconName} className="s1" />
             <span className="u-textMini">
               {count}
             </span>
-          </Row>
+          </span>
         </Button>
       </li>
     )
@@ -201,7 +200,6 @@ class TransUnitTranslationFooter extends React.Component {
         className={cx('EditorButton u-sizeHeight-1_1-4 u-textCapitalize',
                       buttonClassByStatus[selectedButtonStatus])}
         disabled={isSaving || !translationHasChanged}
-        title={selectedButtonTitle}
         onClick={saveCallback}>
         {selectedButtonTitle}{actionButtonKeyShortcut}
       </Button>
@@ -220,8 +218,7 @@ class TransUnitTranslationFooter extends React.Component {
       ? <Button
         className={cx('EditorButton Button--snug u-sizeHeight-1_1-4',
                       'EditorDropdown-toggle',
-                      buttonClassByStatus[selectedButtonStatus])}
-        title="Save as…">
+                      buttonClassByStatus[selectedButtonStatus])}>
         <div className="Dropdown-toggleIcon">
           <Icon name="chevron-down" className="n2" title="Save as…" />
         </div>

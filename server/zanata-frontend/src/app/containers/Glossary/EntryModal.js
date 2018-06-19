@@ -3,7 +3,7 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
-import { EditableText, Icon, LoaderText, Modal } from '../../components'
+import { EditableText, Icon, Modal } from '../../components'
 import Button from 'antd/lib/button'
 
 /**
@@ -94,6 +94,7 @@ class EntryModal extends Component {
           <div className='modal-section'>
             <label className='text-bold'>Term</label>
             <EditableText
+              className='textInput'
               editable={false}
               editing={false}>
               {entry.srcTerm.content}
@@ -104,7 +105,7 @@ class EntryModal extends Component {
             <EditableText
               editable={!transSelected}
               editing
-              className='textState'
+              className='textState textInput'
               maxLength={255}
               placeholder='Add part of speech…'
               emptyReadOnlyText='No part of speech'
@@ -117,6 +118,7 @@ class EntryModal extends Component {
             <EditableText
               editable={!transSelected}
               editing
+              className='textInput'
               maxLength={500}
               placeholder='Add a description…'
               emptyReadOnlyText='No description'
@@ -129,6 +131,7 @@ class EntryModal extends Component {
               <label className='text-bold'>Translation</label>
               <EditableText
                 editable
+                className='textInput'
                 editing
                 maxLength={500}
                 placeholder='Add a translation…'
@@ -144,6 +147,7 @@ class EntryModal extends Component {
               <label className='text-bold'>Comment</label><br />
               <EditableText
                 maxLength={500}
+                className='textInput'
                 editable={enableComment}
                 editing={enableComment}
                 placeholder='Add a comment…'
@@ -168,17 +172,11 @@ class EntryModal extends Component {
               }>
               Cancel
             </Button>
-            {isSaving
-              ? (<Button className='btn-primary' aria-label='button'
-                type='primary' disabled>
-                <LoaderText loading loadingText='Updating'>Update</LoaderText>
-              </Button>)
-              : (<Button className='btn-primary' aria-label='button'
-                type='primary' onClick={() => handleUpdateTerm(entry)}
-                disabled={!canUpdate}>
-                  Update
-              </Button>)
-            }
+            <Button className='btn-primary' aria-label='button'
+              type='primary' onClick={() => handleUpdateTerm(entry)}
+              disabled={!canUpdate || isSaving} loading={isSaving}>
+              Update
+            </Button>
           </div>
         </Modal.Footer>
       </Modal>
