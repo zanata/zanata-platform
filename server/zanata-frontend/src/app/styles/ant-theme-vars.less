@@ -10,7 +10,10 @@
 @highlight-color: @info-color;
 @warning-color: #ffa800;
 @normal-color: #d9d9d9;
+@neutral-color: #BDD4DC;
+@muted-color: #A2B3BE;
 @unsure-color: #E9DF1B;
+
 @layout-body-background: #fff;
 @label-color: @primary-color;
 @btn-primary-bg: @primary-color;
@@ -30,6 +33,10 @@
   color: @warning-color;
 }
 
+.txt-newblue {
+  color: @processing-color;
+}
+
 .txt-error {
   color: @error-color;
 }
@@ -43,11 +50,15 @@
 }
 
 .txt-muted {
-  color: #A2B3BE
+  color: @muted-color;
 }
 
 .txt-neutral {
-  color: #BDD4DC;
+  color: @neutral-color;
+}
+
+.txt-white {
+  color: #fff;
 }
 
 .bg-primary {
@@ -81,3 +92,6 @@
   background-color: #BDD4DC;
 }
 
+.d-inh {
+  display: inherit;
+}

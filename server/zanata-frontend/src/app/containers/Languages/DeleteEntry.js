@@ -2,7 +2,9 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 class DeleteEntry extends Component {
   static propTypes = {
@@ -43,10 +45,8 @@ class DeleteEntry extends Component {
     )
 
     return (
-      <div className='u-blockInline'>
+      <div className='di'>
         <Tooltip placement='top'
-          // @ts-ignore
-          className='bstrapReact'
           title={deleteLanguage} onVisibleChange={show}>
           <Button className='btn-sm iconCross btn-default' icon='close'
             aria-label='button'

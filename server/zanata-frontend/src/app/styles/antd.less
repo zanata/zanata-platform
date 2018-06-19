@@ -1,7 +1,75 @@
 @import "~antd/dist/antd.less";
 @import "./ant-theme-vars.less";
 
-// antd style overrides
+// antd component overrides - tachyons not used because these apply globally to
+// the antd components
+
+.teaserHeader .ant-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.sortable-helper {
+  z-index: 10000 !important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: @primary-color;
+}
+
+  // needed for new-zanata overrides on button styling
+.ant-btn-primary {
+  background-color: @primary-color;
+  color: @normal-color
+}
+
+.teaser-inner div a.text-muted-bold {
+  vertical-align: sub;
+}
+
+.ant-tag {
+  vertical-align: middle;
+}
+
+.ant-card {
+  color: @primary-color;
+}
+
+.ant-collapse-content > .ant-collapse-content-box {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header {
+  padding-right: 12px;
+}
+
+.ant-input-search {
+  height: 2rem;
+  line-height: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox, .checkbox svg {
+  vertical-align: sub;
+}
+
+.list-group-item {
+  position: relative;
+  display: block;
+  margin-bottom: 0;
+  padding: 0.62rem 1rem;
+  border: 1px solid @neutral-color;
+  background-color: @layout-body-background;
+}
+
+// Override new-zanata ul styles
+.ant-select-dropdown-menu {
+  margin: initial !important;
+  padding: initial !important;
+}
 
 // Override new-zanata modal namespace styles
 .ant-modal-close {
@@ -40,15 +108,11 @@ input.react-autosuggest__input {
   border: 2px solid @info-color;
 }
 
-// pagination alignment on Explore page
-.teaserHeader .ant-layout {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
+  vertical-align: inherit;
+  width: inherit;
 }
 
-// needed for new-zanata overrides on button styling
-.ant-btn-primary {
-  background-color: @primary-color;
-  color: @normal-color
+.ant-form-inline .ant-form-item {
+  display: flex;
 }

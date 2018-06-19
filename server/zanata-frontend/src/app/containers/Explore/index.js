@@ -6,6 +6,7 @@ import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import TeaserList from './TeaserList'
 import { TextInput, Icon } from '../../components'
 import {
