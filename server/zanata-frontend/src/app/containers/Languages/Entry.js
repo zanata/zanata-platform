@@ -55,7 +55,7 @@ class Entry extends Component {
               {localeDetails.localeId} [{localeDetails.nativeName}]
             </span>
             {localeDetails.enabledByDefault &&
-              <Tag color='blue'>
+              <Tag className='label-default' color='03A6D7'>
                 DEFAULT
               </Tag>
             }
@@ -65,7 +65,7 @@ class Entry extends Component {
               </Tag>
             }
             {isUserInTeam &&
-              <Tag color='green'>
+              <Tag color='62c876'>
                 Member
               </Tag>
             }

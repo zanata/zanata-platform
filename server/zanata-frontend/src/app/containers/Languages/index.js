@@ -133,7 +133,7 @@ class Languages extends Component {
               id='languages-form'>
               <h1>
                 Languages {!loading &&
-                  <Tag color='blue'>{totalCount}</Tag>
+                  <Tag color='03A6D7'>{totalCount}</Tag>
                 }
               </h1>
               {permission.canAddLocale &&
