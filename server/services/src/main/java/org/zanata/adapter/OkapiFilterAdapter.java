@@ -31,6 +31,7 @@ import java.util.Map;
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.IParameters;
+import net.sf.okapi.common.exceptions.OkapiException;
 import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.GenericContent;
@@ -197,7 +198,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                     }
                 }
             }
-        } catch (OkapiIOException e) {
+        } catch (OkapiException e) {
             throw new FileFormatAdapterException("Unable to parse document", e);
         } finally {
             filter.close();
@@ -332,7 +333,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                     }
                 }
             }
-        } catch (OkapiIOException e) {
+        } catch (OkapiException e) {
             throw new FileFormatAdapterException(
                     "Unable to parse translation file", e);
         } finally {

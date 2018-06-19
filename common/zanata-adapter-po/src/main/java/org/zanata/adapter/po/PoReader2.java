@@ -96,7 +96,7 @@ public class PoReader2 {
 
             if (message.isHeader()) {
                 if (headerFound)
-                    throw new IllegalStateException("found a second header!");
+                    throw new PoReaderException("Multiple headers found");
                 headerFound = true;
 
                 // add target header data
@@ -208,7 +208,7 @@ public class PoReader2 {
 
             if (message.isHeader()) {
                 if (headerFound)
-                    throw new IllegalStateException("found a second header!");
+                    throw new PoReaderException("Multiple headers found");
                 headerFound = true;
 
                 // store POT data
