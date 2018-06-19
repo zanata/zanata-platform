@@ -11,7 +11,7 @@ public static final String PROJ_URL = 'https://github.com/zanata/zanata-platform
 // ansicolor(), Notifier, PullRequests, Strings
 @Field
 // FIXME
-public static final String PIPELINE_LIBRARY_BRANCH = 'e642143fe77486c618799401cc48d3c29e075122'
+public static final String PIPELINE_LIBRARY_BRANCH = 'PR-8'
 
 // GROOVY-3278:
 //   Using referenced String constant as value of Annotation causes compile error
