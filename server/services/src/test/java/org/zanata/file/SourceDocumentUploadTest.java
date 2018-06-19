@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.hibernate.Session;
@@ -38,6 +37,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.common.DocumentType;
 import org.zanata.exception.DocumentUploadException;
 import org.zanata.model.HDocument;
@@ -82,7 +82,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     @Produces @ContextPath String contextPath = "";
 
     @Captor
-    private ArgumentCaptor<Optional<String>> paramCaptor;
+    private ArgumentCaptor<ParserOptions> parserOptions;
     @Captor
     private ArgumentCaptor<HRawDocument> persistedRawDocument;
 
@@ -112,7 +112,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         when(
                 documentDAO.getAdapterParams(conf.projectSlug,
                         conf.versionSlug, conf.docId)).thenReturn(
-                Optional.fromNullable(conf.storedParams));
+                conf.storedParams);
+//        conf.storedParams);
         when(
                 documentDAO.addRawDocument(ArgumentMatchers.any(HDocument.class),
                         persistedRawDocument.capture())).thenReturn(
@@ -124,8 +125,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         Resource document = new Resource();
         when(
                 translationFileService.parseUpdatedAdapterDocumentFile(
-                        ArgumentMatchers.any(URI.class), eq(conf.docId),
-                        eq(conf.fileType), paramCaptor.capture(),
+                        eq(conf.docId),
+                        eq(conf.fileType), parserOptions.capture(),
                         ArgumentMatchers.any(Optional.class))).thenReturn(
             document);
         when(
@@ -230,10 +231,21 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     @Test
     @InRequestScope
     public void usesGivenParameters() throws IOException {
-        conf = defaultUpload().build();
+        conf = defaultUpload().params("my params").build();
         mockRequiredServices();
         sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(paramCaptor.getValue().get()).isEqualTo(conf.params);
+        assertThat(parserOptions.getValue().getParams()).isEqualTo("my params");
+    }
+
+    @Test
+    @InRequestScope
+    public void uploadParametersAreStored() throws IOException {
+        conf = defaultUpload().params("my params").build();
+        mockRequiredServices();
+        sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
+        // TODO move this assertion into usesGivenParameters
+        assertThat(persistedRawDocument.getValue().getAdapterParameters())
+                .isEqualTo("my params");
     }
 
     @Test
@@ -242,26 +254,16 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         conf = defaultUpload().params(null).build();
         mockRequiredServices();
         sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(paramCaptor.getValue().get()).isEqualTo(conf.storedParams);
-    }
-
-    @Test
-    @InRequestScope
-    public void uploadParametersAreStored() throws IOException {
-        conf = defaultUpload().build();
-        mockRequiredServices();
-        sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
-        assertThat(persistedRawDocument.getValue().getAdapterParameters())
-                .isEqualTo(conf.params);
+        assertThat(parserOptions.getValue().getParams()).isEqualTo(conf.storedParams);
     }
 
     @Test
     @InRequestScope
     public void storedParametersNotOverwrittenWithEmpty() throws IOException {
-        conf = defaultUpload().params("").build();
+        conf = defaultUpload().storedParams("stored params").params("").build();
         mockRequiredServices();
         sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
         assertThat(persistedRawDocument.getValue().getAdapterParameters())
-                .isEqualTo(conf.storedParams);
+                .isEqualTo("stored params");
     }
 }

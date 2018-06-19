@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
@@ -40,13 +41,14 @@ public class PropReaderWriterTest {
             new File(TEST_OUTPUT_DIR_STRING);
     private static final String SYSTEM_LINE_ENDING = System
             .getProperty("line.separator");
-    PropReader propReader;
-    String locale = "fr";
+    private PropReader propReader;
+    private String locale = "fr";
+    private LocaleId localeId = LocaleId.FR;
 
     @Before
     public void resetReader() {
         propReader =
-                new PropReader(PropWriter.CHARSET.Latin1, new LocaleId(locale),
+                new PropReader(PropWriter.CHARSET.Latin1, localeId,
                         ContentState.Translated);
     }
 
@@ -92,7 +94,7 @@ public class PropReaderWriterTest {
                 (TranslationsResource) unmarshal.unmarshal(new StringReader(sw
                         .toString()));
 
-        PropWriter.writeTranslations(null, docIn, TEST_OUTPUT_DIR,
+        PropWriter.writeTranslations(new TranslatedDoc(null, docIn, localeId), TEST_OUTPUT_DIR,
             "test", locale, PropWriter.CHARSET.Latin1, false, false);
 
         assertInputAndOutputDocContentSame(docName);
@@ -183,7 +185,7 @@ public class PropReaderWriterTest {
         Path file = createTempFile(null, null);
         try {
             boolean approvedOnly = false;
-            PropWriter.writeTranslationsFile(srcDoc, doc,
+            PropWriter.writeTranslationsFile(new TranslatedDoc(srcDoc, doc, localeId),
                     file.toFile(), PropWriter.CHARSET.UTF8, false, approvedOnly);
             assertThat(file).hasContent("hello=bon jour\ngoodbye=au revoir\n");
         } finally {
@@ -198,7 +200,7 @@ public class PropReaderWriterTest {
         Path file = createTempFile(null, null);
         try {
             boolean approvedOnly = true;
-            PropWriter.writeTranslationsFile(srcDoc, doc,
+            PropWriter.writeTranslationsFile(new TranslatedDoc(srcDoc, doc, localeId),
                     file.toFile(), PropWriter.CHARSET.UTF8, false, approvedOnly);
             // hello is only Translated, so it should be left out
             assertThat(file).hasContent("goodbye=au revoir\n");
@@ -214,7 +216,7 @@ public class PropReaderWriterTest {
         Path file = createTempFile(null, null);
         try {
             boolean approvedOnly = true;
-            PropWriter.writeTranslationsFile(srcDoc, doc,
+            PropWriter.writeTranslationsFile(new TranslatedDoc(srcDoc, doc, localeId),
                     file.toFile(), PropWriter.CHARSET.UTF8, true, approvedOnly);
             // hello is only Translated, so it should be a skeleton
             assertThat(file).hasContent("hello=\ngoodbye=au revoir\n");

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -284,6 +285,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     @JoinTable(name = "HDocument_RawDocument",
             joinColumns = @JoinColumn(name = "documentId"),
             inverseJoinColumns = @JoinColumn(name = "rawDocumentId"))
+    @Nullable
     public HRawDocument getRawDocument() {
         return rawDocument;
     }
