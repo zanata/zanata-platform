@@ -25,7 +25,7 @@ public class DownloadDocumentTest {
         files.add(new File(DOWNLOADEDPOT));
         for (File file : files) {
             if (file.exists()) {
-                assertThat(file.delete());
+                assertThat(file.delete()).isTrue();
             }
         }
     }
@@ -41,7 +41,7 @@ public class DownloadDocumentTest {
                 .clickDownloadPotOnDocument("About_Fedora");
 
         File downloadedFile = new File(DOWNLOADEDPOT);
-        assertThat(downloadedFile.exists());
+        assertThat(downloadedFile.exists()).isTrue();
     }
 
     @Test
@@ -55,6 +55,6 @@ public class DownloadDocumentTest {
                 .clickDownloadTranslatedPo("About_Fedora");
 
         File downloadedFile = new File(DOWNLOADEDPO);
-        assertThat(downloadedFile.exists());
+        assertThat(downloadedFile.exists()).isTrue();
     }
 }

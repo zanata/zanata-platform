@@ -80,7 +80,7 @@ class Glossary extends Component {
     pageSize: PropTypes.string
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const paramProjectSlug = this.props.params.projectSlug
     const projectSlug = (!paramProjectSlug || paramProjectSlug === 'undefined')
       ? undefined : paramProjectSlug
@@ -91,7 +91,7 @@ class Glossary extends Component {
   /**
    * Force component to update when changes between project glossary to glossary
    */
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const projectSlug = this.props.params.projectSlug
     const { notification } = this.props
     if (prevProps.params.projectSlug !== projectSlug) {
@@ -101,7 +101,7 @@ class Glossary extends Component {
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
-        duration: null
+        duration: notification.duration
       })
     }
   }
@@ -119,7 +119,7 @@ class Glossary extends Component {
    * this function, but this stops working properly unless binding is done
    * inline in the JSX. Hope you have a good garbage collector.
    */
-  renderItem (index, key) {
+  renderItem(index, key) {
     const {
       handleSelectTerm,
       handleTermFieldUpdate,
@@ -168,7 +168,7 @@ class Glossary extends Component {
     )
   }
 
-  render () {
+  render() {
     const {
       terms,
       termsLoading,
@@ -190,7 +190,7 @@ class Glossary extends Component {
     const currentPage = page ? parseInt(page) : 1
     const displayPaging = totalPage > 1
     const pageSizeOption = map(PAGE_SIZE_SELECTION, (size) => {
-      return {label: size, value: size}
+      return { label: size, value: size }
     })
     const headerTitle = project ? 'Project Glossary' : 'Glossary'
     let list
@@ -252,9 +252,9 @@ class Glossary extends Component {
                       className='btn-link' disabled={currentPage <= 1}
                       title='Previous page' icon='left'
                       onClick={
-                      () => {
-                        gotoPreviousPage(currentPage, totalPage)
-                      }}
+                        () => {
+                          gotoPreviousPage(currentPage, totalPage)
+                        }}
                     />
                     <span className='u-textNeutral-top'>
                       {currentPage} of {totalPage}
@@ -282,7 +282,7 @@ class Glossary extends Component {
                       </Row>
                     </span>
                   </div>
-                  }
+                }
               </Row>
             </div>
 

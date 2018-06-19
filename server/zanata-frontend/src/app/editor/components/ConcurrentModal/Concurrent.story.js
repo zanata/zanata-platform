@@ -2,9 +2,11 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 import { storiesOf } from '@storybook/react'
-import { Alert, Button, Image } from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
 import { Icon } from '../../../components'
 import ConcurrentModal from '.'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -25,17 +27,17 @@ storiesOf('Concurrent editing', module)
         /* eslint-disable max-len */
         <span>
           <h1>TransUnit items</h1>
-          <Image src="https://i.imgur.com/yQWlJaH.png" responsive/>
+          <img src="https://i.imgur.com/yQWlJaH.png" />
           <h2>Concurrent user notice</h2>
-          <Button title="Click should trigger onClick action"
-                  onClick={action('onClick')}
-                  className="EditorButton Button--link Button--small Button--concurrent">
+          <Button
+            onClick={action('onClick')}
+            className="EditorButton Button--link Button--small Button--concurrent">
             <Icon name="user" className="n1"/> username
           </Button>
           <h2>Resolve merge conflict button</h2>
-           <Button title="Click should trigger onClick action"
-                   onClick={action('onClick')}
-                   className="EditorButton Button--secondary u-rounded">
+           <Button
+             onClick={action('onClick')}
+             className="EditorButton Button--secondary u-rounded">
           Resolve conflict
         </Button>
       </span>

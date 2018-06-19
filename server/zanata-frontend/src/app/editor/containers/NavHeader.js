@@ -2,7 +2,8 @@
 import DashboardLink from '../components/DashboardLink'
 import DocsDropdown from '../components/DocsDropdown'
 import { Icon } from '../../components'
-import { Row } from 'react-bootstrap'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import LanguagesDropdown from '../components/LanguagesDropdown'
 import ProjectVersionLink from '../components/ProjectVersionLink'
 /* Disabled UI locale changes until zanata-spa is internationalised

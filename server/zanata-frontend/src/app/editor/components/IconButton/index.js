@@ -1,4 +1,5 @@
-import Button from '../Button'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import { Icon } from '../../../components'
 import React from 'react'
 import * as PropTypes from 'prop-types'

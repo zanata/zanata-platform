@@ -21,6 +21,7 @@ import { fetchSettings } from '../actions/settings-actions'
 __webpack_public_path__ = serverUrl || '/' // eslint-disable-line
 
 import '../index.css'
+import 'tachyons/css/tachyons.min.css'
 
 /**
  * Top level of the Zanata editor app.

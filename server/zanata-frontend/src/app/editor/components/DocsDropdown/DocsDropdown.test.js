@@ -4,7 +4,6 @@ import * as ReactDOMServer from 'react-dom/server'
 import DocsDropdown from '.'
 import Dropdown from '../Dropdown'
 import { Icon } from '../../../components'
-import { Row } from 'react-bootstrap'
 
 describe('DocsDropdownTest', () => {
   it('DocsDropdown markup', () => {
@@ -37,12 +36,10 @@ describe('DocsDropdownTest', () => {
                 isOpen={true}>
         <Dropdown.Button>
           <button className="Link--invert">
-            <Row>
               gastropod.txt
-              <div className="u-sML-1-8 Dropdown-toggleIcon">
-                <Icon name="chevron-down" className="s1" />
-              </div>
-            </Row>
+            <div className="u-sML-1-8 Dropdown-toggleIcon">
+              <Icon name="chevron-down" className="s1" />
+            </div>
           </button>
         </Dropdown.Button>
         <Dropdown.Content>

@@ -1,7 +1,10 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Panel, Row, Table } from 'react-bootstrap'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { Icon, LoaderText } from '../../../components'
 import { isEmpty } from 'lodash'
@@ -97,32 +100,35 @@ class GlossaryTermModal extends React.Component {
         id='GlossaryTermModal'
         width={'90%'}
         footer={null}>
-        <Panel className={directionClassSource + ' split-panel'}>
-          <h3>Source Term : {sourceLocale}</h3>
-          <span className="modal-term">{term.source}</span>
-        </Panel>
-        <Panel className={directionClassTarget + ' split-panel'}>
-          <h3>Translation : {targetLocale}</h3>
-          <span className={
-            cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
-              {isEmpty(term.target) ? '-none-' : term.target}
-          </span>
-        </Panel>
-        <br />
-        <Panel className="gloss-details-panel">
-          <Table className={directionClassTarget + ' GlossaryDetails-table'}>
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>Part of speech</th>
-                <th>Target comment</th>
-              </tr>
-            </thead>
-            <tbody>
-              {detailsDisplay}
-            </tbody>
-          </Table>
-        </Panel>
+        <Row className='mb4'>
+          <Col span={12} className={directionClassSource}>
+            <h3>Source Term : {sourceLocale}</h3>
+            <span className="modal-term">{term.source}</span>
+          </Col>
+          <Col span={12} className={directionClassTarget}>
+            <h3 className='txt-info'>Translation : {targetLocale}</h3>
+            <span className={
+              cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
+                {isEmpty(term.target) ? '-none-' : term.target}
+            </span>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="mb2">
+            <table className={directionClassTarget + ' GlossaryDetails-table'}>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Part of speech</th>
+                  <th>Target comment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {detailsDisplay}
+              </tbody>
+            </table>
+          </Col>
+        </Row>
         <span className="u-pullRight u-textMeta">
         {lastModifiedRow}
         </span>

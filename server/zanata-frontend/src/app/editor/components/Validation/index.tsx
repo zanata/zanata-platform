@@ -1,60 +1,128 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
 import './index.css'
+import createValidators from '../../../validators'
 
 const Panel = Collapse.Panel
 
-/**
- * Validation Messages
- */
-const Validation: React.SFC<ValidationProps> = ({messages, validationOptions}) => {
+const DO_NOT_RENDER: null = null
 
-  const Messages = messages.map((m, index) => {
+const messageList = (messages) => {
+  return messages.map((m, index) => {
     // If description exists, display in Tooltip
-    const messageBody = m.description
-      ? <Tooltip placement='topRight' title={m.description}>
-          {m.defaultMessage}
-        </Tooltip>
-      : m.defaultMessage
+    const messageLabel = m.description
+      ? <Tooltip placement='topLeft' title={m.description}>
+        {m.label}
+      </Tooltip>
+      : m.label
     return (
       <div key={index}>
-        {m.label}: {messageBody}
+        {messageLabel}: {m.defaultMessage}
       </div>
     )
   })
+}
+
+/**
+ * Validation Messages presentational component
+ */
+const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validationOptions }) => {
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
-  function getWarnings(total, m) {
-    return warningValidators.find((v) => v.id === m.id)
-      ? ++total
-      : total
-  }
-  function getErrors(total, m) {
-    return errorValidators.find((v) => v.id === m.id)
-      ? ++total
-      : total
-  }
-  const errorCount = messages.reduce(getErrors, 0)
-  const warningCount = messages.reduce(getWarnings, 0)
-  return (
-    <div className='TextflowValidation'>
+
+  const validators = createValidators(intl.locale)
+
+  const warningProducers = warningValidators.map((warningOpt) => {
+    return validators.find((validator) => {
+      return validator.id === warningOpt.id
+    })
+  })
+
+  const errorProducers = errorValidators.map((errorOpt) => {
+    return validators.find((validator) => {
+      return validator.id === errorOpt.id
+    })
+  })
+
+  let warningMessages: Message[] = []
+  warningProducers.forEach(validator => {
+    const msgs = validator.doValidate(source, target).map(message => {
+      return {
+        id: validator.id,
+        label: validator.label,
+        description: validator.description,
+        defaultMessage: message
+      }
+    })
+    warningMessages = warningMessages.concat(msgs)
+  })
+
+  let errorMessages: Message[] = []
+  errorProducers.forEach(validator => {
+    const msgs = (validator.doValidate(source, target).map(message => {
+      return {
+        id: validator.id,
+        label: validator.label,
+        description: '',
+        defaultMessage: message
+      }
+    }))
+    errorMessages = errorMessages.concat(msgs)
+  })
+
+  const WarningMessageList = messageList(warningMessages)
+  const ErrorMessageList = messageList(errorMessages)
+  const warningCount = warningMessages.length
+  const errorCount = errorMessages.length
+  const warningsMessage = warningCount > 0
+    ? <FormattedMessage
+      tagName='option'
+      id='Validator.header.warnings'
+      description='Indicator of the number of validation warnings.'
+      defaultMessage='Warnings: {warningCount}'
+      values={{ warningCount }
+      }
+    />
+    : DO_NOT_RENDER
+  const errorsMessage = errorCount > 0
+    ? <FormattedMessage
+      tagName='option'
+      id='Validator.header.errors'
+      description='Indicator of the number of validation errors.'
+      defaultMessage='Errors: {errorCount}'
+      values={{ errorCount }
+      }
+    />
+    : DO_NOT_RENDER
+  const header = (
+    <span>
+      {warningsMessage} {errorsMessage}
+    </span>
+  )
+  // Only render if warnings or errors found
+  return (warningMessages.length > 0 || errorMessages.length > 0)
+    ? <div className='TextflowValidation'>
       <Collapse>
         <Panel
           key='1'
-          header={`Warnings: ${warningCount}, Errors: ${errorCount}`} >
-          {Messages}
+          header={header} >
+          {ErrorMessageList}
+          {WarningMessageList}
         </Panel>
       </Collapse>
     </div>
-  )
+    : DO_NOT_RENDER
 }
 
 interface ValidationProps {
-  messages: Message[],
+  intl: any,
+  source: string,
+  target: string,
   validationOptions: ValidationOption[]
 }
 
@@ -73,15 +141,9 @@ interface ValidationOption {
 }
 
 Validation.propTypes = {
-  messages: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      defaultMessage: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      disabled: PropTypes.bool.isRequired
-    })
-  ),
+  intl: intlShape.isRequired,
+  source: PropTypes.string.isRequired,
+  target: PropTypes.string.isRequired,
   validationOptions: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -92,4 +154,4 @@ Validation.propTypes = {
   )
 }
 
-export default Validation
+export default injectIntl(Validation)

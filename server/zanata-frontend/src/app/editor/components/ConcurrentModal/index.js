@@ -1,6 +1,12 @@
 // @ts-nocheck
 import React from 'react'
-import { Alert, Button, Panel, Label } from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
 import { Modal } from '../../../components'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import Textarea from 'react-textarea-autosize'
@@ -29,11 +35,11 @@ class ConcurrentModal extends React.Component {
           <Alert bsStyle="danger"><span className="alert-link"><a
             href="">Username</a></span> has saved a new version while you
             are editing. Please resolve conflicts.</Alert>
-            <Panel>
+            <Card>
               <p className="u-sizeHeight-1_1-2">
                 <strong>Username</strong> created a <span
                   className='u-textSuccess'>Translated</span> revision
-                <Label bsStyle='default'>latest</Label>
+                <Tag color='blue'>latest</Tag>
               </p>
               <span className="revisionBox">
                 <Textarea
@@ -50,8 +56,8 @@ class ConcurrentModal extends React.Component {
                   className="EditorButton Button--secondary u-rounded">Use latest
                 </Button>
               </span>
-            </Panel>
-            <Panel>
+            </Card>
+            <Card>
               <p className="u-sizeHeight-1_1-2"><strong>You</strong> created
                 an <span className="u-textHighlight">Unsaved</span> revision.
               </p>
@@ -73,7 +79,7 @@ class ConcurrentModal extends React.Component {
                   </Button>
                 </span>
               </span>
-            </Panel>
+            </Card>
           </Modal.Body>
         </Modal>
         /* eslint-enable max-len */

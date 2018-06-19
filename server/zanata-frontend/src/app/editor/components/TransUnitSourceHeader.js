@@ -1,6 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import IconButton from './IconButton'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
 
@@ -25,15 +26,16 @@ class TransUnitSourceHeader extends React.Component {
   render () {
     // TODO remove duplication of this between source and translation headers
     const buttonClass =
-      'Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1 u-textCenter'
+      'btn-link Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1' +
+        ' u-textCenter'
 
     const copyButtonItem = this.props.phrase.plural
       ? undefined
       : (
       <li>
-        <IconButton icon="copy"
+        <Button size="large" icon="copy"
           title={'Copy ' + this.props.sourceLocale.name +
-                     ' (' + this.props.sourceLocale.id + ')'}
+            ' (' + this.props.sourceLocale.id + ')'}
           onClick={this.copyFromSource}
           className={buttonClass} />
       </li>)
@@ -42,8 +44,8 @@ class TransUnitSourceHeader extends React.Component {
       ? undefined
       : (
       <li className="u-gtemd-hidden">
-        <IconButton
-          icon="cross"
+        <Button
+          icon="close"
           title="Cancel edit"
           onClick={this.props.cancelEdit}
           className={buttonClass} />

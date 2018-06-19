@@ -5,12 +5,16 @@
 
 /* Set custom styles for ant-collapse */
 
+.InputEditorSearch .ant-collapse-content {
+  padding: 0;
+  margin: 0 16px;
+}
 .InputEditorSearch {
   margin-left: 0.75rem;
   margin-right: 1rem;
   display: inline-flex;
   padding-top: 0.35rem;
-  flex: 2 0 16rem;
+  flex: 2 0 8rem;
 }
 
 /* Hide the ant collapse header and borders */

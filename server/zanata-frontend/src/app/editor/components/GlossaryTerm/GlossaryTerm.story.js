@@ -3,7 +3,6 @@ import React from 'react'
 import { action } from '@storybook/addon-actions'
 import { storiesOf } from '@storybook/react'
 import GlossaryTerm from '.'
-import { Table } from 'react-bootstrap'
 
 const copyGlossaryTerm = action('copyGlossaryTerm')
 const showDetails = action('showDetails')
@@ -13,7 +12,7 @@ const showDetails = action('showDetails')
  */
 storiesOf('GlossaryTerm', module)
   .add('simple term on its own', () => (
-    <Table>
+    <table>
       <tbody>
         <GlossaryTerm key={0} index={0}
           copyGlossaryTerm={copyGlossaryTerm}
@@ -23,10 +22,10 @@ storiesOf('GlossaryTerm', module)
             target: 'Krankenwagen'
           }} />
       </tbody>
-    </Table>
+    </table>
   ))
   .add('in a table', () => (
-    <Table>
+    <table>
       <thead>
         <tr>
           <th>Source</th>
@@ -58,10 +57,10 @@ storiesOf('GlossaryTerm', module)
             target: 'Arzt'
           }} />
       </tbody>
-    </Table>
+    </table>
   ))
   .add('Without translations', () => (
-    <Table>
+    <table>
       <thead>
         <tr>
           <th>Source</th>
@@ -93,5 +92,5 @@ storiesOf('GlossaryTerm', module)
             target: ''
           }} />
       </tbody>
-    </Table>
+    </table>
   ))
