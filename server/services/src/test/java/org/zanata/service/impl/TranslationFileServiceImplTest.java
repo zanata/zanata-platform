@@ -39,28 +39,19 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.common.LocaleId;
-import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HLocale;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.HashUtil;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.nio.file.Files;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(CdiUnitRunner.class)
 public class TranslationFileServiceImplTest extends ZanataTest {
