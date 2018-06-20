@@ -24,21 +24,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.filters.json.JSONFilter;
 import net.sf.okapi.common.LocaleId;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -67,8 +66,8 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
     @Test
     public void testDuplicateKeys() {
         Resource resource = parseTestFile("test-json-duplicateids.json");
-        assertThat(getTextFlowContentsAt(resource, 1)).containsExactly("Line Two");
-        assertThat(getTextFlowContentsAt(resource, 2)).containsExactly("Line Three");
+        assertThat(getTextFlowContentsAt(resource, 0)).containsExactly("Line One");
+        assertThat(getTextFlowContentsAt(resource, 1)).containsExactly("Line Three");
     }
 
     /*
@@ -112,33 +111,33 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
                 .containsExactly("Second Source");
         assertThat(resource.getTextFlows().get(3).getContents())
                 .containsExactly("Third Source");
-        String firstSourceId = resource.getTextFlows().get(1).getId();
-        String secondSourceId = resource.getTextFlows().get(2).getId();
-        String thirdSourceId = resource.getTextFlows().get(3).getId();
-
-        Map<String, TextFlowTarget> translations = new HashMap<>();
 
         TextFlowTarget tft1 = new TextFlowTarget();
+        tft1.setResId("test/test1/title");
         tft1.setContents("Foun’dé metalkcta");
         tft1.setState(ContentState.Approved);
-        translations.put(firstSourceId, tft1);
 
         TextFlowTarget tft2 = new TextFlowTarget();
+        tft2.setResId("test/test2/title");
         tft2.setContents("Tba’dé metalkcta");
         tft2.setState(ContentState.Translated);
-        translations.put(secondSourceId, tft2);
 
         TextFlowTarget tft3 = new TextFlowTarget();
         tft3.setContents("Third metalkcta");
         tft3.setState(ContentState.NeedReview);
-        translations.put(thirdSourceId, tft3);
+
+        TranslationsResource translationsResource = new TranslationsResource();
+        translationsResource.getTextFlowTargets().add(tft1);
+        translationsResource.getTextFlowTargets().add(tft2);
+        translationsResource.getTextFlowTargets().add(tft3);
 
         File originalFile = getTestFile("test-json-untranslated.json");
         OutputStream outputStream = new ByteArrayOutputStream();
-        try (IFilterWriter writer = createWriter(outputStream)) {
-            adapter.generateTranslatedFile(originalFile.toURI(), translations,
-                    this.localeId, writer, "", approvedOnly);
-        }
+
+        adapter.writeTranslatedFile(outputStream, originalFile.toURI(),
+                resource, translationsResource,
+                this.localeId.toJavaLocale().toString(),
+                Optional.absent());
 
         String firstTitle = "Foun’dé metalkcta";
         String secondTitle = approvedOnly ? "Second Source" : "Tba’dé metalkcta";
