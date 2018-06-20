@@ -8,10 +8,29 @@ import Alert from 'antd/lib/alert'
 import 'antd/lib/alert/style/css'
 import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+import Checkbox from 'antd/lib/checkbox'
+import 'antd/lib/checkbox/style/css'
+import Switch from 'antd/lib/switch'
+import 'antd/lib/switch/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 
+const Option = Select.Option
+const CheckboxGroup = Checkbox.Group
+
+const plainOptions = ['Chinese', 'Dutch', 'English', 'German', 'Japanese',
+  'Russian', 'Spanish', 'Laotian', 'Slovenian', 'Fijian'];
+const defaultCheckedList = ['Dutch', 'Slovenian'];
 
 class MTMerge extends Component {
-  state = { visible: false }
+  state = {
+    visible: false,
+    checkedList: defaultCheckedList,
+    indeterminate: true,
+    checkAll: false,
+  }
   showModal = () => {
     this.setState({
       visible: true
@@ -38,11 +57,39 @@ class MTMerge extends Component {
               visible={this.state.visible}
               onOk={this.handleOk}
               onCancel={this.handleCancel}>
-            <Alert message="Warning" type="warning" showIcon />
-            <h4 className='txt-info mt4'><Icon type="global" /> Languages</h4>
+            <Alert message="Have you run TM Merge first?" type="warning" showIcon />
+            <h3 className='txt-info mt4'><Icon type="global" /> Languages</h3>
+            <div style={{ borderBottom: '1px solid #E9E9E9' }}>
+              <Checkbox
+                  indeterminate={this.state.indeterminate}
+                  onChange={this.onCheckAllChange}
+                  checked={this.state.checkAll}
+              >
+                All languages
+              </Checkbox>
+            </div>
+            <br />
+            <CheckboxGroup options={plainOptions} value={this.state.checkedList} onChange={this.onChange} />
+            <Card>
+              <Switch size="small" /> Override fuzzy translations with MT
+            </Card>
           </Modal>
         </div>
     );
+  }
+  onChange = (checkedList) => {
+    this.setState({
+      checkedList,
+      indeterminate: !!checkedList.length && (checkedList.length < plainOptions.length),
+      checkAll: checkedList.length === plainOptions.length,
+    });
+  }
+  onCheckAllChange = (e) => {
+    this.setState({
+      checkedList: e.target.checked ? plainOptions : [],
+      indeterminate: false,
+      checkAll: e.target.checked,
+    });
   }
 }
 
