@@ -17,8 +17,6 @@ import { getLanguageUrl } from '../../utils/UrlHelper'
 import { isLoggedIn } from '../../config'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 
 /**
  * Root component for user profile page
@@ -132,9 +130,6 @@ class UserProfile extends Component {
                 <span>{roles}</span>
               </li>)}
             </ul>
-            <Button type='primary' className='btn-primary'
-              size='small' icon='download'>
-            Download user information</Button>
           </div>
         </div>
         {isLoggedIn &&
