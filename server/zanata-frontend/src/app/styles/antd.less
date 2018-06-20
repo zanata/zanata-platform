@@ -22,7 +22,8 @@
   color: @primary-color;
 }
 
-  // needed for new-zanata overrides on button styling
+// needed for new-zanata overrides on button styling
+// without !important these styles are overrides by antd in /node_modules
 .ant-btn.ant-btn-primary {
   background-color: @primary-color !important;
   color: @normal-color !important;
