@@ -6,8 +6,7 @@ import {connect} from 'react-redux'
 import {debounce, isEmpty} from 'lodash'
 import {
   TextInput,
-  Link,
-  Select
+  Link
 } from '../../components'
 import Header from './Header'
 import {
@@ -31,6 +30,10 @@ import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+
+const Option = Select.Option
 
 /**
  * Header for glossary page
@@ -242,17 +245,14 @@ class ViewHeader extends Component {
                 </td>
                 <td className='languageSelect td-3'>
                   <Select
-                    name='language-selection'
                     placeholder={statsLoading
                         ? 'Loading…' : 'Select a language…'}
                     className='inputFlex'
-                    isLoading={statsLoading}
                     value={selectedTransLocale}
-                    options={transLocales}
-                    pageSize={20}
-                    optionRenderer={this.localeOptionsRenderer}
-                    onChange={handleTranslationLocaleChange}
-                  />
+                    showSearch
+                    onChange={handleTranslationLocaleChange}>
+                    <Option value={transLocales}>{transLocales}</Option>
+                  </Select>
                   {selectedTransLocale &&
                   (<span className='hidden-xs'>
                     <Row>
