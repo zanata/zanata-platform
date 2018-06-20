@@ -23,10 +23,28 @@
 }
 
   // needed for new-zanata overrides on button styling
-.ant-btn-primary {
+.ant-btn.ant-btn-primary {
   background-color: @primary-color !important;
   color: @normal-color !important;
   border: @primary-color !important;
+}
+
+.ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
+  background-color: @info-color !important;
+  color: @normal-color !important;
+  border: @info-color !important;
+}
+
+.ant-btn {
+  color: @primary-color !important;
+  background-color: #fff !important;
+  border-color: @neutral-color !important;
+}
+
+.ant-btn:hover, .ant-btn:focus {
+  color: @info-color !important;
+  background-color: #fff !important;
+  border-color: @info-color !important;
 }
 
 .teaser-inner div a.text-muted-bold {
