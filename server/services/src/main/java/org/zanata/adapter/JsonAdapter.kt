@@ -24,11 +24,11 @@ import com.github.wnameless.json.flattener.JsonFlattener
 import com.github.wnameless.json.flattener.PrintMode
 import com.github.wnameless.json.flattener.StringEscapePolicy
 import com.github.wnameless.json.unflattener.JsonUnflattener
-import com.google.common.base.Optional
 import com.google.common.collect.Maps
+import org.zanata.adapter.FileFormatAdapter.ParserOptions
+import org.zanata.adapter.FileFormatAdapter.WriterOptions
 import org.zanata.common.ContentState
 import org.zanata.common.ContentType
-import org.zanata.common.LocaleId
 import org.zanata.exception.FileFormatAdapterException
 import org.zanata.rest.dto.resource.Resource
 import org.zanata.rest.dto.resource.TextFlow
@@ -39,7 +39,6 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.io.IOException
 import java.io.OutputStream
-import java.net.URI
 
 /**
  * Adapter to handle JavaScript Object Notation (JSON) documents.
@@ -50,44 +49,40 @@ import java.net.URI
  */
 class JsonAdapter : FileFormatAdapter {
 
-    override fun rawTranslationUploadAvailable(): Boolean {
-        return true
-    }
+    override val rawTranslationUploadAvailable = true
 
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    override fun parseDocumentFile(documentContent: URI,
-                                   sourceLocale: LocaleId,
-                                   filterParams: Optional<String>): Resource {
+    override fun parseDocumentFile(parserOtions: ParserOptions): Resource {
+
         val document = Resource().apply {
-            lang = sourceLocale
+            lang = parserOtions.locale
             contentType = ContentType.TextPlain
         }
         val jsonFlattener: JsonFlattener
         val resources = document.textFlows
         try {
-            jsonFlattener = JsonFlattener(
-                    InputStreamReader(FileInputStream(File(documentContent))))
+            jsonFlattener = JsonFlattener(InputStreamReader(
+                    FileInputStream(File(parserOtions.rawFile))))
         } catch (e: IOException) {
             throw FileFormatAdapterException("Cannot open the file")
         }
 
-        val jsonMap = jsonFlattener.withSeparator('/')
+        val jsonMap = jsonFlattener.withSeparator('.')
                 .withStringEscapePolicy(StringEscapePolicy.NORMAL)
                 .flattenAsMap()
         for ((key, value) in jsonMap) {
-            val textFlow = TextFlow(key, sourceLocale,
-                    value.toString())
-            textFlow.isPlural = false
-            resources.add(textFlow)
+            if (value is String) {
+                val textFlow = TextFlow(key, parserOtions.locale,
+                        value)
+                textFlow.isPlural = false
+                resources.add(textFlow)
+            }
         }
         return document
     }
 
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    override fun parseTranslationFile(fileUri: URI,
-                                      sourceLocale: LocaleId,
-                                      localeId: String,
-                                      filterParams: Optional<String>):
+    override fun parseTranslationFile(parserOtions: ParserOptions):
             TranslationsResource {
         val transRes = TranslationsResource()
         val translations = transRes.textFlowTargets
@@ -95,54 +90,53 @@ class JsonAdapter : FileFormatAdapter {
 
         try {
             jsonFlattener = JsonFlattener(
-                    InputStreamReader(FileInputStream(File(fileUri))))
+                    InputStreamReader(FileInputStream(File(parserOtions.rawFile))))
         } catch (e: IOException) {
             throw FileFormatAdapterException("Cannot open the file")
         }
 
-        val jsonMap = jsonFlattener.withSeparator('/')
-                .withStringEscapePolicy(StringEscapePolicy.NORMAL)
-                .flattenAsMap()
-        for ((key, value) in jsonMap) {
-            val textFlowTarget = TextFlowTarget(key).apply {
-                contents = listOf(value.toString())
-                state = ContentState.Translated
+        val flatMap = jsonFlattener.flattenAsMap()
+        for ((key, value) in flatMap) {
+            if (value is String) {
+                val textFlowTarget = TextFlowTarget(key).apply {
+                    contents = listOf(value)
+                    state = ContentState.Translated
+                }
+                translations.add(textFlowTarget)
             }
-            translations.add(textFlowTarget)
         }
         return transRes
     }
 
-    override fun writeTranslatedFile(output: OutputStream, originalFile: URI,
-                                     resource: Resource,
-                                     translationsResource: TranslationsResource,
-                                     locale: String, params: Optional<String>) {
+    override fun writeTranslatedFile(output: OutputStream,
+                                     options: WriterOptions,
+                                     approvedOnly: Boolean) {
         val document = Resource()
         document.contentType = ContentType.TextPlain
         val jsonFlattener: JsonFlattener
         val translations = transformToMapByResId(
-                translationsResource.textFlowTargets)
+                options.translatedDoc.translation!!.textFlowTargets)
         try {
             jsonFlattener = JsonFlattener(
-                    InputStreamReader(FileInputStream(File(originalFile))))
+                    InputStreamReader(FileInputStream(
+                            File(options.sourceParserOptions.rawFile))))
         } catch (e: IOException) {
             throw FileFormatAdapterException("Cannot open the original file")
         }
 
-        val jsonMap = jsonFlattener.withSeparator('/')
-                .withStringEscapePolicy(StringEscapePolicy.NORMAL)
-                .flattenAsMap()
-        for ((key) in jsonMap) {
-            val tft = translations[key]
-            if (tft != null) {
-                val translated = tft.contents[0]
-                jsonMap[key] = translated
+        val flatMap = jsonFlattener.flattenAsMap()
+        for (key in flatMap.keys) {
+            translations[key]?.let { tft ->
+                if (usable(tft, approvedOnly)) {
+                    flatMap[key] = tft.contents[0]
+                }
             }
+
         }
-        val unflattener = JsonUnflattener(jsonMap.toString())
+        val unflattener = JsonUnflattener(flatMap.toString())
         try {
-            output.write(unflattener.withSeparator('/')
-                    .withPrintMode(PrintMode.PRETTY).unflatten().toByteArray())
+            output.write(unflattener.withPrintMode(PrintMode.PRETTY)
+                    .unflatten().toByteArray())
         } catch (e: IOException) {
             throw FileFormatAdapterException("Cannot create the translated file")
         }
@@ -163,5 +157,9 @@ class JsonAdapter : FileFormatAdapter {
             resIdTargetMap[target.resId] = target
         }
         return resIdTargetMap
+    }
+
+    private fun usable(target: TextFlowTarget, approvedOnly: Boolean): Boolean {
+        return (target.state.isApproved || !approvedOnly && target.state.isTranslated)
     }
 }

@@ -21,20 +21,24 @@
 package org.zanata.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.filters.json.JSONFilter;
 import net.sf.okapi.common.LocaleId;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
+import org.zanata.common.dto.TranslatedDoc;
+import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -56,8 +60,12 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
     public void parseJSON() {
         Resource resource = parseTestFile("basicjson.json");
         // Standalone strings are not identified
-        assertThat(resource.getTextFlows()).hasSize(3);
+        assertThat(resource.getTextFlows()).hasSize(5);
         assertThat(getTextFlowContentsAt(resource, 0)).containsExactly("Line One");
+        assertThat(getTextFlowContentsAt(resource, 1)).containsExactly("Line Two");
+        assertThat(getTextFlowContentsAt(resource, 2)).containsExactly("Line Three");
+        assertThat(getTextFlowContentsAt(resource, 3)).containsExactly("First");
+        assertThat(getTextFlowContentsAt(resource, 4)).containsExactly("Second");
     }
 
     /*
@@ -94,6 +102,24 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
     }
 
     @Test
+    public void parseTranslatedJsonFile() {
+        File transFile = getTestFile("test-json-translated.json");
+        ParserOptions transParser = new ParserOptions(transFile.toURI(),
+                org.zanata.common.LocaleId.FR, "");
+        TranslationsResource translationsResource =
+                adapter.parseTranslationFile(transParser);
+        assertThat(translationsResource.getTextFlowTargets()).hasSize(4);
+        assertThat(translationsResource.getTextFlowTargets().get(0)
+                .getContents().get(0)).isEqualTo("Test");
+        assertThat(translationsResource.getTextFlowTargets().get(1)
+                .getContents().get(0)).isEqualTo("Foun’dé metalkcta");
+        assertThat(translationsResource.getTextFlowTargets().get(2)
+                .getContents().get(0)).isEqualTo("Tba’dé metalkcta");
+        assertThat(translationsResource.getTextFlowTargets().get(3)
+                .getContents().get(0)).isEqualTo("Kba’dé metalkcta");
+    }
+
+    @Test
     public void testTranslatedJSONDocument() {
         testTranslatedJSONDocument(false);
     }
@@ -113,31 +139,35 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
                 .containsExactly("Third Source");
 
         TextFlowTarget tft1 = new TextFlowTarget();
-        tft1.setResId("test/test1/title");
+        tft1.setResId("test.test1.title");
         tft1.setContents("Foun’dé metalkcta");
         tft1.setState(ContentState.Approved);
 
         TextFlowTarget tft2 = new TextFlowTarget();
-        tft2.setResId("test/test2/title");
+        tft2.setResId("test.test2.title");
         tft2.setContents("Tba’dé metalkcta");
         tft2.setState(ContentState.Translated);
 
         TextFlowTarget tft3 = new TextFlowTarget();
-        tft3.setContents("Third metalkcta");
+        tft3.setResId("test.test3.title");
+        tft3.setContents("Kba’dé metalkcta");
         tft3.setState(ContentState.NeedReview);
 
-        TranslationsResource translationsResource = new TranslationsResource();
-        translationsResource.getTextFlowTargets().add(tft1);
-        translationsResource.getTextFlowTargets().add(tft2);
-        translationsResource.getTextFlowTargets().add(tft3);
+        TranslationsResource transResource = new TranslationsResource();
+        transResource.getTextFlowTargets().add(tft1);
+        transResource.getTextFlowTargets().add(tft2);
+        transResource.getTextFlowTargets().add(tft3);
 
         File originalFile = getTestFile("test-json-untranslated.json");
         OutputStream outputStream = new ByteArrayOutputStream();
 
-        adapter.writeTranslatedFile(outputStream, originalFile.toURI(),
-                resource, translationsResource,
-                this.localeId.toJavaLocale().toString(),
-                Optional.absent());
+        ParserOptions sourceOptions = new ParserOptions(originalFile.toURI(),
+                org.zanata.common.LocaleId.EN, "");
+        TranslatedDoc translatedDoc = new TranslatedDoc(resource, transResource,
+                org.zanata.common.LocaleId.FR);
+
+        WriterOptions options = new WriterOptions(sourceOptions, translatedDoc);
+        adapter.writeTranslatedFile(outputStream, options, approvedOnly);
 
         String firstTitle = "Foun’dé metalkcta";
         String secondTitle = approvedOnly ? "Second Source" : "Tba’dé metalkcta";
@@ -156,7 +186,50 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
                 "      \"title\": \"" + thirdTitle + "\"\n" +
                 "    }\n" +
                 "  }\n" +
-                "}\n");
+                "}");
+    }
+
+    @Test
+    public void handleDotInKey() {
+        Resource resource = parseTestFile("dot-in-key.json");
+        assertThat(resource.getTextFlows()).hasSize(3);
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("First source");
+        assertThat(resource.getTextFlows().get(1).getContents())
+                .containsExactly("Second source");
+        assertThat(resource.getTextFlows().get(2).getContents())
+                .containsExactly("Third source");
+    }
+
+    @Test
+    public void handleNumberAsValue() {
+        Resource resource = parseTestFile("numbers-in-json.json");
+        assertThat(resource.getTextFlows()).hasSize(2);
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("Number 1");
+        assertThat(resource.getTextFlows().get(1).getContents())
+                .containsExactly("Number Three");
+    }
+
+    @Test
+    public void failGracefullyWhenNoOriginalFile() {
+        File originalFile = getTestFile("i-dont-exist.json");
+        OutputStream outputStream = new ByteArrayOutputStream();
+        Resource resource = parseTestFile("basicjson.json");
+        TranslationsResource transResource = new TranslationsResource();
+
+        ParserOptions sourceOptions = new ParserOptions(originalFile.toURI(),
+                org.zanata.common.LocaleId.EN, "");
+        TranslatedDoc translatedDoc = new TranslatedDoc(resource, transResource,
+                org.zanata.common.LocaleId.FR);
+        try {
+            WriterOptions options = new WriterOptions(sourceOptions, translatedDoc);
+            adapter.writeTranslatedFile(outputStream, options, false);
+            fail("Expected a FileFormatAdapterException");
+        } catch (FileFormatAdapterException ffae) {
+            assertThat(ffae.getMessage())
+                    .isEqualTo("Cannot open the original file");
+        }
     }
 
     // we do clean up the writer, but in the caller

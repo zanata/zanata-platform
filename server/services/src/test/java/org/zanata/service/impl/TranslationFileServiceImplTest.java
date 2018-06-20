@@ -44,6 +44,7 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.HashUtil;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -89,6 +90,7 @@ public class TranslationFileServiceImplTest extends ZanataTest {
         String project = "test";
         String version = "master";
         String docId = "test.pot";
+        String poName = "test.po";
         String poContent = "msgid \"\"\n" +
                 "msgstr \"\"\n" +
                 "\"Project-Id-Version: test-master\\n\"\n" +
@@ -99,9 +101,8 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 "msgstr[0] \"1 aoeuaouaou\"\n" +
                 "msgstr[1] \"%d aoeuaouao\"\n" +
                 "msgstr[2] \"\"";
-        File tempFile = File.createTempFile("test", ".po");
-        Files.write(tempFile.toPath(), poContent.getBytes());
-        InputStream stream = new FileInputStream(tempFile);
+        InputStream stream = new ByteArrayInputStream(
+                poContent.getBytes(StandardCharsets.UTF_8));
 
         HProject hProject = new HProject();
         hProject.setDefaultProjectType(ProjectType.File);
@@ -116,10 +117,12 @@ public class TranslationFileServiceImplTest extends ZanataTest {
                 .thenReturn(hDocument);
 
         TranslationsResource translationsResource = transFileService
-                .parseTranslationFile(stream, tempFile.getName(),
+                .parseTranslationFile(stream, poName,
                 "ru", project, version, docId, Optional.absent());
-        assertThat(translationsResource.getTextFlowTargets().get(0)
-                .getContents().get(0)).isEqualTo("1 aoeuaouaou");
+
+        TextFlowTarget target = translationsResource.getTextFlowTargets().get(0);
+        assertThat(target.getContents().get(0)).isEqualTo("1 aoeuaouaou");
+        assertThat(target.getResId()).isEqualTo(HashUtil.sourceHash("Thing 1"));
     }
 
     @Test
