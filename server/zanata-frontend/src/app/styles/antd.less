@@ -14,14 +14,19 @@
   z-index: 10000 !important;
 }
 
+.ant-checkbox-wrapper {
+  color: @primary-color !important;
+}
+
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   color: @primary-color;
 }
 
   // needed for new-zanata overrides on button styling
 .ant-btn-primary {
-  background-color: @primary-color;
-  color: @normal-color
+  background-color: @primary-color !important;
+  color: @normal-color !important;
+  border: @primary-color !important;
 }
 
 .teaser-inner div a.text-muted-bold {
@@ -88,7 +93,7 @@
 }
 
 .ant-modal-title {
-  color: @info-color;
+  color: @info-color !important;
 }
 
 .ant-form-item-label label {
