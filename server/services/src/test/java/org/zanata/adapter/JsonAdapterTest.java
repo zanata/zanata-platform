@@ -228,7 +228,7 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
             fail("Expected a FileFormatAdapterException");
         } catch (FileFormatAdapterException ffae) {
             assertThat(ffae.getMessage())
-                    .isEqualTo("Cannot open the original file");
+                    .isEqualTo("Cannot open the source file");
         }
     }
 

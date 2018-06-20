@@ -39,6 +39,7 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.io.IOException
 import java.io.OutputStream
+import java.net.URI
 
 /**
  * Adapter to handle JavaScript Object Notation (JSON) documents.
@@ -52,28 +53,16 @@ class JsonAdapter : FileFormatAdapter {
     override val rawTranslationUploadAvailable = true
 
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    override fun parseDocumentFile(parserOtions: ParserOptions): Resource {
-
+    override fun parseDocumentFile(options: ParserOptions): Resource {
         val document = Resource().apply {
-            lang = parserOtions.locale
+            lang = options.locale
             contentType = ContentType.TextPlain
         }
-        val jsonFlattener: JsonFlattener
         val resources = document.textFlows
-        try {
-            jsonFlattener = JsonFlattener(InputStreamReader(
-                    FileInputStream(File(parserOtions.rawFile))))
-        } catch (e: IOException) {
-            throw FileFormatAdapterException("Cannot open the file")
-        }
-
-        val jsonMap = jsonFlattener.withSeparator('.')
-                .withStringEscapePolicy(StringEscapePolicy.NORMAL)
-                .flattenAsMap()
-        for ((key, value) in jsonMap) {
+        val flatMap = createFlattenedMap(options.rawFile)
+        for ((key, value) in flatMap) {
             if (value is String) {
-                val textFlow = TextFlow(key, parserOtions.locale,
-                        value)
+                val textFlow = TextFlow(key, options.locale, value)
                 textFlow.isPlural = false
                 resources.add(textFlow)
             }
@@ -82,20 +71,11 @@ class JsonAdapter : FileFormatAdapter {
     }
 
     @Throws(FileFormatAdapterException::class, IllegalArgumentException::class)
-    override fun parseTranslationFile(parserOtions: ParserOptions):
+    override fun parseTranslationFile(options: ParserOptions):
             TranslationsResource {
         val transRes = TranslationsResource()
         val translations = transRes.textFlowTargets
-        val jsonFlattener: JsonFlattener
-
-        try {
-            jsonFlattener = JsonFlattener(
-                    InputStreamReader(FileInputStream(File(parserOtions.rawFile))))
-        } catch (e: IOException) {
-            throw FileFormatAdapterException("Cannot open the file")
-        }
-
-        val flatMap = jsonFlattener.flattenAsMap()
+        val flatMap = createFlattenedMap(options.rawFile)
         for ((key, value) in flatMap) {
             if (value is String) {
                 val textFlowTarget = TextFlowTarget(key).apply {
@@ -113,29 +93,19 @@ class JsonAdapter : FileFormatAdapter {
                                      approvedOnly: Boolean) {
         val document = Resource()
         document.contentType = ContentType.TextPlain
-        val jsonFlattener: JsonFlattener
         val translations = transformToMapByResId(
                 options.translatedDoc.translation!!.textFlowTargets)
-        try {
-            jsonFlattener = JsonFlattener(
-                    InputStreamReader(FileInputStream(
-                            File(options.sourceParserOptions.rawFile))))
-        } catch (e: IOException) {
-            throw FileFormatAdapterException("Cannot open the original file")
-        }
-
-        val flatMap = jsonFlattener.flattenAsMap()
+        val flatMap = createFlattenedMap(options.sourceParserOptions.rawFile)
         for (key in flatMap.keys) {
             translations[key]?.let { tft ->
                 if (usable(tft, approvedOnly)) {
                     flatMap[key] = tft.contents[0]
                 }
             }
-
         }
-        val unflattener = JsonUnflattener(flatMap.toString())
         try {
-            output.write(unflattener.withPrintMode(PrintMode.PRETTY)
+            output.write(JsonUnflattener(flatMap.toString())
+                    .withPrintMode(PrintMode.PRETTY)
                     .unflatten().toByteArray())
         } catch (e: IOException) {
             throw FileFormatAdapterException("Cannot create the translated file")
@@ -161,5 +131,15 @@ class JsonAdapter : FileFormatAdapter {
 
     private fun usable(target: TextFlowTarget, approvedOnly: Boolean): Boolean {
         return (target.state.isApproved || !approvedOnly && target.state.isTranslated)
+    }
+
+    private fun createFlattenedMap(rawFile: URI): MutableMap<String, Any> {
+        try {
+            return JsonFlattener(
+                    InputStreamReader(FileInputStream(File(rawFile))))
+                    .flattenAsMap()
+        } catch (e: IOException) {
+            throw FileFormatAdapterException("Cannot open the source file")
+        }
     }
 }
