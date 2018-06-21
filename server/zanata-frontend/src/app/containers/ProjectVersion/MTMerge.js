@@ -71,8 +71,14 @@ class MTMerge extends Component {
             <CheckboxGroup options={plainOptions} value={this.state.checkedList} onChange={this.onChange} />
             <div className='mt4 mb4'>
               <Card hoverable>
+                <h3 className='txt-info mb4'>
+                  <span className='di'>
+                    <span className='mr2'>Save as</span>
+                    <Switch className='transSwitch' checkedChildren="translated" unCheckedChildren="fuzzy" />
+                  </span>
+                </h3>
                 <Switch size="small" />
-                <span className='txt-primary'> Override fuzzy translations with MT</span>
+                <span className='txt-primary'> Override existing fuzzy translations with MT</span>
               </Card>
             </div>
           </Modal>
