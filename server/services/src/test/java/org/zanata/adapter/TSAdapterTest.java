@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.LocaleId;
@@ -49,8 +50,6 @@ import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -177,7 +176,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                 "Tba’dé metalkcta",
                 ContentState.Translated);
         File originalFile = getTestFile("test-ts-untranslated.ts");
-        LocaleId localeId = new LocaleId("en");
+        LocaleId localeId = new LocaleId("sv");
         OutputStream outputStream = new ByteArrayOutputStream();
         try (
                 TsFilter tsFilter = new TsFilter();
@@ -189,16 +188,24 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                             localeId, writer, Optional.absent());
         }
         assertThat(outputStream.toString()).isEqualTo(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE TS []>\n" +
-                "<TS version=\"2.1\" sourcelanguage=\"en\" language=\"sv\">\n" +
-                "<message>\n" +
-                "    <source>First source</source>\n" +
-                "<translation type=\"unfinished\" variants=\"no\">Foun’dé metalkcta</translation>\n" +
-                "  </message><message>\n" +
-                "      <source>Second source</source>\n" +
-                "<translation type=\"unfinished\" variants=\"no\">Tba’dé metalkcta</translation>\n" +
-                "    </message>\n" +
-                "</TS>\n");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE TS []>\n" +
+                        // TODO ZNTA-2634 language should be sv
+                        "<TS version=\"2.1\" language=\"en_US\">\n" +
+                        "<context>\n" +
+                        "  <name>testContext1</name>\n" +
+                        "  <message>\n" +
+                        "    <source>First source</source>\n" +
+                        "<translation type=\"unfinished\" variants=\"no\">Foun’dé metalkcta</translation>\n" +
+                        "  </message>\n" +
+                        "</context>\n" +
+                        "<context>\n" +
+                        "  <name>testContext2</name>\n" +
+                        "  <message>\n" +
+                        "    <source>Second source</source>\n" +
+                        "<translation type=\"unfinished\" variants=\"no\">Tba’dé metalkcta</translation>\n" +
+                        "  </message>\n" +
+                        "</context>\n" +
+                        "</TS>\n");
     }
 
     @Test
