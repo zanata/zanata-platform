@@ -133,16 +133,16 @@ public class HProject extends SlugEntityBase
      *
      * To change maintainers, use other methods in this class.
      *
-     * @see {@link #addMaintainer(HPerson)}
-     * @see {@link #removeMaintainer(HPerson)}
+     * @see #addMaintainer(HPerson)
+     * @see #removeMaintainer(HPerson)
      */
     @Transient
     public ImmutableSet<HPerson> getMaintainers() {
-        Set<HProjectMember> maintainerMembers =
-                Sets.filter(members, HProjectMember.IS_MAINTAINER);
-        Collection<HPerson> maintainers = Collections2
-                .transform(maintainerMembers, HProjectMember.TO_PERSON);
-        return ImmutableSet.<HPerson> copyOf(maintainers);
+        return ImmutableSet.copyOf(
+                members.stream()
+                        .filter(pm -> pm.getRole() == Maintainer)
+                        .map(HProjectMember::getPerson)
+                        .iterator());
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",

@@ -48,9 +48,10 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.rest.dto.Person;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.zanata.model.ProjectRole.Maintainer;
 
 /**
  * @see Person
@@ -104,10 +105,12 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     @Transient
     @GraphQLIgnore
     public Set<HProject> getMaintainerProjects() {
-        return getProjectMemberships().stream()
-                .filter(HProjectMember.IS_MAINTAINER)
-                .map(HProjectMember.TO_PROJECT)
-                .collect(toImmutableSet());
+        return ImmutableSet.copyOf(
+                getProjectMemberships()
+                        .stream()
+                        .filter(pm -> pm.getRole() == Maintainer)
+                        .map(HProjectMember::getProject)
+                        .iterator());
     }
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",

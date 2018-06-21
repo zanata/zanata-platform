@@ -20,14 +20,11 @@
  */
 package org.zanata.model;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.ProjectRoleType;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,31 +47,6 @@ import io.leangen.graphql.annotations.types.GraphQLType;
 @GraphQLType(name = "ProjectMember")
 public class HProjectMember implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Predicate to filter for only maintainer roles.
-     *
-     * Use with {@link com.google.common.collect.Collections2#filter}.
-     */
-    public static final Predicate<HProjectMember> IS_MAINTAINER =
-            input -> input != null &&
-                    input.getRole().equals(ProjectRole.Maintainer);
-
-    /**
-     * Transform function to extract the person.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectMember, HPerson> TO_PERSON =
-            input -> input != null ? input.getPerson() : null;
-
-    /**
-     * Transform function to extract the project.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectMember, HProject> TO_PROJECT =
-            input -> input != null ? input.getProject() : null;
 
     public HProjectMember(HProject project, HPerson person, ProjectRole role) {
         setProject(project);
