@@ -7,13 +7,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -73,17 +72,12 @@ public class LeakyBucketTest {
 
     private static List<Boolean>
             getFutureResult(List<Future<Boolean>> futures) {
-        return Lists.transform(futures,
-                new Function<Future<Boolean>, Boolean>() {
-
-                    @Override
-                    public Boolean apply(Future<Boolean> input) {
-                        try {
-                            return input.get();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        return futures.stream().map(input -> {
+            try {
+                return input.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
     }
 }
