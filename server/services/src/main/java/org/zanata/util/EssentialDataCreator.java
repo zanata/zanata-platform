@@ -113,6 +113,7 @@ public class EssentialDataCreator {
                 log.warn(
                         "No admin users found. Admin users can be enabled via system property: zanata.security.adminusers");
             }
+            createRoleIfNotExist("machine-translation");
             // Enable en-US by default
             HLocale enUSLocale = localeDAO.findByLocaleId(EN_US);
             if (enUSLocale == null) {

@@ -8,6 +8,8 @@ import static org.zanata.common.LocaleId.EN_US;
 
 import java.util.List;
 
+import javax.ws.rs.core.UriInfo;
+
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +22,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.rest.NoSuchEntityException;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MachineTranslationService;
 
 public class MachineTranslationResourceTest {
@@ -32,12 +35,18 @@ public class MachineTranslationResourceTest {
     private TextFlowDAO textFlowDAO;
     @Mock
     private MachineTranslationService machineTranslationService;
+    @Mock private ActiveProjectVersionAndLocaleValidator
+            activeProjectVersionAndLocaleValidator;
+    @Mock private ZanataIdentity identity;
+    @Mock private MachineTranslationsManager machineTranslationManager;
+    @Mock private UriInfo uri;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         resource = new MachineTranslationResource(documentDAO, textFlowDAO,
-                machineTranslationService);
+                machineTranslationService,
+                activeProjectVersionAndLocaleValidator, identity, machineTranslationManager, uri);
     }
 
     @Test

@@ -28,8 +28,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 
+import javax.annotation.Nullable;
+
 import org.zanata.security.ZanataIdentity;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -53,6 +56,12 @@ public class AsyncTaskHandle<V> implements Serializable {
     private String cancelledBy;
     private long cancelledTime;
     private String keyId;
+
+    public static boolean taskIsNotRunning(
+            @Nullable AsyncTaskHandle<?> handleByKey) {
+        return handleByKey == null || handleByKey.isCancelled()
+                || handleByKey.isDone();
+    }
 
     public boolean isRunning() {
         return isStarted() && !isCancelled() && !isDone();
