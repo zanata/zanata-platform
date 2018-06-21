@@ -59,6 +59,7 @@ const statusShortcutKeys = {
 class TransUnitTranslationFooter extends React.Component {
   static propTypes = {
     phrase: PropTypes.object.isRequired,
+    hasValidationErrors: PropTypes.bool.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
@@ -144,6 +145,7 @@ class TransUnitTranslationFooter extends React.Component {
     const {
       glossaryCount,
       glossaryVisible,
+      hasValidationErrors,
       openDropdown,
       phrase,
       saveAsMode,
@@ -160,8 +162,9 @@ class TransUnitTranslationFooter extends React.Component {
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
     const translationHasChanged = hasTranslationChanged(phrase)
     const isSaving = !!phrase.inProgressSave
-    const selectedButtonStatus =
-      isSaving ? phrase.inProgressSave.status : defaultSaveStatus(phrase)
+    const selectedButtonStatus = isSaving
+      ? phrase.inProgressSave.status
+      : defaultSaveStatus(phrase, hasValidationErrors)
     // TODO translate "Saving..."
     const selectedButtonTitle =
       isSaving ? 'Saving...' : statusNames[selectedButtonStatus]
@@ -184,13 +187,16 @@ class TransUnitTranslationFooter extends React.Component {
     })
 
     // TODO translate "Save as"
+    /* eslint-disable max-len */
     const saveAsLabel = translationHasChanged &&
-      /* eslint-disable max-len */
       <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
-          Save as
+        Save as
       </span>
-      /* eslint-enable max-len */
-
+    const errorsLabel = hasValidationErrors &&
+      <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
+        <Icon name="warning" className="n2" title="Validation Errors Detected" /> Errors detected
+      </span>
+    /* eslint-enable max-len */
     const actionButtonKeyShortcut =
       saveAsMode && statusShortcutKeys[selectedButtonStatus]
     const actionButton = (
@@ -203,7 +209,8 @@ class TransUnitTranslationFooter extends React.Component {
       </Button>
     )
 
-    const otherStatuses = nonDefaultValidSaveStatuses(phrase, permissions)
+    const otherStatuses = nonDefaultValidSaveStatuses(
+      phrase, permissions, hasValidationErrors)
     const otherActionButtons = otherStatuses.map((status, index) => {
       return (
         <li key={index}>
@@ -249,7 +256,7 @@ class TransUnitTranslationFooter extends React.Component {
           </ul>
         </div>
         <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
-          {saveAsLabel}
+          {errorsLabel} {saveAsLabel}
           <SplitDropdown
             onToggle={this.toggleDropdown}
             isOpen={dropdownIsOpen}

@@ -1,0 +1,390 @@
+{
+    "run": [
+        {
+            "name": "services",
+            "projectName": "services",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "gwt-editor",
+            "projectName": "gwt-editor",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-model",
+            "projectName": "zanata-model",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-war",
+            "projectName": "zanata-war",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-xliff",
+            "projectName": "zanata-adapter-xliff",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-rest-client",
+            "projectName": "zanata-rest-client",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "functional-test",
+            "projectName": "functional-test",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-client-commands",
+            "projectName": "zanata-client-commands",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-frontend",
+            "projectName": "zanata-frontend",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "build-tools",
+            "projectName": "build-tools",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "gwt-shared",
+            "projectName": "gwt-shared",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-properties",
+            "projectName": "zanata-adapter-properties",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-test-war",
+            "projectName": "zanata-test-war",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-model-test",
+            "projectName": "zanata-model-test",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-glossary",
+            "projectName": "zanata-adapter-glossary",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "stub-server",
+            "projectName": "stub-server",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-po",
+            "projectName": "zanata-adapter-po",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "gwt-test",
+            "projectName": "gwt-test",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-common-api",
+            "projectName": "zanata-common-api",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "security-common",
+            "projectName": "security-common",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-cli",
+            "projectName": "zanata-cli",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-liquibase",
+            "projectName": "zanata-liquibase",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-maven-plugin",
+            "projectName": "zanata-maven-plugin",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-common-util",
+            "projectName": "zanata-common-util",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        }
+    ],
+    "debug": [
+        {
+            "name": "services",
+            "projectName": "services",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "gwt-editor",
+            "projectName": "gwt-editor",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-model",
+            "projectName": "zanata-model",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-war",
+            "projectName": "zanata-war",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-xliff",
+            "projectName": "zanata-adapter-xliff",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-rest-client",
+            "projectName": "zanata-rest-client",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "functional-test",
+            "projectName": "functional-test",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-client-commands",
+            "projectName": "zanata-client-commands",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-frontend",
+            "projectName": "zanata-frontend",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "build-tools",
+            "projectName": "build-tools",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "gwt-shared",
+            "projectName": "gwt-shared",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-properties",
+            "projectName": "zanata-adapter-properties",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-test-war",
+            "projectName": "zanata-test-war",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-model-test",
+            "projectName": "zanata-model-test",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-glossary",
+            "projectName": "zanata-adapter-glossary",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "stub-server",
+            "projectName": "stub-server",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-adapter-po",
+            "projectName": "zanata-adapter-po",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "gwt-test",
+            "projectName": "gwt-test",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-common-api",
+            "projectName": "zanata-common-api",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "security-common",
+            "projectName": "security-common",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-cli",
+            "projectName": "zanata-cli",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-liquibase",
+            "projectName": "zanata-liquibase",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-maven-plugin",
+            "projectName": "zanata-maven-plugin",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        },
+        {
+            "name": "zanata-common-util",
+            "projectName": "zanata-common-util",
+            "workingDirectory": "/home/efloden/zanata-platform",
+            "args": [],
+            "vmargs": [],
+            "preLaunchTask": ""
+        }
+    ]
+}

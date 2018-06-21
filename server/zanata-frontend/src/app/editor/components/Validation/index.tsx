@@ -1,12 +1,12 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
+import createValidators from '../../../validators'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
 import './index.css'
-import createValidators from '../../../validators'
 
 const Panel = Collapse.Panel
 
@@ -28,14 +28,15 @@ const messageList = (messages) => {
   })
 }
 
-/**
- * Validation Messages presentational component
- */
-const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validationOptions }) => {
+export const getValidationMessages = (
+  { locale, source, target, validationOptions }: ValidationProps): ValidationMessages | undefined => {
+  if (!source || !target || !validationOptions) {
+    return undefined
+  }
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
 
-  const validators = createValidators(intl.locale)
+  const validators = createValidators(locale)
 
   const warningProducers = warningValidators.map((warningOpt) => {
     return validators.find((validator) => {
@@ -74,14 +75,31 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
     }))
     errorMessages = errorMessages.concat(msgs)
   })
+  return {
+    warningMessages,
+    errorMessages,
+    warningCount: warningMessages.length,
+    errorCount: errorMessages.length
+  }
+}
 
-  const WarningMessageList = messageList(warningMessages)
-  const ErrorMessageList = messageList(errorMessages)
-  const warningCount = warningMessages.length
-  const errorCount = errorMessages.length
+/**
+ * Validation Messages presentational component
+ */
+const Validation: React.SFC<ValidationMessages> = (validationMessages) => {
+  const {
+    warningMessages, errorMessages, warningCount, errorCount
+  } = validationMessages
+  // Check input, do not render if no warnings or errors found
+  if (!validationMessages
+      || warningMessages.length <= 0 && errorMessages.length <= 0) {
+    return DO_NOT_RENDER
+  }
+  const warningMessageList = warningMessages && messageList(warningMessages)
+  const errorMessageList = errorMessages && messageList(errorMessages)
   const warningsMessage = warningCount > 0
     ? <FormattedMessage
-      tagName='option'
+      tagName='span'
       id='Validator.header.warnings'
       description='Indicator of the number of validation warnings.'
       defaultMessage='Warnings: {warningCount}'
@@ -91,7 +109,7 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
     : DO_NOT_RENDER
   const errorsMessage = errorCount > 0
     ? <FormattedMessage
-      tagName='option'
+      tagName='span'
       id='Validator.header.errors'
       description='Indicator of the number of validation errors.'
       defaultMessage='Errors: {errorCount}'
@@ -104,23 +122,22 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
       {warningsMessage} {errorsMessage}
     </span>
   )
-  // Only render if warnings or errors found
-  return (warningMessages.length > 0 || errorMessages.length > 0)
-    ? <div className='TextflowValidation'>
+
+  return (
+    <div className='TextflowValidation'>
       <Collapse>
         <Panel
           key='1'
           header={header} >
-          {ErrorMessageList}
-          {WarningMessageList}
+          {errorMessageList}{warningMessageList}
         </Panel>
       </Collapse>
     </div>
-    : DO_NOT_RENDER
+  )
 }
 
 interface ValidationProps {
-  intl: any,
+  locale: string,
   source: string,
   target: string,
   validationOptions: ValidationOption[]
@@ -140,18 +157,32 @@ interface ValidationOption {
   disabled: boolean
 }
 
+interface ValidationMessages {
+  errorMessages: Message[],
+  errorCount: number
+  warningMessages: Message[],
+  warningCount: number,
+}
+
 Validation.propTypes = {
-  intl: intlShape.isRequired,
-  source: PropTypes.string.isRequired,
-  target: PropTypes.string.isRequired,
-  validationOptions: PropTypes.arrayOf(
+  errorMessages: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       active: PropTypes.bool.isRequired,
       disabled: PropTypes.bool.isRequired
     })
-  )
+  ),
+  errorCount: PropTypes.number,
+  warningMessages: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      active: PropTypes.bool.isRequired,
+      disabled: PropTypes.bool.isRequired
+    })
+  ),
+  warningCount: PropTypes.number
 }
 
-export default injectIntl(Validation)
+export default Validation
