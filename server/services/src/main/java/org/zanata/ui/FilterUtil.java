@@ -49,12 +49,8 @@ public class FilterUtil {
     public static List<HPerson> filterOutPersonList(
             final List<HPerson> allPersonList, List<HPerson> personList) {
         Collection<HPerson> filtered =
-                Collections2.filter(personList, new Predicate<HPerson>() {
-                    @Override
-                    public boolean apply(HPerson input) {
-                        return !allPersonList.contains(input);
-                    }
-                });
+                Collections2.filter(personList,
+                        input -> !allPersonList.contains(input));
 
         return Lists.newArrayList(filtered);
     }

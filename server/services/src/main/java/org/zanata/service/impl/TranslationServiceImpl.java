@@ -269,13 +269,8 @@ public class TranslationServiceImpl implements TranslationService {
             List<TransUnitUpdateRequest> translationRequests,
             HProjectIteration projectIteration, HLocale hLocale) {
         Optional<TransUnitUpdateRequest> hasReviewRequest = Iterables.tryFind(
-                translationRequests, new Predicate<TransUnitUpdateRequest>() {
-
-                    @Override
-                    public boolean apply(TransUnitUpdateRequest input) {
-                        return isReviewState(input.getNewContentState());
-                    }
-                });
+                translationRequests,
+                it -> isReviewState(it.getNewContentState()));
         if (hasReviewRequest.isPresent()) {
             identity.checkPermission("translation-review",
                     projectIteration.getProject(), hLocale);

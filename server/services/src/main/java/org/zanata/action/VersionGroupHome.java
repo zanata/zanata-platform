@@ -371,16 +371,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             List<HProjectIteration> versionList = versionGroupServiceImpl
                     .searchLikeSlugOrProjectSlug(getQuery());
             Collection<HProjectIteration> filtered = Collections2
-                    .filter(versionList, new Predicate<HProjectIteration>() {
-
-                        @Override
-                        public boolean
-                                apply(@Nullable HProjectIteration input) {
-                            return input != null && !input.getGroups()
-                                    .contains(getInstance()) &&
-                                    identity.hasPermission(input, "read");
-                        }
-                    });
+                    .filter(versionList, it -> it != null && !it.getGroups()
+                            .contains(getInstance()) &&
+                            identity.hasPermission(it, "read"));
             return Lists.newArrayList(filtered);
         }
 

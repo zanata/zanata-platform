@@ -786,14 +786,9 @@ public class ProjectHomeAction extends AbstractSortAction
 
         public Collection<HPerson> getMaintainers() {
             return Lists.newArrayList(
-                    Collections2.filter(fetchAll(), new Predicate<HPerson>() {
-
-                        @Override
-                        public boolean apply(HPerson input) {
-                            return include(input, getFilter())
-                                    && isMaintainer(input);
-                        }
-                    }));
+                    Collections2.filter(fetchAll(),
+                            input -> include(input, getFilter())
+                                    && isMaintainer(input)));
         }
 
         public List<HLocale> getLocalesWithMembers() {

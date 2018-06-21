@@ -231,13 +231,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
      */
     private Predicate<PersonProjectMemberships.LocaleRoles>
             localeEqualsPredicate(final HLocale hLocale) {
-        return new Predicate<PersonProjectMemberships.LocaleRoles>() {
-
-            @Override
-            public boolean apply(PersonProjectMemberships.LocaleRoles input) {
-                return input.getLocale().equals(hLocale);
-            }
-        };
+        return input -> input.getLocale().equals(hLocale);
     }
 
     /**

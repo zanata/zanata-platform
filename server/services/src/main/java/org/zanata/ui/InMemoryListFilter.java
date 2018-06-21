@@ -20,7 +20,9 @@
  */
 package org.zanata.ui;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -46,16 +48,12 @@ public abstract class InMemoryListFilter<T> extends AbstractListFilter<T> {
     @Override
     protected List<T> fetchRecords(int start, int max, final String filter) {
         loadElements();
-        List<T> filteredList = Lists.newArrayList(elements);
+        List<T> filteredList;
         if (filter != null) {
-            filteredList = Lists.newArrayList(
-                    Collections2.filter(elements, new Predicate<T>() {
-                        @Override
-                        public boolean apply(T input) {
-                            return include(input, filter);
-                        }
-                    })
-            );
+            filteredList = elements.stream().filter(
+                    it -> include(it, filter)).collect(Collectors.toList());
+        } else {
+            filteredList = new ArrayList<>(elements);
         }
         return filteredList
                     .subList(start, Math.min(start + max, filteredList.size()));
