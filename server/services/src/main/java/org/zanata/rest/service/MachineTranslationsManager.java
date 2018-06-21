@@ -1,0 +1,104 @@
+/*
+ * Copyright 2018, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+package org.zanata.rest.service;
+
+import static org.zanata.async.AsyncTaskKey.joinFields;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.GenericAsyncTaskKey;
+import org.zanata.async.handle.MachineTranslationPrefillTaskHandle;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HAccount;
+import org.zanata.model.HProjectIteration;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.MachineTranslationService;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+
+import com.google.common.base.MoreObjects;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+/**
+ * @author Patrick Huang
+ * <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public class MachineTranslationsManager {
+    private static final Logger log =
+            LoggerFactory.getLogger(MachineTranslationsManager.class);
+
+    @Inject
+    private AsyncTaskHandleManager asyncTaskHandleManager;
+    @Inject
+    @Authenticated
+    private HAccount authenticatedAccount;
+    @Inject
+    private MachineTranslationService machineTranslationService;
+
+    public AsyncTaskHandle<Void> prefillVersionWithMachineTranslations(String projectSlug, String versionSlug, HProjectIteration projectIteration, LocaleId localeId) {
+        MachineTranslationsForVersionTaskKey
+                taskKey =
+                new MachineTranslationsForVersionTaskKey(
+                        new ProjectIterationId(projectSlug, versionSlug,
+                                projectIteration.getProjectType()));
+
+
+        MachineTranslationPrefillTaskHandle taskHandle =
+                (MachineTranslationPrefillTaskHandle) asyncTaskHandleManager.getHandleByKey(taskKey);
+
+        if (AsyncTaskHandle.taskIsNotRunning(taskHandle)) {
+            taskHandle = new MachineTranslationPrefillTaskHandle();
+
+            taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
+            asyncTaskHandleManager.registerTaskHandle(taskHandle, taskKey);
+            machineTranslationService.prefillWithMachineTranslation(projectIteration.getId(), localeId, taskHandle);
+        } else {
+            log.warn("there is already a task running {}", taskKey);
+            throw new UnsupportedOperationException("task already running");
+        }
+
+        return taskHandle;
+    }
+
+    @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")
+    static class MachineTranslationsForVersionTaskKey extends
+            GenericAsyncTaskKey {
+
+        private static final String KEY_NAME = "MachineTranslationsForVersionTaskKey";
+        private static final long serialVersionUID = -6461799115582311574L;
+        private ProjectIterationId projectIterationId;
+
+        MachineTranslationsForVersionTaskKey(ProjectIterationId projectIterationId) {
+            super(joinFields(KEY_NAME, projectIterationId.toString()));
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                    .add("projectIterationId", projectIterationId)
+                    .toString();
+        }
+    }
+}

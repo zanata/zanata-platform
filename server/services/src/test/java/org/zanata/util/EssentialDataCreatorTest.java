@@ -86,7 +86,7 @@ public class EssentialDataCreatorTest {
 
     @Test
     public void willNotCreateRolesIfTheyExists() {
-        givenRolesDoExists("admin", "user", "glossarist", "glossary-admin", "project-creator");
+        givenRolesDoExists("admin", "user", "glossarist", "glossary-admin", "project-creator", "machine-translation");
 
         creator.prepare();
 

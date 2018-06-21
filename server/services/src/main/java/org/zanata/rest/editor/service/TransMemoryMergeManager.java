@@ -25,7 +25,6 @@ import static org.zanata.async.AsyncTaskKey.joinFields;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -92,7 +91,7 @@ public class TransMemoryMergeManager implements Serializable {
                         request.documentId, request.localeId);
         AsyncTaskHandle<?> handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
-        if (taskIsNotRunning(handleByKey)) {
+        if (AsyncTaskHandle.taskIsNotRunning(handleByKey)) {
             TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
             handle.setTriggeredBy(identity.getAccountUsername());
             asyncTaskHandleManager.registerTaskHandle(handle, key);
@@ -102,19 +101,13 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
-    @VisibleForTesting
-    protected static boolean taskIsNotRunning(@Nullable AsyncTaskHandle<?> handleByKey) {
-        return handleByKey == null || handleByKey.isCancelled()
-                || handleByKey.isDone();
-    }
-
     public boolean cancelTransMemoryMerge(TransMemoryMergeCancelRequest request) {
         TMMergeForDocTaskKey key =
                 new TMMergeForDocTaskKey(
                         request.documentId, request.localeId);
         AsyncTaskHandle<?> handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
-        if (taskIsNotRunning(handleByKey)) {
+        if (AsyncTaskHandle.taskIsNotRunning(handleByKey)) {
             return false;
         }
         TransMemoryMergeTaskHandle handle =
@@ -136,7 +129,7 @@ public class TransMemoryMergeManager implements Serializable {
         AsyncTaskKey key = makeKey(versionId, mergeRequest.getLocaleId());
         MergeTranslationsTaskHandle handleByKey =
                 (MergeTranslationsTaskHandle) asyncTaskHandleManager.getHandleByKey(key);
-        if (taskIsNotRunning(handleByKey)) {
+        if (AsyncTaskHandle.taskIsNotRunning(handleByKey)) {
             handleByKey = new MergeTranslationsTaskHandle(key);
 
             handleByKey.setTriggeredBy(identity.getAccountUsername());

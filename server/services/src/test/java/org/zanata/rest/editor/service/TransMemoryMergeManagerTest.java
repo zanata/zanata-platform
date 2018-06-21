@@ -76,20 +76,20 @@ public class TransMemoryMergeManagerTest {
 
     @Test
     public void canCheckIfTaskIsRunning() {
-        assertThat(TransMemoryMergeManager.taskIsNotRunning(null)).isTrue();
+        assertThat(AsyncTaskHandle.taskIsNotRunning(null)).isTrue();
         when(taskHandle.isCancelled()).thenReturn(true);
     }
 
     @Test
     public void taskIsNotRunningIfItsCancelled() {
         when(taskHandle.isCancelled()).thenReturn(true);
-        assertThat(TransMemoryMergeManager.taskIsNotRunning(taskHandle)).isTrue();
+        assertThat(AsyncTaskHandle.taskIsNotRunning(taskHandle)).isTrue();
     }
 
     @Test
     public void taskIsNotRunningIfItsDone() {
         when(taskHandle.isDone()).thenReturn(true);
-        assertThat(TransMemoryMergeManager.taskIsNotRunning(taskHandle)).isTrue();
+        assertThat(AsyncTaskHandle.taskIsNotRunning(taskHandle)).isTrue();
     }
 
     @Test

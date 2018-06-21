@@ -21,11 +21,20 @@
 package org.zanata.service;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
+import javax.annotation.Nonnull;
+
+import org.zanata.async.handle.MachineTranslationPrefillTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
 
 public interface MachineTranslationService {
+    int BATCH_SIZE = 100;
 
-    List<String> getSuggestion(HTextFlow textFlow, LocaleId fromLocale, LocaleId toLocale);
+    List<String> getSuggestion(HTextFlow textFlow, LocaleId fromLocale,
+            LocaleId toLocale);
+
+    Future<Void> prefillWithMachineTranslation(Long versionId, LocaleId targetLocaleId,
+            @Nonnull MachineTranslationPrefillTaskHandle taskHandle);
 }

@@ -21,22 +21,36 @@
 package org.zanata.rest.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.dto.ProcessStatus;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.MachineTranslationService;
+import org.zanata.util.HttpUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Patrick Huang
@@ -49,21 +63,35 @@ public class MachineTranslationResource {
     private DocumentDAO documentDAO;
     private TextFlowDAO textFlowDAO;
     private MachineTranslationService machineTranslationService;
+    private ActiveProjectVersionAndLocaleValidator activeProjectVersionAndLocaleValidator;
+    private ZanataIdentity identity;
+    private MachineTranslationsManager machineTranslationsManager;
+    private UriInfo uri;
 
     @Inject
     public MachineTranslationResource(DocumentDAO documentDAO,
             TextFlowDAO textFlowDAO,
-            MachineTranslationService machineTranslationService) {
+            MachineTranslationService machineTranslationService,
+            ActiveProjectVersionAndLocaleValidator activeProjectVersionAndLocaleValidator,
+            ZanataIdentity identity,
+            MachineTranslationsManager machineTranslationsManager,
+            @Context UriInfo uri) {
         this.documentDAO = documentDAO;
         this.textFlowDAO = textFlowDAO;
         this.machineTranslationService = machineTranslationService;
+        this.activeProjectVersionAndLocaleValidator =
+                activeProjectVersionAndLocaleValidator;
+        this.identity = identity;
+        this.machineTranslationsManager = machineTranslationsManager;
+        this.uri = uri;
     }
 
-    protected MachineTranslationResource() {
+    public MachineTranslationResource() {
     }
 
     @Path("project/{projectSlug}/version/{versionSlug}")
     @GET
+    @CheckRole("machine-translations")
     public List<String> getMachineTranslationSuggestion(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
@@ -85,4 +113,38 @@ public class MachineTranslationResource {
         return machineTranslationService.getSuggestion(textFlow, doc.getSourceLocaleId(), new LocaleId(toLocale));
 
     }
+
+    @CheckRole("machine-translations")
+    @POST
+    @Path("project/{projectSlug}/version/{versionSlug}")
+    public Response prefillVersionByMachineTranslation(@PathParam("projectSlug") String projectSlug,
+            @PathParam("versionSlug") String versionSlug, @QueryParam("toLocale") String localeId) {
+        Optional<Response> response =
+                activeProjectVersionAndLocaleValidator
+                        .getResponseIfProjectLocaleAndVersionAreNotActive(projectSlug, versionSlug, new LocaleId(localeId));
+
+        if (response.isPresent()) {
+            return response.get();
+        }
+
+        HProject hProject = activeProjectVersionAndLocaleValidator.getProject();
+        HProjectIteration version =
+                activeProjectVersionAndLocaleValidator.getVersion();
+        HLocale locale = activeProjectVersionAndLocaleValidator.getLocale();
+
+        identity.checkPermission("modify-translation",
+                hProject, locale);
+
+        AsyncTaskHandle<Void> handle = machineTranslationsManager
+                .prefillVersionWithMachineTranslations(projectSlug, versionSlug,
+                        version, locale.getLocaleId());
+
+        String url = uri.getBaseUri() + "process/key/" + handle.getKeyId();
+        ProcessStatus processStatus = AsyncProcessService
+                .handleToProcessStatus(handle,
+                        HttpUtil.stripProtocol(url));
+        return Response.accepted(processStatus).build();
+    }
+
+
 }
