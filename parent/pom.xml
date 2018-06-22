@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>parent</artifactId>
-  <version>4.5.0-rc-4-SNAPSHOT</version>
+  <version>4.5.0</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -22,7 +22,7 @@
          See https://issues.apache.org/jira/browse/MPIR-234?focusedCommentId=14663321&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-14663321
     -->
     <url>https://github.com/zanata/zanata-platform/tree/master/</url>
-    <tag>HEAD</tag>
+    <tag>platform-4.5.0</tag>
   </scm>
 
   <licenses>
