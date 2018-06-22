@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.LocaleId;
@@ -185,7 +186,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                 ContentState.Translated);
         // TODO test NeedReview as well (should be omitted or marked as unfinished)
         File originalFile = getTestFile("test-ts-untranslated.ts");
-        LocaleId localeId = new LocaleId("en");
+        LocaleId localeId = new LocaleId("sv");
         OutputStream outputStream = new ByteArrayOutputStream();
         try (
                 TsFilter tsFilter = new TsFilter();

@@ -194,7 +194,10 @@ public class TSAdapter extends OkapiFilterAdapter {
             String context = "";
             while (filter.hasNext()) {
                 Event event = filter.next();
-                if (isStartContext(event)) {
+                if (event.isDocumentPart() &&
+                        event.getDocumentPart().hasProperty("language")) {
+                    // TODO ZNTA-2483 change readonly language property
+                } else if (isStartContext(event)) {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
                     context = "";
@@ -227,17 +230,13 @@ public class TSAdapter extends OkapiFilterAdapter {
                                                                         .getFirstContent()
                                                                         .clone(),
                                                                 true, true));
-                                        writer.handleEvent(event);
                                     }
                                 }
-                            } else {
-                                writer.handleEvent(event);
                             }
                         }
                     }
-                } else {
-                    writer.handleEvent(event);
                 }
+                writer.handleEvent(event);
             }
         } catch (OkapiIOException e) {
             throw new FileFormatAdapterException(
