@@ -46,7 +46,6 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.rest.dto.Person;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -99,11 +98,11 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
 
     @Transient
     public Set<HProject> getMaintainerProjects() {
-        Set<HProjectMember> maintainerMemberships = Sets
-                .filter(getProjectMemberships(), HProjectMember.IS_MAINTAINER);
-        Collection<HProject> projects = Collections2
-                .transform(maintainerMemberships, HProjectMember.TO_PROJECT);
-        return ImmutableSet.copyOf(projects);
+        return ImmutableSet.copyOf(
+                getProjectMemberships().stream()
+                        .filter(HProjectMember.IS_MAINTAINER)
+                        .map(HProjectMember::getProject)
+                        .iterator());
     }
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",

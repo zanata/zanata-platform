@@ -48,36 +48,6 @@ public class HProjectLocaleMember
         implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Transform function to extract the person.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectLocaleMember, HPerson> TO_PERSON =
-            new Function<HProjectLocaleMember, HPerson>() {
-
-                @Nullable
-                @Override
-                public HPerson apply(HProjectLocaleMember input) {
-                    return input != null ? input.getPerson() : null;
-                }
-            };
-
-    /**
-     * Transform function to extract the project.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectLocaleMember, HProject> TO_PROJECT =
-            new Function<HProjectLocaleMember, HProject>() {
-
-                @Nullable
-                @Override
-                public HProject apply(HProjectLocaleMember input) {
-                    return input != null ? input.getProject() : null;
-                }
-            };
-
     public HProjectLocaleMember(HProject project, HLocale locale,
             HPerson person, LocaleRole role) {
         setProject(project);

@@ -20,14 +20,11 @@
  */
 package org.zanata.model;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.ProjectRoleType;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.function.Predicate;
 
 /**
  * Represents a user's membership and role in a project.
@@ -54,45 +52,8 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString {
      * Use with {@link com.google.common.collect.Collections2#filter}.
      */
     public static final Predicate<HProjectMember> IS_MAINTAINER =
-            new Predicate<HProjectMember>() {
-
-                @Override
-                public boolean apply(HProjectMember input) {
-                    return input != null ?
-                            input.getRole().equals(ProjectRole.Maintainer) :
-                            false;
-                }
-            };
-
-    /**
-     * Transform function to extract the person.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectMember, HPerson> TO_PERSON =
-            new Function<HProjectMember, HPerson>() {
-
-                @Nullable
-                @Override
-                public HPerson apply(HProjectMember input) {
-                    return input != null ? input.getPerson() : null;
-                }
-            };
-
-    /**
-     * Transform function to extract the project.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectMember, HProject> TO_PROJECT =
-            new Function<HProjectMember, HProject>() {
-
-                @Nullable
-                @Override
-                public HProject apply(HProjectMember input) {
-                    return input != null ? input.getProject() : null;
-                }
-            };
+            input -> input != null &&
+                    input.getRole().equals(ProjectRole.Maintainer);
 
     public HProjectMember(HProject project, HPerson person, ProjectRole role) {
         setProject(project);

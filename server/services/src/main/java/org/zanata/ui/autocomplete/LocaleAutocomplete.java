@@ -8,11 +8,6 @@ import org.zanata.model.HLocale;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.ui.AbstractAutocomplete;
-import org.zanata.ui.FilterUtil;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import org.zanata.util.ServiceLocator;
 
 import static org.zanata.ui.FilterUtil.isIncludeLocale;

@@ -2,6 +2,7 @@ package org.zanata.rest;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
@@ -98,12 +99,8 @@ public class SampleDataResourceImpl implements SampleDataResource {
                 Splitter.on(",").omitEmptyStrings().trimResults().split(
                         localesCSV));
         List<LocaleId> locales =
-                Lists.transform(localesIds, new Function<String, LocaleId>() {
-                    @Override
-                    public LocaleId apply(String input) {
-                        return new LocaleId(input);
-                    }
-                });
+                localesIds.stream().map(LocaleId::new)
+                        .collect(Collectors.toList());
         final HPerson hPerson = entityManager
             .createQuery("from HPerson p where p.account.username = :username",
                 HPerson.class).setParameter("username", username).getSingleResult();

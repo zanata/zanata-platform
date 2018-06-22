@@ -57,7 +57,6 @@ import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.zanata.util.UrlUtil;
 

@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
@@ -29,12 +27,12 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Describes all the membership roles of a person in a project.
@@ -94,51 +92,29 @@ public class PersonProjectMemberships implements Serializable {
      *            that the person is already a member of.
      */
     public void ensureLocalesPresent(Collection<HLocale> locales) {
-        Collection<HLocale> presentLocales =
-                Collections2.transform(localeRoles, TO_LOCALE);
+        Set<HLocale> presentLocales = localeRoles.stream()
+                .map(LocaleRoles::getLocale)
+                .collect(Collectors.toSet());
         for (HLocale locale : locales) {
             if (!presentLocales.contains(locale)) {
                 localeRoles.add(new LocaleRoles(locale,
-                        Collections.<LocaleRole>emptySet()));
+                        Collections.emptySet()));
             }
         }
     }
 
+
     /**
-     * Transform to extract the name of the locale from a LocaleRoles (for
+     * Extract the name of the locale from a LocaleRoles (for
      * sorting)
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}
      */
-    public static final Function<LocaleRoles, String> TO_LOCALE_NAME =
-            new Function<LocaleRoles, String>() {
-
-                @Nullable
-                @Override
-                public String apply(LocaleRoles input) {
-                    // To lowercase to prevent non-caps values appearing after
-                    // all caps values (e.g. a appearing after Z)
-                    return input != null ? input.getLocale().retrieveDisplayName()
-                            .toLowerCase() : null;
-                }
-            };
+    private static String lowerCaseDisplayName(LocaleRoles roles) {
+        // To lowercase to prevent non-caps values appearing after
+        // all caps values (e.g. a appearing after Z)
+        return roles.getLocale().retrieveDisplayName().toLowerCase();
+    }
     private static final Ordering<LocaleRoles> LOCALE_NAME_ORDERING =
-            Ordering.natural().onResultOf(TO_LOCALE_NAME);
-
-    /**
-     * Transform to extract the locale from a LocaleRoles.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}
-     */
-    public static final Function<LocaleRoles, HLocale> TO_LOCALE =
-            new Function<LocaleRoles, HLocale>() {
-
-                @Nullable
-                @Override
-                public HLocale apply(LocaleRoles input) {
-                    return input != null ? input.getLocale() : null;
-                }
-            };
+            Ordering.natural().onResultOf(PersonProjectMemberships::lowerCaseDisplayName);
 
     /**
      * Replace the person with an equivalent person.

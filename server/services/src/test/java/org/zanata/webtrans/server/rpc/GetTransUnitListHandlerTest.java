@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.cache.CacheLoader;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;

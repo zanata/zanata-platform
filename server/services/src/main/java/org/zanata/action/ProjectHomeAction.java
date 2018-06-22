@@ -38,7 +38,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -228,12 +227,13 @@ public class ProjectHomeAction extends AbstractSortAction
         if (StringUtils.isEmpty(slug) || !identity.isLoggedIn()) {
             return Collections.emptyList();
         }
-        Collection<Long> versionIds = Collections2.transform(
-                getProjectVersions(),
-                input -> input != null ? input.getId(): null);
+
+        List<Long> versionIds = getProjectVersions().stream()
+                .map(it -> it != null ? it.getId(): null)
+                .collect(toList());
         return activityServiceImpl.findLatestVersionActivitiesByUser(
                 currentUser.getPerson().getId(),
-                Lists.newArrayList(versionIds), 0, 1);
+                versionIds, 0, 1);
     }
 
     public DisplayUnit getStatisticFigureForVersion(
@@ -390,8 +390,8 @@ public class ProjectHomeAction extends AbstractSortAction
         if (projectVersions == null) {
             projectVersions = projectDAO.getActiveIterations(slug);
             projectVersions.addAll(projectDAO.getReadOnlyIterations(slug));
-            Collections.sort(projectVersions,
-                    ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
+            projectVersions
+                    .sort(ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
         }
         return projectVersions;
     }
