@@ -14,8 +14,8 @@ import rootReducer from '../reducers'
 import Root from '../containers/Root'
 
 import '../editor/index.css'
-import 'tachyons/css/tachyons.min.css'
 import '../styles/style.less'
+import 'tachyons/css/tachyons.min.css'
 
 WebFont.load({
   google: {
