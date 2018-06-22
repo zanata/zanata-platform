@@ -9,7 +9,7 @@ import Validation from './Validation'
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
-jest.mock('./Validation')
+jest.mock('./Validation', () => 'Validation')
 
 registerLanguage('xml', xml)
 
@@ -79,6 +79,7 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
+        onValidationErrorChange={defaultFunc}
         phrase={phrase}
         selected
         selectedPluralIndex={1}
@@ -116,10 +117,7 @@ describe('TransUnitTranslationPanel', () => {
           lineStyle={lineStyle}>
           {'Je ne parle pas français'}
         </SyntaxHighlighter>
-        <Validation
-          source={phrase.sources[0]}
-          target={'Je ne parle pas français'}
-          validationOptions={validations} />
+        <Validation />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -133,6 +131,7 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
+        onValidationErrorChange={defaultFunc}
         phrase={phrase}
         selected={false}
         selectedPluralIndex={1}
@@ -157,10 +156,6 @@ describe('TransUnitTranslationPanel', () => {
           onFocus={defaultFunc}
           onChange={defaultFunc}
           onSelect={defaultFunc} />
-        <Validation
-          source={phrase.sources[0]}
-          target={'Je ne parle pas français'}
-          validationOptions={validations} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -173,6 +168,7 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
+        onValidationErrorChange={defaultFunc}
         phrase={phrase}
         selected={false}
         selectedPluralIndex={1}
@@ -197,10 +193,6 @@ describe('TransUnitTranslationPanel', () => {
           onFocus={defaultFunc}
           onChange={defaultFunc}
           onSelect={defaultFunc} />
-        <Validation
-          source={phrase.sources[0]}
-          target={'Je ne parle pas français'}
-          validationOptions={validations} />
       </div>
     )
     expect(actual).toEqual(expected)

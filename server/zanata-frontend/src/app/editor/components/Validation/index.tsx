@@ -1,6 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
+import { isEmpty } from 'lodash'
 import createValidators from '../../../validators'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
@@ -91,8 +92,7 @@ const Validation: React.SFC<ValidationMessages> = (validationMessages) => {
     warningMessages, errorMessages, warningCount, errorCount
   } = validationMessages
   // Check input, do not render if no warnings or errors found
-  if (!validationMessages
-      || warningMessages.length <= 0 && errorMessages.length <= 0) {
+  if (isEmpty(validationMessages) || (warningCount <= 0 && errorCount <= 0)) {
     return DO_NOT_RENDER
   }
   const warningMessageList = warningMessages && messageList(warningMessages)
