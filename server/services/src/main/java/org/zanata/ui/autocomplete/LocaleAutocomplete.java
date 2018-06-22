@@ -2,6 +2,7 @@ package org.zanata.ui.autocomplete;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zanata.model.HLocale;
 import org.zanata.service.LocaleService;
@@ -14,6 +15,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.zanata.util.ServiceLocator;
 
+import static org.zanata.ui.FilterUtil.isIncludeLocale;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -22,7 +25,7 @@ public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
     protected LocaleService localeServiceImpl = ServiceLocator.instance()
             .getInstance(LocaleServiceImpl.class);
 
-    protected List<HLocale> supportedLocales = localeServiceImpl
+    private List<HLocale> supportedLocales = localeServiceImpl
             .getSupportedLocales();
 
     protected abstract Collection<HLocale> getLocales();
@@ -33,11 +36,9 @@ public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
     @Override
     public List<HLocale> suggest() {
         final Collection<HLocale> entityLocales = getLocales();
-
-        Collection<HLocale> filtered =
-                Collections2.filter(supportedLocales,
-                        it -> FilterUtil.isIncludeLocale(entityLocales, it,
-                                getQuery()));
-        return Lists.newArrayList(filtered);
+        return supportedLocales.stream()
+                .filter(it ->
+                        isIncludeLocale(entityLocales, it, getQuery()))
+                .collect(Collectors.toList());
     }
 }

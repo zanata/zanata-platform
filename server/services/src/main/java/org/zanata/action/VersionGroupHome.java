@@ -371,11 +371,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         public List<HProjectIteration> suggest() {
             List<HProjectIteration> versionList = versionGroupServiceImpl
                     .searchLikeSlugOrProjectSlug(getQuery());
-            Collection<HProjectIteration> filtered = Collections2
-                    .filter(versionList, it -> it != null && !it.getGroups()
+            return versionList.stream()
+                    .filter(it -> it != null && !it.getGroups()
                             .contains(getInstance()) &&
-                            identity.hasPermission(it, "read"));
-            return Lists.newArrayList(filtered);
+                            identity.hasPermission(it, "read"))
+                    .collect(Collectors.toList());
         }
 
         @Override

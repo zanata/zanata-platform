@@ -268,10 +268,9 @@ public class TranslationServiceImpl implements TranslationService {
     private void validateReviewPermissionIfApplicable(
             List<TransUnitUpdateRequest> translationRequests,
             HProjectIteration projectIteration, HLocale hLocale) {
-        Optional<TransUnitUpdateRequest> hasReviewRequest = Iterables.tryFind(
-                translationRequests,
-                it -> isReviewState(it.getNewContentState()));
-        if (hasReviewRequest.isPresent()) {
+        boolean hasReviewRequest = translationRequests.stream()
+                .anyMatch(it -> isReviewState(it.getNewContentState()));
+        if (hasReviewRequest) {
             identity.checkPermission("translation-review",
                     projectIteration.getProject(), hLocale);
         }

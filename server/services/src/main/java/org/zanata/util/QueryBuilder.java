@@ -21,6 +21,7 @@
 package org.zanata.util;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -165,9 +166,10 @@ public final class QueryBuilder {
 
         @Override
         public String toWhereClause() {
-            Iterable<String> notEmptyOperands = Iterables.filter(operands,
-                    StringNotEmptyPredicate.PREDICATE);
-            if (Iterables.isEmpty(notEmptyOperands)) {
+            List<String> notEmptyOperands =
+                    operands.stream().filter(s -> !Strings.isNullOrEmpty(s))
+                            .collect(Collectors.toList());
+            if (notEmptyOperands.isEmpty()) {
                 return EMPTY_EXPRESSION;
             }
             Joiner joiner = Joiner.on(" " + operator.name() + " ");
@@ -182,19 +184,7 @@ public final class QueryBuilder {
         }
     }
 
-    private static enum StringNotEmptyPredicate implements Predicate<String> {
-        PREDICATE;
-
-        @Override
-        public boolean apply(@Nullable String input) {
-            return !Strings.isNullOrEmpty(input);
-        }
-    }
-
     private enum LogicalOperator {
-        OR,
-        AND,
-        NOT;
-
+        OR, AND, NOT
     }
 }
