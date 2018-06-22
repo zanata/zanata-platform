@@ -15,7 +15,8 @@ import {
   SAVE_INITIATED,
   PENDING_SAVE_INITIATED,
   SAVE_FINISHED,
-  SAVE_FAILED
+  SAVE_FAILED,
+  VALIDATION_ERRORS
 } from './phrases-action-types'
 import {
   defaultSaveStatus,
@@ -140,6 +141,12 @@ const saveFailed = createAction(SAVE_FAILED,
     phraseId,
     saveInfo,
     response
+  }))
+
+export const validationError = createAction(VALIDATION_ERRORS,
+  (phraseId, hasValidationError) => ({
+    phraseId,
+    hasValidationError
   }))
 
 export function savePhraseWithStatus (phrase, status, reviewComment) {

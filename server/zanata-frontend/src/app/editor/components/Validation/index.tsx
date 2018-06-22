@@ -167,19 +167,19 @@ interface ValidationMessages {
 Validation.propTypes = {
   errorMessages: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      active: PropTypes.bool.isRequired,
-      disabled: PropTypes.bool.isRequired
+      id: PropTypes.string,
+      label: PropTypes.string,
+      active: PropTypes.bool,
+      disabled: PropTypes.bool
     })
   ),
   errorCount: PropTypes.number,
   warningMessages: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      active: PropTypes.bool.isRequired,
-      disabled: PropTypes.bool.isRequired
+      id: PropTypes.string,
+      label: PropTypes.string,
+      active: PropTypes.bool,
+      disabled: PropTypes.bool
     })
   ),
   warningCount: PropTypes.number

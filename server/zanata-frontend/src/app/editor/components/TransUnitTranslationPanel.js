@@ -9,7 +9,7 @@ import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { LoaderText } from '../../components'
 import { pick } from 'lodash'
 import {
-  phraseTextSelectionRange
+  phraseTextSelectionRange, validationError
 } from '../actions/phrases-actions'
 import {
   getSyntaxHighlighting,
@@ -42,6 +42,7 @@ class TransUnitTranslationPanel extends React.Component {
     intl: intlShape.isRequired,
     isRTL: PropTypes.bool.isRequired,
     onSelectionChange: PropTypes.func.isRequired,
+    onValidationErrorChange: PropTypes.func.isRequired,
     // the key of the currently open dropdown (may be undefined if none is open)
     openDropdown: PropTypes.any,
     permissions: PropTypes.shape({
@@ -137,6 +138,7 @@ class TransUnitTranslationPanel extends React.Component {
 
     const {
       openDropdown,
+      onValidationErrorChange,
       intl,
       saveAsMode,
       saveDropdownKey,
@@ -177,6 +179,7 @@ class TransUnitTranslationPanel extends React.Component {
               isPlural={isPlural}
               phrase={phrase}
               onSelectionChange={onSelectionChange}
+              onValidationErrorChange={onValidationErrorChange}
               selected={selected}
               selectedPluralIndex={selectedPluralIndex}
               selectPhrasePluralIndex={selectPhrasePluralIndex}
@@ -187,7 +190,8 @@ class TransUnitTranslationPanel extends React.Component {
               syntaxOn={syntaxOn}
               validationOptions={validationOptions}
               validationMessages={validationMsgs}
-              permissions={permissions} />
+              permissions={permissions}
+              hasValidationErrors={hasValidationErrors} />
           )
         })
     }
@@ -237,8 +241,10 @@ export class TranslationItem extends React.Component {
   static propTypes = {
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
+    hasValidationErrors: PropTypes.bool,
     isPlural: PropTypes.bool.isRequired,
     onSelectionChange: PropTypes.func.isRequired,
+    onValidationErrorChange: PropTypes.func.isRequired,
     phrase: PropTypes.shape({
       id: PropTypes.any.isRequired,
       sources: PropTypes.any.isRequired
@@ -261,7 +267,12 @@ export class TranslationItem extends React.Component {
     }).isRequired,
     validationMessages: PropTypes.any
   }
-
+  componentDidUpdate (prevProps) {
+    const { phrase, hasValidationErrors, onValidationErrorChange } = this.props
+    if (phrase.errors !== hasValidationErrors) {
+      onValidationErrorChange(phrase.id, hasValidationErrors)
+    }
+  }
   setTextArea = (ref) => {
     this.props.setTextArea(this.props.index, ref)
   }
@@ -338,7 +349,7 @@ export class TranslationItem extends React.Component {
           onChange={this._onChange}
           onSelect={onSelectionChange} />
         {syntaxHighlighter}
-        <Validation {...validationMessages} />
+        {selected && <Validation {...validationMessages} />}
       </div>
     )
   }
@@ -408,6 +419,9 @@ function mapDispatchToProps (dispatch, _ownProps) {
       // This does seem to fire when selected phrase changes, so it is fine
       // to just transmit the range without info about which row it is for.
       dispatch(phraseTextSelectionRange(selectionStart, selectionEnd))
+    },
+    onValidationErrorChange: (phraseId, hasValidationErrors) => {
+      dispatch(validationError(phraseId, hasValidationErrors))
     }
   }
 }

@@ -29,7 +29,8 @@ import {
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
-  UNDO_EDIT
+  UNDO_EDIT,
+  VALIDATION_ERRORS
 } from '../../actions/phrases-action-types'
 import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
 import {
@@ -256,7 +257,12 @@ export const phraseReducer = handleActions({
     changeSelectedIndex(state, getState(), index => index + 1),
 
   [MOVE_PREVIOUS]: (state, { getState }) =>
-    changeSelectedIndex(state, getState(), index => index - 1)
+    changeSelectedIndex(state, getState(), index => index - 1),
+
+  [VALIDATION_ERRORS]: (state, { payload: { phraseId, hasValidationError } }) =>
+    update(state, {
+      detail: { [phraseId]: { errors: { $set: hasValidationError } } }
+    })
 }, defaultState)
 
 /**
