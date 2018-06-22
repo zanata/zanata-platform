@@ -26,15 +26,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
@@ -73,17 +78,12 @@ import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
 import org.zanata.util.GlossaryUtil;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 import static org.zanata.model.ProjectRole.Maintainer;
 import static org.zanata.model.ProjectRole.TranslationMaintainer;
@@ -160,7 +160,7 @@ public class ProjectHomeAction extends AbstractSortAction
     private ListMultimap<HPerson, ProjectRole> personRoles;
     private Map<HPerson, ListMultimap<HLocale, LocaleRole>> personLocaleRoles;
     private List<HProjectIteration> projectVersions;
-    private Map<String, WordStatistic> statisticMap = Maps.newHashMap();
+    private Map<String, WordStatistic> statisticMap = new HashMap<>();
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final VersionComparator versionComparator =
             new VersionComparator(getVersionSortingList());
@@ -168,7 +168,7 @@ public class ProjectHomeAction extends AbstractSortAction
             new AtomicReference<>();
     private HProject project;
     // for storing last activity date for the version
-    private Map<Long, Date> versionLatestActivityDate = Maps.newHashMap();
+    private Map<Long, Date> versionLatestActivityDate = new HashMap<>();
 
     public boolean isVersionCopying(String projectSlug, String versionSlug) {
         return copyVersionManager.isCopyVersionRunning(projectSlug,
@@ -471,7 +471,7 @@ public class ProjectHomeAction extends AbstractSortAction
     }
 
     private void populatePersonLocaleRoles() {
-        personLocaleRoles = Maps.newHashMap();
+        personLocaleRoles = new HashMap<>();
         // Project may be null if this is triggered from an ajax call that does
         // not actually need to render personLocaleRoles
         if (getProject() != null) {
@@ -508,7 +508,7 @@ public class ProjectHomeAction extends AbstractSortAction
     }
 
     public List<HPerson> getAllMembers() {
-        final Set<HPerson> people = Sets.newHashSet(getMemberRoles().keySet());
+        final Set<HPerson> people = new HashSet<>(getMemberRoles().keySet());
         people.addAll(getPersonLocaleRoles().keySet());
         return Lists.newArrayList(people);
     }
@@ -553,55 +553,34 @@ public class ProjectHomeAction extends AbstractSortAction
                 getMemberRoles().get(person);
         Collection<ProjectRole> roles;
         if (rolesForPerson == null) {
-            roles = Lists.newArrayList();
+            roles = new ArrayList<>();
         } else {
-            roles = Lists.newArrayList(rolesForPerson);
+            roles = new ArrayList<>(rolesForPerson);
         }
         // Maintainer role includes TranslationMaintainer privileges, so do not
         // show the lower-permission role.
         if (roles.contains(Maintainer)) {
             roles.remove(TranslationMaintainer);
         }
-        // Wrapped in a concrete collection because the lazy collection returned
-        // by transform causes errors when it is used directly in a jsf
-        // template.
-        return Lists.newArrayList(Collections2.transform(roles,
-                new Function<ProjectRole, String>() {
-
-                    @Override
-                    public String apply(ProjectRole role) {
-                        return projectRoleDisplayName(role);
-                    }
-                }));
+        return roles.stream().map(this::projectRoleDisplayName).collect(toList());
     }
-
-    public static final Function<String, String> TO_LOWERCASE =
-            new Function<String, String>() {
-
-                @Nullable
-                @Override
-                public String apply(@Nullable String input) {
-                    return Strings.isNullOrEmpty(input) ? ""
-                            : input.toLowerCase();
-                }
-            };
 
     /**
      * Get a list of the display name for every language-related role for a
      * person.
      */
-    public List<String> languageRoleDisplayNames(HPerson person) {
+    private List<String> languageRoleDisplayNames(HPerson person) {
         final ListMultimap<HLocale, LocaleRole> localeRolesMultimap =
                 getPersonLocaleRoles().get(person);
         if (localeRolesMultimap == null) {
             return Collections.emptyList();
         }
-        List<String> displayNames = Lists.newArrayList(
-                Collections2.transform(localeRolesMultimap.asMap().entrySet(),
-                        TO_LOCALE_ROLES_DISPLAY_STRING));
-        Collections.sort(displayNames,
-                Ordering.natural().onResultOf(TO_LOWERCASE));
-        return displayNames;
+
+        return localeRolesMultimap.asMap().entrySet().stream()
+                .map(TO_LOCALE_ROLES_DISPLAY_STRING)
+                .sorted(Ordering.natural().onResultOf(
+                        s -> isNullOrEmpty(s) ? "" : s.toLowerCase()))
+                .collect(toList());
     }
 
     /**
@@ -612,17 +591,18 @@ public class ProjectHomeAction extends AbstractSortAction
         final ListMultimap<HLocale, LocaleRole> localesWithRoles =
                 getPersonLocaleRoles().get(person);
         if (localesWithRoles == null) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         Collection<LocaleRole> roles = localesWithRoles.asMap().get(locale);
         if (roles == null) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         final List<LocaleRole> sortedRoles =
                 LOCALE_ROLE_ORDERING.sortedCopy(roles);
-        final List<String> roleNames =
-                Lists.transform(sortedRoles, TO_DISPLAY_NAME);
-        return Lists.newArrayList(Joiner.on(", ").join(roleNames));
+
+        final Stream<String> roleNames = sortedRoles.stream()
+                .map(this::localeRoleDisplayName);
+        return Lists.newArrayList(Joiner.on(", ").join(roleNames.iterator()));
     }
 
     @SuppressFBWarnings("SE_BAD_FIELD")
@@ -640,26 +620,17 @@ public class ProjectHomeAction extends AbstractSortAction
                         final List<LocaleRole> sortedRoles =
                                 LOCALE_ROLE_ORDERING
                                         .sortedCopy(entry.getValue());
-                        final List<String> roleNames =
-                                Lists.transform(sortedRoles, TO_DISPLAY_NAME);
+
+                        Stream<String> roleNames = sortedRoles.stream()
+                                .map(it -> localeRoleDisplayName(it));
                         return localeName + " " +
-                                Joiner.on(", ").join(roleNames);
+                                Joiner.on(", ").join(roleNames.iterator());
                     }
                     return null;
                 }
             };
-    @SuppressFBWarnings("SE_BAD_FIELD")
-    private final Function<LocaleRole, String> TO_DISPLAY_NAME =
-            new Function<LocaleRole, String>() {
 
-                @Nullable
-                @Override
-                public String apply(@Nullable LocaleRole role) {
-                    return role != null ? localeRoleDisplayName(role): null;
-                }
-            };
-
-    public String projectRoleDisplayName(ProjectRole role) {
+    private String projectRoleDisplayName(ProjectRole role) {
         switch (role) {
         case Maintainer:
             return msgs.get("jsf.Maintainer");
@@ -718,7 +689,7 @@ public class ProjectHomeAction extends AbstractSortAction
                 }
             };
     private static final Ordering<HLocale> LOCALE_NAME_ORDERING =
-            Ordering.natural().onResultOf(TO_LOCALE_NAME);
+            Ordering.natural().onResultOf(TO_LOCALE_NAME::apply);
 
     public final class PeopleFilterComparator
             extends InMemoryListFilter<HPerson> implements Comparator<HPerson> {
@@ -790,7 +761,7 @@ public class ProjectHomeAction extends AbstractSortAction
         public Collection<HPerson> getMaintainers() {
             return fetchAll().stream()
                     .filter(p -> include(p, getFilter()) && isMaintainer(p))
-                    .collect(Collectors.toList());
+                    .collect(toList());
         }
 
         public List<HLocale> getLocalesWithMembers() {
@@ -808,7 +779,7 @@ public class ProjectHomeAction extends AbstractSortAction
         }
 
         private Map<HLocale, List<HPerson>> generateMembersByLocale() {
-            Map<HLocale, List<HPerson>> localePersonMap = Maps.newHashMap();
+            Map<HLocale, List<HPerson>> localePersonMap = new HashMap<>();
             for (HPerson person : fetchAll()) {
                 if (!include(person, getFilter()) || !isTranslator(person)) {
                     continue;
@@ -837,17 +808,14 @@ public class ProjectHomeAction extends AbstractSortAction
         }
 
         private boolean hasMatchingRole(HPerson person) {
-            Iterable<ProjectRole> filtered = Iterables
-                    .filter(getPersonRoles().get(person), projectRolePredicate);
-            return filtered.iterator().hasNext();
+            return getPersonRoles().get(person).stream().anyMatch(projectRolePredicate);
         }
 
         private boolean hasMatchingLanguage(HPerson person) {
             ListMultimap<HLocale, LocaleRole> languageRoles =
                     getPersonLocaleRoles().get(person);
-            return languageRoles != null && !Sets
-                    .filter(languageRoles.keySet(), projectLocalePredicate)
-                    .isEmpty();
+            return languageRoles != null &&
+                    languageRoles.keySet().stream().anyMatch(projectLocalePredicate);
         }
 
         public boolean isShowMembersInGroup() {
@@ -864,7 +832,7 @@ public class ProjectHomeAction extends AbstractSortAction
         private String filter;
 
         @Override
-        public boolean apply(ProjectRole projectRole) {
+        public boolean test(ProjectRole projectRole) {
             return projectRole != null &&
                     containsIgnoreCase(projectRole.name(), filter);
         }
@@ -879,7 +847,7 @@ public class ProjectHomeAction extends AbstractSortAction
         private String filter;
 
         @Override
-        public boolean apply(HLocale locale) {
+        public boolean test(HLocale locale) {
             return locale != null &&
                     (containsIgnoreCase(locale.getDisplayName(), filter) ||
                             containsIgnoreCase(locale.getLocaleId().toString(),
