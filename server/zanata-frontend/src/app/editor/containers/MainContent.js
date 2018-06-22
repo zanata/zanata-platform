@@ -108,12 +108,9 @@ class MainContent extends React.Component {
         </div>
         <ConcurrentModal
           closeConcurrentModal={this.props.toggleConcurrentModal}
-          revision={selectedPhraseRevision}
           saveResolveConflict={this.props.saveResolveConflict}
           selectedPhrase={selectedPhrase}
           show={this.props.showConflictModal}
-          transUnitID={this.props.selectedPhraseId}
-          localeId={this.props.translationLocale.id}
         />
         <RejectTranslation
           show={this.props.showReviewModal}
@@ -151,8 +148,8 @@ function mapStateToProps (state, _ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    saveResolveConflict: (latest, original) => dispatch(
-      saveResolveConflict(latest, original)),
+    saveResolveConflict: (latest, original, resolution) => dispatch(
+      saveResolveConflict(latest, original, resolution)),
     toggleConcurrentModal: () => dispatch(toggleConcurrentModal()),
     toggleReviewModal: () => dispatch(toggleReviewModal()),
     fetchAllCriteria: () => dispatch(fetchAllCriteria())

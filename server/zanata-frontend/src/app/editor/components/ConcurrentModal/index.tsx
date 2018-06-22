@@ -14,30 +14,28 @@ import 'antd/lib/modal/style/index.less'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import Textarea from 'react-textarea-autosize'
 
+export enum resolution {
+  latest = 'latest',
+  original = 'original',
+}
+
 interface ConcurrentModalProps {
   closeConcurrentModal: () => void
-  revision?: number
-  saveResolveConflict: () => void
+  saveResolveConflict: (latest: any, original: any, resolution: resolution) => void
   show: boolean
   selectedPhrase?: any
-  transUnitID: number
-  localeId: string
 }
 
 class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
   public static propTypes = {
     closeConcurrentModal: PropTypes.func,
-    // Initial flyweight fetch of phrases does not include the revision detail
-    revision: PropTypes.number,
-    saveResolveConflict: PropTypes.func.isRequired
+    saveResolveConflict: PropTypes.func.isRequired,
     selectedPhrase: PropTypes.any,
     show: PropTypes.bool.isRequired,
-    transUnitID: PropTypes.number.isRequired,
-    localeId: PropTypes.string.isRequired,
   }
   public render () {
     const {
-      closeConcurrentModal, revision, saveResolveConflict, show, selectedPhrase, transUnitID, localeId
+      closeConcurrentModal, saveResolveConflict, show, selectedPhrase
     } = this.props
     if (!selectedPhrase.conflict) {
       return null
@@ -46,9 +44,11 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
     const latest = selectedPhrase.conflict.response
     const lastModifiedTime = new Date(2016, 12, 4, 2, 19)
     const onCancel = () => closeConcurrentModal()
+    const saveLatest = () => {
+      saveResolveConflict(latest, original, resolution.latest)
+    }
     const saveOriginal = () => {
-      // const updatedRevision = {...original, revision: latest.revision + 1}
-      saveResolveConflict(latest, original)
+      saveResolveConflict(latest, original, resolution.original)
     }
     return (
       /* eslint-disable max-len */
@@ -77,6 +77,7 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
             </span>
             <span className='u-floatRight'>
               <Button
+                onClick={saveLatest}
                 className='EditorButton Button--secondary u-rounded'>Use latest
               </Button>
             </span>

@@ -153,15 +153,16 @@ const saveConflict = createAction(SAVE_CONFLICT,
   }))
 
 const saveConflictResolved = createAction(SAVE_CONFLICT_RESOLVED,
-  (phraseId, saveInfo, response) => ({
+  (phraseId, saveInfo, response, resolution) => ({
     phraseId,
     saveInfo,
-    response
+    response,
+    resolution
   }))
 
 export const toggleConcurrentModal = createAction(TOGGLE_CONCURRENT_MODAL)
 
-export function saveResolveConflict (latest, original) {
+export function saveResolveConflict (latest, original, resolution) {
   return (dispatch, getState) => {
     const stateBefore = getState()
     const latestData = {...latest, revision: (latest.revision + 1)}
@@ -171,28 +172,45 @@ export function saveResolveConflict (latest, original) {
       translations: original.translations,
       revision: (latest.revision + 1)
     }
-    savePhrase(latestData, phrase)
-      .then(response => {
-        if (isErrorResponse(response)) {
-          console.error('Failed to save phrase')
-          dispatch(saveFailed(phrase.id, phrase, response))
-        } else {
-          response.json().then(({ revision, status }) => {
-            dispatch(saveConflictResolved(phrase.id, status, revision)).then(
-              dispatch(fetchTransUnitHistory(
-                phrase.localeId,
-                phrase.id,
-                stateBefore.context.projectSlug,
-                stateBefore.context.versionSlug
-              )).then(
-                fetchStatisticsInfo(dispatch, getState().context.projectSlug,
-                  getState().context.versionSlug, getState().context.docId,
-                  getState().context.lang)
+    if (resolution === 'latest') {
+      dispatch(saveConflictResolved(
+        phrase.id, latestData, latest.revision, resolution)).then(
+        dispatch(fetchTransUnitHistory(
+          phrase.localeId,
+          phrase.id,
+          stateBefore.context.projectSlug,
+          stateBefore.context.versionSlug
+        )).then(
+          fetchStatisticsInfo(dispatch, getState().context.projectSlug,
+            getState().context.versionSlug, getState().context.docId,
+            getState().context.lang)
+        )
+      )
+    } else if (resolution === 'original') {
+      savePhrase(latestData, phrase)
+        .then(response => {
+          if (isErrorResponse(response)) {
+            console.error('Failed to save phrase')
+            dispatch(saveFailed(phrase.id, phrase, response))
+          } else {
+            response.json().then(({ revision, status }) => {
+              dispatch(saveConflictResolved(
+                phrase.id, phrase, revision, resolution)).then(
+                  dispatch(fetchTransUnitHistory(
+                    phrase.localeId,
+                    phrase.id,
+                    stateBefore.context.projectSlug,
+                    stateBefore.context.versionSlug
+                )).then(
+                  fetchStatisticsInfo(dispatch, getState().context.projectSlug,
+                    getState().context.versionSlug, getState().context.docId,
+                    getState().context.lang)
+                )
               )
-            )
-          })
-        }
-      })
+            })
+          }
+        })
+    }
   }
 }
 

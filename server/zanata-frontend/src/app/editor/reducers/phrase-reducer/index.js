@@ -244,12 +244,14 @@ export const phraseReducer = handleActions({
       }
     }),
 
-  [SAVE_CONFLICT_RESOLVED]: (state, { getState, payload: { phraseId, status, revision } }) =>
+  [SAVE_CONFLICT_RESOLVED]: (state, { getState, payload: {
+    phraseId, saveInfo, revision, resolution } }) =>
     update(state, {
       notification: {
         $set: {
           severity: SEVERITY.INFO,
           message: 'Concurrent edit successfully resolved',
+          description: `Using the ${resolution} edit`,
           duration: 3.5
         }
       },
@@ -257,7 +259,11 @@ export const phraseReducer = handleActions({
         [phraseId]: {
           conflict: { $set: undefined },
           inProgressSave: { $set: undefined },
-          translations: { $set: state.detail[phraseId].newTranslations }
+          newTranslations: {
+            $set: resolution === 'original'
+              ? state.detail[phraseId].newTranslations
+              : [saveInfo.content]
+          }
         }
       }
     }),
