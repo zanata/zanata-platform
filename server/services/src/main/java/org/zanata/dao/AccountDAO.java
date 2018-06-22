@@ -117,7 +117,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
                 getSession().createQuery(
                         "from HAccount as a where lower(a.username) like lower(:username)");
         query.setParameter("username", userName);
-        if(maxResults > 0) {
+        if (maxResults > 0) {
             query.setMaxResults(maxResults);
         }
         query.setFirstResult(firstResult);

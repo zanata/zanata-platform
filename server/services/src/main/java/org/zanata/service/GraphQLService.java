@@ -57,11 +57,6 @@ public class GraphQLService {
         this(null);
     }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
     @PostConstruct
     @VisibleForTesting
     public void postConstruct() {

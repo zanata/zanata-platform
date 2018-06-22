@@ -42,6 +42,7 @@ import org.zanata.seam.security.AltCurrentUser
 import org.zanata.service.GraphQLService
 import org.zanata.test.Descriptions.describe
 import org.zanata.util.toMap
+import java.net.HttpURLConnection.HTTP_OK
 
 /**
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com),
@@ -96,7 +97,7 @@ class ExportRestServiceTest : ZanataJpaTest() {
         val exportRestService = ExportRestService(currentUser, graphQLService)
 
         val response = exportRestService.exportUserData()
-        assertThat(response.status).describedAs(describe { response.entity }).isEqualTo(200)
+        assertThat(response.status).describedAs(describe { response.entity }).isEqualTo(HTTP_OK)
         val json = response.entity.toString()
         val jsonMap = toMap(json)
 

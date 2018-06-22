@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.dashboard;
 
-import java.net.URL;
 import java.util.Map;
 
 import org.junit.Before;

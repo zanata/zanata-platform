@@ -65,8 +65,7 @@ public class GraphQLServiceTest extends ZanataJpaTest {
         assertThat(schema).contains("type Account {");
         // NB this will break if we create new entities starting with H
         assertThat(schema).doesNotContainPattern("^type H");
-        // TODO
-        System.out.println(schema);
+//        System.out.println(schema);
     }
 
 }
