@@ -205,25 +205,23 @@ class TransUnitTranslationPanel extends React.Component {
       ])
       header = <TransUnitTranslationHeader {...headerProps} />
 
-      const footerProps = {
-        ...pick(this.props, [
-          'glossaryCount',
-          'glossaryVisible',
-          'openDropdown',
-          'phrase',
-          'saveAsMode',
-          'saveDropdownKey',
-          'savePhraseWithStatus',
-          'showSuggestions',
-          'suggestionCount',
-          'suggestionSearchType',
-          'toggleDropdown',
-          'toggleGlossary',
-          'toggleSuggestionPanel',
-          'showRejectModal',
-          'permissions'
-        ]), hasValidationErrors
-      }
+      const footerProps = pick(this.props, [
+        'glossaryCount',
+        'glossaryVisible',
+        'openDropdown',
+        'phrase',
+        'saveAsMode',
+        'saveDropdownKey',
+        'savePhraseWithStatus',
+        'showSuggestions',
+        'suggestionCount',
+        'suggestionSearchType',
+        'toggleDropdown',
+        'toggleGlossary',
+        'toggleSuggestionPanel',
+        'showRejectModal',
+        'permissions'
+      ])
       footer = <TransUnitTranslationFooter {...footerProps} />
     }
 

@@ -59,7 +59,6 @@ const statusShortcutKeys = {
 class TransUnitTranslationFooter extends React.Component {
   static propTypes = {
     phrase: PropTypes.object.isRequired,
-    hasValidationErrors: PropTypes.bool.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
@@ -145,7 +144,6 @@ class TransUnitTranslationFooter extends React.Component {
     const {
       glossaryCount,
       glossaryVisible,
-      hasValidationErrors,
       openDropdown,
       phrase,
       saveAsMode,
@@ -164,7 +162,7 @@ class TransUnitTranslationFooter extends React.Component {
     const isSaving = !!phrase.inProgressSave
     const selectedButtonStatus = isSaving
       ? phrase.inProgressSave.status
-      : defaultSaveStatus(phrase, hasValidationErrors)
+      : defaultSaveStatus(phrase)
     // TODO translate "Saving..."
     const selectedButtonTitle =
       isSaving ? 'Saving...' : statusNames[selectedButtonStatus]
@@ -192,7 +190,7 @@ class TransUnitTranslationFooter extends React.Component {
       <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
         Save as
       </span>
-    const errorsLabel = hasValidationErrors &&
+    const errorsLabel = phrase.errors &&
       <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
         <Icon name="warning" className="n2" title="Validation Errors Detected" /> Errors detected
       </span>
@@ -210,7 +208,7 @@ class TransUnitTranslationFooter extends React.Component {
     )
 
     const otherStatuses = nonDefaultValidSaveStatuses(
-      phrase, permissions, hasValidationErrors)
+      phrase, permissions)
     const otherActionButtons = otherStatuses.map((status, index) => {
       return (
         <li key={index}>

@@ -13,7 +13,7 @@ const nullToEmpty = (value: string) => {
 export function getSaveButtonStatus (phrase: Phrase) {
   if (hasNoTranslation(phrase)) {
     return STATUS_UNTRANSLATED
-  } else if (hasEmptyTranslation(phrase)) {
+  } else if (hasEmptyTranslation(phrase) || phrase.errors) {
     return STATUS_NEEDS_WORK
   } else if (hasTranslationChanged(phrase)) {
     return STATUS_TRANSLATED
