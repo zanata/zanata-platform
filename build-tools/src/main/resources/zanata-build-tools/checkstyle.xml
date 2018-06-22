@@ -64,7 +64,8 @@
     <module name="WhitespaceAfter"/>
 
     <module name="WhitespaceAround">
-      <property name="allowEmptyCatches" value = "false" />
+      <!-- We should set this explicitly after upgrading Checkstyle -->
+      <!-- <property name="allowEmptyCatches" value = "false" /> -->
       <property name="allowEmptyConstructors" value = "true" />
       <property name="allowEmptyMethods" value = "true" />
       <property name="allowEmptyLambdas" value = "true" />
