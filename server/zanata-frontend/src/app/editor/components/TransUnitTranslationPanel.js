@@ -152,7 +152,6 @@ class TransUnitTranslationPanel extends React.Component {
     const selectedPluralIndex = phrase.selectedPluralIndex || 0
 
     let translations
-    let hasValidationErrors = false
     if (isLoading) {
       translations = <span className="u-textMeta">
         <LoaderText loading />
@@ -171,7 +170,8 @@ class TransUnitTranslationPanel extends React.Component {
             validationOptions
           }
           const validationMsgs = getValidationMessages(validationProps)
-          hasValidationErrors = validationMsgs && validationMsgs.errorCount > 0
+          const hasValidationErrors =
+            validationMsgs && validationMsgs.errorCount > 0
           return (
             <TranslationItem key={index}
               dropdownIsOpen={dropdownIsOpen}
