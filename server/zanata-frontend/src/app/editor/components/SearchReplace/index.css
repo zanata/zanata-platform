@@ -1,3 +1,3 @@
-.searchReplaceModal {
-  width: 95%;
+.ant-modal.searchReplaceModal {
+  width: 95% !important;
 }

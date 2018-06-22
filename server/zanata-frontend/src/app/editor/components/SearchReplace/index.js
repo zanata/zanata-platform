@@ -54,33 +54,10 @@ class SearchReplace extends Component {
           <Button type="primary" className='btn-primary' icon="swap"
             onClick={this.showModal} />
           <Modal className='searchReplaceModal'
-              title="Project-wide Search and Replace"
-              visible={this.state.visible}
-              onOk={this.handleOk}
-              onCancel={this.handleCancel}>
-            <h3 className='txt-info mt4'><Icon type="global" /> Languages</h3>
-            <div style={{ borderBottom: '1px solid #E9E9E9' }}>
-              <Checkbox
-                  indeterminate={this.state.indeterminate}
-                  onChange={this.onCheckAllChange}
-                  checked={this.state.checkAll}>
-                All languages
-              </Checkbox>
-            </div>
-            <br />
-            <CheckboxGroup options={plainOptions} value={this.state.checkedList} onChange={this.onChange} />
-            <div className='mt4 mb4'>
-              <Card hoverable>
-                <h3 className='txt-info mb4'>
-                  <span className='di'>
-                    <span className='mr2'>Save as</span>
-                    <Switch className='transSwitch' checkedChildren="translated" unCheckedChildren="fuzzy" />
-                  </span>
-                </h3>
-                <Switch size="small" />
-                <span className='txt-primary'> Override existing fuzzy translations with MT</span>
-              </Card>
-            </div>
+            title="Project-wide Search and Replace"
+            visible={this.state.visible}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}>
           </Modal>
         </div>
     );
