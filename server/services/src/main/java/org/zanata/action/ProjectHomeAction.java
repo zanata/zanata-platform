@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
@@ -82,6 +83,8 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 import static org.zanata.model.ProjectRole.Maintainer;
 import static org.zanata.model.ProjectRole.TranslationMaintainer;
 
@@ -143,7 +146,7 @@ public class ProjectHomeAction extends AbstractSortAction
                 @Override
                 protected boolean include(HProjectIteration elem,
                         String filter) {
-                    return StringUtils.containsIgnoreCase(elem.getSlug(),
+                    return containsIgnoreCase(elem.getSlug(),
                             filter);
                 }
             };
@@ -758,7 +761,7 @@ public class ProjectHomeAction extends AbstractSortAction
                 // an undefined ordering. This is a weakness of the parent
                 // classes,
                 // which do not ensure correct ordering for the initial display.
-                Collections.sort(allMembers, peopleFilterComparator);
+                allMembers.sort(peopleFilterComparator);
             }
             return allMembers;
         }
@@ -781,20 +784,19 @@ public class ProjectHomeAction extends AbstractSortAction
 
         public void sortPeopleList() {
             this.reset();
-            Collections.sort(fetchAll(), peopleFilterComparator);
+            fetchAll().sort(peopleFilterComparator);
         }
 
         public Collection<HPerson> getMaintainers() {
-            return Lists.newArrayList(
-                    Collections2.filter(fetchAll(),
-                            input -> include(input, getFilter())
-                                    && isMaintainer(input)));
+            return fetchAll().stream()
+                    .filter(p -> include(p, getFilter()) && isMaintainer(p))
+                    .collect(Collectors.toList());
         }
 
         public List<HLocale> getLocalesWithMembers() {
             final ArrayList<HLocale> locales =
-                    Lists.newArrayList(getMembersByLocale().keySet());
-            Collections.sort(locales, LOCALE_NAME_ORDERING);
+                    new ArrayList<>(getMembersByLocale().keySet());
+            locales.sort(LOCALE_NAME_ORDERING);
             return locales;
         }
 
@@ -814,11 +816,8 @@ public class ProjectHomeAction extends AbstractSortAction
                 ListMultimap<HLocale, LocaleRole> localeRolesForPerson =
                         getPersonLocaleRoles().get(person);
                 for (HLocale locale : localeRolesForPerson.keySet()) {
-                    List<HPerson> peopleForLocale = localePersonMap.get(locale);
-                    if (peopleForLocale == null) {
-                        peopleForLocale = Lists.newArrayList();
-                        localePersonMap.put(locale, peopleForLocale);
-                    }
+                    List<HPerson> peopleForLocale = localePersonMap
+                            .computeIfAbsent(locale, k -> new ArrayList<>());
                     if (!peopleForLocale.contains(person)) {
                         peopleForLocale.add(person);
                     }
@@ -826,14 +825,14 @@ public class ProjectHomeAction extends AbstractSortAction
             }
             // ensure each list of people is in order
             for (List<HPerson> people : localePersonMap.values()) {
-                Collections.sort(people, this);
+                people.sort(this);
             }
             return localePersonMap;
         }
 
         private boolean hasMatchingName(HPerson person, String filter) {
-            return StringUtils.containsIgnoreCase(person.getName(), filter)
-                    || StringUtils.containsIgnoreCase(
+            return containsIgnoreCase(person.getName(), filter)
+                    || containsIgnoreCase(
                             person.getAccount().getUsername(), filter);
         }
 
@@ -866,9 +865,8 @@ public class ProjectHomeAction extends AbstractSortAction
 
         @Override
         public boolean apply(ProjectRole projectRole) {
-            return projectRole != null ?
-                    StringUtils.containsIgnoreCase(projectRole.name(), filter) :
-                    false;
+            return projectRole != null &&
+                    containsIgnoreCase(projectRole.name(), filter);
         }
 
         public void setFilter(final String filter) {
@@ -882,10 +880,10 @@ public class ProjectHomeAction extends AbstractSortAction
 
         @Override
         public boolean apply(HLocale locale) {
-            return locale != null ? StringUtils.containsIgnoreCase(locale.getDisplayName(),
-                    filter)
-                    || StringUtils.containsIgnoreCase(
-                    locale.getLocaleId().toString(), filter) : false;
+            return locale != null &&
+                    (containsIgnoreCase(locale.getDisplayName(), filter) ||
+                            containsIgnoreCase(locale.getLocaleId().toString(),
+                                    filter));
         }
 
         public void setFilter(final String filter) {
