@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.LocaleId;
@@ -189,8 +188,8 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
         LocaleId localeId = new LocaleId("sv");
         OutputStream outputStream = new ByteArrayOutputStream();
         try (
-                TsFilter tsFilter = new TsFilter();
-                IFilterWriter writer = tsFilter.createFilterWriter()) {
+            TsFilter tsFilter = new TsFilter();
+            IFilterWriter writer = tsFilter.createFilterWriter()) {
             writer.setOptions(localeId, Charsets.UTF_8.name());
             writer.setOutput(outputStream);
             getAdapter()
@@ -201,8 +200,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
         String maybeTypeUnfinished = approvedOnly ? "type=\"unfinished\" " : "";
         assertThat(outputStream.toString()).isEqualTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE TS []>\n" +
-                        // TODO ZNTA-2634 language should be sv
-                        "<TS version=\"2.1\" language=\"en_US\">\n" +
+                        "<TS version=\"2.1\" language=\"sv\">\n" +
                         "<context>\n" +
                         "  <name>testContext1</name>\n" +
                         "  <message>\n" +
