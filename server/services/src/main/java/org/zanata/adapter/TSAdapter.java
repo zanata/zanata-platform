@@ -23,14 +23,17 @@ package org.zanata.adapter;
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.IParameters;
+import net.sf.okapi.common.ISkeleton;
 import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.GenericContent;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
+import net.sf.okapi.common.resource.DocumentPart;
 import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.resource.StartGroup;
 import net.sf.okapi.common.resource.TextContainer;
 import net.sf.okapi.common.resource.TextUnit;
+import net.sf.okapi.common.skeleton.GenericSkeleton;
 import net.sf.okapi.filters.ts.Parameters;
 import net.sf.okapi.filters.ts.TsFilter;
 import org.apache.commons.io.FilenameUtils;
@@ -196,7 +199,8 @@ public class TSAdapter extends OkapiFilterAdapter {
                 Event event = filter.next();
                 if (event.isDocumentPart() &&
                         event.getDocumentPart().hasProperty("language")) {
-                    // TODO ZNTA-2483 change readonly language property
+                    event.getDocumentPart().setSkeleton(
+                            replaceLocaleInDocPart(event, localeId.toString()));
                 } else if (isStartContext(event)) {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
@@ -250,6 +254,19 @@ public class TSAdapter extends OkapiFilterAdapter {
     private boolean usable(ContentState state, boolean approvedOnly) {
         return state.isApproved() ||
                 (!approvedOnly && state.isTranslated());
+    }
+
+    /**
+     * Replace the language="en_US" with a target localeId
+     * @param event the DocumentPart event of a TS file header
+     * @param localeId the desired target locale
+     * @return a GenericSkeleton with the language replaced
+     */
+    private ISkeleton replaceLocaleInDocPart(Event event, String localeId) {
+        DocumentPart part = event.getDocumentPart();
+        return new GenericSkeleton(part.getSkeleton().clone().toString()
+                .replaceAll("language\\s*=\\s*\".+\"",
+                        "language=\"" + localeId + "\""));
     }
 
     @Override
