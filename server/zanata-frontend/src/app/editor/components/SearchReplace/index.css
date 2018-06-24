@@ -1,3 +1,20 @@
+:root {
+  --primary-color: #546677;
+  --neutral-color: rgb(228, 238, 241);
+}
+
 .ant-modal.searchReplaceModal {
   width: 95% !important;
+}
+
+.icon-sub i.anticon.anticon-cross {
+  vertical-align: sub;
+}
+
+.ant-input {
+  color: var(--primary-color) !important;
+}
+
+.ant-card.searchReplaceResultsCard {
+  background-color: var(--neutral-color);
 }
