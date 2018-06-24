@@ -2,7 +2,8 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {Row} from 'react-bootstrap'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import {TextInput} from '../../components'
 
 /**

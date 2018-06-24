@@ -1,3 +1,82 @@
+## 4.5.0
+##### Changes
+ * [ZNTA-2552](https://zanata.atlassian.net/browse/ZNTA-2552) - Cookie consent popup
+ * [ZNTA-2508](https://zanata.atlassian.net/browse/ZNTA-2508) - add aria-label to antd buttons
+ * [ZNTA-2501](https://zanata.atlassian.net/browse/ZNTA-2501) - ActivityPanel icon to indicate copy to clipboard
+ * [ZNTA-2495](https://zanata.atlassian.net/browse/ZNTA-2495) - Replace react-bootstrap buttons with overlays for toolips etc with ant-design one
+ * [ZNTA-2494](https://zanata.atlassian.net/browse/ZNTA-2494) - Replace react-bootstrap modal with ant-design
+ * [ZNTA-2491](https://zanata.atlassian.net/browse/ZNTA-2491) - Add utility class for status (warning etc)
+ * [ZNTA-2488](https://zanata.atlassian.net/browse/ZNTA-2488) - Create utility classes
+ * [ZNTA-2473](https://zanata.atlassian.net/browse/ZNTA-2473) - css improvements to react editor activity panel
+ * [ZNTA-2466](https://zanata.atlassian.net/browse/ZNTA-2466) - Make frontend layouts more consistent
+ * [ZNTA-2465](https://zanata.atlassian.net/browse/ZNTA-2465) - Replace react-bootstrap static buttons with Ant-design
+ * [ZNTA-2460](https://zanata.atlassian.net/browse/ZNTA-2460) - Break up legacy.less
+ * [ZNTA-2425](https://zanata.atlassian.net/browse/ZNTA-2425) - Validation Options for Editor sidebar backend
+ * [ZNTA-2415](https://zanata.atlassian.net/browse/ZNTA-2415) - Move rejection modal story to container, remove component
+ * [ZNTA-2410](https://zanata.atlassian.net/browse/ZNTA-2410) - Fix padding of Close buttons in GWT editor
+ * [ZNTA-2409](https://zanata.atlassian.net/browse/ZNTA-2409) - Frontend Internationalization Workflow
+ * [ZNTA-2408](https://zanata.atlassian.net/browse/ZNTA-2408) - Replace 'select option' with blank field in Reject Translation modal
+ * [ZNTA-2407](https://zanata.atlassian.net/browse/ZNTA-2407) - Isolate component and container css in frontend and editor
+ * [ZNTA-2405](https://zanata.atlassian.net/browse/ZNTA-2405) - Isolate frontend css
+ * [ZNTA-2401](https://zanata.atlassian.net/browse/ZNTA-2401) - React Editor user mode display (Translating/Viewing/Reviewing)
+ * [ZNTA-2394](https://zanata.atlassian.net/browse/ZNTA-2394) - Add preconnect and preload for webfonts to zanata-frontend
+ * [ZNTA-2393](https://zanata.atlassian.net/browse/ZNTA-2393) - React Editor Dropdown Styling
+ * [ZNTA-2392](https://zanata.atlassian.net/browse/ZNTA-2392) - React Editor review criteria comment required
+ * [ZNTA-2391](https://zanata.atlassian.net/browse/ZNTA-2391) - Convert frontend Admin landing page to React
+ * [ZNTA-2387](https://zanata.atlassian.net/browse/ZNTA-2387) - Enhance the user search options in admin
+ * [ZNTA-2380](https://zanata.atlassian.net/browse/ZNTA-2380) - Editor Permissions Checking
+ * [ZNTA-2346](https://zanata.atlassian.net/browse/ZNTA-2346) - Clarify group archiving behaviour
+ * [ZNTA-2325](https://zanata.atlassian.net/browse/ZNTA-2325) - React Editor Syntax Highlighting
+ * [ZNTA-2318](https://zanata.atlassian.net/browse/ZNTA-2318) - Review feature in JS editor
+ * [ZNTA-2297](https://zanata.atlassian.net/browse/ZNTA-2297) - Editor Activity Panel [backend]
+ * [ZNTA-2190](https://zanata.atlassian.net/browse/ZNTA-2190) - Replace .js in gwt-editor,zanata-war with webjars
+ * [ZNTA-1818](https://zanata.atlassian.net/browse/ZNTA-1818) - Report statistics about fuzzy/translated/approved strings copied by TM Merge
+ * [ZNTA-1700](https://zanata.atlassian.net/browse/ZNTA-1700) - Implement Groups frontend
+ * [ZNTA-1699](https://zanata.atlassian.net/browse/ZNTA-1699) - Implement Documents frontend
+ * [ZNTA-1698](https://zanata.atlassian.net/browse/ZNTA-1698) - Implement Languages frontend
+
+##### Bug Fixes
+ * [ZNTA-2618](https://zanata.atlassian.net/browse/ZNTA-2618) - GWT editor 'Save/Load settings' button does not work correctly
+ * [ZNTA-2617](https://zanata.atlassian.net/browse/ZNTA-2617) - Cancel and delete butttons are not aligned on Delete language pop 
+ * [ZNTA-2616](https://zanata.atlassian.net/browse/ZNTA-2616) - ReactJS Editor count for approved, translated, need work, rejected is not updated until we specifically reload the page
+ * [ZNTA-2615](https://zanata.atlassian.net/browse/ZNTA-2615) - Translate button not working on new editor
+ * [ZNTA-2614](https://zanata.atlassian.net/browse/ZNTA-2614) - GWT Editor Contrast on concurrent editor name poor
+ * [ZNTA-2612](https://zanata.atlassian.net/browse/ZNTA-2612) - GWT editor 'translation-comment' filter is just confusing
+ * [ZNTA-2609](https://zanata.atlassian.net/browse/ZNTA-2609) - Project Glossary link to project is broken
+ * [ZNTA-2608](https://zanata.atlassian.net/browse/ZNTA-2608) - Add new language modal shows previously added language details.
+ * [ZNTA-2607](https://zanata.atlassian.net/browse/ZNTA-2607) - Export project/version to TMX modal  is larger than required
+ * [ZNTA-2606](https://zanata.atlassian.net/browse/ZNTA-2606) - Duplicate glossary term is created
+ * [ZNTA-2605](https://zanata.atlassian.net/browse/ZNTA-2605) - Google login broken
+ * [ZNTA-2591](https://zanata.atlassian.net/browse/ZNTA-2591) - Languages page shows unnecessary scroll bar
+ * [ZNTA-2590](https://zanata.atlassian.net/browse/ZNTA-2590) - Unable to close keyboard shortcuts modal/pop-up from Alpha editor in firefox
+ * [ZNTA-2578](https://zanata.atlassian.net/browse/ZNTA-2578) - Projects and Groups lists empty for non maintainers.
+ * [ZNTA-2577](https://zanata.atlassian.net/browse/ZNTA-2577) - Cannot access a group from a project page
+ * [ZNTA-2569](https://zanata.atlassian.net/browse/ZNTA-2569) - Indicate the locale in the "TM Merge Summary" email
+ * [ZNTA-2567](https://zanata.atlassian.net/browse/ZNTA-2567) - Cancelling a TM merge does not actually cancel, prevents further merges
+ * [ZNTA-2554](https://zanata.atlassian.net/browse/ZNTA-2554) - Two languages merged in single row.
+ * [ZNTA-2550](https://zanata.atlassian.net/browse/ZNTA-2550) - Glossary UI breakages
+ * [ZNTA-2540](https://zanata.atlassian.net/browse/ZNTA-2540) - Anonymous contact admin lost
+ * [ZNTA-2525](https://zanata.atlassian.net/browse/ZNTA-2525) - routing wrong in new editor and settings
+ * [ZNTA-2522](https://zanata.atlassian.net/browse/ZNTA-2522) - Languages should be separated on profile page
+ * [ZNTA-2517](https://zanata.atlassian.net/browse/ZNTA-2517) - Long group name doesn't wrap correctly on delete group dialog box
+ * [ZNTA-2499](https://zanata.atlassian.net/browse/ZNTA-2499) - SAML2 authentication not covered in docs
+ * [ZNTA-2483](https://zanata.atlassian.net/browse/ZNTA-2483) - Exported .ts files are corrupted (Missing Context)
+ * [ZNTA-2446](https://zanata.atlassian.net/browse/ZNTA-2446) - "Upload translations" via web only triggers if you click on the Plus sign or the text "Add..."
+ * [ZNTA-2429](https://zanata.atlassian.net/browse/ZNTA-2429) - Language page is not scrollable
+ * [ZNTA-2400](https://zanata.atlassian.net/browse/ZNTA-2400) - Consistency of sizes in css (use rem)
+ * [ZNTA-2399](https://zanata.atlassian.net/browse/ZNTA-2399) - Improve visibility of draggable panel borders in editors
+ * [ZNTA-2382](https://zanata.atlassian.net/browse/ZNTA-2382) - ReactJS editor - UX issues
+ * [ZNTA-2378](https://zanata.atlassian.net/browse/ZNTA-2378) - Modal dialogs invisible to screen readers
+ * [ZNTA-2317](https://zanata.atlassian.net/browse/ZNTA-2317) - [ERROR] "parseQuery() will be replaced with getOptions()" while zanata build.
+ * [ZNTA-2313](https://zanata.atlassian.net/browse/ZNTA-2313) - Improve design of admin review criteria page
+ * [ZNTA-2141](https://zanata.atlassian.net/browse/ZNTA-2141) - Query parse failure on TM Merge with 'OR' in text
+ * [ZNTA-1993](https://zanata.atlassian.net/browse/ZNTA-1993) - Role name validation is not present
+ * [ZNTA-1083](https://zanata.atlassian.net/browse/ZNTA-1083) - Cannot upload translation .po file using the obvious "Upload translations" option
+ * [ZNTA-860](https://zanata.atlassian.net/browse/ZNTA-860) - Missing information in username validation error
+ * [ZNTA-30](https://zanata.atlassian.net/browse/ZNTA-30) - IllegalCharacterDataException on export TMX
+
+-----------------------
+
 ## 4.4.5
 ##### Bug Fixes
  * [ZNTA-2533](https://zanata.atlassian.net/browse/ZNTA-2533) - Liquibase: Liquibase  script does not accept  system properties (-D)

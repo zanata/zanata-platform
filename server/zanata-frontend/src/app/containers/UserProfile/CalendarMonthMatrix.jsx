@@ -6,6 +6,7 @@ import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
 import utilsDate from '../../utils/DateHelper'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 const classes = {
   calendar: {

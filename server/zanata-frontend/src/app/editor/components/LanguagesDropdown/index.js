@@ -4,7 +4,6 @@ import Dropdown from '../Dropdown'
 import { Icon } from '../../../components'
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Row } from 'react-bootstrap'
 import { serverUrl } from '../../../config'
 
 /**
@@ -64,12 +63,10 @@ class LanguagesDropdown extends React.Component {
         isOpen={this.props.isOpen}>
         <Dropdown.Button>
           <button className="Link--invert">
-            <Row>
-              {localeName}
-              <div className="u-sML-1-8 Dropdown-toggleIcon">
-                <Icon name="chevron-down" className="s1" />
-              </div>
-            </Row>
+            {localeName}
+            <div className="u-sML-1-8 Dropdown-toggleIcon">
+              <Icon name="chevron-down" className="s1" />
+            </div>
           </button>
         </Dropdown.Button>
         <Dropdown.Content>

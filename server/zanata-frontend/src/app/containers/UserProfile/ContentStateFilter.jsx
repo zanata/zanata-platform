@@ -6,6 +6,7 @@ import {
   ContentStateStyles
 } from '../../constants/Options'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /**
  * Component to filter statistics on content state

@@ -38,8 +38,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 
 /**
@@ -148,7 +146,7 @@ public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
         OutputStream outputStream = new ByteArrayOutputStream();
         try (IFilterWriter writer = createWriter(outputStream)) {
             adapter.generateTranslatedFile(originalFile.toURI(), translations,
-                    this.localeId, writer, Optional.absent(), approvedOnly);
+                    this.localeId, writer, "", approvedOnly);
         }
 
         String firstTitle = "Foun’dé metalkcta";
