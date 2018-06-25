@@ -12,6 +12,17 @@ public class APIResponse {
     private String details;
     private String timestamp;
 
+    public APIResponse(int status, String title, String details,
+            String timestamp) {
+        this.status = status;
+        this.title = title;
+        this.details = details;
+        this.timestamp = timestamp;
+    }
+
+    public APIResponse() {
+    }
+
     public int getStatus() {
         return status;
     }
