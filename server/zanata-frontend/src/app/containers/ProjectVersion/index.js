@@ -1,8 +1,8 @@
-// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import MTMerge from './MTMergeContainer'
 import TMMergeModal from './TMMergeModal'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 
@@ -13,12 +13,15 @@ import {
 import {
   showExportTMXModal
 } from '../../actions/tmx-actions'
+// import { LocaleType } from '../../utils/prop-types-util'
+import { fetchVersionLocales } from '../../actions/version-actions'
 
 /**
  * Root component for Project Version Page
  */
 class ProjectVersion extends Component {
   static propTypes = {
+    // availableLocales: PropTypes.arrayOf(LocaleType),
     toggleTMMergeModal: PropTypes.func.isRequired,
     toggleTMXExportModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
@@ -27,14 +30,33 @@ class ProjectVersion extends Component {
     })
   }
 
+  // componentDidMount () {
+  //   this.props.fetchVersionLocales(
+  //     this.props.projectSlug, this.props.versionSlug)
+  // }
+
   render () {
     const { params } = this.props
     return (
       <div className='wideView' id='sidebarVersion'>
         <div className='u-centerBlock'>
-          <TMMergeModal projectSlug={params.project}
+          {
+            // TODO not really used. It probably doesn't make sense to have
+            // this (and the fetch above) if 'locales' is part of
+            // ProjectVersionState
+            // this.props.availableLocales &&
+            <MTMerge
+              allowMultiple={false}
+              projectSlug={params.project}
+              versionSlug={params.version}
+            />}
+          <TMMergeModal
+            // @ts-ignore
+            projectSlug={params.project}
             versionSlug={params.version} />
-          <TMXExportModal project={params.project}
+          <TMXExportModal
+            // @ts-ignore
+            project={params.project}
             version={params.version} />
         </div>
       </div>
@@ -42,15 +64,28 @@ class ProjectVersion extends Component {
   }
 }
 
+// @ts-ignore
 const mapDispatchToProps = (dispatch) => {
   return {
+    // @ts-ignore any
+    fetchVersionLocales: (project, version) => {
+      dispatch(fetchVersionLocales(project, version))
+    },
     toggleTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
     },
+    // @ts-ignore any
     toggleTMXExportModal: (show) => {
+      // @ts-ignore
       dispatch(showExportTMXModal(show))
     }
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(ProjectVersion)
+// @ts-ignore any
+// const mapStateToProps = (state) => ({
+//   availableLocales: state.locales
+// })
+const mapStateToProps = undefined
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectVersion)

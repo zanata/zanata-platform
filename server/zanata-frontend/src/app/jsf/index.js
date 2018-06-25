@@ -14,6 +14,7 @@ import { apiMiddleware } from 'redux-api-middleware'
 import JsfRoot from './JsfRoot'
 import rootReducer from '../reducers'
 import {
+  toggleMTMergeModal,
   toggleTMMergeModal
 } from '../actions/version-actions'
 import {
@@ -52,8 +53,10 @@ const store = ((initialState) => {
 })()
 
 const enhancedHistory = syncHistoryWithStore(history, store)
-export default function mountReactComponent () {
-  // Attaching to window object so modal can be triggered from the JSF page
+
+export default function mountReactToJsf () {
+  // Attaching to window object so modals can be triggered from the JSF page
+  window.toggleMTMergeModal = () => store.dispatch(toggleMTMergeModal())
   window.toggleTMMergeModal = () => store.dispatch(toggleTMMergeModal())
   window.toggleTMXExportModal = (show) =>
     store.dispatch(showExportTMXModal(show))

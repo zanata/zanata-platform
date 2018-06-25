@@ -1,7 +1,7 @@
-// @ts-nocheck
 import {handleActions} from 'redux-actions'
 import update from 'immutability-helper'
 import {
+  TOGGLE_MT_MERGE_MODAL,
   TOGGLE_TM_MERGE_MODAL,
   VERSION_LOCALES_REQUEST,
   VERSION_LOCALES_SUCCESS,
@@ -12,12 +12,24 @@ import {
   VERSION_TM_MERGE_REQUEST,
   VERSION_TM_MERGE_SUCCESS,
   VERSION_TM_MERGE_FAILURE,
-  QUERY_TM_MERGE_PROGRESS_SUCCESS,
+  // QUERY_MT_MERGE_PROGRESS_SUCCESS,
+  QUERY_MT_MERGE_PROGRESS_FAILURE,
+  // QUERY_TM_MERGE_PROGRESS_SUCCESS,
   QUERY_TM_MERGE_PROGRESS_FAILURE,
+  MT_MERGE_PROCESS_FINISHED,
   TM_MERGE_PROCESS_FINISHED
 } from '../actions/version-action-types'
 
-const defaultState = {
+/** @typedef {import('./state').ProjectVersionState} ProjectVersionState */
+
+/** @type {ProjectVersionState} */
+export const defaultState = {
+  // See mapReduxStateToProps in MTMergeContainer.ts
+  MTMerge: {
+    showMTMerge: false,
+    processStatus: undefined,
+    queryStatus: undefined,
+  },
   TMMerge: {
     show: false,
     triggered: false,
@@ -33,8 +45,16 @@ const defaultState = {
   notification: undefined
 }
 
+// TODO this seems redundant, but is needed for the test to compile.
+// Should be fixed by Redux 4: https://github.com/reactjs/redux/pull/2773
+/** @type {import('redux').Reducer<ProjectVersionState>} */
 const version = handleActions({
-  [TOGGLE_TM_MERGE_MODAL]: (state, action) => {
+  [TOGGLE_MT_MERGE_MODAL]: (state, _action) => {
+    return update(state, {
+      MTMerge: { showMTMerge: { $set: !state.MTMerge.showMTMerge } }
+    })
+  },
+  [TOGGLE_TM_MERGE_MODAL]: (state, _action) => {
     return update(state, {
       TMMerge: { show: { $set: !state.TMMerge.show } }
     })
@@ -58,7 +78,7 @@ const version = handleActions({
       notification: { $set: undefined }
     })
   },
-  [VERSION_LOCALES_FAILURE]: (state, action) => {
+  [VERSION_LOCALES_FAILURE]: (state, _action) => {
     return update(state, {
       fetchingLocale: { $set: false },
       notification: { $set: {
@@ -80,18 +100,20 @@ const version = handleActions({
     })
   },
   [PROJECT_PAGE_SUCCESS]: (state, action) => {
+    // @ts-ignore
     if (action.meta.timestamp > state.projectResultsTimestamp) {
       return update(state, {
         TMMerge: { projectVersions: { $set: action.payload } },
         fetchingProject: { $set: false },
         notification: { $set: undefined },
+        // @ts-ignore
         projectResultsTimestamp: {$set: action.meta.timestamp}
       })
     } else {
       return state
     }
   },
-  [PROJECT_PAGE_FAILURE]: (state, action) => {
+  [PROJECT_PAGE_FAILURE]: (state, _action) => {
     return update(state, {
       fetchingProject: { $set: false },
       notification: { $set: {
@@ -100,7 +122,7 @@ const version = handleActions({
       }}
     })
   },
-  [VERSION_TM_MERGE_REQUEST]: (state, action) => {
+  [VERSION_TM_MERGE_REQUEST]: (state, _action) => {
     return update(state, {
       TMMerge: { triggered: { $set: true } },
       notification: { $set: undefined }
@@ -114,6 +136,7 @@ const version = handleActions({
   },
   [VERSION_TM_MERGE_FAILURE]: (state, action) => {
     const defaultMsg = 'We were unable perform the operation. Please try again.'
+    // @ts-ignore
     const response = action && action.payload ? action.payload.response
       : undefined
     const msg = defaultMsg +
@@ -125,19 +148,36 @@ const version = handleActions({
       } }
     })
   },
-  [QUERY_TM_MERGE_PROGRESS_SUCCESS]: (state, action) => {
+  // [QUERY_MT_MERGE_PROGRESS_SUCCESS]: (state, action) => {
+  //   return update(state, {
+  //     // Using merge to ensure cancelUrl is not lost
+  //     MTMerge: { processStatus: { $merge: action.payload } }
+  //   })
+  // },
+  [QUERY_MT_MERGE_PROGRESS_FAILURE]: (state, action) => {
+    // what do we do with failed status query?
     return update(state, {
-      // Using merge to ensure cancelUrl is not lost
-      TMMerge: { processStatus: { $merge: action.payload } }
+      MTMerge: { queryStatus: { $set: action.error } }
     })
   },
+  // [QUERY_TM_MERGE_PROGRESS_SUCCESS]: (state, action) => {
+  //   return update(state, {
+  //     // Using merge to ensure cancelUrl is not lost
+  //     TMMerge: { processStatus: { $merge: action.payload } }
+  //   })
+  // },
   [QUERY_TM_MERGE_PROGRESS_FAILURE]: (state, action) => {
     // what do we do with failed status query?
     return update(state, {
       TMMerge: { queryStatus: { $set: action.error } }
     })
   },
-  [TM_MERGE_PROCESS_FINISHED]: (state, action) => {
+  [MT_MERGE_PROCESS_FINISHED]: (state, _action) => {
+    return update(state, {
+      MTMerge: { processStatus: { $set: undefined } }
+    })
+  },
+  [TM_MERGE_PROCESS_FINISHED]: (state, _action) => {
     return update(state, {
       TMMerge: { processStatus: { $set: undefined } }
     })

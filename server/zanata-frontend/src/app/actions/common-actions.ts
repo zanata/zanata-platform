@@ -42,7 +42,7 @@ export const getJsonHeaders = () => {
 export type APITypes = [string|{}, string|{}, string|{}]
 
 // derived from RSAAction in redux-api-middleware.d.ts
-interface APIRequest {
+export interface APIRequest {
     endpoint: string;  // or function
     method: HTTPVerb;
     body?: any;

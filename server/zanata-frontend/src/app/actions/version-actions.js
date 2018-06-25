@@ -4,13 +4,16 @@ import {
   getJsonHeaders,
   buildAPIRequest,
   // eslint-disable-next-line
-  APITypes
+  APITypes,
+  // APIRequest
 } from './common-actions'
 import { apiUrl } from '../config'
 import {replace} from 'lodash'
 import {toInternalTMSource} from '../utils/EnumValueUtils'
+// import {Action} from 'redux'
 
 import {
+  TOGGLE_MT_MERGE_MODAL,
   TOGGLE_TM_MERGE_MODAL,
   VERSION_LOCALES_REQUEST,
   VERSION_LOCALES_SUCCESS,
@@ -27,9 +30,25 @@ import {
   TM_MERGE_CANCEL_REQUEST,
   TM_MERGE_CANCEL_SUCCESS,
   TM_MERGE_CANCEL_FAILURE,
+  MT_MERGE_PROCESS_FINISHED,
   TM_MERGE_PROCESS_FINISHED
 } from './version-action-types'
 
+/**
+ * @typedef {import('../components/MTMerge/MTMergeOptions').MTTranslationStatus}
+            MTTranslationStatus
+ * @typedef {import('../utils/prop-types-util').LocaleId} LocaleId
+ * @typedef {import('./common-actions').APIRequest} APIRequest
+ * @typedef {{[key:string]: APIRequest}} APIAction
+ */
+
+/**
+ * @template P
+ * @typedef {{type:string, meta?:any, payload:P, [key: string]: any}} Action<P>
+ */
+
+export const toggleMTMergeModal =
+  createAction(TOGGLE_MT_MERGE_MODAL)
 /** Open or close the TM Merge modal  */
 export const toggleTMMergeModal =
     createAction(TOGGLE_TM_MERGE_MODAL)
@@ -39,7 +58,8 @@ export const toggleTMMergeModal =
  *
  * @param project {string}
  * @param version {string}
- * */
+ * @returns {APIAction} redux api action object
+ */
 export const fetchVersionLocales = (project, version) => {
   const endpoint = `${apiUrl}/project/${project}/version/${version}/locales`
   /** @type {APITypes} */
@@ -57,6 +77,7 @@ export const fetchVersionLocales = (project, version) => {
  * Fetch projects to merge from database
  *
  * @param projectSearchTerm {string} to filter results
+ * @returns {APIAction|Action<Array>}
  */
 export const fetchProjectPage = (projectSearchTerm) => {
   // used for success/failure to ensure the most recent results are used
@@ -69,7 +90,8 @@ export const fetchProjectPage = (projectSearchTerm) => {
       payload: []
     }
   }
-  // making the call to server
+  // making the call to server:
+  // org.zanata.rest.search.service.SearchService#searchProjects
   const endpoint =
       `${apiUrl}/search/projects?q=${projectSearchTerm}&includeVersion=true`
   /** @type {APITypes} */
@@ -100,23 +122,45 @@ const toProjectVersionString = (projectVersion) => {
   return `${projectVersion.projectSlug}/${projectVersion.version.id}`
 }
 
-/* eslint-disable max-len */
 /**
- * @param {string} projectSlug target project slug
- * @param {string} versionSlug target version slug
- * @param {{
+ * @typedef {{
+     selectedLocale: {localeId: LocaleId}
+     saveAs: MTTranslationStatus
+     _overwriteFuzzy: boolean
+   }} MTMergeOptions
+ */
+
+/**
+ * @param {string} _projectSlug target project slug
+ * @param {string} _versionSlug target version slug
+ * @param {MTMergeOptions} _mergeOptions
+ * @returns {APIAction} redux api action object FIXME
+ */
+export function mergeVersionFromMT (_projectSlug, _versionSlug, _mergeOptions) {
+  // FIXME build API request for MT (see also mergeVersionFromTM)
+  // @ts-ignore
+  return null
+}
+
+/**
+ * @typedef {{
      matchPercentage: number,
      differentProject: boolean,
      differentDocId: boolean,
      differentContext: boolean,
      fromImportedTM: boolean,
      fromAllProjects: boolean,
-     selectedLanguage: {localeId: string, displayName: string},
+     selectedLanguage: {localeId: LocaleId},
      selectedVersions: Array.<{projectSlug: string, version: {id: string}}>
-   }} mergeOptions
- * @returns redux api action object
+   }} TMMergeOptions
  */
-/* eslint-enable max-len */
+
+/**
+ * @param {string} projectSlug target project slug
+ * @param {string} versionSlug target version slug
+ * @param {TMMergeOptions} mergeOptions
+ * @returns {APIAction} redux api action object
+ */
 export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const endpoint =
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/tm-merge`
@@ -170,6 +214,7 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
 
 /**
  * @param {string} url
+ * @returns {APIAction} redux api action object
  */
 export function queryTMMergeProgress (url) {
   /** @type {APITypes} */
@@ -183,6 +228,7 @@ export function queryTMMergeProgress (url) {
 
 /**
  * @param {string} url
+ * @returns {APIAction} redux api action object
  */
 export function cancelTMMergeRequest (url) {
   /** @type {APITypes} */
@@ -198,3 +244,5 @@ export function cancelTMMergeRequest (url) {
 
 export const currentTMMergeProcessFinished =
   createAction(TM_MERGE_PROCESS_FINISHED)
+export const currentMTMergeProcessFinished =
+  createAction(MT_MERGE_PROCESS_FINISHED)

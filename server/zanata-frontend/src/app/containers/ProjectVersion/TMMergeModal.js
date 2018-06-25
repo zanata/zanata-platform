@@ -256,7 +256,7 @@ class TMMergeModal extends Component {
   }
   componentWillReceiveProps (nextProps) {
     const { locales, showTMMergeModal } = nextProps
-    // Fetch locales again when modal is closed then re-opened
+    // Fetch locales again when modal is re-opened
     // Reset the state when the modal is closed
     if (showTMMergeModal !== this.props.showTMMergeModal) {
       if (showTMMergeModal) {
