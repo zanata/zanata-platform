@@ -40,3 +40,20 @@
 .ant-modal.searchReplaceModal table {
   margin: 0;
 }
+
+.ant-input.textInput {
+  border: solid 1px var(--primary-color);
+}
+
+.ant-input.textInput:focus, .ant-input.textInput:hover {
+  border: 2px solid var(--highlight-color);
+}
+
+.ant-checkbox-wrapper {
+  color: var(--primary-color) !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary-color);
+  border: solid 1px var(--primary-color);
+}
