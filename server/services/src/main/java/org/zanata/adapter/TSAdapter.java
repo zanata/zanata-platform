@@ -25,6 +25,7 @@ import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.IParameters;
 import net.sf.okapi.common.ISkeleton;
 import net.sf.okapi.common.exceptions.OkapiIOException;
+import net.sf.okapi.common.exceptions.OkapiUnexpectedResourceTypeException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.GenericContent;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
@@ -37,6 +38,7 @@ import net.sf.okapi.common.skeleton.GenericSkeleton;
 import net.sf.okapi.filters.ts.Parameters;
 import net.sf.okapi.filters.ts.TsFilter;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -262,11 +264,23 @@ public class TSAdapter extends OkapiFilterAdapter {
      * @param localeId the desired target locale
      * @return a GenericSkeleton with the language replaced
      */
-    private ISkeleton replaceLocaleInDocPart(Event event, String localeId) {
-        DocumentPart part = event.getDocumentPart();
-        return new GenericSkeleton(part.getSkeleton().clone().toString()
-                .replaceAll("language\\s*=\\s*\".+\"",
-                        "language=\"" + localeId + "\""));
+    ISkeleton replaceLocaleInDocPart(Event event, String localeId) {
+        String part;
+        try {
+            part = event.getDocumentPart().getSkeleton().clone().toString();
+        } catch (OkapiUnexpectedResourceTypeException okapiException) {
+            log.error("Unexpected Qt TS event type: {}, in {}",
+                    event.getEventType(), event.getResource().getSkeleton());
+            throw new FileFormatAdapterException("Qt TS Adapter error");
+        }
+
+        try {
+            part = part.replaceAll("\\slanguage\\s*=\\s*\"[\\w\\d@.-]*\"",
+                    " language=\"" + localeId + "\"");
+        } catch (Exception exception) {
+            throw new FileFormatAdapterException("Invalid target locale");
+        }
+        return new GenericSkeleton(part);
     }
 
     @Override

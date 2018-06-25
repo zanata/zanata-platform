@@ -21,6 +21,7 @@
 package org.zanata.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -28,10 +29,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Charsets;
-import net.sf.okapi.common.filterwriter.IFilterWriter;
-import net.sf.okapi.common.resource.RawDocument;
+import net.sf.okapi.common.Event;
+import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.LocaleId;
+import net.sf.okapi.common.filterwriter.IFilterWriter;
+import net.sf.okapi.common.resource.DocumentPart;
+import net.sf.okapi.common.resource.RawDocument;
 
+import net.sf.okapi.common.resource.StartDocument;
+import net.sf.okapi.common.skeleton.GenericSkeleton;
 import net.sf.okapi.filters.ts.TsFilter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -185,7 +191,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                 ContentState.Translated);
         // TODO test NeedReview as well (should be omitted or marked as unfinished)
         File originalFile = getTestFile("test-ts-untranslated.ts");
-        LocaleId localeId = new LocaleId("sv");
+        LocaleId localeId = new LocaleId("mo_PH");
         OutputStream outputStream = new ByteArrayOutputStream();
         try (
             TsFilter tsFilter = new TsFilter();
@@ -200,7 +206,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
         String maybeTypeUnfinished = approvedOnly ? "type=\"unfinished\" " : "";
         assertThat(outputStream.toString()).isEqualTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE TS []>\n" +
-                        "<TS version=\"2.1\" language=\"sv\">\n" +
+                        "<TS version=\"2.1\" language=\"mo-ph\">\n" +
                         "<context>\n" +
                         "  <name>testContext1</name>\n" +
                         "  <message>\n" +
@@ -250,6 +256,74 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                     new LocaleId("en"),
                     filterWriter, "", false);
         }
+    }
+
+    @Test
+    public void nonDocPartIsCaught() {
+        String base = "<TS version=\"2.1\" language=\"test\">";
+        Event event = new Event();
+        event.setEventType(EventType.START_DOCUMENT);
+        StartDocument part = new StartDocument();
+        part.setSkeleton(new GenericSkeleton(base));
+        event.setResource(part);
+        try {
+            adapter.replaceLocaleInDocPart(event, "en-GB");
+            fail("FileFormatAdapterException expected");
+        } catch (FileFormatAdapterException ffae) {
+            // Pass
+        }
+    }
+
+    @Test
+    public void badTargetLocaleIsCaught() {
+        String base = "<TS version=\"2.1\" language=\"test\">";
+        Event event = new Event();
+        event.setEventType(EventType.DOCUMENT_PART);
+        DocumentPart part = new DocumentPart();
+        part.setSkeleton(new GenericSkeleton(base));
+        event.setResource(part);
+        try {
+            adapter.replaceLocaleInDocPart(event, "$1");
+            fail("FileFormatAdapterException expected");
+        } catch (FileFormatAdapterException ffae) {
+            // Pass
+        }
+        try {
+            adapter.replaceLocaleInDocPart(event, "()");
+            //fail("FileFormatAdapterException expected");
+        } catch (FileFormatAdapterException ffae) {
+            // Pass
+        }
+    }
+
+    @Test
+    public void validateLanguageReplacement() {
+        assertDocpartStringIsChanged("$badname", false);
+        assertDocpartStringIsChanged("bad=name", false);
+        assertDocpartStringIsChanged("badname=", false);
+        assertDocpartStringIsChanged("=badname", false);
+        assertDocpartStringIsChanged("bad name", false);
+        assertDocpartStringIsChanged("", true);
+        assertDocpartStringIsChanged("mo", true);
+        assertDocpartStringIsChanged("mo_PH", true);
+        assertDocpartStringIsChanged("mo-PH", true);
+        assertDocpartStringIsChanged("mo_PH.UTF-8", true);
+        assertDocpartStringIsChanged("mo_PH.UTF-8@5", true);
+    }
+
+    private void assertDocpartStringIsChanged(String originalLoc,
+                                              boolean changed) {
+        String base = "<TS version=\"2.1\" language=\"REPLACE\">";
+        String startSkeleton = base.replace("REPLACE", originalLoc);
+        String expectedSkeleton = changed ?
+                "<TS version=\"2.1\" language=\"en-GB\">" : startSkeleton;
+
+        Event event = new Event(EventType.DOCUMENT_PART,
+                new DocumentPart("test", false,
+                new GenericSkeleton(startSkeleton)));
+
+        assertThat(adapter.replaceLocaleInDocPart(event, "en-GB").toString())
+                .isEqualTo(expectedSkeleton);
     }
 
     private String getContext(TextFlow textFlow) {
