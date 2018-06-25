@@ -14,6 +14,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.ResponseProcessingException;
 
@@ -40,13 +41,11 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Iterables.all;
 
 /**
@@ -467,27 +466,16 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         if (!MergeType.IMPORT.name().equalsIgnoreCase(mergeType)) {
             List<TextFlowTarget> originalTargets =
                     translationResources.getTextFlowTargets();
-            final Predicate<String> blankStringPredicate =
-                    new Predicate<String>() {
-                        @Override
-                        public boolean apply(String input) {
-                            return Strings.isNullOrEmpty(input);
-                        }
-                    };
 
             Collection<TextFlowTarget> untranslatedEntries =
-                    filter(originalTargets,
-                            new Predicate<TextFlowTarget>() {
-                                @Override
-                                public boolean apply(
-                                        TextFlowTarget input) {
-                                    // it's unsafe to rely on content state (plural entries)
-                                    return input == null
-                                            || input.getContents().isEmpty()
-                                            || all(input.getContents(),
-                                            blankStringPredicate);
-                                }
-                            });
+                    originalTargets.stream()
+                    .filter(tft -> {
+                        // it's unsafe to rely on content state (plural entries)
+                        return tft == null
+                                || tft.getContents().isEmpty()
+                                || all(tft.getContents(),
+                                Strings::isNullOrEmpty);
+                    }).collect(Collectors.toList());
             log.debug(
                     "Remove {} untranslated entries from the payload since merge type is NOT import ({})",
                     untranslatedEntries.size(), mergeType);

@@ -84,13 +84,8 @@ public class ValidationOptionsView extends Composite implements
 
     @Override
     public void changeValidationSelectorValue(final String label, boolean enabled) {
-        Predicate<Widget> predicate = new Predicate<Widget>() {
-                    @Override
-                    public boolean apply(Widget input) {
-                        return input != null && input instanceof CheckBox &&
-                                ((CheckBox) input).getText().equals(label);
-                    }
-                };
+        Predicate<Widget> predicate = input -> input instanceof CheckBox &&
+                ((CheckBox) input).getText().equals(label);
         Optional<Widget> optional =
                 tryFind(contentPanel, predicate);
         if (optional.isPresent()) {

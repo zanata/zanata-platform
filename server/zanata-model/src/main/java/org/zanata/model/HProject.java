@@ -136,11 +136,10 @@ public class HProject extends SlugEntityBase
      */
     @Transient
     public ImmutableSet<HPerson> getMaintainers() {
-        return ImmutableSet.copyOf(
-                members.stream()
-                        .filter(pm -> pm.getRole() == Maintainer)
-                        .map(HProjectMember::getPerson)
-                        .iterator());
+        return ImmutableSet.copyOf(members.stream()
+                .filter(pm -> pm.getRole() == Maintainer)
+                .map(HProjectMember::getPerson)
+                .iterator());
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",

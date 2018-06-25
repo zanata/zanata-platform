@@ -24,14 +24,11 @@ package org.zanata.ui;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -41,22 +38,12 @@ public class FilterUtil {
     /**
      * Return filtered list of HPerson from personList which are NOT in
      * allPersonList
-     *
-     * @param allPersonList
-     * @param personList
-     * @return
      */
     public static List<HPerson> filterOutPersonList(
             final List<HPerson> allPersonList, List<HPerson> personList) {
-        Collection<HPerson> filtered =
-                Collections2.filter(personList, new Predicate<HPerson>() {
-                    @Override
-                    public boolean apply(HPerson input) {
-                        return !allPersonList.contains(input);
-                    }
-                });
-
-        return Lists.newArrayList(filtered);
+        return personList.stream()
+                .filter(it -> !allPersonList.contains(it))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -64,13 +51,6 @@ public class FilterUtil {
      *
      * 1) Query is empty 2) hLocale is NOT in localeList and hLocale's display
      * name/localeId matches with query.
-     *
-     *
-     *
-     * @param localeList
-     * @param hLocale
-     * @param query
-     * @return
      */
     public static boolean isIncludeLocale(Collection<HLocale> localeList,
             HLocale hLocale, String query) {

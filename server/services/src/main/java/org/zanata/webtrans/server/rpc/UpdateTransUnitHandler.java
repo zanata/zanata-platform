@@ -21,6 +21,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -37,9 +38,6 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -66,13 +64,8 @@ public class UpdateTransUnitHandler extends
             ExecutionContext context) throws ActionException {
 
         Optional<TransUnitUpdateRequest> hasReviewUpdate =
-                Iterables.tryFind(action.getUpdateRequests(),
-                        new Predicate<TransUnitUpdateRequest>() {
-                            @Override
-                            public boolean apply(TransUnitUpdateRequest input) {
-                                return input.getNewContentState().isReviewed();
-                            }
-                        });
+                action.getUpdateRequests().stream().filter(
+                        it -> it.getNewContentState().isReviewed()).findFirst();
         if (hasReviewUpdate.isPresent()) {
             securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
                     SecurityService.TranslationAction.REVIEW);
