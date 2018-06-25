@@ -1,6 +1,6 @@
 :root {
   --primary-color: #546677;
-  --neutral-color: rgba(228, 238, 241,.5);
+  --neutral-color: rgba(228, 238, 241,.35);
   --highlight-color: #03A6D7;
 }
 
@@ -16,7 +16,7 @@
   color: var(--primary-color) !important;
 }
 
-.ant-card.searchReplaceResultsCard, {
+.ant-card.searchReplaceResultsCard {
   background-color: var(--neutral-color);
 }
 
