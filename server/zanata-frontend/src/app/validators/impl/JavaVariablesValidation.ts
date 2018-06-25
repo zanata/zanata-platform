@@ -256,8 +256,8 @@ class StringInfo {
   public vars: string[] = []
   public quotedVars: string[] = []
 
-  public varCounts: Map<string, number>;
-  public quotedVarCounts: Map<string, number>;
+  public varCounts: Map<string, number> = new Map();
+  public quotedVarCounts: Map<string, number> = new Map();
 }
 
 export default JavaVariablesValidation

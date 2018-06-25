@@ -103,6 +103,7 @@ class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
 
     if (posToVars.keys.length !== variables.length) {
       // has some duplicate positions
+      // TODO is this meant to be string[] or string[][] ?
       const samePosErrors = []
       for (const entry of posToVars) {
         if (entry.testVars.length > 1) {

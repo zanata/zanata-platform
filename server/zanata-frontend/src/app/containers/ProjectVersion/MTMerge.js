@@ -17,7 +17,7 @@ import 'antd/lib/switch/style/css'
 import Card from 'antd/lib/card'
 import 'antd/lib/card/style/css'
 
-const Option = Select.Option
+// const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
 
 const plainOptions = ['Chinese', 'Dutch', 'English', 'German', 'Japanese',
