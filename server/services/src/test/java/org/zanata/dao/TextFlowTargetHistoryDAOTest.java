@@ -1,6 +1,9 @@
 package org.zanata.dao;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -24,13 +27,11 @@ import org.zanata.model.HTextFlowTargetHistory;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
 import org.zanata.rest.service.StatisticsServiceImpl.UserMatrixResultTransformer;
 import org.zanata.security.ZanataIdentity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.common.ContentState.*;
 
 public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
 
@@ -92,21 +93,21 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
         // 1. one Approved target done yesterday
         modifiedYesterday.withResId("res1").withSourceContent("source 1")
                 .withTargetContent("target 1")
-                .withTargetState(ContentState.Approved).build();
+                .withTargetState(Approved).build();
         // 2. one Fuzzy target done yesterday
         HTextFlow res2 = modifiedYesterday.withResId("res2")
                 .withSourceContent("source 2").withTargetContent("target 2")
-                .withTargetState(ContentState.NeedReview).build();
+                .withTargetState(NeedReview).build();
         // 3. one Translated target done yesterday
         modifiedYesterday.withResId("res3").withSourceContent("source 3")
                 .withTargetContent("target 3")
-                .withTargetState(ContentState.Translated).build();
+                .withTargetState(Translated).build();
         HTextFlowBuilder modifiedTwoDaysAgo = baseBuilder
                 .withLastModifiedDate(twoDaysAgo).withLastModifiedBy(user);
         // 4. one Fuzzy target done 2 days ago
         HTextFlow res4 = modifiedTwoDaysAgo.withResId("res4")
                 .withSourceContent("source 4").withTargetContent("target 4")
-                .withTargetState(ContentState.NeedReview).build();
+                .withTargetState(NeedReview).build();
         getEm().flush();
         // 5. one Fuzzy target history done yesterday
         HTextFlowTarget target2 = res2.getTargets().get(hLocale.getId());
@@ -119,7 +120,7 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
         baseBuilder.withLastModifiedBy(user).withLastModifiedDate(today)
                 .withResId("res7").withSourceContent("source 7")
                 .withTargetContent("target 7")
-                .withTargetState(ContentState.Translated).build();
+                .withTargetState(Translated).build();
         getEm().flush();
         List<TranslationMatrix> result = historyDAO.getUserTranslationMatrix(
                 user, twoDaysAgo.withTimeAtStartOfDay(),
@@ -128,36 +129,37 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
         assertThat(result).hasSize(4);
         final SavedDatePredicate yesterdayPredicate =
                 new SavedDatePredicate(yesterday);
-        Iterable<TranslationMatrix> yesterdayFuzzy =
-                Iterables.filter(result, Predicates.and(yesterdayPredicate,
-                        new ContentStatePredicate(ContentState.NeedReview)));
+        List<TranslationMatrix> yesterdayFuzzy = result.stream()
+                .filter(yesterdayPredicate.and(savedState(NeedReview)))
+                .collect(Collectors.toList());
         assertThat(yesterdayFuzzy).describedAs("saved as fuzzy yesterday")
                 .hasSize(1);
-        assertThat(yesterdayFuzzy.iterator().next().getWordCount())
+        assertThat(yesterdayFuzzy.get(0).getWordCount())
                 .describedAs("total words saved as fuzzy yesterday")
                 .isEqualTo(4);
-        Iterable<TranslationMatrix> yesterdayApproved =
-                Iterables.filter(result, Predicates.and(yesterdayPredicate,
-                        new ContentStatePredicate(ContentState.Approved)));
+        List<TranslationMatrix> yesterdayApproved = result.stream()
+                .filter(yesterdayPredicate.and(savedState(Approved)))
+                .collect(Collectors.toList());
         assertThat(yesterdayApproved).describedAs("saved as approved yesterday")
                 .hasSize(1);
-        assertThat(yesterdayApproved.iterator().next().getWordCount())
+        assertThat(yesterdayApproved.get(0).getWordCount())
                 .describedAs("total words saved as approved yesterday")
                 .isEqualTo(2);
-        Iterable<TranslationMatrix> yesterdayTranslated =
-                Iterables.filter(result, Predicates.and(yesterdayPredicate,
-                        new ContentStatePredicate(ContentState.Translated)));
+        List<TranslationMatrix> yesterdayTranslated = result.stream()
+                .filter(yesterdayPredicate.and(savedState(Translated)))
+                .collect(Collectors.toList());
         assertThat(yesterdayTranslated)
                 .describedAs("saved as translated yesterday").hasSize(1);
-        assertThat(yesterdayTranslated.iterator().next().getWordCount())
+        assertThat(yesterdayTranslated.get(0).getWordCount())
                 .describedAs("total words saved as translated yesterday")
                 .isEqualTo(2);
-        Iterable<TranslationMatrix> twoDaysAgoFuzzy = Iterables.filter(result,
-                Predicates.and(new SavedDatePredicate(twoDaysAgo),
-                        new ContentStatePredicate(ContentState.NeedReview)));
+        List<TranslationMatrix> twoDaysAgoFuzzy = result.stream()
+                .filter(
+                new SavedDatePredicate(twoDaysAgo).and(savedState(NeedReview)))
+                .collect(Collectors.toList());
         assertThat(twoDaysAgoFuzzy).describedAs("saved as fuzzy two days ago")
                 .hasSize(1);
-        assertThat(twoDaysAgoFuzzy.iterator().next().getWordCount())
+        assertThat(twoDaysAgoFuzzy.get(0).getWordCount())
                 .describedAs("total words saved as fuzzy two days ago")
                 .isEqualTo(4);
     }
@@ -170,11 +172,11 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
         baseBuilder.withLastModifiedDate(new DateTime(2015, 2, 1, 1, 0, zone))
                 .withLastModifiedBy(user).withResId("res1")
                 .withSourceContent("source 1").withTargetContent("target 1")
-                .withTargetState(ContentState.Approved).build();
+                .withTargetState(Approved).build();
         getEm().flush();
         List<TranslationMatrix> result = historyDAO.getUserTranslationMatrix(
                 user, new DateTime(2015, 2, 1, 1, 1, zone), new DateTime(zone),
-                Optional.<DateTimeZone> absent(), DateTimeZone.getDefault(),
+                Optional.absent(), DateTimeZone.getDefault(),
                 resultTransformer);
         assertThat(result).isEmpty();
     }
@@ -188,19 +190,8 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
                 "convert_tz(lastChanged, \'-06:00\', \'10:00\')");
     }
 
-    private static class ContentStatePredicate
-            implements Predicate<TranslationMatrix> {
-        private final ContentState state;
-
-        @Override
-        public boolean apply(TranslationMatrix input) {
-            return input.getSavedState() == state;
-        }
-
-        @java.beans.ConstructorProperties({ "state" })
-        public ContentStatePredicate(final ContentState state) {
-            this.state = state;
-        }
+    private Predicate<TranslationMatrix> savedState(ContentState state) {
+        return it -> it.getSavedState() == state;
     }
 
     private static class SavedDatePredicate
@@ -212,7 +203,7 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
         }
 
         @Override
-        public boolean apply(TranslationMatrix input) {
+        public boolean test(TranslationMatrix input) {
             return theDate.equals(input.getSavedDate());
         }
     }

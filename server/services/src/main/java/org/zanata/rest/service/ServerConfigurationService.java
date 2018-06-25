@@ -2,6 +2,7 @@ package org.zanata.rest.service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
@@ -73,8 +74,10 @@ public class ServerConfigurationService {
     public Response get() {
         List<HApplicationConfiguration> all =
                 applicationConfigurationDAO.findAll();
-        List<Configuration> allConfig =
-                Lists.transform(all, new ToConfigurationFunction(accept));
+
+        List<Configuration> allConfig = all.stream()
+                .map(new ToConfigurationFunction(accept))
+                .collect(Collectors.toList());
         Object entity =
                 new GenericEntity<List<Configuration>>(allConfig){};
         return Response.ok().entity(entity).build();

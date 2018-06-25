@@ -48,7 +48,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -136,11 +135,10 @@ public class HProject extends SlugEntityBase
      */
     @Transient
     public ImmutableSet<HPerson> getMaintainers() {
-        Set<HProjectMember> maintainerMembers =
-                Sets.filter(members, HProjectMember.IS_MAINTAINER);
-        Collection<HPerson> maintainers = Collections2
-                .transform(maintainerMembers, HProjectMember.TO_PERSON);
-        return ImmutableSet.<HPerson> copyOf(maintainers);
+        return ImmutableSet.copyOf(members.stream()
+                .filter(HProjectMember.IS_MAINTAINER)
+                .map(HProjectMember::getPerson)
+                .iterator());
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",
