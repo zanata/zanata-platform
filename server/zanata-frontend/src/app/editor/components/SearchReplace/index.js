@@ -38,13 +38,13 @@ const columns = [{
 }]
 
 const data = [];
-for (let i = 0; i < 46; i++) {
+for (let i = 0; i < 12; i++) {
   data.push({
     key: i,
     index: `${i}`,
     source: `text source`,
-    target: `text target`,
-    edit: <Button icon="edit" />
+    target: <span>text <span className='highlight'>target</span></span>,
+    edit: <Button className='btn-link fr'><Icon type='edit' className='f4' /></Button>
   });
 }
 
@@ -96,7 +96,7 @@ class SearchReplace extends Component {
     const hasSelected = selectedRowKeys.length > 0
     return (
         <div>
-          <Button type="primary" className='btn-primary' icon="swap"
+          <Button type="primary" className='Button--invisible' icon="swap"
             onClick={this.showModal} />
           <Modal className='searchReplaceModal'
             title="Project-wide Search and Replace"
@@ -150,12 +150,21 @@ class SearchReplace extends Component {
             </Row>
             <Card className="searchReplaceResultsCard">
               <Row className="mb2">
-                <Button size="small" icon="left" className="mr2"/>
+                <Button size="small" icon="left" className="mr2 Button--invisible" />
                 Document # of #
-                <Button size="small" icon="right" className="ml2 mr4"/>
+                <Button size="small" icon="right" className="ml2 mr4 Button--invisible" />
                 <Tag># of # matching textflows selected</Tag>
+                <span className="highlight fr f7">Matching textflows</span>
               </Row>
-              <h3>Document name</h3>
+              <Row>
+                <Col span={4}>
+                  <h2 className="mt2 f4">Document name</h2>
+                </Col>
+                <Col className="docOptions">
+                  <Button className="mr2 Button--invisible"><Icon type="eye" className="f4" /></Button>
+                  <Button className="Button--invisible"><Icon type="search" className="f4" /></Button>
+                </Col>
+              </Row>
             </Card>
             <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
           </Modal>
