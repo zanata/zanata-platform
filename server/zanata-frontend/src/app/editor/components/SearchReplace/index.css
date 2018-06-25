@@ -54,6 +54,6 @@
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--primary-color);
+  background-color: var(--primary-color) !important;
   border: solid 1px var(--primary-color);
 }
