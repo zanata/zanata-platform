@@ -22,7 +22,10 @@ public class TranslationDataTest {
                         "    \"revision\" : \"10000\",\n" +
                         "\"plural\" : false,\n" +
                         "\"revisionComment\" : \"comment\",\n" +
-                        "     \"status\" : \"NeedReview\" " +
+                        "\"status\" : \"NeedReview\",\n" +
+                        "\"lastModifiedBy\" : \"aeng\",\n" +
+                        "\"lastModifiedDate\" :" +
+                        " \"Mon Jun 25 01:01:01 UTC 2018\" " +
                         "\n}";
 
         TranslationData translationData = om.readValue(json, TranslationData.class);
@@ -33,6 +36,8 @@ public class TranslationDataTest {
         expected.setPlural(false);
         expected.setStatus(ContentState.NeedReview);
         expected.setRevisionComment("comment");
+        expected.setLastModifiedBy("aeng");
+        expected.setLastModifiedDate("Mon Jun 25 01:01:01 UTC 2018");
 
         assertThat(translationData).isEqualTo(expected);
     }

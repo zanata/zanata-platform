@@ -267,7 +267,8 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
             console.error('Failed to save phrase')
             response.status === 409
               ? response.json().then((json) => {
-                dispatch(saveConflict(phrase.id, saveInfo, json))
+                const withTime = {...saveInfo, modifiedTime: new Date()}
+                dispatch(saveConflict(phrase.id, withTime, json))
               })
               : dispatch(saveFailed(phrase.id, saveInfo, response))
           } else {

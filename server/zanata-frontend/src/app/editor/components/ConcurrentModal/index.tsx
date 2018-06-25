@@ -1,6 +1,7 @@
 // @ts-ignore
 import React from 'react'
 import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
 import Alert from 'antd/lib/alert'
 import 'antd/lib/alert/style/css'
 import Button from 'antd/lib/button'
@@ -42,7 +43,9 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
     }
     const original = selectedPhrase.conflict.saveInfo
     const latest = selectedPhrase.conflict.response
-    const lastModifiedTime = new Date(2016, 12, 4, 2, 19)
+    const lastModifiedByUsername = isEmpty(latest.lastModifiedBy)
+      ? latest.lastModifiedBy : 'Someone'
+    const lastModifiedDate = new Date(latest.lastModifiedDate)
     const onCancel = () => closeConcurrentModal()
     const saveLatest = () => {
       saveResolveConflict(latest, original, resolution.latest)
@@ -58,11 +61,11 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
         width={'46rem'}
         onCancel={onCancel}
         footer={null}>
-          <Alert message='Username has saved a new version while you
-            are editing. Please resolve conflicts.' type='error' />
+          <Alert message={`${lastModifiedByUsername} has saved a new version while you
+              were editing. Please resolve conflicts.`} type='error' />
           <Card>
             <p className='u-sizeHeight-1_1-2'>
-              <strong>Username</strong> created a <span
+              <strong>{lastModifiedByUsername}</strong> created a <span
                 className='u-textSuccess'>Translated</span> revision <Tag
                   color='blue'>latest</Tag>
             </p>
@@ -72,7 +75,7 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
                 value={latest.content}/>
             </span>
             <span className='u-floatLeft'>
-              <DateAndTimeDisplay dateTime={lastModifiedTime}
+              <DateAndTimeDisplay dateTime={lastModifiedDate}
                 className='u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
             </span>
             <span className='u-floatRight'>
@@ -93,7 +96,7 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
             </span>
             <span className='u-sizeHeight-1_1-2'>
               <span className='u-floatLeft'>
-                <DateAndTimeDisplay dateTime={lastModifiedTime}
+                <DateAndTimeDisplay dateTime={original.modifiedTime}
                   className='u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
               </span>
               <span className='u-floatRight'>

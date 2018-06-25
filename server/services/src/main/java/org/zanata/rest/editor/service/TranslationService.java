@@ -33,6 +33,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.editor.dto.TransUnit;
@@ -127,9 +128,15 @@ public class TranslationService implements TranslationResource {
                 .translate(new LocaleId(localeId), Lists.newArrayList(request));
         TranslationResult result = translationResults.get(0);
         if (result.isVersionNumConflict()) {
-            // TODO: include latest translator user name in response
             HTextFlowTarget latest = result.getTranslatedTextFlowTarget();
             requestData.setContents(latest.getContents());
+            // Include latest translator username, last changed date in response
+            String lastModifiedByUserName = latest.getLastModifiedBy()
+                    != null && latest.getLastModifiedBy().hasAccount()
+                    ? latest.getLastModifiedBy().getAccount().getUsername()
+                    : "";
+            requestData.setLastModifiedBy(lastModifiedByUserName);
+            requestData.setLastModifiedDate(latest.getLastChanged().toString());
             return Response
                     .status(Response.Status.CONFLICT)
                     .entity(requestData)
