@@ -257,6 +257,7 @@ export const phraseReducer = handleActions({
       },
       detail: {
         [phraseId]: {
+          revision: {$set: revision},
           conflict: { $set: undefined },
           inProgressSave: { $set: undefined },
           newTranslations: {

@@ -2,6 +2,7 @@ package org.zanata.rest.editor.dto;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -48,9 +49,8 @@ public class TranslationData implements Serializable {
     @JsonProperty("lastModifiedBy")
     private String lastModifiedBy;
 
-    @NotNull
     @JsonProperty("lastModifiedDate")
-    private String lastModifiedDate;
+    private Date lastModifiedDate;
 
     public TranslationData() {
 
@@ -146,12 +146,12 @@ public class TranslationData implements Serializable {
     }
 
     @JsonIgnore
-    public String getLastModifiedDate() {
+    public Date getLastModifiedDate() {
         return lastModifiedDate;
     }
 
     @JsonIgnore
-    public void setLastModifiedDate(String lastModifiedDate) {
+    public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 

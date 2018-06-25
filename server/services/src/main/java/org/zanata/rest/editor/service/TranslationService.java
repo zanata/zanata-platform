@@ -136,7 +136,7 @@ public class TranslationService implements TranslationResource {
                     ? latest.getLastModifiedBy().getAccount().getUsername()
                     : "";
             requestData.setLastModifiedBy(lastModifiedByUserName);
-            requestData.setLastModifiedDate(latest.getLastChanged().toString());
+            requestData.setLastModifiedDate(latest.getLastChanged());
             return Response
                     .status(Response.Status.CONFLICT)
                     .entity(requestData)

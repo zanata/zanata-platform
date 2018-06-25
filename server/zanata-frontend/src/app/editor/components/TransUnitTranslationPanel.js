@@ -65,6 +65,7 @@ class TransUnitTranslationPanel extends React.Component {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
     }).isRequired,
+    undoEdit: PropTypes.func.isRequired,
     toggleConcurrentModal: PropTypes.func.isRequired,
     validationOptions: PropTypes.any
   }
