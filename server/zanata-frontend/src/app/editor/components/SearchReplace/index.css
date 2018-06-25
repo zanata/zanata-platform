@@ -1,6 +1,6 @@
 :root {
   --primary-color: #546677;
-  --neutral-color: rgba(228, 238, 241,.35);
+  --neutral-color: rgba(228, 238, 241,.5);
   --highlight-color: #03A6D7;
 }
 
@@ -55,5 +55,5 @@
 
 .ant-checkbox-checked .ant-checkbox-inner {
   background-color: var(--primary-color) !important;
-  border: solid 1px var(--primary-color);
+  border: solid 1px var(--primary-color) !important;
 }
