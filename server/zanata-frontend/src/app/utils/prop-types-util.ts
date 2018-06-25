@@ -21,6 +21,16 @@ export const ProjectType = PropTypes.shape({
   versions: PropTypes.arrayOf(versionDtoPropType).isRequired
 })
 
+// in future, it would be good to use a tag type for locale IDs
+// https://github.com/Microsoft/TypeScript/issues/4895
+export type LocaleId = string
+
+export interface Locale {
+  displayName: string
+  localeId: LocaleId
+  nativeName: string
+}
+
 export const LocaleType = PropTypes.shape({
   displayName: PropTypes.string.isRequired,
   localeId: PropTypes.string.isRequired,
