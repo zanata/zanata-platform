@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.model;
+package org.zanata.service;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
@@ -34,6 +34,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
+import org.zanata.model.LocaleRole;
+import org.zanata.model.ProjectRole;
+
 /**
  * Describes all the membership roles of a person in a project.
  *
@@ -41,7 +46,6 @@ import java.util.stream.Collectors;
  * boolean properties to represent all roles so they can be easily bound to
  * individual UI elements (e.g. checkboxes).
  */
-// TODO why is this in org.zanata.model with the entities?
 public class PersonProjectMemberships implements Serializable {
     private static final long serialVersionUID = -6361740969547052616L;
     private HPerson person;
@@ -134,7 +138,7 @@ public class PersonProjectMemberships implements Serializable {
             this.person = person;
         } else {
             throw new IllegalArgumentException(
-                    "Cannot set a different person. This is only for replacing a detached HPerson with anequivalent attached HPerson (according to .equals)");
+                    "Cannot set a different person. This is only for replacing a detached HPerson with an equivalent attached HPerson (according to .equals)");
         }
     }
 
