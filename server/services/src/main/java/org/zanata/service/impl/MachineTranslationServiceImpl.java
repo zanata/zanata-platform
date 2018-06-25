@@ -161,7 +161,7 @@ public class MachineTranslationServiceImpl implements
         if (response.getStatus() == 200) {
             MTDocument result = response.readEntity(MTDocument.class);
             if (!result.getWarnings().isEmpty()) {
-                log.warn("Machine translation returns warning: {}",result.getWarnings());
+                log.warn("Machine translation returns warning: {}", result.getWarnings());
             }
             return result;
         } else {

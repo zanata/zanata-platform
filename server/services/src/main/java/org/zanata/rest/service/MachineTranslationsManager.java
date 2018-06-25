@@ -88,17 +88,9 @@ public class MachineTranslationsManager {
 
         private static final String KEY_NAME = "MachineTranslationsForVersionTaskKey";
         private static final long serialVersionUID = -6461799115582311574L;
-        private ProjectIterationId projectIterationId;
 
         MachineTranslationsForVersionTaskKey(ProjectIterationId projectIterationId) {
             super(joinFields(KEY_NAME, projectIterationId.toString()));
-        }
-
-        @Override
-        public String toString() {
-            return MoreObjects.toStringHelper(this)
-                    .add("projectIterationId", projectIterationId)
-                    .toString();
         }
     }
 }
