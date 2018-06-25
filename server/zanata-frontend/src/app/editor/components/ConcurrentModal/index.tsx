@@ -20,31 +20,54 @@ export enum resolution {
   original = 'original',
 }
 
+interface Latest {
+  content: string
+  id: number
+  lastModifiedBy?: string
+  lastModifiedDate: string
+  plural:  boolean
+  revision:  number
+  status: string
+}
+
+interface Original {
+  localeId: string
+  modifiedTime: string
+  reviewer: boolean
+  revisionComment?: string
+  status: string
+  translations: string[]
+  translator: boolean
+}
+
 interface ConcurrentModalProps {
   closeConcurrentModal: () => void
   saveResolveConflict: (latest: any, original: any, resolution: resolution) => void
   show: boolean
-  selectedPhrase?: any
+  conflictData?: {
+    response: Latest,
+    saveInfo: Original
+  }
 }
 
 class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
   public static propTypes = {
     closeConcurrentModal: PropTypes.func,
     saveResolveConflict: PropTypes.func.isRequired,
-    selectedPhrase: PropTypes.any,
+    conflictData: PropTypes.any,
     show: PropTypes.bool.isRequired,
   }
   public render () {
     const {
-      closeConcurrentModal, saveResolveConflict, show, selectedPhrase
+      closeConcurrentModal, saveResolveConflict, show, conflictData
     } = this.props
-    if (!selectedPhrase.conflict) {
+    if (!conflictData) {
       return null
     }
-    const original = selectedPhrase.conflict.saveInfo
-    const latest = selectedPhrase.conflict.response
+    const original = conflictData.saveInfo
+    const latest = conflictData.response
     const lastModifiedByUsername = isEmpty(latest.lastModifiedBy)
-      ? latest.lastModifiedBy : 'Someone'
+      ? 'Someone' : latest.lastModifiedBy
     const lastModifiedDate = new Date(latest.lastModifiedDate)
     const onCancel = () => closeConcurrentModal()
     const saveLatest = () => {

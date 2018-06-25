@@ -109,7 +109,7 @@ class MainContent extends React.Component {
         <ConcurrentModal
           closeConcurrentModal={this.props.toggleConcurrentModal}
           saveResolveConflict={this.props.saveResolveConflict}
-          selectedPhrase={selectedPhrase}
+          conflictData={selectedPhrase.conflict}
           show={this.props.showConflictModal}
         />
         <RejectTranslation
