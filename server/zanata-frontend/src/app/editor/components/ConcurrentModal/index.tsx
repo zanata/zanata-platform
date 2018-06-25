@@ -25,8 +25,8 @@ interface Latest {
   id: number
   lastModifiedBy?: string
   lastModifiedDate: string
-  plural:  boolean
-  revision:  number
+  plural: boolean
+  revision: number
   status: string
 }
 
