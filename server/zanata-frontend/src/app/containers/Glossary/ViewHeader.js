@@ -6,7 +6,8 @@ import {connect} from 'react-redux'
 import {debounce, isEmpty} from 'lodash'
 import {
   TextInput,
-  Link
+  Link,
+  Select
 } from '../../components'
 import Header from './Header'
 import {
@@ -30,10 +31,6 @@ import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
-
-const Option = Select.Option
 
 /**
  * Header for glossary page
@@ -136,7 +133,7 @@ class ViewHeader extends Component {
         permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon name='locked' className='s1' parentClassName='iconLocked' />
+        <Icon type='lock' className='s1 iconLocked' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
@@ -245,22 +242,23 @@ class ViewHeader extends Component {
                 </td>
                 <td className='languageSelect td-3'>
                   <Select
+                    name='language-selection'
                     placeholder={statsLoading
                         ? 'Loading…' : 'Select a language…'}
                     className='inputFlex'
+                    isLoading={statsLoading}
                     value={selectedTransLocale}
-                    showSearch
-                    onChange={handleTranslationLocaleChange}>
-                    <Option value={transLocales}>{transLocales}</Option>
-                  </Select>
+                    options={transLocales}
+                    pageSize={20}
+                    optionRenderer={this.localeOptionsRenderer}
+                    onChange={handleTranslationLocaleChange}
+                  />
                   {selectedTransLocale &&
                   (<span className='hidden-xs'>
-                    <Row>
-                      <Icon name='translate' className='s1' parentClassName='iconTranslate-neutral' />
-                      <span className='u-textNeutral'>
+                    <Icon type='global' className='s1 iconTranslate-neutral' />
+                    <span className='u-textNeutral'>
                       {currentLocaleCount}
-                      </span>
-                    </Row>
+                    </span>
                   </span>
                   )}
                 </td>
@@ -270,10 +268,10 @@ class ViewHeader extends Component {
                     <Row>
                       {'part_of_speech' in sort
                           ? (sort.part_of_speech === true)
-                              ? <Icon name='chevron-down'
-                                className='s1' parentClassName='iconChevron' />
-                              : <Icon name='chevron-up'
-                                className='s1' parentClassName='iconChevron' />
+                              ? <Icon type='down'
+                                className='s1 iconChevron' />
+                              : <Icon type='up'
+                                className='s1 iconChevron' />
                           : ''}
                       <span className='u-marginL--rq'>
                       Part of Speech
