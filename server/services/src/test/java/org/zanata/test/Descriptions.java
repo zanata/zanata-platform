@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Red Hat, Inc. and individual contributors
+ * Copyright 2018, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,30 +18,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.model.security;
+package org.zanata.test;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import java.util.function.Supplier;
 
-import org.zanata.model.HAccount;
-import io.leangen.graphql.annotations.types.GraphQLType;
+import org.assertj.core.description.Description;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Entity
-@DiscriminatorValue("SAML2")
-@GraphQLType(name = "Saml2Credentials")
-public class HSaml2Credentials extends HCredentials {
-
-    private static final long serialVersionUID = 7317701097135691593L;
-
-    public HSaml2Credentials(HAccount account, String user, String email) {
-        setAccount(account);
-        setUser(user);
-        setEmail(email);
+public class Descriptions {
+    private Descriptions() {
     }
 
-    public HSaml2Credentials() {
+    /**
+     * Creates an AssertJ Description which uses a lazy Supplier (ie lambda)
+     * for the object whose toString() will be used for the description.
+     */
+    public static Description describe(Supplier<Object> s) {
+        return new Description() {
+            @Override
+            public String value() {
+                return s.get().toString();
+            }
+        };
     }
 }

@@ -36,8 +36,10 @@ import javax.persistence.OrderColumn;
 import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
+import io.leangen.graphql.annotations.GraphQLIgnore;
 
 @Entity
+@GraphQLIgnore
 public class HDocumentUpload extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
     private HProjectIteration projectIteration;

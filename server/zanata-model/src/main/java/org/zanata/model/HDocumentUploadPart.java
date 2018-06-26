@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.leangen.graphql.annotations.GraphQLIgnore;
 
 import java.io.Serializable;
 import java.sql.Blob;
@@ -35,6 +36,7 @@ import javax.validation.constraints.NotNull;
 // is this necessary?
 
 @Entity
+@GraphQLIgnore
 public class HDocumentUploadPart implements Serializable {
     private static final long serialVersionUID = 1L;
     private long id;

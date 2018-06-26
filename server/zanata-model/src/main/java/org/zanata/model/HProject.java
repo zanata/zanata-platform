@@ -25,7 +25,6 @@ import static org.zanata.security.EntityAction.INSERT;
 import static org.zanata.security.EntityAction.UPDATE;
 import static org.zanata.model.ProjectRole.Maintainer;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +70,7 @@ import org.zanata.rest.dto.Project;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @see Project
@@ -84,6 +84,7 @@ import com.google.common.collect.Sets;
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Indexed
 @TypeDef(name = "projectRole", typeClass = ProjectRoleType.class)
+@GraphQLType(name = "Project")
 public class HProject extends SlugEntityBase
         implements Serializable, HasEntityStatus, HasUserFriendlyToString {
 
@@ -130,13 +131,13 @@ public class HProject extends SlugEntityBase
      *
      * To change maintainers, use other methods in this class.
      *
-     * @see {@link #addMaintainer(HPerson)}
-     * @see {@link #removeMaintainer(HPerson)}
+     * @see #addMaintainer(HPerson)
+     * @see #removeMaintainer(HPerson)
      */
     @Transient
     public ImmutableSet<HPerson> getMaintainers() {
         return ImmutableSet.copyOf(members.stream()
-                .filter(HProjectMember.IS_MAINTAINER)
+                .filter(pm -> pm.getRole() == Maintainer)
                 .map(HProjectMember::getPerson)
                 .iterator());
     }

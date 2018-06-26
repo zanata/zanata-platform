@@ -17,6 +17,8 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
+import io.leangen.graphql.annotations.GraphQLArgument;
+import io.leangen.graphql.annotations.GraphQLQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -50,7 +52,8 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         return (HAccount) cr.uniqueResult();
     }
 
-    public @Nullable HAccount getByUsername(String username) {
+    @GraphQLQuery(name = "account")
+    public @Nullable HAccount getByUsername(@GraphQLArgument(name = "username") String username) {
         Criteria cr = getSession().createCriteria(HAccount.class);
         cr.add(Restrictions.eq("username", username));
         cr.setCacheRegion(REGION).setCacheable(true).setComment("AccountDAO.getByUsername");
@@ -114,7 +117,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
                 getSession().createQuery(
                         "from HAccount as a where lower(a.username) like lower(:username)");
         query.setParameter("username", userName);
-        if(maxResults > 0) {
+        if (maxResults > 0) {
             query.setMaxResults(maxResults);
         }
         query.setFirstResult(firstResult);

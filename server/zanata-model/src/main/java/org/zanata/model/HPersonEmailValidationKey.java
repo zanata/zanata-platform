@@ -36,9 +36,11 @@ import javax.persistence.TemporalType;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.model.validator.EmailDomain;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @EntityListeners({ HPersonEmailValidationKey.EntityListener.class })
+@GraphQLType(name = "PersonEmailValidationKey")
 public class HPersonEmailValidationKey implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;
