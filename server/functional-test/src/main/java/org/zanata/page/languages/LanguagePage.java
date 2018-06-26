@@ -40,12 +40,12 @@ public class LanguagePage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(LanguagePage.class);
     private By contactCoordinatorsButton = By.id("contact-coordinator");
-    private By saveButton = By.id("save-button");
+    private By saveButton = By.id("settings-general_form:save-language-settings");
     private By moreActions = By.id("more-action");
-    private By enableByDefault = By.id("enable-by-default");
+    private By enableByDefault = By.id("settings-general_form:enable-by-default");
     private By membersTab = By.id("members_tab");
     private By settingsTab = By.id("settings_tab");
-    private By joinLanguageTeamButton = By.linkText("Join Language Team");
+    private By joinLanguageTeamButton = By.xpath(".//span[contains(text(),'Join Team')]");
     private By addTeamMemberButton = By.id("add-team-member-button");
     private By addUserSearchInput = By.id("searchForm:searchField");
     private By addUserSearchButton = By.id("searchForm:searchBtn");
@@ -85,7 +85,8 @@ public class LanguagePage extends BasePage {
     }
 
     public LanguagePage enableLanguageByDefault(boolean enable) {
-        Checkbox checkbox = Checkbox.of(readyElement(enableByDefault));
+        Checkbox checkbox = Checkbox.of(existingElement(enableByDefault)
+            .findElement(By.className("form__checkbox__item")));
         if (enable) {
             checkbox.check();
         } else {
