@@ -262,7 +262,8 @@ export default handleActions({
         },
         notification: {
           severity: SEVERITY.ERROR,
-          message: CREATE_LANGUAGE_ERROR_MSG
+          message: CREATE_LANGUAGE_ERROR_MSG,
+          description: action.payload.response
         }
       }
     } else {
@@ -293,7 +294,8 @@ export default handleActions({
       },
       notification: {
         severity: SEVERITY.ERROR,
-        message: CREATE_LANGUAGE_ERROR_MSG
+        message: CREATE_LANGUAGE_ERROR_MSG,
+        description: `Error: ${action.payload}`
       }
     }
   }

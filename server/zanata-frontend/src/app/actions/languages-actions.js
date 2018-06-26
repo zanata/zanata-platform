@@ -214,7 +214,16 @@ const createNewLanguage = (details, dispatch) => {
         receivedAt: Date.now()
       }
     },
-    CREATE_LANGUAGE_FAILURE
+    {
+      type: CREATE_LANGUAGE_FAILURE,
+      payload: (_action, _state, res) => {
+        return res.text().then((text) => {
+          // eslint-disable-next-line
+          console.log(text); console.log('Text')
+          return text
+        })
+      }
+    }
   ]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'PUT', headers, apiTypes,
