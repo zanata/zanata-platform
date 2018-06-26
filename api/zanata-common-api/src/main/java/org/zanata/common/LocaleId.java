@@ -1,6 +1,8 @@
 package org.zanata.common;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.Size;
@@ -31,7 +33,7 @@ public class LocaleId implements Serializable {
 
     @JsonCreator
     public LocaleId(@Nonnull String localeId) {
-        if (localeId.indexOf('_') != -1)
+        if (!isValid(localeId))
             throw new IllegalArgumentException(
                     "expected lang[-country[-modifier]], got " + localeId);
         this.id = localeId.intern();
@@ -77,4 +79,19 @@ public class LocaleId implements Serializable {
         return id;
     }
 
+
+    /**
+     * Check validity of given code against BCP-47
+     * @param localeId code to validate
+     * @return
+     */
+    public boolean isValid(String localeId) {
+        Matcher matcher = Pattern.compile("[\\w\\d@.-]*").matcher(localeId);
+        return (matcher.matches()
+                && !localeId.isEmpty()
+                && localeId.length() <= 255
+                && (Character.isAlphabetic(localeId.charAt(0))
+                    || Character.isDigit(localeId.charAt(0)))
+                && localeId.indexOf('_') == -1);
+    }
 }
