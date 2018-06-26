@@ -156,7 +156,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
     public void testUploadedTranslationsFile() throws Exception {
         File file = getTestFile("test-ts-translated.ts");
         RawDocument rawDocument = new RawDocument(
-                FileUtils.readFileToString(file),
+                FileUtils.readFileToString(file, Charsets.UTF_8),
                 new LocaleId("en"),
                 new LocaleId("dv-LL"));
         TranslationsResource translationsResource =
@@ -235,7 +235,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
     public void testFailToParseTSTranslation() throws Exception {
         File file = getTestFile("test-ts-invalid.ts");
         RawDocument rawDocument = new RawDocument(
-                FileUtils.readFileToString(file),
+                FileUtils.readFileToString(file, Charsets.UTF_8),
                 new LocaleId("en"),
                 new LocaleId("ru"));
         exception.expect(FileFormatAdapterException.class);
@@ -290,7 +290,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
         }
         try {
             adapter.replaceLocaleInDocPart(event, "()");
-            //fail("FileFormatAdapterException expected");
+            fail("FileFormatAdapterException expected");
         } catch (FileFormatAdapterException ffae) {
             // Pass
         }
