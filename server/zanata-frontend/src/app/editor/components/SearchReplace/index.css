@@ -1,7 +1,16 @@
 :root {
   --primary-color: #546677;
-  --neutral-color: rgba(228, 238, 241,.35);
+  --neutral-color: rgba(228, 238, 241,.55);
   --highlight-color: #03A6D7;
+}
+
+/* this css will be moved to an antd-editor.css file as
+more components are added so that this file will only
+contain the SearchReplace specific css
+ */
+
+.ant-modal-title {
+  color: var(--highlight-color) !important;
 }
 
 .ant-modal.searchReplaceModal {
@@ -41,6 +50,27 @@
   margin: 0;
 }
 
+.ant-btn-primary {
+  background-color: var(--highlight-color) !important;
+  border: var(--highlight-color) !important;
+}
+
+.ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  border: var(--primary-color) !important;
+}
+
+.ant-btn:hover, .ant-btn:focus {
+  color: var(--highlight-color);
+}
+
+.ant-pagination-item-active,
+.ant-pagination-item:focus,
+.ant-pagination-item:hover {
+  border-color: var(--highlight-color);
+}
+
 .ant-input.textInput {
   border: solid 1px var(--primary-color);
 }
@@ -53,7 +83,36 @@
   color: var(--primary-color) !important;
 }
 
-.ant-checkbox-checked .ant-checkbox-inner {
+.ant-checkbox-checked .ant-checkbox-inner,
+.ant-checkbox-indeterminate .ant-checkbox-inner {
   background-color: var(--primary-color) !important;
   border: solid 1px var(--primary-color) !important;
+}
+
+.searchReplaceResultsCard .ant-card-body {
+  padding-bottom: 0 !important;
+}
+
+.ant-table-body table td {
+  white-space: normal !important;
+  word-break: break-word !important;
+  min-width: 5rem;
+}
+
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+  padding: 8px 8px !important;
+}
+
+.ant-btn.leftCaret {
+  padding-left: 0 !important;
+}
+
+.ant-table-pagination li, .ant-pagination-item-link {
+  border: 0 !important;
+  font-size: 0.875rem;
+}
+
+.ant-table-tbody > tr:hover > td,
+.ant-table-tbody>tr:hover>td {
+  background: var(--neutral-color) !important;
 }

@@ -144,21 +144,21 @@ class SearchReplace extends Component {
             </Row>
             <Row>
               <span className="fr mt2 mb4">
-                <Button className='mr2 Button--secondary'>Search</Button>
+                <Button className='mr2 Button--primary'>Search</Button>
                 <Button type="primary" className='Button--secondary'>Replace</Button>
               </span>
             </Row>
-            <Card className="searchReplaceResultsCard">
-              <Row className="mb2">
-                <Button size="small" icon="left" className="mr2 Button--invisible" />
-                Document # of #
-                <Button size="small" icon="right" className="ml2 mr4 Button--invisible" />
-                <Tag># of # matching textflows selected</Tag>
+            <Card bordered className="searchReplaceResultsCard">
+              <Row>
+                <Button size="small" icon="left" className="mr2 leftCaret Button--invisible" />
+                Document <strong>1</strong> of <strong>27</strong>
+                <Button size="small" icon="right" className="ml2 rightCaret mr4 Button--invisible" />
+                <Tag>11 of 207 matching textflows selected</Tag>
                 <span className="highlight fr f7">Matching textflows</span>
               </Row>
-              <Row>
+              <Row className="mt3 mb2">
                 <Col span={4}>
-                  <h2 className="mt2 f4">Document name</h2>
+                  <h2 className="f4"><Icon type="file-text" />Document name</h2>
                 </Col>
                 <Col className="docOptions">
                   <Button className="mr2 Button--invisible"><Icon type="eye" className="f4" /></Button>
