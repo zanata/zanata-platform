@@ -66,6 +66,7 @@ public class MachineTranslationResource {
     private ActiveProjectVersionAndLocaleValidator activeProjectVersionAndLocaleValidator;
     private ZanataIdentity identity;
     private MachineTranslationsManager machineTranslationsManager;
+    @Context
     private UriInfo uri;
 
     @Inject
@@ -74,8 +75,7 @@ public class MachineTranslationResource {
             MachineTranslationService machineTranslationService,
             ActiveProjectVersionAndLocaleValidator activeProjectVersionAndLocaleValidator,
             ZanataIdentity identity,
-            MachineTranslationsManager machineTranslationsManager,
-            @Context UriInfo uri) {
+            MachineTranslationsManager machineTranslationsManager) {
         this.documentDAO = documentDAO;
         this.textFlowDAO = textFlowDAO;
         this.machineTranslationService = machineTranslationService;
@@ -83,7 +83,6 @@ public class MachineTranslationResource {
                 activeProjectVersionAndLocaleValidator;
         this.identity = identity;
         this.machineTranslationsManager = machineTranslationsManager;
-        this.uri = uri;
     }
 
     public MachineTranslationResource() {
