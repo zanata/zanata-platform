@@ -36,10 +36,12 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.ContentType;
 import org.zanata.model.type.ContentTypeType;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Immutable
+@GraphQLType(name = "DocumentHistory")
 public class HDocumentHistory implements IDocumentHistory {
 
     private String docId;

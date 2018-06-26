@@ -26,6 +26,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 /**
  * Represents a dynamic assignment of a role for HAccounts.
  *
@@ -34,6 +36,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @Cacheable
+@GraphQLType(name = "RoleAssignmentRule")
 public class HRoleAssignmentRule extends ModelEntityBase {
 
     private static final long serialVersionUID = -3893092614851019323L;

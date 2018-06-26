@@ -21,11 +21,11 @@
 package org.zanata.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Cacheable;
@@ -41,6 +41,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
+import io.leangen.graphql.annotations.GraphQLIgnore;
+import io.leangen.graphql.annotations.types.GraphQLType;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -49,11 +51,14 @@ import org.zanata.rest.dto.Person;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import static org.zanata.model.ProjectRole.Maintainer;
+
 /**
  * @see Person
  */
 @Entity
 @Cacheable
+@GraphQLType(name = "Person")
 public class HPerson extends ModelEntityBase implements Serializable, Eraseable {
     private static final long serialVersionUID = 1L;
     private String name;
@@ -63,6 +68,7 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     private Set<HProject> maintainerProjects;
     private Set<HIterationGroup> maintainerVersionGroups;
     private Set<HLocaleMember> languageTeamMemberships;
+    private Set<HProjectLocaleMember> projectLocaleMemberships;
     private Set<HProjectMember> projectMemberships;
 
     private boolean erased;
@@ -97,10 +103,12 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @Transient
+    @GraphQLIgnore
     public Set<HProject> getMaintainerProjects() {
         return ImmutableSet.copyOf(
-                getProjectMemberships().stream()
-                        .filter(HProjectMember.IS_MAINTAINER)
+                getProjectMemberships()
+                        .stream()
+                        .filter(pm -> pm.getRole() == Maintainer)
                         .map(HProjectMember::getProject)
                         .iterator());
     }
@@ -115,12 +123,9 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @Transient
+    @GraphQLIgnore
     public Set<HLocale> getLanguageMemberships() {
-        final Set<HLocale> memberships = new HashSet<HLocale>();
-        for (HLocaleMember locMem : this.getLanguageTeamMemberships()) {
-            memberships.add(locMem.getSupportedLanguage());
-        }
-        return memberships;
+        return getLanguageTeamMemberships().stream().map(HLocaleMember::getSupportedLanguage).collect(Collectors.toSet());
     }
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person", orphanRemoval = true)
@@ -132,7 +137,15 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person", orphanRemoval = true)
-    protected Set<HProjectMember> getProjectMemberships() {
+    public Set<HProjectLocaleMember> getProjectLocaleMemberships() {
+        if (projectLocaleMemberships == null) {
+            projectLocaleMemberships = new HashSet<>();
+        }
+        return projectLocaleMemberships;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person", orphanRemoval = true)
+    public Set<HProjectMember> getProjectMemberships() {
         if (projectMemberships == null) {
             projectMemberships = Sets.newHashSet();
         }
@@ -177,6 +190,7 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @Transient
+    @GraphQLIgnore
     public boolean isMaintainer(@Nonnull HProject proj) {
         // TODO consider implementing business key equality and using
         // getMaintainerProjects().contains(proj)
@@ -189,6 +203,7 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @Transient
+    @GraphQLIgnore
     public boolean isMaintainer(HIterationGroup grp) {
         // TODO consider implementing business key equality and using
         // getMaintainerVersionGroups().contains(grp)
@@ -201,11 +216,13 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     }
 
     @Transient
+    @GraphQLIgnore
     public boolean isMaintainerOfVersionGroups() {
         return !getMaintainerVersionGroups().isEmpty();
     }
 
     @Transient
+    @GraphQLIgnore
     public boolean isMaintainerOfProjects() {
         return !getMaintainerProjects().isEmpty();
     }
@@ -234,6 +251,11 @@ public class HPerson extends ModelEntityBase implements Serializable, Eraseable 
     public void setLanguageTeamMemberships(
             final Set<HLocaleMember> languageTeamMemberships) {
         this.languageTeamMemberships = languageTeamMemberships;
+    }
+
+    public void setProjectLocaleMemberships(
+            final Set<HProjectLocaleMember> projectLocaleMemberships) {
+        this.projectLocaleMemberships = projectLocaleMemberships;
     }
 
     public void setProjectMemberships(
