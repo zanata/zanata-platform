@@ -7,6 +7,7 @@ import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
 import './index.css'
 import createValidators from '../../../validators'
+import ValidationAction from '../../../validators/ValidationAction'
 
 const Panel = Collapse.Panel
 
@@ -41,13 +42,13 @@ const Validation: React.SFC<ValidationProps> = ({ intl, source, target, validati
     return validators.find((validator) => {
       return validator.id === warningOpt.id
     })
-  })
+  }) as ValidationAction[]
 
   const errorProducers = errorValidators.map((errorOpt) => {
     return validators.find((validator) => {
       return validator.id === errorOpt.id
     })
-  })
+  }) as ValidationAction[]
 
   let warningMessages: Message[] = []
   warningProducers.forEach(validator => {

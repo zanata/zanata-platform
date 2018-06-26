@@ -4,6 +4,7 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
+import Tooltip from 'antd/lib/tooltip'
 
 /**
  * Heading that displays locale name and ID
@@ -27,11 +28,12 @@ class TransUnitTranslationHeader extends React.Component {
   closeButtonElement = () => {
     return (
       <li className="u-sm-hidden">
-        <Button size="large"
-          icon="close"
-          className={this.buttonClass}
-          title="Cancel edit"
-          onClick={this.props.cancelEdit} />
+        <Tooltip title="Cancel edit">
+          <Button size="large"
+            icon="close"
+            className={this.buttonClass}
+            onClick={this.props.cancelEdit} />
+        </Tooltip>
       </li>
     )
   }
@@ -39,11 +41,12 @@ class TransUnitTranslationHeader extends React.Component {
   undoButtonElement = () => {
     return (
       <li>
-        <Button size="large"
-          icon="rollback"
-          className={this.buttonClass}
-          title="Undo edit"
-          onClick={this.props.undoEdit} />
+        <Tooltip title="Undo edit">
+          <Button size="large"
+            icon="rollback"
+            className={this.buttonClass}
+            onClick={this.props.undoEdit} />
+        </Tooltip>Tooltip>
       </li>
     )
   }

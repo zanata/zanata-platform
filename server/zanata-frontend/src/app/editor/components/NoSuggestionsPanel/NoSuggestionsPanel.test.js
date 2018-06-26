@@ -36,8 +36,8 @@ describe('NoSuggestionsPanelTest', () => {
             className="u-posCenterCenter u-textEmpty u-textCenter">
           <div className="u-sMB-1-4">
             <LoaderText
-              // @ts-ignore
-              loading loadingText='You&apos;re on your own' />
+              loading loadingText='You&apos;re on your own'>
+            </LoaderText>
           </div>
         </div>
     )

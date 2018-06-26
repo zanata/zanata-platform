@@ -21,6 +21,8 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
+// eslint-disable-next-line no-unused-vars
+import { ActivityFilter } from '../../utils/activity-util'
 
 /* Tab keys for tracking active Tab */
 const activityTabKey = '1'
@@ -45,7 +47,6 @@ const commentShape = PropTypes.shape({
   id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
 })
 
-/* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
     activityVisible: PropTypes.bool.isRequired,
@@ -87,9 +88,11 @@ class TranslationInfoPanel extends React.Component {
     this.handleSelectTab = this.handleSelectTab.bind(this)
     this.selectActivityTypeFilter =
       this.selectActivityTypeFilter.bind(this)
+
     this.state = {
       key: activityTabKey,
-      selectedActivites: 'all'
+      /** @type {ActivityFilter} */
+      selectedActivites: ('all')
     }
   }
   componentDidUpdate (prevProps) {
@@ -110,6 +113,7 @@ class TranslationInfoPanel extends React.Component {
     }
     this.setState({ key })
   }
+  /** @param activityFilterType {ActivityFilter} */
   selectActivityTypeFilter (activityFilterType) {
     this.setState(({ selectedActivites: activityFilterType }))
   }
