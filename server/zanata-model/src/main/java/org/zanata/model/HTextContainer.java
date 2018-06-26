@@ -73,6 +73,7 @@ import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
                         @Parameter(name = "maxGramSize", value = "1") }),
                 filters = { @TokenFilterDef(
                         factory = LowerCaseFilterFactory.class) }) })
+//@GraphQLType(name = "TextContainer")
 public abstract class HTextContainer implements HasContents, Serializable {
     private static final long serialVersionUID = 1L;
 

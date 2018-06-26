@@ -41,7 +41,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectLocaleMember;
 import org.zanata.model.HProjectMember;
 import org.zanata.model.LocaleRole;
-import org.zanata.model.PersonProjectMemberships;
+import org.zanata.service.PersonProjectMemberships;
 import org.zanata.model.ProjectRole;
 import org.zanata.model.WebHook;
 import org.zanata.security.ZanataIdentity;

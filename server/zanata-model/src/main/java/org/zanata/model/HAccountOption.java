@@ -26,11 +26,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 /**
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
+@GraphQLType(name = "AccountOption")
 public class HAccountOption extends ModelEntityBase {
     private static final long serialVersionUID = 1L;
     private String name;

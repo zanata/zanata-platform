@@ -34,7 +34,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.function.Predicate;
+
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * Represents a user's membership and role in a project.
@@ -43,17 +44,9 @@ import java.util.function.Predicate;
 @Table(name = "HProject_Member")
 @IdClass(HProjectMember.HProjectMemberPK.class)
 @TypeDef(name = "projectRole", typeClass = ProjectRoleType.class)
+@GraphQLType(name = "ProjectMember")
 public class HProjectMember implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Predicate to filter for only maintainer roles.
-     *
-     * Use with {@link com.google.common.collect.Collections2#filter}.
-     */
-    public static final Predicate<HProjectMember> IS_MAINTAINER =
-            input -> input != null &&
-                    input.getRole().equals(ProjectRole.Maintainer);
 
     public HProjectMember(HProject project, HPerson person, ProjectRole role) {
         setProject(project);
