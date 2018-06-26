@@ -21,7 +21,9 @@
 package org.zanata.model;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -30,9 +32,11 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import io.leangen.graphql.annotations.types.GraphQLType;
 // FIXME Cacheable
 
 @Entity
+@GraphQLType(name = "ApplicationConfiguration")
 public class HApplicationConfiguration extends ModelEntityBase {
 
     // Please keep these constants sorted!
@@ -104,24 +108,16 @@ public class HApplicationConfiguration extends ModelEntityBase {
             return availableKeys;
         }
         final HApplicationConfiguration dummy = new HApplicationConfiguration();
-        List<Field> availableConfigKeys =
-                Lists.newArrayList(HApplicationConfiguration.class.getFields());
-        availableKeys = Lists.transform(availableConfigKeys,
-                new Function<Field, String>() {
-
-                    @Override
-                    public String apply(Field input) {
-                        try {
-                            if (input != null) {
-                                input.setAccessible(true);
-                                return (String) input.get(dummy);
-                            }
-                            return null;
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        Field[] availableConfigKeys =
+                (HApplicationConfiguration.class.getFields());
+        availableKeys = Arrays.stream(availableConfigKeys).map(field -> {
+            try {
+                field.setAccessible(true);
+                return (String) field.get(dummy);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
         return availableKeys;
     }
 

@@ -2,6 +2,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -128,18 +129,18 @@ public class GetTranslationHistoryHandler extends
                 nameOrEmptyString(hTextFlowTarget.getLastModifiedBy()));
     }
 
-    protected List<ReviewComment>
-    getReviewComments(TransUnitId transUnitId, HLocale hLocale) {
-        List<HTextFlowTargetReviewComment> hComments =
-                textFlowTargetReviewCommentsDAO.getReviewComments(
-                        transUnitId,
-                        hLocale.getLocaleId());
-        return Lists.transform(hComments, input -> new ReviewComment(
-                new ReviewCommentId(input.getId()),
-                input.getCommentText(), input.getCommenterUsername(),
-                input.getCommenterName(),
-                input.getCreationDate()
-        ));
+    protected List<ReviewComment> getReviewComments(
+            TransUnitId transUnitId, HLocale hLocale) {
+        return textFlowTargetReviewCommentsDAO.getReviewComments(
+                transUnitId, hLocale.getLocaleId())
+                .stream()
+                .map(comment -> new ReviewComment(new ReviewCommentId(
+                        comment.getId()),
+                        comment.getCommentText(),
+                        comment.getCommenterUsername(),
+                        comment.getCommenterName(),
+                        comment.getCreationDate()
+        )).collect(Collectors.toList());
     }
 
     private static String usernameOrEmptyString(HPerson lastModifiedBy) {

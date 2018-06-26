@@ -32,6 +32,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import org.hibernate.annotations.BatchSize;
 import org.zanata.model.HSimpleComment;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author sflaniga@redhat.com
@@ -41,6 +42,7 @@ import org.zanata.model.HSimpleComment;
 @Entity
 @Cacheable
 @BatchSize(size = 20)
+@GraphQLType(name = "PotEntryData")
 public class HPotEntryData implements Serializable {
 
     private static final long serialVersionUID = 1L;

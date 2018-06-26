@@ -32,7 +32,8 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.base.Optional;
+
+import static com.google.common.base.Strings.nullToEmpty;
 
 @Named("documentDAO")
 @RequestScoped
@@ -480,17 +481,17 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         return rawDoc;
     }
 
-    public Optional<String> getAdapterParams(String projectSlug,
+    public String getAdapterParams(String projectSlug,
             String iterationSlug, String docId) {
         HDocument doc = getByProjectIterationAndDocId(projectSlug,
                 iterationSlug, docId);
         if (doc != null) {
             HRawDocument rawDoc = doc.getRawDocument();
             if (rawDoc != null) {
-                return Optional.fromNullable(rawDoc.getAdapterParameters());
+                return nullToEmpty(rawDoc.getAdapterParameters());
             }
         }
-        return Optional.<String> absent();
+        return "";
     }
 
     public List<HDocument> getDocumentsByIds(List<Long> docIds) {

@@ -24,12 +24,14 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.zanata.model.HAccount;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Entity
 @DiscriminatorValue("SAML2")
+@GraphQLType(name = "Saml2Credentials")
 public class HSaml2Credentials extends HCredentials {
 
     private static final long serialVersionUID = 7317701097135691593L;

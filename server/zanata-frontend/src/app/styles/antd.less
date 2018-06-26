@@ -15,18 +15,59 @@
   color: #fff;
 }
 
+.ant-btn .btn-sm {
+  padding: 0 15px !important;
+}
+
 .sortable-helper {
   z-index: 10000 !important;
+}
+
+.transSwitch.ant-switch {
+ background-color: @unsure-color;
+}
+
+.transSwitch.ant-switch.ant-switch-checked {
+  background-color: @success-color !important;
+  font-size: inherit;
+}
+
+.transSwitch.ant-switch .ant-switch-inner {
+  font-size: 14px;
+}
+
+.ant-checkbox-wrapper {
+  color: @primary-color !important;
 }
 
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   color: @primary-color;
 }
 
-  // needed for new-zanata overrides on button styling
-.ant-btn-primary {
-  background-color: @primary-color;
-  color: @normal-color
+// needed for new-zanata overrides on button styling
+// without !important these styles are overrides by antd in /node_modules
+.ant-btn.ant-btn-primary {
+  background-color: @primary-color !important;
+  color: @normal-color !important;
+  border: @primary-color !important;
+}
+
+.ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
+  background-color: @info-color !important;
+  color: @normal-color !important;
+  border: @info-color !important;
+}
+
+.ant-btn {
+  color: @primary-color !important;
+  background-color: #fff !important;
+  border-color: @neutral-color !important;
+}
+
+.ant-btn:hover, .ant-btn:focus {
+  color: @info-color !important;
+  background-color: #fff !important;
+  border-color: @info-color !important;
 }
 
 .teaser-inner div a.text-muted-bold {
@@ -93,7 +134,7 @@
 }
 
 .ant-modal-title {
-  color: @info-color;
+  color: @info-color !important;
 }
 
 .ant-form-item-label label {

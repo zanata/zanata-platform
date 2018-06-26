@@ -1,4 +1,5 @@
 /** @define Editor; use strict */
+@import "../../../../node_modules/antd/dist/antd.min.css";
 
 :root {
   --Editor-rhythm: 1.5rem;

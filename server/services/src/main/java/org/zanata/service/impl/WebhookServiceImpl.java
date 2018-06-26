@@ -1,6 +1,7 @@
 package org.zanata.service.impl;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -204,12 +205,13 @@ public class WebhookServiceImpl implements Serializable {
     }
 
     public static Set<WebhookType> getTypesFromString(String strTypes) {
-        return new HashSet<>(Lists.transform(
-                Lists.newArrayList(strTypes.split(",")), convertToWebHookType));
+        return Arrays.stream(strTypes.split(","))
+                .map(convertToWebHookType::apply)
+                .collect(Collectors.toSet());
     }
 
     private static Function<String, WebhookType> convertToWebHookType =
-            input -> WebhookType.valueOf(input);
+            WebhookType::valueOf;
 
     /**
      * Object for all available webhook list

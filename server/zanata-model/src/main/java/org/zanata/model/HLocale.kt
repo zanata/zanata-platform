@@ -21,6 +21,8 @@
 package org.zanata.model
 
 import com.ibm.icu.util.ULocale
+import io.leangen.graphql.annotations.GraphQLQuery
+import io.leangen.graphql.annotations.types.GraphQLType
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.hibernate.annotations.NaturalId
@@ -48,11 +50,13 @@ import java.util.HashSet
 @Entity
 @Cacheable
 @TypeDef(name = "localeId", typeClass = LocaleIdType::class)
+@GraphQLType(name = "Locale")
 class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @get:NaturalId
     @get:NotNull
     @get:Type(type = "localeId")
+    @GraphQLQuery(name = "localeId", description = "localeId")
     var localeId: LocaleId
 
     var isActive: Boolean = false
@@ -88,6 +92,7 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
 
     var pluralForms: String? = null
 
+    @GraphQLQuery(name = "name", description = "name of the language")
     var displayName: String? = null
 
     var nativeName: String? = null

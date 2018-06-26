@@ -28,6 +28,7 @@ import org.hibernate.annotations.NaturalId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import com.google.common.annotations.VisibleForTesting;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author sflaniga@redhat.com
@@ -35,6 +36,7 @@ import com.google.common.annotations.VisibleForTesting;
  */
 @Entity
 @Cacheable
+@GraphQLType(name = "PoTargetHeader")
 public class HPoTargetHeader extends PoHeaderBase {
 
     private static final long serialVersionUID = 1L;

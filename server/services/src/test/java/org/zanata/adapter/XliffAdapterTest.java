@@ -20,6 +20,7 @@
  */
 package org.zanata.adapter;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -31,11 +32,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -77,11 +79,9 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
         // Xliff implementation deletes the file
         FileUtils.copyFile(translationFile, tempFile);
         assertThat(tempFile.exists()).isTrue();
-        LocaleId sourceLocale = LocaleId.fromJavaName("en");
 
         TranslationsResource translationsResource =
-                adapter.parseTranslationFile(tempFile.toURI(), sourceLocale,
-                        "fr", Optional.absent());
+                adapter.parseTranslationFile(new ParserOptions(tempFile.toURI(), LocaleId.FR, ""));
         assertThat(translationsResource.getTextFlowTargets().get(0).getContents())
                 .containsExactly("Imanétaba Amna");
         assertThat(translationsResource.getTextFlowTargets().get(1).getContents())
@@ -101,7 +101,8 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
     }
 
     public void testTranslatedXliffDocument(boolean approvedOnly) throws Exception {
-        Resource resource = parseTestFile("test-xliff.xlf");
+        File sourceFile = getTestFile("test-xliff.xlf");
+        Resource resource = parseTestFile(sourceFile);
         TranslationsResource translationsResource = new TranslationsResource();
         addTranslation(translationsResource,
                 resource.getTextFlows().get(0).getId(),
@@ -117,25 +118,34 @@ public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
                 ContentState.NeedReview);
 
         File outputFile = File.createTempFile("test-xliff-translated", ".xlf");
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        adapter.writeTranslatedFile(output, null,
-                resource, translationsResource, "dv-DL", Optional.absent(),
-                approvedOnly);
-        output.writeTo(new FileOutputStream(outputFile));
+        try {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            adapter.writeTranslatedFile(output,
+                    new WriterOptions(
+                            new ParserOptions(sourceFile.toURI(), LocaleId.EN,
+                                    ""),
+                            new TranslatedDoc(resource, translationsResource,
+                                    new LocaleId("dv-DL"))),
+                    approvedOnly);
+            output.writeTo(new FileOutputStream(outputFile));
 
-        assertThat(output.toString()).contains(
-                "        <source>Line One</source>\n" +
-                        "        <target>Dakta Amna</target>");
-        if (approvedOnly) {
-            assertThat(output.toString()).contains(
-                    "        <source>Line Two</source>\n        <context-group");
-        } else {
-            assertThat(output.toString()).contains(
-                    "        <source>Line Two</source>\n" +
-                            "        <target>Dakta Tba</target>");
+            assertThat(output.toString(UTF_8)).contains(
+                    "        <source>Line One</source>\n" +
+                            "        <target>Dakta Amna</target>");
+            if (approvedOnly) {
+                assertThat(output.toString(UTF_8)).contains(
+                        "        <source>Line Two</source>\n        <context-group");
+            } else {
+                assertThat(output.toString(UTF_8)).contains(
+                        "        <source>Line Two</source>\n" +
+                                "        <target>Dakta Tba</target>");
+            }
+            // Assert fuzzy is not copied anywhere to output
+            assertThat(output.toString(UTF_8))
+                    .doesNotContain("<target>Dakta Kba</target>");
+        } finally {
+            outputFile.delete();
         }
-        // Assert fuzzy is not copied anywhere to output
-        assertThat(output.toString()).doesNotContain("<target>Dakta Kba</target>");
     }
 
 }

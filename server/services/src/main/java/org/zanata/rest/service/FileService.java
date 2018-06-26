@@ -51,8 +51,11 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.*;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.FilePersistService;
@@ -74,7 +77,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -238,6 +240,7 @@ public class FileService implements FileResource {
         if (document == null) {
             response = Response.status(Status.NOT_FOUND).build();
         } else {
+            LocaleId localeId = new LocaleId(locale);
             if (FILETYPE_GETTEXT.equals(fileType)
                     || FILETYPE_OFFLINE_PO.equals(fileType)) {
                 // Note: could return 404 or Unsupported media type for "po" in
@@ -252,7 +255,7 @@ public class FileService implements FileResource {
                 String convertedId = RestUtil.convertFromDocumentURIId(docId);
                 TranslationsResource transRes =
                         (TranslationsResource) this.translatedDocResourceService
-                                .getTranslationsWithDocId(new LocaleId(locale), convertedId,
+                                .getTranslationsWithDocId(localeId, convertedId,
                                         extensions, true, false, null)
                                 .getEntity();
                 Resource res = this.resourceUtils.buildResource(document);
@@ -268,13 +271,15 @@ public class FileService implements FileResource {
                 if (!filePersistService.hasPersistedDocument(id)) {
                     return Response.status(Status.NOT_FOUND).build();
                 }
+                assert document.getRawDocument() != null;
+                HRawDocument hRawDocument = document.getRawDocument();
                 Resource res = this.resourceUtils.buildResource(document);
                 final Set<String> extensions = Collections.<String> emptySet();
                 // FIXME convertFromDocumentURIId expects an idNoSlash, but what type is docId?
                 String convertedId = RestUtil.convertFromDocumentURIId(docId);
                 TranslationsResource transRes =
                         (TranslationsResource) this.translatedDocResourceService
-                                .getTranslationsWithDocId(new LocaleId(locale), convertedId,
+                                .getTranslationsWithDocId(localeId, convertedId,
                                         extensions, true, false, null)
                                 .getEntity();
                 // Filter to only provide translated targets. "Preview" downloads
@@ -301,7 +306,7 @@ public class FileService implements FileResource {
                 InputStream inputStream;
                 try {
                     inputStream = filePersistService.getRawDocumentContentAsStream(
-                            document.getRawDocument());
+                            hRawDocument);
                 } catch (RawDocumentContentAccessException e) {
                     log.error(e.toString(), e);
                     return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
@@ -315,14 +320,12 @@ public class FileService implements FileResource {
                 // the generated file should be scanned instead
                 virusScanner.scan(tempFile, name);
                 URI uri = tempFile.toURI();
-                HRawDocument hRawDocument = document.getRawDocument();
                 FileFormatAdapter adapter = translationFileServiceImpl
                         .getAdapterFor(hRawDocument.getType());
                 String rawParamString = hRawDocument.getAdapterParameters();
-                Optional<String> params = Optional
-                        .<String> fromNullable(Strings.emptyToNull(rawParamString));
+                String params = Strings.nullToEmpty(rawParamString);
                 StreamingOutput output = new FormatAdapterStreamingOutput(uri, res,
-                        transRes, locale, adapter, params, approvedOnly);
+                        transRes, localeId, adapter, params, approvedOnly);
                 String translationFilename =
                         adapter.generateTranslationFilename(document, locale);
                 response = Response.ok()
@@ -454,15 +457,15 @@ public class FileService implements FileResource {
     private static class FormatAdapterStreamingOutput implements StreamingOutput {
         private Resource resource;
         private TranslationsResource translationsResource;
-        private String locale;
+        private LocaleId locale;
         private URI original;
         private FileFormatAdapter adapter;
-        private Optional<String> params;
+        private String params;
         private final boolean approvedOnly;
 
-        public FormatAdapterStreamingOutput(URI originalDoc, Resource resource,
-                TranslationsResource translationsResource, String locale,
-                FileFormatAdapter adapter, Optional<String> params,
+        FormatAdapterStreamingOutput(URI originalDoc, Resource resource,
+                TranslationsResource translationsResource, LocaleId locale,
+                FileFormatAdapter adapter, String params,
                 boolean approvedOnly) {
             this.resource = resource;
             this.translationsResource = translationsResource;
@@ -477,8 +480,11 @@ public class FileService implements FileResource {
         public void write(OutputStream output)
                 throws IOException, WebApplicationException {
             // FIXME should the generated file be virus scanned?
-            adapter.writeTranslatedFile(output, original, resource,
-                    translationsResource, locale, params, approvedOnly);
+            adapter.writeTranslatedFile(output,
+                    new WriterOptions(
+                            new ParserOptions(original, locale, params),
+                            new TranslatedDoc(resource, translationsResource, locale)),
+                    approvedOnly);
         }
     }
     /*
