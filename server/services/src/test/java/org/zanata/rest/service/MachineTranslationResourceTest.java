@@ -46,7 +46,7 @@ public class MachineTranslationResourceTest {
         MockitoAnnotations.initMocks(this);
         resource = new MachineTranslationResource(documentDAO, textFlowDAO,
                 machineTranslationService,
-                activeProjectVersionAndLocaleValidator, identity, machineTranslationManager, uri);
+                activeProjectVersionAndLocaleValidator, identity, machineTranslationManager);
     }
 
     @Test
