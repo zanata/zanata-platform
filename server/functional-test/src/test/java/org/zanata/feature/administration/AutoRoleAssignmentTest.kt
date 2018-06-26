@@ -18,30 +18,29 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.administration;
+package org.zanata.feature.administration
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.zanata.feature.Trace;
-import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.administration.RoleAssignmentsPage;
-import org.zanata.workflow.LoginWorkFlow;
+import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.zanata.feature.Trace
+import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.feature.testharness.ZanataTestCase
+import org.zanata.workflow.LoginWorkFlow
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions.assertThat
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest.class)
-public class AutoRoleAssignmentTest extends ZanataTestCase {
+@Category(DetailedTest::class)
+class AutoRoleAssignmentTest : ZanataTestCase() {
 
     @Trace(summary = "The administrator can create a rule to assign roles " +
             "at user sign in")
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void createAutoRoleAssignment() throws Exception {
-        RoleAssignmentsPage roleAssignmentsPage = new LoginWorkFlow()
+    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Throws(Exception::class)
+    fun createAutoRoleAssignment() {
+        val roleAssignmentsPage = LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToAdministration()
                 .goToManageRoleAssignments()
@@ -49,24 +48,24 @@ public class AutoRoleAssignmentTest extends ZanataTestCase {
                 .clickCreateNew()
                 .enterIdentityPattern(".+ransla.+")
                 .selectRole("admin")
-                .saveRoleAssignment();
+                .saveRoleAssignment()
 
-        assertThat(roleAssignmentsPage.getRulesByPattern())
-                .as("The rule was created")
-                .contains(".+ransla.+");
+        assertThat(roleAssignmentsPage.rulesByPattern)
+                .`as`("The rule was created")
+                .contains(".+ransla.+")
 
-        roleAssignmentsPage.logout();
-        {
+        roleAssignmentsPage.logout()
+        run {
             // TODO: ZNTA-440
-            new LoginWorkFlow()
+            LoginWorkFlow()
                     .signIn("translator", "translator")
-                    .logout();
+                    .logout()
         }
-        assertThat(new LoginWorkFlow()
+        assertThat(LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToAdministration()
-                .getTitle())
-                .as("The translator user was automatically given admin rights")
-                .isEqualTo("Zanata: Administration");
+                .title)
+                .`as`("The translator user was automatically given admin rights")
+                .isEqualTo("Zanata: Administration")
     }
 }

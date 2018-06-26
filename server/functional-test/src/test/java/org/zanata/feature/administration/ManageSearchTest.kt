@@ -18,89 +18,93 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.administration;
+package org.zanata.feature.administration
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.zanata.feature.Trace;
-import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.administration.ManageSearchPage;
-import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.workflow.BasicWorkFlow;
-import org.zanata.workflow.LoginWorkFlow;
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.zanata.feature.Trace
+import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.feature.testharness.ZanataTestCase
+import org.zanata.page.dashboard.DashboardBasePage
+import org.zanata.workflow.BasicWorkFlow
+import org.zanata.workflow.LoginWorkFlow
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions.assertThat
 
-@Category(DetailedTest.class)
-public class ManageSearchTest extends ZanataTestCase {
+/**
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
+ */
+@Category(DetailedTest::class)
+class ManageSearchTest : ZanataTestCase() {
 
-    private DashboardBasePage dashboardPage;
+    private var dashboardPage: DashboardBasePage? = null
 
     @Before
-    public void before() {
-        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .as("Admin is logged in")
-                .isEqualTo("admin");
-        dashboardPage = new BasicWorkFlow().goToDashboard();
+    fun before() {
+        assertThat(LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .`as`("Admin is logged in")
+                .isEqualTo("admin")
+        dashboardPage = BasicWorkFlow().goToDashboard()
     }
 
     @Trace(summary = "The administrator can clear and regenerate all of the " +
             "search indexes")
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION.toLong())
     @Ignore("Unstable - sometimes the button isn't ready and sometimes " +
             "the index fails to complete.")
-    public void regenerateSearchIndexes() throws Exception {
-        ManageSearchPage manageSearchPage = dashboardPage
+    @Throws(Exception::class)
+    fun regenerateSearchIndexes() {
+        var manageSearchPage = dashboardPage!!
                 .goToAdministration()
                 .goToManageSeachPage()
-                .clickSelectAll();
+                .clickSelectAll()
 
         assertThat(manageSearchPage.allActionsSelected())
-                .as("All actions are selected")
-                .isTrue();
+                .`as`("All actions are selected")
+                .isTrue()
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running")
-                .isTrue();
+                .`as`("No operations are running")
+                .isTrue()
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
-                .expectActionsToFinish();
+                .expectActionsToFinish()
 
         assertThat(manageSearchPage.completedIsDisplayed())
-                .as("Completed is displayed")
-                .isTrue();
+                .`as`("Completed is displayed")
+                .isTrue()
 
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running")
-                .isTrue();
+                .`as`("No operations are running")
+                .isTrue()
     }
 
     @Trace(summary = "The administrator can abort the regeneration of the " +
             "search indexes")
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION.toLong())
     @Ignore("Data set not large enough to achieve stable test")
-    public void abortReindexes() throws Exception {
-        ManageSearchPage manageSearchPage = dashboardPage
+    @Throws(Exception::class)
+    fun abortReindexes() {
+        var manageSearchPage = dashboardPage!!
                 .goToAdministration()
                 .goToManageSeachPage()
-                .clickSelectAll();
+                .clickSelectAll()
 
         assertThat(manageSearchPage.allActionsSelected())
-                .as("All actions are selected")
-                .isTrue();
+                .`as`("All actions are selected")
+                .isTrue()
         assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
-                .as("No operations are running")
-                .isTrue();
+                .`as`("No operations are running")
+                .isTrue()
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
-                .abort();
+                .abort()
 
         assertThat(manageSearchPage.abortedIsDisplayed())
-                .as("Aborted is displayed")
-                .isTrue();
+                .`as`("Aborted is displayed")
+                .isTrue()
     }
 }
