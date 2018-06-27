@@ -45,6 +45,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.util.GlossaryUtil;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -53,6 +54,7 @@ import org.zanata.util.GlossaryUtil;
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
 @Cacheable
 @Table(uniqueConstraints = @UniqueConstraint(name = "UK_glossaryEntry", columnNames = {"contentHash", "glossaryId"}))
+@GraphQLType(name = "GlossaryEntry")
 public class HGlossaryEntry extends ModelEntityBase {
 
     private static final long serialVersionUID = -4200183325180630061L;

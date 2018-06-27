@@ -37,6 +37,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 /**
  * Represents a user's membership and role in a locale for a project.
  */
@@ -44,39 +46,10 @@ import java.io.Serializable;
 @Table(name = "HProject_LocaleMember")
 @IdClass(HProjectLocaleMember.HProjectLocaleMemberPK.class)
 @TypeDef(name = "localeRole", typeClass = LocaleRoleType.class)
+@GraphQLType(name = "ProjectLocaleMember")
 public class HProjectLocaleMember
         implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Transform function to extract the person.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectLocaleMember, HPerson> TO_PERSON =
-            new Function<HProjectLocaleMember, HPerson>() {
-
-                @Nullable
-                @Override
-                public HPerson apply(HProjectLocaleMember input) {
-                    return input != null ? input.getPerson() : null;
-                }
-            };
-
-    /**
-     * Transform function to extract the project.
-     *
-     * Use with {@link com.google.common.collect.Collections2#transform}.
-     */
-    public static final Function<HProjectLocaleMember, HProject> TO_PROJECT =
-            new Function<HProjectLocaleMember, HProject>() {
-
-                @Nullable
-                @Override
-                public HProject apply(HProjectLocaleMember input) {
-                    return input != null ? input.getProject() : null;
-                }
-            };
 
     public HProjectLocaleMember(HProject project, HLocale locale,
             HPerson person, LocaleRole role) {

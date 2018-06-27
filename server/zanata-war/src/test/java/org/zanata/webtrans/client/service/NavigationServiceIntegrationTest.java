@@ -20,16 +20,12 @@
  */
 package org.zanata.webtrans.client.service;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.customware.gwt.presenter.client.EventBus;
 import org.hibernate.transform.ResultTransformer;
-import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
-import org.jglue.cdiunit.AdditionalClasspaths;
 import org.jglue.cdiunit.ContextController;
 import org.jglue.cdiunit.ProducesAlternative;
 import org.junit.Before;
@@ -78,6 +74,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -91,7 +88,6 @@ import static org.zanata.webtrans.test.GWTTestData.workspaceId;
 // This test uses mockito to simulate an RPC call environment
 
 @RunWith(CdiUnitRunner.class)
-@AdditionalClasspaths(CDI11Bootstrap.class)
 public class NavigationServiceIntegrationTest {
 
     private static final WorkspaceId WORKSPACE_ID = workspaceId();
@@ -173,19 +169,15 @@ public class NavigationServiceIntegrationTest {
                 history);
         service.addPageDataChangeListener(transUnitsTablePresenter);
         context = new GetTransUnitActionContext(DOCUMENT);
-        doAnswer(new Answer<Void>() {
-
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                Object[] arguments = invocation.getArguments();
-                GetTransUnitList action = (GetTransUnitList) arguments[0];
-                action.setWorkspaceId(WORKSPACE_ID);
-                mockGetTransUnitLastHandlerBehaviour(DOCUMENT.getId(),
-                        TEXT_FLOWS, LOCALE, action.getOffset(),
-                        action.getCount());
-                getTransUnitListResult = handler.execute(action, null);
-                return null;
-            }
+        doAnswer((Answer<Void>) invocation -> {
+            Object[] arguments = invocation.getArguments();
+            GetTransUnitList action = (GetTransUnitList) arguments[0];
+            action.setWorkspaceId(WORKSPACE_ID);
+            mockGetTransUnitLastHandlerBehaviour(DOCUMENT.getId(),
+                    TEXT_FLOWS, LOCALE, action.getOffset(),
+                    action.getCount());
+            getTransUnitListResult = handler.execute(action, null);
+            return null;
         }).when(dispatcher).execute(actionCaptor.capture(),
                 asyncCallbackCaptor.capture());
     }
@@ -388,12 +380,12 @@ public class NavigationServiceIntegrationTest {
     }
 
     private static List<Integer> getIntIds(List<TransUnit> transUnits) {
-        return Lists.newArrayList(Collections2.transform(transUnits,
-                from -> (int) from.getId().getId()));
+        return transUnits.stream().map(
+                it -> (int) it.getId().getId()).collect(toList());
     }
 
     private static List<Long> getLongIds(List<TransUnitId> transUnitIds) {
-        return Lists.transform(transUnitIds, TransUnitId::getId);
+        return transUnitIds.stream().map(TransUnitId::getId).collect(toList());
     }
 
 }

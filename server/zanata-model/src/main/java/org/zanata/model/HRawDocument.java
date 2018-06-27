@@ -28,8 +28,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
+@GraphQLType(name = "RawDocument")
 public class HRawDocument extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 5129552589912687504L;
     // TODO ensure any document deletion cascades to remove associated

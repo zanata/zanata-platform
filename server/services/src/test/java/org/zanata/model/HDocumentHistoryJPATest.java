@@ -37,7 +37,6 @@ public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest {
                 "org/zanata/test/model/ClearAllTables.dbunit.xml"));
     }
 
-    // FIXME this test only works if resources-dev is on the classpath
     @Test
     public void ensureHistoryIsRecorded() {
         Session session = getSession();

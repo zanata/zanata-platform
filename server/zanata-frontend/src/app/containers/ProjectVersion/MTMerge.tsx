@@ -8,7 +8,7 @@ import Alert from 'antd/lib/alert'
 import 'antd/lib/alert/style/css'
 import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
-import Select from 'antd/lib/select'
+// import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
 import Checkbox from 'antd/lib/checkbox'
 import 'antd/lib/checkbox/style/css'
@@ -16,9 +16,9 @@ import Switch from 'antd/lib/switch'
 import 'antd/lib/switch/style/css'
 import Card from 'antd/lib/card'
 import 'antd/lib/card/style/css'
-import { LocaleId } from '../../utils/prop-types-util'
+// import { LocaleId } from '../../utils/prop-types-util'
 
-const Option = Select.Option
+// const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
 // TODO use LocaleType and Locale interface
 const plainOptions = [

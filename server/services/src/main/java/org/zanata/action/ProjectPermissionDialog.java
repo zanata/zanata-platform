@@ -21,10 +21,7 @@
 package org.zanata.action;
 
 import static org.zanata.webhook.events.ProjectMaintainerChangedEvent.ChangeType;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +41,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectLocaleMember;
 import org.zanata.model.HProjectMember;
 import org.zanata.model.LocaleRole;
-import org.zanata.model.PersonProjectMemberships;
+import org.zanata.service.PersonProjectMemberships;
 import org.zanata.model.ProjectRole;
 import org.zanata.model.WebHook;
 import org.zanata.security.ZanataIdentity;
@@ -60,6 +57,9 @@ import javax.faces.application.FacesMessage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 /*
  * Backing bean for project permissions dialog.
  *
@@ -199,8 +199,8 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
                 localeServiceImpl.getByLocaleId(localeRoleList[0]);
         String role = localeRoleList[1];
         final Optional<PersonProjectMemberships.LocaleRoles> matchingLocaleRoles =
-                Iterables.tryFind(data.getLocaleRoles(),
-                        localeEqualsPredicate(hLocale));
+                data.getLocaleRoles().stream()
+                        .filter(localeEqualsPredicate(hLocale)).findAny();
         if (matchingLocaleRoles.isPresent()) {
             PersonProjectMemberships.LocaleRoles localeRoles =
                     matchingLocaleRoles.get();
@@ -231,13 +231,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
      */
     private Predicate<PersonProjectMemberships.LocaleRoles>
             localeEqualsPredicate(final HLocale hLocale) {
-        return new Predicate<PersonProjectMemberships.LocaleRoles>() {
-
-            @Override
-            public boolean apply(PersonProjectMemberships.LocaleRoles input) {
-                return input.getLocale().equals(hLocale);
-            }
-        };
+        return input -> input.getLocale().equals(hLocale);
     }
 
     /**
