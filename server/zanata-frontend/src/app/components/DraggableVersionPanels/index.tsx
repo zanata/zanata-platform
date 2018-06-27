@@ -41,7 +41,7 @@ export class Item extends Component<ItemProps, {}> {
       <span className="ml2">
         {version.id}
       </span>
-      <span className="txt-muted ml1">
+      <span className="fw5 ml4 ml1">
         {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
