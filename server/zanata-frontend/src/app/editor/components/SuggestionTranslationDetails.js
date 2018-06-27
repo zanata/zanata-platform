@@ -21,11 +21,13 @@ class SuggestionTranslationDetails extends React.Component {
     })
   }
 
+  // @ts-ignore any
   user = (suggestion) => {
     const topMatch = suggestion.matchDetails[0]
     return topMatch.lastModifiedBy || 'Anonymous'
   }
 
+  // @ts-ignore any
   lastChanged = (suggestion) => {
     const topMatch = suggestion.matchDetails[0]
     if (topMatch.type === 'IMPORTED_TM') {

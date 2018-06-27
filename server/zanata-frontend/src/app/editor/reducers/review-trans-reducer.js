@@ -15,9 +15,11 @@ const defaultState = {
 }
 
 // selectors
+// @ts-ignore any
 export const getCriteria = state => state.review.criteria
 
 // utility function
+// @ts-ignore any
 const getErrorMessage = action => {
   if (action.error) {
     return action.payload && action.payload.message

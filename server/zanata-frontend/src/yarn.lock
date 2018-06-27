@@ -307,6 +307,10 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/defined/-/defined-1.0.0.tgz#f7f7a787685324457a685f25d6f0dcd8029be8e6"
 
+"@types/diff@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@types/diff/-/diff-3.5.1.tgz#30253f6e177564ad7da707b1ebe46d3eade71706"
+
 "@types/enzyme@^3.1.7":
   version "3.1.7"
   resolved "https://registry.yarnpkg.com/@types/enzyme/-/enzyme-3.1.7.tgz#358a28dda8df6841db665659278437d04571a094"

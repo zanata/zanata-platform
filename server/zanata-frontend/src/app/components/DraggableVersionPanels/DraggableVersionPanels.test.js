@@ -8,6 +8,7 @@ import Button from 'antd/lib/button'
 import Tooltip from 'antd/lib/tooltip'
 import Layout from 'antd/lib/layout'
 
+// @ts-ignore any
 const callback = function (_e) {}
 
 describe('DraggableVersionPanels', () => {

@@ -31,6 +31,7 @@ export default rootReducer
 /* Selectors for local parts of state are mapped to work on the top level */
 
 /* settings */
+// @ts-ignore any
 export const getSettings = state => state.settings
 export const getSuggestionsPanelVisible = createSelector(
   getSettings, settingsSelectors.getSuggestionsPanelVisible)
@@ -58,6 +59,7 @@ export const getValidatePrintfXsi = createSelector(
   getSettings, settingsSelectors.getValidatePrintfXsi)
 
 /* ui */
+// @ts-ignore any
 export const getUi = state => state.ui
 export const getNavHeaderVisible = createSelector(
   getUi, uiSelectors.getNavHeaderVisible)
@@ -74,4 +76,5 @@ export const getInfoPanelVisible = createSelector(
   getUi, uiSelectors.getInfoPanelVisible)
 export const getKeyShortcutsVisible = createSelector(
   getUi, uiSelectors.getKeyShortcutsVisible)
+// @ts-ignore any
 export const getAppLocale = state => state.headerData.localeMessages

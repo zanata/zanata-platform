@@ -4,6 +4,10 @@ import {Icon} from '../'
 import iconList from '../Icon/list'
 import {Table, Well} from 'react-bootstrap'
 
+/**
+ * @param {string} name
+ * @param {string} size
+ */
 function renderIcon(name, size) {
   return (
       <span key={name} title={name}> <Icon name={name}
@@ -11,10 +15,17 @@ function renderIcon(name, size) {
   )
 }
 
+/**
+ * @param {string} size
+ */
 function allIconsSize(size) {
   return iconList.map((name) => renderIcon(name, size))
 }
 
+/**
+ * @param {string} name
+ * @param {string} size
+ */
 function renderNamesIcons(name, size) {
   return (
       <p key={name} title={name}><Icon name={name}
@@ -22,6 +33,9 @@ function renderNamesIcons(name, size) {
   )
 }
 
+/**
+ * @param {string} size
+ */
 function allIcons(size) {
   return iconList.map((name) => renderNamesIcons(name, size))
 }

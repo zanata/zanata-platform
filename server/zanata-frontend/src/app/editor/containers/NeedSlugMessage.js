@@ -28,6 +28,7 @@ class NeedSlugMessage extends React.Component {
   }
 }
 
+// @ts-ignore any
 const mapStateToProps = (state) => {
   return state
 }

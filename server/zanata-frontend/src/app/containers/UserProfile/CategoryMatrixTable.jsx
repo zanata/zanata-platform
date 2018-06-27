@@ -20,6 +20,7 @@ const CategoryMatrixTable = ({
   key // TODO what's this for?
 }) => {
   let categoryMatrix = {}
+  /** @type {any[]} */
   let rows = []
 
   matrixData.forEach(function (matrix) {

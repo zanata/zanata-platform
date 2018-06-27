@@ -61,6 +61,7 @@ var postCssLoader = {
  * @param {any} env
  * @param {boolean=} isEditor
  * @param {number=} devServerPort
+ * @returns {webpack.Configuration}
  */
 module.exports = function (env, isEditor, devServerPort) {
   var buildtype = env && env.buildtype || 'prod'
@@ -167,6 +168,7 @@ module.exports = function (env, isEditor, devServerPort) {
           loader: 'awesome-typescript-loader',
           // load antd through modular import plugin
           options: {
+            /** @type {any} */
             getCustomTransformers: () => ({
               before: [ tsImportPluginFactory({
                 libraryName: 'antd',
@@ -236,6 +238,7 @@ module.exports = function (env, isEditor, devServerPort) {
       // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
       // There's probably a config option for this (stats?) but I can't find it.
       function () {
+        // @ts-ignore
         this.plugin('watch-run',
           /**
            * @param {any} _watching
@@ -289,6 +292,10 @@ module.exports = function (env, isEditor, devServerPort) {
             to: 'messages',
             toType: 'dir',
             flatten: true,
+            /**
+             * @param content {string}
+             * @param _path {any}
+             */
             transform (content, _path) {
               // Minimize the JSON files
               return JSON.stringify(JSON.parse(content))
