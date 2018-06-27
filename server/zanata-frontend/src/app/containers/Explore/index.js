@@ -7,8 +7,10 @@ import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
 import TeaserList from './TeaserList'
-import { TextInput, Icon } from '../../components'
+import { TextInput } from '../../components'
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -144,7 +146,7 @@ class Explore extends Component {
         <div className='headerClasses'>
           <h1 className='hidden'>Search</h1>
           <div className='searchView'>
-            <Icon name='search' className='s1 listInline' />
+            <Icon type='search' className='s1 listInline' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}

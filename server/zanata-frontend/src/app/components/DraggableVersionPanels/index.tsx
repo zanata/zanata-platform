@@ -36,12 +36,12 @@ export class Item extends Component<ItemProps, {}> {
   // styling for panel appears in TMMergeModal (ProjectVersion/index.less) css
   public render () {
     const { value: { version, projectSlug } } = this.props
-    return <li className="v list-group-item" >
+    return <li className="v list-group-item txt-primary">
       <DragHandle />
       <span className="ml2">
         {version.id}
       </span>
-      <span className="fw5 ml4 ml1">
+      <span className="fw5 ml4 ml1 txt-neutral">
         {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}

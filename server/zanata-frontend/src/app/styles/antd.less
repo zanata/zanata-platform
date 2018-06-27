@@ -150,12 +150,12 @@ input.react-autosuggest__input {
   border-bottom: solid 1px @neutral-color;
 }
 
-.ant-input.textInput, input.ant-input {
+.ant-input.textInput, input.ant-input, .textInput {
   border: solid 1px @neutral-color;
 }
 
 .ant-input.textInput:focus, .ant-input.textInput:hover, input.ant-input:hover,
-input.ant-input:focus {
+input.ant-input:focus, .textInput:focus, .textInput:hover {
   border: 2px solid @info-color;
 }
 
@@ -175,14 +175,206 @@ input.ant-input:focus {
   border-radius: @border-radius-small;
 }
 
-// and this
-
-li.v input.checkbox {
-  margin-left: @spacing-base; //1rem //ml1
+.ant-btn.button.close {
+  font-weight: 700;
+  line-height: 1;
+  top: 0;
+  right: 1rem;
+  position: absolute;
+  border: none !important;
+  color: #f00;
+  z-index: 1;
+  padding: @spacing-rq !important;
+  outline: none;
+  box-shadow: none;
+}
+.ant-btn.button.close:focus, .ant-btn.button.close:hover,
+.ant-btn.button.close:active:focus {
+  cursor: pointer;
+  text-decoration: none;
+  opacity: 0.5;
+  color: #000;
+  filter: alpha(opacity=50);
+  box-shadow: none;
+  outline: none;
+  background-color: #fff;
 }
 
-// and this
+.icon {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+span.icons {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+span.svg {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+}
+.n2, .n2 svg {
+  width: 0.694rem;
+  height: 0.694rem;
+}
+.n1, .n1 svg {
+  width: 0.833rem;
+  height: 0.833rem;
+}
+.s0, .s0 svg {
+  width: 1rem;
+  height: 1rem;
+}
+.s1, .s1 svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+.s2, .s2 svg {
+  width: 1.44rem;
+  height: 1.44rem;
+  vertical-align: middle;
+}
+.s3, .s3 svg {
+  width: 1.728rem;
+  height: 1.728rem;
+}
+.s4, .s4 svg {
+  width: 2.074rem;
+  height: 2.074rem;
+}
+.s5, .s5 svg {
+  width: 2.488rem;
+  height: 2.488rem;
+}
+.s6, .s6 svg {
+  width: 2.986rem;
+  height: 2.986rem;
+}
+.s7, .s7 svg {
+  width: 3.583rem;
+  height: 3.583rem;
+}
+.s8, .s8 svg {
+  width: 4.3rem;
+  height: 4.3rem;
+}
+.s9, .s9 svg {
+  width: 5.16rem;
+  height: 5.16rem;
+}
+.s10, .s10 svg {
+  width: 6.192rem;
+  height: 6.192rem;
+}
 
-.versionMergeContainer li.v.list-group-item label.checkbox-inline {
-  margin-left: @spacing-xlarge; // 2rem //ml4
+/* Flex */
+.u-flexColumn {
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+}
+.u-flexRowReverse {
+  flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+}
+.u-flexRow {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+.u-flexRowCenter {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  align-items: stretch;
+  -webkit-align-items: stretch;
+  /* Safari 7.0+ */
+}
+.u-flexCenter {
+  display: flex;
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+}
+.u-textMutedLeft {
+  color: @color-muted;
+  margin-left: @spacing-rq;
+}
+.flexTab {
+  overflow: hidden;
+  padding: 1rem;
+}
+.flexChart-container {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  justify-items: center;
+  margin-bottom: @spacing-base-and-a-half;
+  min-height: 6rem;
+}
+.inputFlex {
+  flex-grow: 1;
+  -webkit-flex-grow: 1;
+}
+/* Text inputs */
+.textInput .placeholder {
+  color: hsl(195, 32%, 80%);
+}
+input.textInput::placeholder, textarea.textInput::placeholder {
+  color: hsl(195, 32%, 80%);
+}
+.textState.textInput {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  background-color: #fff;
+  height: auto;
+  width: 100%;
+}
+.textState.text {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  border: solid 2px transparent;
+  cursor: text;
+  height: auto;
+  padding: @spacing-re @spacing-rh;
+  width: 100%;
+  margin-left: @spacing-rh;
+  vertical-align: middle;
 }
