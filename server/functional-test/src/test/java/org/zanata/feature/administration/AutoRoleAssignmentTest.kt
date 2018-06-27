@@ -38,7 +38,6 @@ class AutoRoleAssignmentTest : ZanataTestCase() {
     @Trace(summary = "The administrator can create a rule to assign roles " +
             "at user sign in")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun createAutoRoleAssignment() {
         val roleAssignmentsPage = LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -51,7 +50,7 @@ class AutoRoleAssignmentTest : ZanataTestCase() {
                 .saveRoleAssignment()
 
         assertThat(roleAssignmentsPage.rulesByPattern)
-                .`as`("The rule was created")
+                .describedAs("The rule was created")
                 .contains(".+ransla.+")
 
         roleAssignmentsPage.logout()
@@ -63,9 +62,8 @@ class AutoRoleAssignmentTest : ZanataTestCase() {
         }
         assertThat(LoginWorkFlow()
                 .signIn("translator", "translator")
-                .goToAdministration()
-                .title)
-                .`as`("The translator user was automatically given admin rights")
+                .goToAdministration().title)
+                .describedAs("The translator user was automatically given admin rights")
                 .isEqualTo("Zanata: Administration")
     }
 }
