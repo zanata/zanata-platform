@@ -42,13 +42,12 @@ class EditHomePageTest : ZanataTestCase() {
     fun before() {
         BasicWorkFlow().goToHome().deleteCookiesAndRefresh()
         assertThat(LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .`as`("Admin is logged in")
+                .describedAs("Admin is logged in")
                 .isEqualTo("admin")
     }
 
     @Trace(summary = "The administrator can edit the home screen in source mode")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun editPageCode() {
         val homePage = BasicWorkFlow()
                 .goToHome()
@@ -57,7 +56,7 @@ class EditHomePageTest : ZanataTestCase() {
                 .update()
 
         assertThat(homePage.mainBodyContent)
-                .`as`("Homepage text has been updated")
+                .describedAs("Homepage text has been updated")
                 .isEqualTo("This text contains some markup")
     }
 }

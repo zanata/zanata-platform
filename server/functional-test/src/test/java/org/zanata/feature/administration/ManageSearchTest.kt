@@ -39,7 +39,7 @@ import org.assertj.core.api.Assertions.assertThat
 @Category(DetailedTest::class)
 class ManageSearchTest : ZanataTestCase() {
 
-    private var dashboardPage: DashboardBasePage? = null
+    private lateinit var dashboardPage: DashboardBasePage
 
     @Before
     fun before() {
@@ -54,9 +54,8 @@ class ManageSearchTest : ZanataTestCase() {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION.toLong())
     @Ignore("Unstable - sometimes the button isn't ready and sometimes " +
             "the index fails to complete.")
-    @Throws(Exception::class)
     fun regenerateSearchIndexes() {
-        var manageSearchPage = dashboardPage!!
+        var manageSearchPage = dashboardPage
                 .goToAdministration()
                 .goToManageSeachPage()
                 .clickSelectAll()
@@ -85,9 +84,8 @@ class ManageSearchTest : ZanataTestCase() {
             "search indexes")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION.toLong())
     @Ignore("Data set not large enough to achieve stable test")
-    @Throws(Exception::class)
-    fun abortReindexes() {
-        var manageSearchPage = dashboardPage!!
+    fun abortReIndexes() {
+        var manageSearchPage = dashboardPage
                 .goToAdministration()
                 .goToManageSeachPage()
                 .clickSelectAll()

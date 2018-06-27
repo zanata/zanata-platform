@@ -54,7 +54,7 @@ class ServerSettingsTest : ZanataTestCase() {
                 .send(HomePage::class.java)
         val emailContent = HasEmailRule.getEmailContent(hasEmailRule.messages[0])
         assertThat(emailContent)
-                .`as`("The email indicates the expected server url")
+                .describedAs("The email indicates the expected server url")
                 .contains("http://myserver.com/zanata")
     }
 
@@ -90,7 +90,7 @@ class ServerSettingsTest : ZanataTestCase() {
                 .send(HomePage::class.java)
 
         assertThat(hasEmailRule.messages[0].envelopeReceiver)
-                .`as`("The recipient admin was set")
+                .describedAs("The recipient admin was set")
                 .contains("lara@example.com")
     }
 
@@ -114,7 +114,7 @@ class ServerSettingsTest : ZanataTestCase() {
                 "test1@test.com")
 
         assertThat(hasEmailRule.messages[0].envelopeSender)
-                .`as`("The server email sender was set")
+                .describedAs("The server email sender was set")
                 .contains("lara@example.com")
     }
 
@@ -128,7 +128,7 @@ class ServerSettingsTest : ZanataTestCase() {
                 .gotoMorePage()
 
         assertThat(morePage.helpURL)
-                .`as`("The help URL was set correctly")
+                .describedAs("The help URL was set correctly")
                 .isEqualTo("http://www.test.com/")
     }
 
@@ -146,7 +146,7 @@ class ServerSettingsTest : ZanataTestCase() {
                 .goToRegistration()
 
         assertThat(registerPage.termsOfUseUrlVisible())
-                .`as`("The Terms of Use URL is not visible")
+                .describedAs("The Terms of Use URL is not visible")
                 .isFalse()
     }
 
@@ -161,7 +161,7 @@ class ServerSettingsTest : ZanataTestCase() {
                 .goToRegistration()
 
         assertThat(registerPage.termsUrl)
-                .`as`("The Terms of Use URL was set correctly")
+                .describedAs("The Terms of Use URL was set correctly")
                 .isEqualTo("http://www.test.com/")
     }
 
@@ -178,10 +178,10 @@ class ServerSettingsTest : ZanataTestCase() {
                 .goToServerConfigPage()
 
         assertThat(serverConfigurationPage.selectedLoggingLevel())
-                .`as`("Level is correct")
+                .describedAs("Level is correct")
                 .isEqualTo("Error")
         assertThat(serverConfigurationPage.logEmailTarget)
-                .`as`("Recipient is correct")
+                .describedAs("Recipient is correct")
                 .isEqualTo("lara@example.com")
     }
 
@@ -197,10 +197,10 @@ class ServerSettingsTest : ZanataTestCase() {
                 .goToServerConfigPage()
 
         assertThat(serverConfigurationPage.piwikUrl)
-                .`as`("Piwik url is correct is correct")
+                .describedAs("Piwik url is correct is correct")
                 .isEqualTo("http://example.com/piwik")
         assertThat(serverConfigurationPage.piwikID)
-                .`as`("Piwik ID is correct")
+                .describedAs("Piwik ID is correct")
                 .isEqualTo("12345")
     }
 }

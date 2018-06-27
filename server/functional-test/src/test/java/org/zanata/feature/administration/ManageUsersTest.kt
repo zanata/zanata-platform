@@ -45,7 +45,7 @@ class ManageUsersTest : ZanataTestCase() {
     @get:Rule
     val emailRule = HasEmailRule()
 
-    private var dashboardPage: DashboardBasePage? = null
+    private lateinit var dashboardPage: DashboardBasePage
 
     @Before
     fun before() {
@@ -54,9 +54,8 @@ class ManageUsersTest : ZanataTestCase() {
 
     @Trace(summary = "The administrator can change a user's password")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun changeAUsersPassword() {
-        dashboardPage!!.goToAdministration()
+        dashboardPage.goToAdministration()
                 .goToManageUserPage()
                 .editUserAccount("translator")
                 .enterPassword("newpassword")
@@ -66,7 +65,7 @@ class ManageUsersTest : ZanataTestCase() {
 
         dashboardPage = LoginWorkFlow().signIn("translator", "newpassword")
 
-        assertThat(dashboardPage!!.loggedInAs())
+        assertThat(dashboardPage.loggedInAs())
                 .`as`("User logged in with new password")
                 .isEqualTo("translator")
     }
@@ -74,9 +73,8 @@ class ManageUsersTest : ZanataTestCase() {
     @Trace(summary = "The administrator must enter the new user password " +
             "into password and confirm password in order to change it")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun changeAUsersPasswordRequiredFields() {
-        val manageUserAccountPage = dashboardPage!!
+        val manageUserAccountPage = dashboardPage
                 .goToAdministration()
                 .goToManageUserPage()
                 .editUserAccount("translator")
@@ -90,9 +88,8 @@ class ManageUsersTest : ZanataTestCase() {
 
     @Trace(summary = "The administrator can disable an account")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun disableAUsersAccount() {
-        dashboardPage!!.goToAdministration()
+        dashboardPage.goToAdministration()
                 .goToManageUserPage()
                 .editUserAccount("translator")
                 .clickEnabled()
@@ -112,9 +109,8 @@ class ManageUsersTest : ZanataTestCase() {
 
     @Trace(summary = "The administrator can change a user account's roles")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun changeUserRoles() {
-        dashboardPage!!.goToAdministration()
+        dashboardPage.goToAdministration()
                 .goToManageUserPage()
                 .editUserAccount("translator")
                 .clickRole("admin")
@@ -132,7 +128,7 @@ class ManageUsersTest : ZanataTestCase() {
     @Trace(summary = "The administrator can change a user account's name")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
     fun changeUsersName() {
-        val manageUserAccountPage = dashboardPage!!
+        val manageUserAccountPage = dashboardPage
                 .goToAdministration()
                 .goToManageUserPage()
                 .editUserAccount("translator")

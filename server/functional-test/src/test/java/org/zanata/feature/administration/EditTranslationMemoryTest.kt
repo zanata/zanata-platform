@@ -45,13 +45,12 @@ class EditTranslationMemoryTest : ZanataTestCase() {
     fun before() {
         BasicWorkFlow().goToHome().deleteCookiesAndRefresh()
         assertThat(LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .`as`("Admin is logged in")
+                .describedAs("Admin is logged in")
                 .isEqualTo("admin")
     }
 
     @Trace(summary = "The administrator can create a new translation memory entry")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun createNewTranslationMemory() {
         val newTMId = "newtmtest"
         val tmDescription = "A new test TM"
@@ -61,22 +60,21 @@ class EditTranslationMemoryTest : ZanataTestCase() {
 
         assertThat(translationMemoryPage
                 .expectNotification("Successfully created"))
-                .`as`("The success message is displayed")
+                .describedAs("The success message is displayed")
                 .isTrue()
 
         assertThat(translationMemoryPage.listedTranslationMemorys)
-                .`as`("The new Translation Memory is listed")
+                .describedAs("The new Translation Memory is listed")
                 .contains(newTMId)
 
         assertThat(translationMemoryPage.getDescription(newTMId))
-                .`as`("The description is displayed correctly")
+                .describedAs("The description is displayed correctly")
                 .isEqualTo(tmDescription)
     }
 
     @Trace(summary = "The administrator must use a unique identifier to " +
             "create a new translation memory entry")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun translationMemoryIdsAreUnique() {
         val nonUniqueTMId = "doubletmtest"
 
@@ -84,7 +82,7 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .createTranslationMemory(nonUniqueTMId)
 
         assertThat(tmMemoryPage.listedTranslationMemorys)
-                .`as`("The new Translation Memory is listed")
+                .describedAs("The new Translation Memory is listed")
                 .contains(nonUniqueTMId)
 
         var translationMemoryEditPage = tmMemoryPage
@@ -94,7 +92,7 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .clickSaveAndExpectFailure()
 
         assertThat(translationMemoryEditPage.errors)
-                .`as`("The Id Is Not Available error is displayed")
+                .describedAs("The Id Is Not Available error is displayed")
                 .contains(TranslationMemoryPage.ID_UNAVAILABLE)
 
         translationMemoryEditPage = translationMemoryEditPage
@@ -104,14 +102,13 @@ class EditTranslationMemoryTest : ZanataTestCase() {
         translationMemoryEditPage.assertNoCriticalErrors()
 
         assertThat(translationMemoryEditPage.errors)
-                .`as`("The Id Is Not Available error is displayed")
+                .describedAs("The Id Is Not Available error is displayed")
                 .contains(TranslationMemoryPage.ID_UNAVAILABLE)
     }
 
     @Trace(summary = "The administrator can import data from a tmx data " +
             "file into a translation memory entry")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun importTranslationMemory() {
         val importTMId = "importmtest"
         val importFile = testFileGenerator.openTestFile("test-tmx.xml")
@@ -124,7 +121,7 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .clickUploadButtonAndAcknowledge()
 
         assertThat(tmMemoryPage.getNumberOfEntries(importTMId))
-                .`as`("The Translation Memory has one entry")
+                .describedAs("The Translation Memory has one entry")
                 .isEqualTo("1")
     }
 
@@ -133,7 +130,6 @@ class EditTranslationMemoryTest : ZanataTestCase() {
      */
     @Trace(summary = "The system rejects empty TMX data files")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun rejectEmptyTranslation() {
         val rejectTMId = "rejectemptytmtest"
 
@@ -147,7 +143,6 @@ class EditTranslationMemoryTest : ZanataTestCase() {
 
     @Trace(summary = "The administrator can delete a translation memory entry")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun deleteTranslationMemory() {
         val deleteTMId = "deletetmtest"
 
@@ -155,21 +150,20 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .createTranslationMemory(deleteTMId)
 
         assertThat(tmMemoryPage.listedTranslationMemorys)
-                .`as`("The new Translation Memory is listed")
+                .describedAs("The new Translation Memory is listed")
                 .contains(deleteTMId)
 
         tmMemoryPage = tmMemoryPage.clickOptions(deleteTMId)
                 .clickDeleteTmAndAccept(deleteTMId)
 
         assertThat(tmMemoryPage.listedTranslationMemorys)
-                .`as`("The new Translation Memory is no longer listed")
+                .describedAs("The new Translation Memory is no longer listed")
                 .doesNotContain(deleteTMId)
     }
 
     @Trace(summary = "The administrator can cancel the delete of a " +
             "translation memory entry")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun dontDeleteTranslationMemory() {
         val dontDeleteTMId = "dontdeletetmtest"
 
@@ -177,21 +171,20 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .createTranslationMemory(dontDeleteTMId)
 
         assertThat(tmMemoryPage.listedTranslationMemorys)
-                .`as`("The new Translation Memory is listed")
+                .describedAs("The new Translation Memory is listed")
                 .contains(dontDeleteTMId)
 
         tmMemoryPage = tmMemoryPage.clickOptions(dontDeleteTMId)
                 .clickDeleteTmAndCancel(dontDeleteTMId)
 
         assertThat(tmMemoryPage.listedTranslationMemorys)
-                .`as`("The new Translation Memory is still listed")
+                .describedAs("The new Translation Memory is still listed")
                 .contains(dontDeleteTMId)
     }
 
     @Trace(summary = "The administrator can clear the content of a " +
             "translation memory entry")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun clearTranslationMemory() {
         val clearTMId = "cleartmtest"
         val importFile = testFileGenerator.openTestFile("test-tmx.xml")
@@ -204,7 +197,7 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .clickUploadButtonAndAcknowledge()
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .`as`("The TM has one item")
+                .describedAs("The TM has one item")
                 .isEqualTo("1")
 
         tmMemoryPage = tmMemoryPage.clickOptions(clearTMId)
@@ -215,14 +208,13 @@ class EditTranslationMemoryTest : ZanataTestCase() {
         tmMemoryPage.expectNumberOfEntries(0, clearTMId)
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .`as`("The translation memory entries is empty")
+                .describedAs("The translation memory entries is empty")
                 .isEqualTo("0")
     }
 
     @Trace(summary = "The administrator can cancel clearing the content " +
             "of a translation memory entry")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun dontClearTranslationMemory() {
         val clearTMId = "dontcleartmtest"
         val importFile = testFileGenerator.openTestFile("test-tmx.xml")
@@ -235,21 +227,20 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .clickUploadButtonAndAcknowledge()
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .`as`("The TM has one item")
+                .describedAs("The TM has one item")
                 .isEqualTo("1")
 
         tmMemoryPage = tmMemoryPage.clickOptions(clearTMId)
                 .clickClearTMAndCancel(clearTMId)
 
         assertThat(tmMemoryPage.getNumberOfEntries(clearTMId))
-                .`as`("The translation memory entries count is the same")
+                .describedAs("The translation memory entries count is the same")
                 .isEqualTo("1")
     }
 
     @Trace(summary = "The administrator must clear a translation memory " +
             "entry before it can be deleted")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun mustClearBeforeDelete() {
         val forceClear = "forcecleartodelete"
         val importFile = testFileGenerator.openTestFile("test-tmx.xml")
@@ -262,10 +253,10 @@ class EditTranslationMemoryTest : ZanataTestCase() {
                 .clickUploadButtonAndAcknowledge()
 
         assertThat(tmMemoryPage.getNumberOfEntries(forceClear))
-                .`as`("The TM has one item")
+                .describedAs("The TM has one item")
                 .isEqualTo("1")
         assertThat(tmMemoryPage.clickOptions(forceClear).canDelete(forceClear))
-                .`as`("The item cannot yet be deleted")
+                .describedAs("The item cannot yet be deleted")
                 .isFalse()
 
         tmMemoryPage = tmMemoryPage.clickClearTMAndAccept(forceClear)
@@ -275,13 +266,13 @@ class EditTranslationMemoryTest : ZanataTestCase() {
         tmMemoryPage.expectNumberOfEntries(0, forceClear)
 
         assertThat(tmMemoryPage.clickOptions(forceClear).canDelete(forceClear))
-                .`as`("The item can be deleted")
+                .describedAs("The item can be deleted")
                 .isTrue()
 
         tmMemoryPage = tmMemoryPage.clickDeleteTmAndAccept(forceClear)
 
         assertThat(tmMemoryPage.listedTranslationMemorys)
-                .`as`("The item is deleted")
+                .describedAs("The item is deleted")
                 .doesNotContain(forceClear)
     }
 
