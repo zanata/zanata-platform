@@ -15,7 +15,7 @@ export const MATCH_TYPE = {
  * @returns String, one of: 'imported', 'translated', 'approved'
  */
 // @ts-ignore any
- export function matchType (suggestionDetail) {
+export function matchType (suggestionDetail) {
   const { contentState, type } = suggestionDetail
   if (type === 'IMPORTED_TM') {
     return MATCH_TYPE.IMPORTED

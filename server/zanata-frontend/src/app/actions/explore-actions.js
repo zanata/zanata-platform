@@ -76,9 +76,10 @@ const getSearchProjectResults = (dispatch, searchText, pages, callbacks) => {
   }
 }
 
-const getSearchLanguageTeamResults =
-  // @ts-ignore any
-  (dispatch, searchText, pages, callbacks) => {
+// @ts-ignore any
+const getSearchLanguageTeamResults = (dispatch, searchText,
+                                      // @ts-ignore any
+                                      pages, callbacks) => {
   const endpoint =
     getEndpoint('teams/language', pages.languageTeamPage, searchText)
   /** @type {APITypes} */
