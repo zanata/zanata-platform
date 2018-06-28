@@ -157,14 +157,14 @@ class ViewHeader extends Component {
         extraElements={(
           <div className='u-flexRowCenter'>
             <TextInput
-              className='textInput glossarySearch'
+              className='textInput'
               ref={(ref) => this.searchInput = ref}
               type='search'
               placeholder='Search Terms…'
               accessibilityLabel='Search Terms'
               defaultValue={filterText}
               onChange={handleFilterFieldUpdate} />
-            <Button className='btn-link iconCross-glossary' aria-label='button'
+            <Button className='btn-link' aria-label='button'
               icon='close' title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={this.handleClearSearch} />

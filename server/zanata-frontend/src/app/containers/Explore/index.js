@@ -145,8 +145,8 @@ class Explore extends Component {
         <Helmet title='Search' />
         <div className='headerClasses'>
           <h1 className='hidden'>Search</h1>
-          <div className='searchView'>
-            <Icon type='search' className='s1 listInline' />
+          <div>
+            <Icon type='search' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
