@@ -56,6 +56,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.MachineTranslationPrefill;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MachineTranslationService;
 import org.zanata.service.TranslationService;
@@ -175,11 +176,11 @@ public class MachineTranslationServiceImpl implements
     @Async
     @Override
     public Future<Void> prefillWithMachineTranslation(
-            Long versionId, LocaleId targetLocaleId,
+            Long versionId, MachineTranslationPrefill prefillRequest,
             @Nonnull MachineTranslationPrefillTaskHandle taskHandle) {
         // need to reload all entities
         HProjectIteration version = entityManager.find(HProjectIteration.class, versionId);
-        HLocale targetLocale = localeService.getByLocaleId(targetLocaleId);
+        HLocale targetLocale = localeService.getByLocaleId(prefillRequest.getToLocale());
         Map<String, HDocument> documents = version.getDocuments();
         if (documents.isEmpty()) {
             log.warn("no document in this version {}", version.userFriendlyToString());
@@ -201,6 +202,7 @@ public class MachineTranslationServiceImpl implements
         for (HDocument doc : documents.values()) {
             DocumentId documentId = new DocumentId(doc.getId(),
                     doc.getDocId());
+            // right now we only target untranslated. We might target more in the future
             List<HTextFlow> untranslatedTextFlows=
                     textFlowDAO
                             .getAllTextFlowByDocumentIdWithConstraints(
@@ -235,7 +237,7 @@ public class MachineTranslationServiceImpl implements
             MTDocument transDoc = result.get(i);
 
             translateInBatch(docUrlToTextFlows.get(sourceDoc.getUrl()), transDoc,
-                    targetLocale);
+                    targetLocale, prefillRequest.getSaveState());
 
             taskHandle.increaseProgress(1);
         }
@@ -249,7 +251,7 @@ public class MachineTranslationServiceImpl implements
 
     private void translateInBatch(List<HTextFlow> textFlows,
             MTDocument transDoc,
-            HLocale targetLocale) {
+            HLocale targetLocale, ContentState saveState) {
         int index = 0;
         while (index < textFlows.size()) {
             int bound = Math.min(index + BATCH_SIZE, textFlows.size());
@@ -266,12 +268,12 @@ public class MachineTranslationServiceImpl implements
                 int baseRevision = maybeTarget == null ? 0 : maybeTarget.getVersionNum();
                 List<String> translation = Lists.newArrayList(
                         transContentBatch.get(i).getValue());
-                // TODO saved state should be configurable from UI
                 // TODO TranslationSourceType only says MT but without provider name
                 TransUnitUpdateRequest updateRequest =
                         new TransUnitUpdateRequest(
                                 new TransUnitId(textFlow.getId()),
-                                translation, ContentState.NeedReview,
+                                translation,
+                                saveState,
                                 baseRevision,
                                 TranslationSourceType.MACHINE_TRANS
                                         .getAbbr());
@@ -286,11 +288,6 @@ public class MachineTranslationServiceImpl implements
                 log.error("error prefilling translation with machine translation", e);
             }
         }
-    }
-
-    private boolean shouldTranslate(ContentState contentState) {
-        // right now we only target untranslated. We might target more in the future
-        return contentState.isUntranslated();
     }
 
 }
