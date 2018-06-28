@@ -45,7 +45,7 @@ import org.zanata.util.ZanataRestCaller.buildTextFlow
 class DashboardTest : ZanataTestCase() {
     @get:Rule
     val emailRule = HasEmailRule()
-    private var dashboard: DashboardBasePage? = null
+    private lateinit var dashboard: DashboardBasePage
 
     @Before
     fun setUp() {
@@ -65,43 +65,38 @@ class DashboardTest : ZanataTestCase() {
 
     @Trace(summary = "The user can traverse Dashboard activity lists")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun dashboardBasicTests() {
         assertThat(dashboardPresentAfterLogin())
-                .`as`("Dashboard is present").isTrue()
+                .describedAs("Dashboard is present").isTrue()
         assertThat(activityListExpands())
-                .`as`("Activity list is present and expandable").isTrue()
+                .describedAs("Activity list is present and expandable").isTrue()
         assertThat(projectListIsNotEmpty())
-                .`as`("Project List is not empty").isTrue()
+                .describedAs("Project List is not empty").isTrue()
     }
 
-    @Throws(Exception::class)
     private fun dashboardPresentAfterLogin(): Boolean {
-        return dashboard!!.activityTabIsSelected()
+        return dashboard.activityTabIsSelected()
     }
 
-    @Throws(Exception::class)
     private fun activityListExpands(): Boolean {
-        val activityTab = dashboard!!.gotoActivityTab()
+        val activityTab = dashboard.gotoActivityTab()
         assertThat(activityTab.isMoreActivity).isTrue()
         assertThat(activityTab.myActivityList).isNotEmpty
         return activityTab.clickMoreActivity()
     }
 
-    @Throws(Exception::class)
     private fun projectListIsNotEmpty(): Boolean {
-        val projectsTab = dashboard!!.gotoProjectsTab()
+        val projectsTab = dashboard.gotoProjectsTab()
         return projectsTab.maintainedProjectList.size > 0
     }
 
     @Trace(summary = "The user can export user data as JSON")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun exportUserData() {
-        val url = dashboard!!.goToSettingsTab().gotoSettingsAccountTab()
+        val url = dashboard.goToSettingsTab().gotoSettingsAccountTab()
                 .exportUserDataURL
         // avoid switching browser tabs (target = _blank)
-        val driver = dashboard!!.driver
+        val driver = dashboard.driver
         driver.get(url)
         val json = driver.findElement(By.tagName("pre")).text
 
@@ -113,21 +108,19 @@ class DashboardTest : ZanataTestCase() {
 
     @Trace(summary = "The user can change their password")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun passwordChange() {
-        dashboard!!.goToSettingsTab().gotoSettingsAccountTab()
+        dashboard.goToSettingsTab().gotoSettingsAccountTab()
                 .enterOldPassword("admin").enterNewPassword("admin2")
                 .clickUpdatePasswordButton()
-        assertThat(dashboard!!
+        assertThat(dashboard
                 .expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS))
                 .isTrue()
     }
 
     @Trace(summary = "The user can begin creating a project from the Dashboard")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun createProject() {
-        val createProjectPage = dashboard!!.gotoProjectsTab()
+        val createProjectPage = dashboard.gotoProjectsTab()
                 .clickOnCreateProjectLink()
         assertThat(createProjectPage.title).contains("New Project")
     }
