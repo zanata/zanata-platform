@@ -48,7 +48,7 @@ class DeleteEntry extends Component {
       <div className='di'>
         <Tooltip placement='top'
           title={deleteLanguage} onVisibleChange={show}>
-          <Button className='btn-sm iconCross btn-default' icon='close'
+          <Button className='btn-sm btn-default fr' icon='close'
             aria-label='button'
             onClick={() => handleDeleteEntryDisplay(true)}>
             Delete

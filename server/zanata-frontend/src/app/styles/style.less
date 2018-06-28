@@ -844,17 +844,6 @@
   dd {
     margin-left: 0;
   }
-  /* Sidebar */
-  .containerSidebar td {
-    align-items: center;
-    -webkit-align-items: center;
-    /* Safari 7.0+ */
-    height: 3rem;
-    padding-top: @spacing-rh;
-    padding-bottom: @spacing-base-and-a-half;
-    padding-left: @spacing-rq;
-    padding-right: @spacing-rq;
-  }
   .containerSidebar td.tight {
     padding: @spacing-tight;
   }
@@ -1056,82 +1045,6 @@
   }
   th {
     text-align: left;
-  }
-  .table {
-    max-width: 100%;
-    margin-bottom: @spacing-hr;
-  }
-  .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-    line-height: @line-height-base;
-    padding: @spacing-half-base;
-    border-top: 1px solid @color-neutral;
-  }
-  .table > thead > tr > th {
-    vertical-align: bottom;
-    border-bottom: 2px solid @color-neutral;
-  }
-  .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
-    border-top: 0;
-  }
-  .table > tbody + tbody {
-    border-top: 2px solid @color-neutral;
-  }
-  .table tbody tr td:not(:first-child), thead tr th:not(:first-child) {
-    text-align: right;
-  }
-  .table .table {
-    background-color: #fff;
-  }
-  .table-condensed > tbody > tr > td, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > td, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > thead > tr > th {
-    padding: @spacing-small-horizontal;
-  }
-  .table-bordered {
-    border: 1px solid @color-neutral;
-  }
-  .table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
-    border: 1px solid @color-neutral;
-  }
-  .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
-    border-bottom-width: 2px;
-    background-color: #fafafa;
-  }
-  .table-striped > tbody > tr:nth-of-type(odd) {
-    background-color: @gray-lighter;
-  }
-  .table-hover > tbody > tr:hover {
-    background-color: @gray-light;
-  }
-  table col[class*=col-] {
-    position: static;
-    display: table-column;
-    float: none;
-  }
-  table td[class*=col-], table th[class*=col-] {
-    position: static;
-    display: table-cell;
-    float: none;
-  }
-  .table > tbody > tr > td {
-    vertical-align: middle;
-  }
-  .table > tbody > tr > td.active, .table > tbody > tr > th.active, .table > tbody > tr.active > td, .table > tbody > tr.active > th, .table > tfoot > tr > td.active, .table > tfoot > tr > th.active, .table > tfoot > tr.active > td, .table > tfoot > tr.active > th, .table > thead > tr > td.active, .table > thead > tr > th.active, .table > thead > tr.active > td, .table > thead > tr.active > th {
-    background-color: #fcfcfc;
-  }
-  .table > tbody > tr > td.success, .table > tbody > tr > th.success, .table > tbody > tr.success > td, .table > tbody > tr.success > th, .table > tfoot > tr > td.success, .table > tfoot > tr > th.success, .table > tfoot > tr.success > td, .table > tfoot > tr.success > th, .table > thead > tr > td.success, .table > thead > tr > th.success, .table > thead > tr.success > td, .table > thead > tr.success > th {
-    background-color: #dff0d8;
-  }
-  .table > tbody > tr > td.info, .table > tbody > tr > th.info, .table > tbody > tr.info > td, .table > tbody > tr.info > th, .table > tfoot > tr > td.info, .table > tfoot > tr > th.info, .table > tfoot > tr.info > td, .table > tfoot > tr.info > th, .table > thead > tr > td.info, .table > thead > tr > th.info, .table > thead > tr.info > td, .table > thead > tr.info > th {
-    background-color: #d9edf7;
-  }
-  .table > tbody > tr > td.warning, .table > tbody > tr > th.warning, .table > tbody > tr.warning > td, .table > tbody > tr.warning > th, .table > tfoot > tr > td.warning, .table > tfoot > tr > th.warning, .table > tfoot > tr.warning > td, .table > tfoot > tr.warning > th, .table > thead > tr > td.warning, .table > thead > tr > th.warning, .table > thead > tr.warning > td, .table > thead > tr.warning > th {
-    background-color: #fcf8e3;
-  }
-  .table > tbody > tr > td.danger, .table > tbody > tr > th.danger, .table > tbody > tr.danger > td, .table > tbody > tr.danger > th, .table > tfoot > tr > td.danger, .table > tfoot > tr > th.danger, .table > tfoot > tr.danger > td, .table > tfoot > tr.danger > th, .table > thead > tr > td.danger, .table > thead > tr > th.danger, .table > thead > tr.danger > td, .table > thead > tr.danger > th {
-    background-color: #f2dede;
-  }
-  .table-responsive {
-    overflow-x: auto;
-    min-height: 0.01%;
   }
   .searchTable.table tbody tr td, .searchTable.table thead tr th {
     text-align: left !important;
@@ -1742,25 +1655,6 @@
     font-size: 1.1rem;
     margin-top: 2rem;
   }
-  .modal-content {
-    max-height: 90vh;
-    overflow: auto;
-  }
-  .modalSelect .Select-menu-outer {
-    position: relative !important
-  }
-  .modal-section {
-    margin-bottom: @spacing-rh;
-  }
-  .modal-section label {
-    margin-bottom: 0;
-  }
-  .modal-container {
-    position: relative;
-  }
-  .modal-container .modal, .modal-container .modal-backdrop {
-    position: absolute;
-  }
   .collapsing {
     position: relative;
     overflow: hidden;
@@ -2363,150 +2257,6 @@
     white-space: nowrap;
     overflow: hidden;
     word-wrap: normal;
-  }
-  /* Modals */
-  .modalSelect {
-    max-width: 24rem;
-    margin-bottom: @spacing-base-and-a-half;
-  }
-  .modalInput {
-    margin-bottom: @spacing-base-and-a-half;
-  }
-  .modalLocale {
-    font-size: 1.44rem;
-  }
-  .modal-open {
-    overflow: hidden;
-  }
-  .modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1050;
-    overflow: hidden;
-    -webkit-overflow-scrolling: touch;
-    outline: 0;
-    padding: @spacing-base;
-  }
-  .modal.fade .modal-dialog {
-    -webkit-transition: -webkit-transform 0.3s ease-out;
-    -o-transition: -o-transform 0.3s ease-out;
-    transition: transform 0.3s ease-out;
-    -webkit-transform: translate(0, -25%);
-    -ms-transform: translate(0, -25%);
-    -o-transform: translate(0, -25%);
-    transform: translate(0, -25%);
-  }
-  .modal.in .modal-dialog {
-    -webkit-transform: translate(0, 0);
-    -ms-transform: translate(0, 0);
-    -o-transform: translate(0, 0);
-    transform: translate(0, 0);
-  }
-  .modal-open .modal {
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-  .modal-dialog {
-    position: relative;
-    width: auto;
-    margin: @spacing-large-horizontal;
-  }
-  .modal-content {
-    position: relative;
-    background-color: #fff;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    border: 1px solid #999;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: @border-radius-modal;
-    outline: 0;
-    max-width: 48rem;
-    margin-left: auto;
-    margin-right: auto;
-    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.4);
-    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.4);
-  }
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1040;
-    background-color: #000;
-    opacity: 0.5;
-  }
-  .modal-backdrop.fade {
-    filter: alpha(opacity=0);
-    opacity: 0;
-  }
-  .modal-backdrop.in {
-    filter: alpha(opacity=50);
-    opacity: 0.5;
-  }
-  .modal-header {
-    position: unset !important;
-    padding: 15px;
-    border-bottom: 0;
-  }
-  .modal-header .close {
-    margin-top: -2px;
-    opacity: 0.7;
-  }
-  .modal-title {
-    margin: 0;
-    line-height: @line-height-base;
-    font-size: 1.725rem;
-    text-align: center;
-  }
-  .modal-body {
-    position: relative;
-    padding: @spacing-xlarge;
-    color: @color-dark !important;
-  }
-  .modal-body .intro {
-    text-align: center;
-  }
-  .modal-body .scrollable {
-    overflow: auto;
-    overflow-x: hidden;
-  }
-  .modal-body label {
-    margin-bottom: 0;
-  }
-  .modal-body .checkbox {
-    margin: 0;
-  }
-  .modal-body textarea.textInput {
-    max-width: 100%;
-  }
-  .modal-footer {
-    padding: @spacing-base;
-    text-align: right;
-    right: 0;
-    border-top: 0;
-    background: rgba(0, 0, 0, 0.05);
-    clear: both;
-  }
-  .modal-footer .btn + .btn {
-    margin-bottom: 0;
-    margin-left: @spacing-small-horizontal;
-  }
-  .modal-footer .btn-group .btn + .btn {
-    margin-left: -1px;
-  }
-  .modal-footer .btn-block + .btn-block {
-    margin-left: 0;
-  }
-  .modal-scrollbar-measure {
-    position: absolute;
-    top: -9999px;
-    width: 50px;
-    height: 50px;
-    overflow: scroll;
   }
   .hidden {
     display: none !important;

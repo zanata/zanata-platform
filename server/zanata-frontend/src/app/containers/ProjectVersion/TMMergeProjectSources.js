@@ -105,7 +105,7 @@ class TMMergeProjectSources extends Component {
       ? DO_NOT_RENDER
       : (
       <span>
-        <Search className='textInput'
+        <Search
           placeholder='input search text'
           onSearch={this.projectSearchTermChanged}
           enterButton />

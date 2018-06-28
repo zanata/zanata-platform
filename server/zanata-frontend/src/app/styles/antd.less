@@ -4,10 +4,20 @@
 // antd component overrides - tachyons not used because these apply globally to
 // the antd components
 
+input {
+  line-height: 2.25rem !important;
+  padding-left: 0.375rem;
+}
 .teaserHeader .ant-layout {
   display: flex;
   flex-direction: row;
   align-items: baseline;
+}
+
+.ant-btn {
+  color: @primary-color;
+  background-color: #fff;
+  border-color: @neutral-color;
 }
 
 .ant-input-search > .ant-input-suffix > .ant-input-search-button {
@@ -17,7 +27,17 @@
 
 button.ant-btn.btn-link {
   border: 0;
+  color: @highlight-color;
   background: transparent !important;
+  font-weight: 500;
+}
+
+button.ant-btn.btn-link:hover, button.ant-btn.btn-link:focus {
+  color: @primary-color;
+}
+
+table {
+  width: 100% !important;
 }
 
 .ant-btn .btn-sm {
@@ -63,10 +83,10 @@ button.ant-btn.btn-link {
   border: @info-color !important;
 }
 
-.ant-btn {
-  color: @primary-color !important;
-  background-color: #fff !important;
-  border-color: @neutral-color !important;
+.ant-btn.btn-danger {
+  color: #ff3b3d !important;
+  background-color: #f5f5f5 !important;
+  border-color: #d9d9d9;
 }
 
 .ant-btn:hover, .ant-btn:focus {
@@ -377,8 +397,22 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   border: solid 2px transparent;
   cursor: text;
   height: auto;
-  padding: @spacing-re @spacing-rh;
+  padding: 0.375rem 0.75rem;
   width: 100%;
-  margin-left: @spacing-rh;
+  margin-left: 0.75rem;
   vertical-align: middle;
+}
+
+.table {
+  max-width: 100%;
+  margin-bottom: 1.5rem;
+}
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+  line-height: 1rem;
+  padding: 0.5rem;
+  border-top: 1px solid @neutral-color;
+}
+.table > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 2px solid @neutral-color;
 }

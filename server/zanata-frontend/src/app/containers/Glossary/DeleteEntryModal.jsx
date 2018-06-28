@@ -69,12 +69,12 @@ class DeleteEntryModal extends Component {
       <div className='u-block bstrapReact tc'>
         <Tooltip id='delete-glossary' title={info}
           className='tc' visible={show} placement='left' arrowPointAtCenter>
-          <Button className='delete-link btn-link btn-sm'
+          <Button className='btn-link btn-sm'
             aria-label='button' disabled={isDeleting}
             onClick={deleteConfirm}>
             <LoaderText loading={isDeleting} loadingText='Deleting'>
-              <Icon name='trash' className='s1' parentClassName='iconDelete' />
-              <span className='hidden-lesm'>Delete</span>
+              <Icon name='trash' className='txt-error s1' />
+              <span className='txt-error fw4 hidden-lesm'>Delete</span>
             </LoaderText>
           </Button>
         </Tooltip>

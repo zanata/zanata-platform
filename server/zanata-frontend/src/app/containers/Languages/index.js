@@ -135,8 +135,7 @@ class Languages extends Component {
       <div className='bstrapReact languages'>
         <Layout>
           <Helmet title='Languages' />
-          <div className='clearfix'
-            id='languages-form'>
+          <div id='languages-form'>
             <h1>
               Languages {!loading &&
                 <Tag color='03A6D7'>{totalCount}</Tag>
@@ -152,7 +151,7 @@ class Languages extends Component {
                 <NewLanguageModal />
               </div>
             }
-            <div>
+            <div className='mt3 mb3'>
               {loading
                 ? <div>
                   <span className='di'>
@@ -160,14 +159,14 @@ class Languages extends Component {
                   </span>
                 </div>
                 : (
-                <span className='inline-flex w-100 mt3 mb3'>
+                <span className='w-100'>
                   <Col xs={24} md={12}>
                     <Search
                       value={this.state.searchText}
                       onSearch={this.onUpdateSearch}
                       enterButton />
                   </Col>
-                  <Col xs={24} offset={1} md={3}>
+                  <Col xs={24} md={3}>
                     <Select className='w-100'
                       id='sort-options'
                       onChange={handleOnUpdateSort} value={sort.value}>
@@ -177,7 +176,7 @@ class Languages extends Component {
                       })}
                     </Select>
                   </Col>
-                  <Col xs={24} offset={1} md={3}>
+                  <Col xs={24} md={3}>
                     <span className='mr1'>Show</span>
                     <Select
                       onChange={handleOnUpdatePageSize} value={size}
@@ -204,7 +203,7 @@ class Languages extends Component {
                 }
                 {!loading && !noResults &&
                   <div>
-                    <table className='table' id='languages-table'>
+                    <table className='table mt4' id='languages-table'>
                       <thead>
                         <tr className='hidden'>
                           <th>Language</th>
