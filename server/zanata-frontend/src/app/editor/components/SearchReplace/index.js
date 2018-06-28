@@ -53,8 +53,7 @@ const Option = Select.Option
 class SearchReplace extends Component {
   state = {
     visible: false,
-    selectedRowKeys: [], // Check here to configure the default column
-    loading: false
+    selectedRowKeys: [] // Check here to configure the default column
   }
   showModal = () => {
     this.setState({
@@ -78,8 +77,7 @@ class SearchReplace extends Component {
     // ajax request after empty completing
     setTimeout(() => {
       this.setState({
-        selectedRowKeys: [],
-        loading: false,
+        selectedRowKeys: []
       });
     }, 1000);
   }
@@ -88,12 +86,11 @@ class SearchReplace extends Component {
     this.setState({ selectedRowKeys });
   }
   render() {
-    const { loading, selectedRowKeys } = this.state
+    const { selectedRowKeys } = this.state
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
     }
-    const hasSelected = selectedRowKeys.length > 0
     return (
         <div>
           <Button type="primary" className='Button--invisible' icon="swap"
