@@ -14,17 +14,13 @@ const Link = ({
 }) => {
   if (useHref) {
     return (
-      <a href={link}
-        {...props}>
+      <a href={link} {...props}>
         {children}
       </a>
     )
   }
   return (
-    <RouterLink
-      to={link}
-      {...props}
-    >
+    <RouterLink to={link} {...props} >
       {children}
     </RouterLink>
   )
