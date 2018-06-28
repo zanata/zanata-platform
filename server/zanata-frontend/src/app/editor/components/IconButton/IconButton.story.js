@@ -5,6 +5,7 @@ import { storiesOf } from '@storybook/react';
 /*
  * See .storybook/README.md for info on the component storybook.
  */
+// @ts-ignore any
 const clickFun = function (_e) {}
 
 storiesOf('IconButton', module)

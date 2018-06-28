@@ -3,7 +3,7 @@ import React from 'react'
 import dateUtils from '../../utils/DateHelper'
 
 /** @type
-    { React.StatelessComponent<{selectedDay, dateRange}> } */
+    { React.StatelessComponent<{selectedDay: any, dateRange: any}> } */
 const CalendarPeriodHeading = ({
   selectedDay,
   dateRange

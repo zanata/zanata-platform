@@ -76,6 +76,7 @@ describe('UiLanguageDropdownTest', () => {
 
   it('UiLanguageDropdown events', () => {
     let myRoar = 'puny'
+    // @ts-ignore any
     const workingOnMyRoar = (newLocale) => {
       myRoar = 'thunderous'
       // @ts-ignore

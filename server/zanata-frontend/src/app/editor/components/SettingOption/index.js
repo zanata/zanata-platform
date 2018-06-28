@@ -13,6 +13,7 @@ class SettingOption extends React.Component {
     disabled: PropTypes.bool
   }
 
+  // @ts-ignore any
   updateSetting = (event) => {
     this.props.updateSetting(this.props.id, event.target.checked)
   }

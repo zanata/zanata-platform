@@ -10,6 +10,7 @@ import Button from 'antd/lib/button'
  */
 class Sidebar extends Component {
 
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = {
@@ -20,7 +21,9 @@ class Sidebar extends Component {
   }
 
   toggleDisplay () {
+    // @ts-ignore any
     this.setState(prevState => ({display: !prevState.display}))
+    // @ts-ignore any
     this.setState(prevState => ({arrow: !prevState.arrow}))
   }
   /* eslint-disable react/jsx-no-bind, no-return-assign */

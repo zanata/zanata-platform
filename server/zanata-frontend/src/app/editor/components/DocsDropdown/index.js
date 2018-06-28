@@ -26,6 +26,7 @@ class DocsDropdown extends React.Component {
     isOpen: PropTypes.bool.isRequired
   }
 
+  // @ts-ignore any
   docUrl = (docId) => {
     const { projectVersion, selectedLocale } = this.props.context
     const project = projectVersion.project.slug
@@ -37,6 +38,7 @@ class DocsDropdown extends React.Component {
   render () {
     const ctx = this.props.context
     const selectedDoc = ctx.selectedDoc.id
+    // @ts-ignore any
     const items = ctx.projectVersion.docs.map(docId => {
       const url = this.docUrl(docId)
       // TODO highlight selected

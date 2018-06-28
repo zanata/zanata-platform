@@ -4,7 +4,9 @@ import * as PropTypes from 'prop-types'
 /**
  * Displays the set of key combinations for a keyboard shortcut.
  */
+// @ts-ignore any
 function KeyCombinations ({ keys }) {
+  // @ts-ignore any
   const keyDefs = keys.map(symbolizeKey).map((key, index) => {
     return <kbd key={index}>{key}</kbd>
   })

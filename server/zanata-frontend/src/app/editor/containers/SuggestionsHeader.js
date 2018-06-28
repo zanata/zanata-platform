@@ -60,6 +60,7 @@ class SuggestionsHeader extends React.Component {
     }
   }
 
+  // @ts-ignore any
   setSearchInput = (ref) => {
     this.searchInput = ref
   }

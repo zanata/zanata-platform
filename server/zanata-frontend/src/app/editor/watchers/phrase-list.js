@@ -19,10 +19,13 @@ import {
   PHRASE_LIST_FAILURE
 } from '../actions/phrases-action-types'
 
+// @ts-ignore any
 const getProject = state => state.context.projectSlug
+// @ts-ignore any
 const getVersion = state => state.context.versionSlug
+// @ts-ignore any
 const getDocId = state => state.context.docId
-
+// @ts-ignore any
 const getAdvancedFilter = state => state.phrases.filter.advanced
 
 const getPhraseListInfo = createSelector(
@@ -41,6 +44,7 @@ const getFilterPhraseListInfo = createSelector(
  * TODO (optimization) only run if phrases.inDoc[docId] is not set yet
  *                     or is stale.
  */
+// @ts-ignore any
 export function watchRequiredPhraseList (store) {
   const watcher = watch('watchRequiredPhraseList')(
     () => getPhraseListInfo(store.getState()))
@@ -53,6 +57,7 @@ export function watchRequiredPhraseList (store) {
     }, 1000)
 
   store.subscribe(watcher(
+    // @ts-ignore any
     ({ project, version, lang, docId }, _prevState) => {
       if (isEmpty(project) || isEmpty(version) ||
         isEmpty(lang) || isEmpty(docId)) {
@@ -62,6 +67,7 @@ export function watchRequiredPhraseList (store) {
     }))
 }
 
+// @ts-ignore any
 export const watchAdvancedFilterList = (store) => {
   const watcher = watch('watchAdvancedFilterList')(
     () => getFilterPhraseListInfo(store.getState()))
@@ -74,6 +80,7 @@ export const watchAdvancedFilterList = (store) => {
     }, 1000)
 
   store.subscribe(watcher(
+    // @ts-ignore any
     ({ project, version, lang, docId, advancedFilter }) => {
       if (isEmpty(project) || isEmpty(version) ||
         isEmpty(lang) || isEmpty(docId)) {
@@ -86,6 +93,7 @@ export const watchAdvancedFilterList = (store) => {
     }))
 }
 
+// @ts-ignore any
 function fetchPhraseList (project, version, localeId, docId, filter) {
   const filtered = !!filter
   if (filtered && !hasAdvancedFilter(filter)) {
@@ -108,10 +116,12 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
         },
         {
           type: PHRASE_LIST_SUCCESS,
+          // @ts-ignore any
           payload: (_action, _state, res) =>
             // @ts-ignore
             getJSON(res).then(phraseList => ({
               docId,
+              // @ts-ignore any
               phraseList: phraseList.map(phrase => ({
                 ...phrase,
                 status: transUnitStatusToPhraseStatus(phrase.status)

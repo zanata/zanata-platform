@@ -16,8 +16,9 @@ const cssClass = {
 }
 
 /** @type
-    { React.StatelessComponent<{key?, dateLabel?, date?, wordCount?,
-      selectedDay?, selectedContentState?, handleSelectedDayChanged?}>
+    { React.StatelessComponent<{key?: any, dateLabel?: any, date?: any,
+      wordCount?: any, selectedDay?: any, selectedContentState?: any,
+      handleSelectedDayChanged?: any}>
     } */
 const DayMatrix = ({
   dateLabel,

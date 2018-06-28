@@ -6,6 +6,7 @@ import Button from '.'
 
 describe('ButtonTest', () => {
   it('Button markup', () => {
+    // @ts-ignore any
     const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
@@ -28,6 +29,7 @@ describe('ButtonTest', () => {
   })
 
   it('Button markup (disabled)', () => {
+    // @ts-ignore any
     const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
@@ -53,6 +55,7 @@ describe('ButtonTest', () => {
 
   it('Button click event', () => {
     let clickEvent = 'nowhere'
+    // @ts-ignore any
     const getToTheChopper = (e) => {
       clickEvent = e.value
     }
@@ -73,6 +76,7 @@ describe('ButtonTest', () => {
 
   it('Button does not fire click when disabled', () => {
     let clickEvent = 'nowhere'
+    // @ts-ignore any
     const getToTheChopper = function (e) {
       clickEvent = e.value
     }

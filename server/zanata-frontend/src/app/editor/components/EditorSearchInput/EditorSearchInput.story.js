@@ -14,6 +14,7 @@ class EditorSearchInput extends React.Component {
     updateSearch: PropTypes.func.isRequired
   }
 
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = {
@@ -25,14 +26,17 @@ class EditorSearchInput extends React.Component {
   toggleAdvanced = () => {
     // ensure the action is visible in the logger
     this.props.toggleAdvanced()
+    // @ts-ignore any
     this.setState(prevState => ({
       showAdvanced: !prevState.showAdvanced
     }))
   }
 
+  // @ts-ignore any
   updateSearch = (search) => {
     // ensure the action is visible in the logger
     this.props.updateSearch(search)
+    // @ts-ignore any
     this.setState(prevState => ({
       search: {
         ...prevState.search,

@@ -40,14 +40,25 @@ import stableStringify from 'faster-stable-stringify'
 
 export const dashboardUrl = serverUrl + '/dashboard'
 
+/**
+ * @param {string} projectSlug
+ * @param {string} versionSlug
+ */
 export function projectPageUrl (projectSlug, versionSlug) {
   return `${serverUrl}/iteration/view/${projectSlug}/${versionSlug}`
 }
 
+/**
+ * @param {string} username
+ */
 export function profileUrl (username) {
   return `${serverUrl}/profile/view/${username}`
 }
 
+/**
+ * @param {string} localeId
+ * @param {string} projectSlug
+ */
 export function getTranslationPermission (localeId, projectSlug) {
   const endpoint =
   `${apiUrl}/user/permission/roles/project/${projectSlug}?localeId=${localeId}`
@@ -56,9 +67,11 @@ export function getTranslationPermission (localeId, projectSlug) {
     USER_PERMISSION_REQUEST,
     {
       type: USER_PERMISSION_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -72,6 +85,12 @@ export function getTranslationPermission (localeId, projectSlug) {
   }
 }
 
+/**
+ * @param {string} projectSlug
+ * @param {string} versionSlug
+ * @param {string} docId
+ * @param {string} localeId
+ */
 export function fetchStatistics (projectSlug, versionSlug, docId, localeId) {
   const statsUrl =
     `${apiUrl}/stats/project/${projectSlug}/version/${versionSlug}/doc/${encode(docId)}/locale/${localeId}` // eslint-disable-line max-len
@@ -97,6 +116,9 @@ export function fetchLocales () {
   })
 }
 
+/**
+ * @param locale {string}
+ */
 export function fetchI18nLocale (locale) {
   const endpoint = `${appUrl}/messages/${locale}.json`
   /** @type {APITypes} */
@@ -104,9 +126,11 @@ export function fetchI18nLocale (locale) {
     LOCALE_MESSAGES_REQUEST,
     {
       type: LOCALE_MESSAGES_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -119,6 +143,13 @@ export function fetchI18nLocale (locale) {
   }
 }
 
+/**
+ *
+ * @param {string} localeId
+ * @param {string} transUnitId
+ * @param {string} projectSlug
+ * @param {string} versionSlug
+ */
 export function fetchTransUnitHistory (
   localeId, transUnitId, projectSlug, versionSlug) {
   // eslint-disable-next-line max-len
@@ -128,9 +159,11 @@ export function fetchTransUnitHistory (
     TRANS_HISTORY_REQUEST,
     {
       type: TRANS_HISTORY_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -157,6 +190,10 @@ export function fetchMyInfo () {
   })
 }
 
+/**
+ *
+ * @param {string} projectSlug
+ */
 export function fetchProjectInfo (projectSlug) {
   const projectUrl = `${apiUrl}/project/${projectSlug}`
   return fetch(projectUrl, {
@@ -171,6 +208,10 @@ export function fetchProjectInfo (projectSlug) {
   })
 }
 
+/**
+ * @param {string} projectSlug
+ * @param {string} versionSlug
+ */
 export function fetchDocuments (projectSlug, versionSlug) {
   const docListUrl =
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/docs`
@@ -185,6 +226,10 @@ export function fetchDocuments (projectSlug, versionSlug) {
   })
 }
 
+/**
+ * @param {string} projectSlug
+ * @param {string} versionSlug
+ */
 export function fetchVersionLocales (projectSlug, versionSlug) {
   const localesUrl =
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/locales`
@@ -199,7 +244,9 @@ export function fetchVersionLocales (projectSlug, versionSlug) {
   })
 }
 
+// @ts-ignore any
 export function savePhrase ({ id, revision, plural },
+  // @ts-ignore any
   { localeId, status, translations, revisionComment }) {
   const translationUrl = `${apiUrl}/trans/${localeId}`
   return fetch(translationUrl, {
@@ -225,6 +272,7 @@ export function savePhrase ({ id, revision, plural },
 /**
  * Convert from lowercase phrase status used in redux app
  * to the caps-case strings used in the REST interface.
+ * @param status {string}
  */
 function phraseStatusToTransUnitStatus (status) {
   switch (status) {

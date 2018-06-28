@@ -32,6 +32,7 @@ const JavaVariablesValidator =
 
 const messages = Messages[locale]
 
+// @ts-ignore any
 const noErrors = []
 
 describe('TabValidation', () => {
@@ -39,6 +40,7 @@ describe('TabValidation', () => {
     const source = 'Source without tab'
     const target = 'Target without tab'
     const errorList = JavaVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
 
@@ -46,6 +48,7 @@ describe('TabValidation', () => {
     const source = "Testing string with variable {0} and {1}"
     const target = "{1} and {0} included, order not relevant"
     const errorList = JavaVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
 
@@ -53,6 +56,7 @@ describe('TabValidation', () => {
     const source = "This string does not contain \\{0\\} style variables"
     const target = "This string does not contain java style variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
 
@@ -60,6 +64,7 @@ describe('TabValidation', () => {
     const source = "This string does not contain '{0}' style variables"
     const target = "This string does not contain java style variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
 
@@ -67,6 +72,7 @@ describe('TabValidation', () => {
     const source = "This 'string does not contain {0} style' variables"
     const target = "This string does not contain java style variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
 
@@ -74,6 +80,7 @@ describe('TabValidation', () => {
     const source = "'''{'0}'''''{0}'''"
     const target = "From examples on MessageFormat page, should not contain any variables"
     const errorList = JavaVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
 
@@ -81,6 +88,7 @@ describe('TabValidation', () => {
     const source = "There {0,choice,0#are no things|1#is one thing|1<are many things}."
     const target = "Es gibt {0,choice,0#keine Dinge|1#eine Sache|1<viele Dinge}."
     const errorList = JavaVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
 
