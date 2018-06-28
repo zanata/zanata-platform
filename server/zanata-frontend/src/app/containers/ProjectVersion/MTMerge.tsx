@@ -55,14 +55,14 @@ class MTMerge extends Component<{}, MTMergeState> {
       visible: true
     })
   }
-  handleOk = e => {
-    console.log(e)
+  handleOk = _ => {
+    // console.log(_)
     this.setState({
       visible: false
     })
   }
-  handleCancel = e => {
-    console.log(e)
+  handleCancel = _ => {
+    // console.log(_)
     this.setState({
       visible: false
     })
