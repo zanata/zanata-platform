@@ -31,6 +31,15 @@ public class MachineTranslationPrefill {
     private LocaleId toLocale;
     private ContentState saveState;
 
+    public MachineTranslationPrefill(LocaleId toLocale,
+            ContentState saveState) {
+        this.toLocale = toLocale;
+        this.saveState = saveState;
+    }
+
+    public MachineTranslationPrefill() {
+    }
+
     public LocaleId getToLocale() {
         return toLocale;
     }

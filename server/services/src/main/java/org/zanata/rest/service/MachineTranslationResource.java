@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -39,6 +42,7 @@ import javax.ws.rs.core.UriInfo;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.config.MTServiceURL;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HDocument;
@@ -68,6 +72,7 @@ public class MachineTranslationResource {
     private ActiveProjectVersionAndLocaleValidator activeProjectVersionAndLocaleValidator;
     private ZanataIdentity identity;
     private MachineTranslationsManager machineTranslationsManager;
+    private URI mtServiceURL;
     @Context
     private UriInfo uri;
 
@@ -77,7 +82,8 @@ public class MachineTranslationResource {
             MachineTranslationService machineTranslationService,
             ActiveProjectVersionAndLocaleValidator activeProjectVersionAndLocaleValidator,
             ZanataIdentity identity,
-            MachineTranslationsManager machineTranslationsManager) {
+            MachineTranslationsManager machineTranslationsManager,
+            @MTServiceURL URI mtServiceURL) {
         this.documentDAO = documentDAO;
         this.textFlowDAO = textFlowDAO;
         this.machineTranslationService = machineTranslationService;
@@ -85,6 +91,7 @@ public class MachineTranslationResource {
                 activeProjectVersionAndLocaleValidator;
         this.identity = identity;
         this.machineTranslationsManager = machineTranslationsManager;
+        this.mtServiceURL = mtServiceURL;
     }
 
     public MachineTranslationResource() {
@@ -93,12 +100,15 @@ public class MachineTranslationResource {
     @Path("project/{projectSlug}/version/{versionSlug}")
     @GET
     @CheckRole("machine-translation")
-    public List<String> getMachineTranslationSuggestion(
+    public Response getMachineTranslationSuggestion(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
             @QueryParam("docId") String docId,
             @QueryParam("resId") String resId,
             @QueryParam("toLocale") String toLocale) {
+        if (mtServiceURL == null) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
         HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug,
                 versionSlug, docId);
 
@@ -111,7 +121,13 @@ public class MachineTranslationResource {
         if (textFlow == null) {
             throw new NoSuchEntityException("can not find text flow with resId:" + resId + " in document " + docId);
         }
-        return machineTranslationService.getSuggestion(textFlow, doc.getSourceLocaleId(), new LocaleId(toLocale));
+        List<String> suggestion = machineTranslationService
+                .getSuggestion(textFlow, doc.getSourceLocaleId(),
+                        new LocaleId(toLocale));
+        GenericEntity<List<String>> entity =
+                new GenericEntity<List<String>>(suggestion) {
+                };
+        return Response.ok(entity).build();
 
     }
 
@@ -122,6 +138,9 @@ public class MachineTranslationResource {
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
             MachineTranslationPrefill prefillRequest) {
+        if (mtServiceURL == null) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
         Optional<Response> response = activeProjectVersionAndLocaleValidator
                 .getResponseIfProjectLocaleAndVersionAreNotActive(projectSlug,
                         versionSlug, prefillRequest.getToLocale());
@@ -147,6 +166,4 @@ public class MachineTranslationResource {
                         HttpUtil.stripProtocol(url));
         return Response.accepted(processStatus).build();
     }
-
-
 }
