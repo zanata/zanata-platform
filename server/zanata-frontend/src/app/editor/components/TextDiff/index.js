@@ -2,6 +2,7 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { diffWords } from 'diff'
 
+// @ts-ignore any
 function compare (text1, text2) {
   return diffWords(text1, text2, { ignoreCase: true })
 }
@@ -26,6 +27,7 @@ export default class extends React.Component {
    * a check whether the text has changed before recalculating
    * the diff.
    */
+  // @ts-ignore any
   shouldComponentUpdate (nextProps, _nextState) {
     return nextProps.text1 !== this.props.text1 ||
       nextProps.text2 !== this.props.text2 ||
@@ -36,6 +38,7 @@ export default class extends React.Component {
   render () {
     var differences = compare(this.props.text1, this.props.text2)
     const simpleMatch = this.props.simpleMatch
+    // @ts-ignore any
     const result = differences.map((part, index) => {
       if (part.added) {
         return (simpleMatch

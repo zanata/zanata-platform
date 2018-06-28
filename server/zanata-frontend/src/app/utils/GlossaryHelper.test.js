@@ -152,6 +152,7 @@ describe('GlossaryHelperTest', function () {
 
   // @ts-ignore
   function expectStatus (status, isSrcModified, isTransModified, isSrcValid,
+    // @ts-ignore any
     canUpdateTransComment, isSaving) {
     expect(status.isSrcModified).toEqual(isSrcModified)
     expect(status.isTransModified).toEqual(isTransModified)

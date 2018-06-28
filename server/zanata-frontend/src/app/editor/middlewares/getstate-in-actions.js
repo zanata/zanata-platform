@@ -18,6 +18,7 @@
  * additional state to the custom reducer functions as needed.
  */
 
+// @ts-ignore any
 export default store => next => action => {
   const getState = store.getState.bind(store)
   return next({

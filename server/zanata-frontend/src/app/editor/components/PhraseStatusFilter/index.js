@@ -149,8 +149,11 @@ export class PhraseStatusFilter extends Component {
 
 const mapStateToProps = ({
   // TODO move counts to a more appropriate place in state
+  // @ts-ignore any
   headerData: { context: { selectedDoc: { counts } } },
+  // @ts-ignore any
   phrases: { filter: { status } },
+  // @ts-ignore any
   ui: { gettextCatalog }}) => {
   return {
     counts,
@@ -159,9 +162,11 @@ const mapStateToProps = ({
   }
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
     resetFilter: () => dispatch(resetStatusFilter()),
+    // @ts-ignore any
     onFilterChange: (status) => dispatch(updateStatusFilter(status))
   }
 }

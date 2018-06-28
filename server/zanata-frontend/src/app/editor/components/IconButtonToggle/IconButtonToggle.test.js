@@ -5,6 +5,7 @@ import IconButtonToggle from '.'
 
 describe('IconButtonToggleTest', () => {
   it('IconButtonToggle markup', () => {
+    // @ts-ignore any
     let clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(<IconButtonToggle
       icon="classical"
@@ -25,6 +26,7 @@ describe('IconButtonToggleTest', () => {
   })
 
   it('IconButtonToggle adds active style', () => {
+    // @ts-ignore any
     var clickFun = function (_e) {}
 
     const actual = ReactDOMServer.renderToStaticMarkup(<IconButtonToggle

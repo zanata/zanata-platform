@@ -10,6 +10,7 @@ import GlossarySearchInput from '.'
 // that takes an argument in and digs a value out of it. It would work with
 // multiple arguments too.
 // Just pass the function object as a prop
+// @ts-ignore any
 const onTextChange = event => action('onTextChange')(event.target.value)
 // e.g. onFoo = (arg1, arg2, ...) => action('onFoo')(arg1.foo.bar, arg2.x, ...)
 

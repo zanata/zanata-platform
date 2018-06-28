@@ -21,6 +21,7 @@ class PlainSuggestionContents extends Component {
     directionClassTarget: PropTypes.object.isRequired
   }
 
+  // @ts-ignore any
   matchTypeClass = (matchType) => {
     return ({
       imported: 'TransUnit--secondary',

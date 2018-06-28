@@ -36,12 +36,14 @@ class MTMerge extends Component {
       visible: true
     });
   }
+  // @ts-ignore any
   handleOk = (e) => {
     console.log(e)
     this.setState({
       visible: false
     })
   }
+  // @ts-ignore any
   handleCancel = (e) => {
     console.log(e);
     this.setState({
@@ -85,6 +87,7 @@ class MTMerge extends Component {
         </div>
     );
   }
+  // @ts-ignore any
   onChange = (checkedList) => {
     this.setState({
       checkedList,
@@ -92,6 +95,7 @@ class MTMerge extends Component {
       checkAll: checkedList.length === plainOptions.length,
     });
   }
+  // @ts-ignore any
   onCheckAllChange = (e) => {
     this.setState({
       checkedList: e.target.checked ? plainOptions : [],

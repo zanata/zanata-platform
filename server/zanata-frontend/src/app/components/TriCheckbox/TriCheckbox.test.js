@@ -8,6 +8,7 @@ import TriCheckbox from '.'
 
 const callback = function () {}
 
+// @ts-ignore any
 const utilRender = function (checked, indeterminate, onChange) {
   const rendered = TestUtils.renderIntoDocument(<TriCheckbox
     checked={checked}
@@ -65,6 +66,7 @@ describe('TriCheckbox', () => {
   })
   it('can handle click from checked && !indeterminate state', () => {
     let changeEvent = 'do nothing'
+    // @ts-ignore any
     const livingItUp = function (e) {
       changeEvent = e.value
     }

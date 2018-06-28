@@ -22,10 +22,12 @@ import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { isEqual, isNaN, max } from 'lodash'
 import { hasAdvancedFilter } from '../utils/filter-util'
 
+// @ts-ignore any
 export const getLang = state => state.context.lang
 // FIXME move detail to detail[lang] and add timestamps
+// @ts-ignore any
 const getPhrasesDetail = state => state.phrases.detail
-
+// @ts-ignore any
 const getSelectedPhraseId = state => state.phrases.selectedPhraseId
 export const getSelectedPhrase = createSelector(
   getSelectedPhraseId, getPhrasesDetail,
@@ -33,17 +35,21 @@ export const getSelectedPhrase = createSelector(
 )
 
 // TODO move docId elsewhere in state
+// @ts-ignore any
 const getDocId = state => state.context.docId
-
+// @ts-ignore any
 export const getPageIndex = state => state.phrases.paging.pageIndex
+// @ts-ignore any
 const getCountPerPage = state => state.phrases.paging.countPerPage
-
+// @ts-ignore any
 const getFilter = state => state.phrases.filter
+// @ts-ignore any
 const getAdvancedFilter = state => state.phrases.filter.advanced
 export const getHasAdvancedFilter = createSelector(getAdvancedFilter,
   advancedFilter => hasAdvancedFilter(advancedFilter))
-
+// @ts-ignore any
 const getPhrasesInDoc = state => state.phrases.inDoc
+// @ts-ignore any
 const getPhrasesInDocFiltered = state => state.phrases.inDocFiltered
 
 /* always returns an array, may be empty */
@@ -66,6 +72,7 @@ export const getFilteredPhrases = createSelector(
     if (status.all) {
       return phrases
     }
+    // @ts-ignore any
     return phrases.filter(phrase => {
       return status[phrase.status]
     })
@@ -81,6 +88,7 @@ const getCurrentPagePhrases = createSelector(
   }
 )
 
+// @ts-ignore any
 const getLocales = state => state.headerData.context.projectVersion.locales
 
 const getLocale = createSelector(
@@ -98,9 +106,11 @@ const getLocale = createSelector(
 export const getMissingPhrases = createSelector(
   getCurrentPagePhrases, getPhrasesDetail,
   (currentPage, detail) =>
+    // @ts-ignore any
     currentPage.filter(({ id }) => !detail.hasOwnProperty(id))
 )
 
+// @ts-ignore any
 const getFetchingPhraseDetail = state => state.phrases.fetchingDetail
 
 /* Data needed for fetching phrase detail.
@@ -119,12 +129,14 @@ export const getPhraseDetailFetchData =
 export const getCurrentPagePhraseDetail = createSelector(
   getCurrentPagePhrases, getPhrasesDetail,
   (currentPage, detail) => {
+    // @ts-ignore any
     return currentPage.map(flyweight => detail[flyweight.id]
       ? detail[flyweight.id] : flyweight)
   }
 )
 
 // may be undefined
+// @ts-ignore any
 export const getLocation = state => state.routing.locationBeforeTransitions
 // may be undefined
 const getLocationPage = createSelector(

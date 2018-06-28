@@ -1,4 +1,3 @@
-// @ts-nocheck
 /*
  * Update page number from query string whenever it changes.
  *
@@ -11,10 +10,13 @@ import { getLocationPageNumber } from '../selectors'
 import { UPDATE_PAGE } from '../actions/controls-header-actions'
 import { createAction } from 'redux-actions'
 
+// @ts-ignore any
 export const watchQueryStringPageNumber = store => {
   const watcher = watch('page-number > watchQueryStringPageNumber')(
     () => getLocationPageNumber(store.getState()))
+  // @ts-ignore any
   store.subscribe(watcher(pageNumber => {
+    // @ts-ignore
     store.dispatch(createAction(UPDATE_PAGE)(pageNumber))
   }))
 }
