@@ -291,43 +291,6 @@
     font-size: 1.2rem;
     margin-left: @spacing-rq;
   }
-  /* Editable text fields */
-  .editable {
-    border-radius: @border-radius-editable;
-    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-    vertical-align: middle;
-  }
-  .editable:hover {
-    border: solid 2px;
-    border-color: rgb(189, 212, 220);
-    opacity: 1;
-  }
-  .editable .placeholder {
-    color: @color-muted;
-  }
-  .editable.row {
-    padding: @spacing-rh;
-  }
-  .select {
-    background-color: transparent;
-  }
-  .Select-option {
-    line-height: 1rem;
-    padding: @spacing-re;
-  }
-  .Select-multi-value-wrapper {
-    line-height: 2rem;
-  }
-  .u-row--transparent {
-    opacity: 0;
-    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), opacity .3s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-  .selected .row--selected {
-    opacity: 1;
-  }
-  .editable:hover .editableOp {
-    opacity: 1;
-  }
   /* HTML5 fix for old browsers */
   article, aside, details, figcaption, footer, header, main, menu, nav, section, summary {
     display: block;
@@ -340,32 +303,6 @@
   [hidden], template {
     display: none;
   }
-  [class*=LineClamp] {
-    text-overflow: ellipsis;
-  }
-  a {
-    text-decoration: none;
-    background-color: transparent;
-    color: @color-dark;
-    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-  a:link, a:visited {
-    color: @color-light;
-    text-decoration: none;
-  }
-  a:active {
-    outline: 0;
-    text-decoration: underline;
-    filter: brightness(0.5);
-  }
-  a:focus, a:hover {
-    text-decoration: none;
-    color: @color-light;
-    filter: brightness(0.95);
-  }
-  a:focus {
-    outline: 0;
-  }
   #nav {
     a:active {
       outline: 0;
@@ -375,100 +312,6 @@
       outline: 0;
       filter: brightness(1.0);
     }
-  }
-  abbr[data-original-title], abbr[title] {
-    cursor: help;
-    border-bottom: 1px dotted #777;
-  }
-  .initialism {
-    font-size: 90%;
-    text-transform: uppercase;
-  }
-  code, kbd, pre, samp {
-    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-    font-size: 1rem;
-  }
-  code {
-    font-size: 90%;
-    padding: @spacing-code-small @spacing-code-large;
-    color: #c7254e;
-    border-radius: @border-radius-base;
-    background-color: #f9f2f4;
-  }
-  kbd {
-    font-size: 90%;
-    padding: @spacing-code-small @spacing-code-large;
-    color: #fff;
-    border-radius: @border-radius-small;
-    background-color: #333;
-    -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
-    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
-  }
-  kbd kbd {
-    font-size: 100%;
-    font-weight: 700;
-    padding: 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  pre {
-    font-size: 0.929rem;
-    line-height: @line-height-base;
-    display: block;
-    margin: 0 0 @spacing-heading;
-    padding: @spacing-large-horizontal;
-    word-break: normal;
-    word-break: break-word;
-    /*Chrome specific*/
-    color: @gray-dark;
-    border: 1px solid #ccc;
-    border-radius: @border-radius-base;
-    background-color: @gray-lighter;
-    overflow: auto;
-  }
-  pre code {
-    font-size: inherit;
-    padding: 0;
-    white-space: pre-wrap;
-    color: inherit;
-    border-radius: 0;
-    background-color: transparent;
-  }
-  .pre-scrollable {
-    overflow-y: scroll;
-    max-height: 24.286rem;
-  }
-  b, strong {
-    font-weight: 700;
-  }
-  .small, small {
-    font-size: 85%;
-  }
-  .mark, mark {
-    color: #000;
-    background: #ff0;
-  }
-  sub, sup {
-    font-size: @spacing-rq;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline;
-  }
-  sup {
-    top: -0.5rem;
-  }
-  sub {
-    bottom: -0.25rem;
-  }
-  img {
-    border: 0;
-    vertical-align: middle;
-  }
-  svg:not(:root) {
-    overflow: hidden;
-  }
-  figure {
-    margin: 0;
   }
   hr {
     -webkit-box-sizing: content-box;
@@ -528,98 +371,6 @@
     padding: 0;
     border: 0;
   }
-  input {
-    line-height: normal;
-  }
-  input[type=checkbox], input[type=radio] {
-    padding: 0;
-  }
-  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
-    height: auto;
-  }
-  input[type=search] {
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    -webkit-appearance: textfield;
-  }
-  input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration {
-    -webkit-appearance: none;
-  }
-  fieldset {
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-  legend {
-    font-size: 1.85rem;
-    line-height: inherit;
-    display: block;
-    width: 100%;
-    margin-bottom: @spacing-hr;
-    padding: 0;
-    color: #333;
-    border: 0;
-    border-bottom: 1px solid #e5e5e5;
-  }
-  label {
-    font-weight: 700;
-    display: inline-block;
-    max-width: 100%;
-    margin-bottom: @spacing-hr;
-  }
-  label.control-label span.s0 {
-    vertical-align: text-top;
-    margin-left: @spacing-label-large;
-  }
-  input[type=checkbox], input[type=radio] {
-    line-height: normal;
-    margin: 1px 0 0;
-  }
-  input[type=file] {
-    display: block;
-  }
-  input[type=range] {
-    display: block;
-    width: 100%;
-  }
-  select[multiple], select[size] {
-    height: auto;
-  }
-  input[type=checkbox]:focus, input[type=file]:focus, input[type=radio]:focus {
-    outline: 0;
-    border-color: #1ba7d9;
-  }
-  output {
-    font-size: 1rem;
-    line-height: @line-height-base;
-    display: block;
-    padding-top: @spacing-half-base;
-    color: #555;
-  }
-  fieldset {
-    margin: 0 2px;
-    padding: 0.35rem 0.625rem @spacing-rq;
-    border: 1px solid silver;
-  }
-  legend {
-    padding: 0;
-    border: 0;
-  }
-  textarea {
-    overflow: auto;
-  }
-  optgroup {
-    font-weight: 700;
-  }
-  table {
-    border-spacing: 0;
-    border-collapse: collapse;
-  }
-  table td {
-    font-size: 1.071rem;
-  }
   .tr.tr-flex1 {
     flex: 1;
     -webkit-box-flex: 1;
@@ -644,11 +395,6 @@
   td.inline {
     display: inline-table;
     width: 5.714rem;
-  }
-  .carousel-inner > .item > a > img, .carousel-inner > .item > img, .img-responsive, .thumbnail > img, .thumbnail a > img {
-    display: block;
-    max-width: 100%;
-    height: auto;
   }
   .img-rounded {
     border-radius: @border-radius-large;
@@ -2261,117 +2007,6 @@
   .hidden {
     display: none !important;
   }
-  /* React Toggle Component CSS */
-  .react-toggle {
-    touch-action: pan-x;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-    background-color: transparent;
-    border: 0;
-    padding: 0;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-tap-highlight-color: transparent;
-    margin-right: 1rem;
-    vertical-align: bottom;
-  }
-  .react-toggle-screenreader-only {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-  }
-  .react-toggle--disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    -webkit-transition: opacity 0.25s;
-    transition: opacity 0.25s;
-  }
-  .react-toggle-track {
-    width: 50px;
-    height: 24px;
-    padding: 0;
-    border-radius: 30px;
-    background-color: #A2B3BE;
-    -webkit-transition: all 0.2s ease;
-    -moz-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-  }
-  .react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
-    background-color: #A2B3BE;
-  }
-  .react-toggle--checked .react-toggle-track {
-    background-color: #20718A;
-  }
-  .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
-    background-color: #20718A;
-  }
-  .react-toggle-track-check {
-    position: absolute;
-    width: 14px;
-    height: 10px;
-    top: 0px;
-    bottom: 0px;
-    margin-top: auto;
-    margin-bottom: auto;
-    line-height: 0;
-    left: 8px;
-    opacity: 0;
-    -webkit-transition: opacity 0.25s ease;
-    -moz-transition: opacity 0.25s ease;
-    transition: opacity 0.25s ease;
-  }
-  .react-toggle--checked .react-toggle-track-check {
-    opacity: 1;
-    -webkit-transition: opacity 0.25s ease;
-    -moz-transition: opacity 0.25s ease;
-    transition: opacity 0.25s ease;
-  }
-  .react-toggle-track-x {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    top: 0px;
-    bottom: 0px;
-    margin-top: auto;
-    margin-bottom: auto;
-    line-height: 0;
-    right: 10px;
-    opacity: 1;
-    -webkit-transition: opacity 0.25s ease;
-    -moz-transition: opacity 0.25s ease;
-    transition: opacity 0.25s ease;
-  }
-  .react-toggle--checked .react-toggle-track-x {
-    opacity: 0;
-  }
-  .react-toggle-thumb {
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background-color: #FAFAFA;
-    -webkit-transition: all 0.25s ease;
-    -moz-transition: all 0.25s ease;
-    transition: all 0.25s ease;
-  }
-  .react-toggle--checked .react-toggle-thumb {
-    left: 27px;
-  }
-
   .content {
     font-size: 1rem;
     padding-top: @spacing-hr;
@@ -2392,16 +2027,6 @@
   }
   .glyphicon-modal-window:before {
     content: "\e237";
-  }
-  //IE 10 fix (ms-viewport)
-  @-ms-viewport {
-    width: device-width;
-  }
-  .visible-lg, .visible-md, .visible-sm, .visible-xs {
-    display: none !important;
-  }
-  .visible-lg-block, .visible-lg-inline, .visible-lg-inline-block, .visible-md-block, .visible-md-inline, .visible-md-inline-block, .visible-sm-block, .visible-sm-inline-block, .visible-xs-block, .visible-xs-inline, .visible-xs-inline-block {
-    display: none !important;
   }
   .moreContent {
     align-self: center;
@@ -2557,121 +2182,6 @@
       height: 100vh;
     }
   }
-  @media (min-width: @screen-sm-min) {
-    .modal-dialog {
-      width: 600px;
-      margin: @spacing-dialog auto;
-    }
-
-    .modal-content {
-      -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-    }
-
-    .modal-sm {
-      width: 300px;
-    }
-
-    .container {
-      width: 100%;
-    }
-
-    .content {
-      width: 65%;
-    }
-
-    .headerClasses {
-      font-size: 1rem;
-    }
-
-    .dl-horizontal dt {
-      float: left;
-      clear: left;
-      overflow: hidden;
-      width: 11.429rem;
-      text-align: right;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .dl-horizontal dd {
-      margin-left: @spacing-rh;
-    }
-
-    .form-inline .form-group {
-      display: inline-block;
-      margin-bottom: 0;
-      vertical-align: middle;
-    }
-
-    .form-inline .form-control {
-      display: inline-block;
-      width: auto;
-      vertical-align: middle;
-    }
-
-    .form-inline .form-control-static {
-      display: inline-block;
-    }
-
-    .form-inline .input-group {
-      display: inline-table;
-      vertical-align: middle;
-    }
-
-    .form-inline .input-group .form-control, .form-inline .input-group .input-group-addon, .form-inline .input-group .input-group-btn {
-      width: auto;
-    }
-
-    .form-inline .input-group > .form-control {
-      width: 100%;
-    }
-
-    .form-inline .control-label {
-      margin-bottom: 0;
-      vertical-align: middle;
-    }
-
-    .form-inline .checkbox, .form-inline .radio {
-      display: inline-block;
-      margin-top: 0;
-      margin-bottom: 0;
-      vertical-align: middle;
-    }
-
-    .form-inline .checkbox label, .form-inline .radio label {
-      padding-left: 0;
-    }
-
-    .form-inline .checkbox input[type=checkbox], .form-inline .radio input[type=radio] {
-      position: relative;
-      margin-left: 0;
-    }
-
-    .form-inline .has-feedback .form-control-feedback {
-      top: 0;
-    }
-
-    .form-inline .form-control {
-      width: 100%;
-    }
-
-    .form-horizontal .control-label {
-      margin-bottom: 0;
-      padding-top: @spacing-half-base;
-      text-align: right;
-    }
-
-    .form-horizontal .form-group-lg .control-label {
-      font-size: 1.286rem;
-      padding-top: @spacing-rq;
-    }
-
-    .form-horizontal .form-group-sm .control-label {
-      font-size: 0.857rem;
-      padding-top: @spacing-small-horizontal;
-    }
-  }
   @media (max-width: @screen-sm-max) {
     .hidden-lesm {
       position: absolute !important;
@@ -2684,54 +2194,6 @@
       overflow: hidden;
     }
 
-    .languageSelect {
-      right: 0;
-    }
-
-    .headerClasses {
-      margin-left: 0;
-      margin-bottom: @spacing-hr;
-    }
-
-    .lead {
-      font-size: 1.5rem;
-    }
-
-    .visible-xs {
-      display: block !important;
-    }
-
-    table.visible-xs {
-      display: table !important;
-    }
-
-    tr.visible-xs {
-      display: table-row !important;
-    }
-
-    td.visible-xs, th.visible-xs {
-      display: table-cell !important;
-    }
-
-    .visible-xs-block {
-      display: block !important;
-    }
-
-    .visible-xs-inline {
-      display: inline !important;
-    }
-
-    .visible-xs-inline-block {
-      display: inline-block !important;
-    }
-
-    .content {
-      min-height: 21.429rem;
-    }
-
-    .collapsing {
-      transition: height 0.8s;
-    }
   }
   // @screen-xs variable depreciated
   @media (max-width: 29.375rem) {
@@ -2779,14 +2241,6 @@
     }
   }
   @media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
-    .visible-sm {
-      display: block !important;
-    }
-
-    .hidden-sm {
-      display: none !important;
-    }
-
     .containerSidebar td.td-3, .containerSidebar td.td-4 {
       width: 33.33%;
     }
@@ -2795,39 +2249,9 @@
       width: 25%;
     }
   }
-  @media (max-width: @screen-md-max) {
-    .hidden-xs {
-      display: none !important;
-    }
-  }
-  @media (min-width: @screen-md-min) and (max-width: @screen-lg) {
-    .visible-md-block {
-      display: block !important;
-    }
-
-    .visible-md-inline {
-      display: inline !important;
-    }
-
-    .visible-md-inline-block {
-      display: inline-block !important;
-    }
-  }
   @media (min-width: @screen-lg-min) {
     .containerSidebar td.td-2 {
       width: 16.6667%;
-    }
-
-  }
-
-  @media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
-    .headerClasses {
-      margin-left: @spacing-hr;
-    }
-  }
-  @media (min-width: @screen-md-min) and (max-width: @screen-lg) {
-    .hidden-md {
-      display: none !important;
     }
   }
 }

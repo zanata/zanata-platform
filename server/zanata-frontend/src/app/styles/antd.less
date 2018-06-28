@@ -403,6 +403,39 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   vertical-align: middle;
 }
 
+/* Editable text fields */
+.editable {
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  vertical-align: middle;
+}
+.editable:hover {
+  border: solid 2px;
+  border-color: rgb(189, 212, 220);
+  opacity: 1;
+}
+.editable .placeholder {
+  color: @muted-color;
+}
+.editable.row {
+  padding: 0.75rem;
+}
+.select {
+  background-color: transparent;
+}
+.Select-option {
+  line-height: 2.25rem;
+  padding: 0.75rem;
+}
+[class*=LineClamp] {
+  text-overflow: ellipsis;
+}
+.Select-multi-value-wrapper {
+  line-height: 2.25rem;
+}
+.selected .row--selected, .editable:hover .editableOp {
+  opacity: 1;
+}
 .table {
   max-width: 100%;
   margin-bottom: 1.5rem;
