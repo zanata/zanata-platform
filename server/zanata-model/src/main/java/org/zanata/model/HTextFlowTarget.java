@@ -72,6 +72,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import org.zanata.model.type.TranslationSourceTypeType;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -88,6 +89,7 @@ import org.zanata.model.type.TranslationSourceTypeType;
                 typeClass = TranslationSourceTypeType.class),
         @TypeDef(name = "entityType", typeClass = EntityTypeType.class) })
 @Indexed(interceptor = TextFlowTargetEntityIndexingInterceptor.class)
+@GraphQLType(name = "TextFlowTarget")
 public class HTextFlowTarget extends ModelEntityBase
         implements HasContents, HasSimpleComment, ITextFlowTargetHistory,
         Serializable, ITextFlowTarget, IsEntityWithType {

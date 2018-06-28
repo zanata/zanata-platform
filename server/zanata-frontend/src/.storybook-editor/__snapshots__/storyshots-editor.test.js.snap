@@ -5659,6 +5659,7 @@ exports[`Editor Storyshots CommentBox default 1`] = `
   <br />
   <textarea
     className="ant-input"
+    maxLength={undefined}
     onChange={[Function]}
     onKeyDown={[Function]}
     placeholder="..."
@@ -6140,8 +6141,14 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         <Button
           className="Button--link s1 v-btm"
           icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         />
       </td>
     </tr>
@@ -6224,8 +6231,14 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         <Button
           className="Button--link s1 v-btm"
           icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         />
       </td>
     </tr>
@@ -6308,8 +6321,14 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         <Button
           className="Button--link s1 v-btm"
           icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         />
       </td>
     </tr>
@@ -6415,8 +6434,14 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         <Button
           className="Button--link s1 v-btm"
           icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         />
       </td>
     </tr>
@@ -6499,8 +6524,14 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         <Button
           className="Button--link s1 v-btm"
           icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         />
       </td>
     </tr>
@@ -6583,8 +6614,14 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         <Button
           className="Button--link s1 v-btm"
           icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         />
       </td>
     </tr>
@@ -6674,8 +6711,14 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
         <Button
           className="Button--link s1 v-btm"
           icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         />
       </td>
     </tr>
@@ -6843,6 +6886,72 @@ exports[`Editor Storyshots GlossaryTermModal with 3 detail items 1`] = `
     className="static-modal"
   />
 </div>
+`;
+
+exports[`Editor Storyshots IconButton markup (disabled) 1`] = `
+<Button
+  className="drink-me"
+  disabled={true}
+  onBlur={undefined}
+  onClick={[Function]}
+  onContextMenu={undefined}
+  onFocus={undefined}
+  onMouseDown={undefined}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  onTouchStart={undefined}
+>
+  <span
+    className=""
+  >
+    <svg
+      className="s1"
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-mail\\" />",
+        }
+      }
+      style={
+        Object {
+          "fill": "currentColor",
+        }
+      }
+    />
+  </span>
+</Button>
+`;
+
+exports[`Editor Storyshots IconButton markup 1`] = `
+<Button
+  className="push-me"
+  disabled={undefined}
+  onBlur={undefined}
+  onClick={[Function]}
+  onContextMenu={undefined}
+  onFocus={undefined}
+  onMouseDown={undefined}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  onTouchStart={undefined}
+>
+  <span
+    className=""
+  >
+    <svg
+      className="s1"
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-mail\\" />",
+        }
+      }
+      style={
+        Object {
+          "fill": "currentColor",
+        }
+      }
+    />
+  </span>
+</Button>
 `;
 
 exports[`Editor Storyshots LanguageSelectList default 1`] = `

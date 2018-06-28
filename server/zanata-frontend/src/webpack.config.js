@@ -167,7 +167,6 @@ module.exports = function (env, isEditor, devServerPort) {
           loader: 'awesome-typescript-loader',
           // load antd through modular import plugin
           options: {
-            transpileOnly: true,
             getCustomTransformers: () => ({
               before: [ tsImportPluginFactory({
                 libraryName: 'antd',

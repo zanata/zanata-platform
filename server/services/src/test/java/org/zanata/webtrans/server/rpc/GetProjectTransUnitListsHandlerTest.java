@@ -1,6 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +28,6 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 import org.zanata.webtrans.test.GWTTestData;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.inject.Any;
@@ -202,8 +203,8 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     private static List<Integer> getIntIds(List<TransUnit> transUnits) {
-        return Lists.newArrayList(Collections2.transform(transUnits,
-                from -> (int) from.getId().getId()));
+        return transUnits.stream().map(
+                it -> (int) it.getId().getId()).collect(Collectors.toList());
     }
 
 }

@@ -41,6 +41,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -51,6 +52,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @FullTextFilterDef(name = "glossaryLocaleFilter",
         impl = LocaleFilterFactory.class,
         cache = FilterCacheModeType.INSTANCE_ONLY)
+@GraphQLType(name = "GlossaryTerm")
 public class HGlossaryTerm extends ModelEntityBase {
     private static final long serialVersionUID = 1854278563597070432L;
     private String content;

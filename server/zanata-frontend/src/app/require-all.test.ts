@@ -47,5 +47,6 @@ test('can require all local js files', () => {
     throw new Error('Modules were loaded as strings, not required/parsed')
   }
 
+  // tslint:disable-next-line no-console
   console.log('Loaded ' + count + ' modules.')
 })

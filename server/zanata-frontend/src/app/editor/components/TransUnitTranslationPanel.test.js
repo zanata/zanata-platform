@@ -117,7 +117,7 @@ describe('TransUnitTranslationPanel', () => {
           lineStyle={lineStyle}>
           {'Je ne parle pas français'}
         </SyntaxHighlighter>
-        <Validation />
+        <Validation errorCount={0} errorMessages={[]} warningMessages={[]} warningCount={0} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -156,6 +156,7 @@ describe('TransUnitTranslationPanel', () => {
           onFocus={defaultFunc}
           onChange={defaultFunc}
           onSelect={defaultFunc} />
+        <Validation errorCount={0} errorMessages={[]} warningMessages={[]} warningCount={0} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -193,6 +194,7 @@ describe('TransUnitTranslationPanel', () => {
           onFocus={defaultFunc}
           onChange={defaultFunc}
           onSelect={defaultFunc} />
+        <Validation errorCount={0} errorMessages={[]} warningMessages={[]} warningCount={0} />
       </div>
     )
     expect(actual).toEqual(expected)

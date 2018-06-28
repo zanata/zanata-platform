@@ -305,6 +305,7 @@
   </build>
 
   <dependencies>
+
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
@@ -1548,6 +1549,10 @@
       <artifactId>maven-dependency-analyzer</artifactId>
       <version>1.7</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
     </dependency>
   </dependencies>
 

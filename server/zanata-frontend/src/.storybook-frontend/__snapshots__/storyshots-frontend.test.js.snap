@@ -16093,6 +16093,18 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
 </span>
 `;
 
+exports[`Frontend Storyshots Modal MTMerge 1`] = `
+<div>
+  <Button
+    className="btn-primary"
+    onClick={[Function]}
+    type="primary"
+  >
+    Open MTMerge modal
+  </Button>
+</div>
+`;
+
 exports[`Frontend Storyshots Modal default 1`] = `undefined`;
 
 exports[`Frontend Storyshots Pagination default 1`] = `

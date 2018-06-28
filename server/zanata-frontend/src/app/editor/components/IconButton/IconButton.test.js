@@ -6,55 +6,9 @@ import * as ReactDOMServer from 'react-dom/server'
 import * as TestUtils from 'react-dom/test-utils'
 import { Icon } from '../../../components'
 import IconButton from '.'
+import Button from 'antd/lib/button'
 
 describe('IconButtonTest', () => {
-  it('IconButton markup', () => {
-    const clickFun = function (_e) {}
-
-    const actual = ReactDOMServer.renderToStaticMarkup(<IconButton
-      icon="classical"
-      title="Mozart"
-      onClick={clickFun}
-      className="push-me" />)
-
-    const expected = ReactDOMServer.renderToStaticMarkup(
-      <button
-        title="Mozart"
-        type="button"
-        className="ant-btn push-me"
-        onClick={clickFun}>
-        <Icon
-          name="classical" title="Mozart"
-          className="s1" />
-      </button>
-    )
-    expect(actual).toEqual(expected)
-  })
-
-  it('IconButton markup (disabled)', () => {
-    const clickFun = function (_e) {}
-    const actual = ReactDOMServer.renderToStaticMarkup(<IconButton
-      icon="tea"
-      title="Tea"
-      onClick={clickFun}
-      disabled
-      className="drink-me" />)
-
-    const expected = ReactDOMServer.renderToStaticMarkup(
-      <button
-        disabled="true"
-        title="Tea"
-        type="button"
-        className="ant-btn drink-me"
-        onClick={clickFun}>
-        <Icon
-          name="tea"
-          title="Tea"
-          className="s1" />
-      </button>
-    )
-    expect(actual).toEqual(expected)
-  })
 
   it('IconButton click event', () => {
     let clickEvent = 'freshing'

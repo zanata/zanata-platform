@@ -34,9 +34,11 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.RoleTypeType;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @TypeDef(name = "roleType", typeClass = RoleTypeType.class)
+@GraphQLType(name = "AccountRole")
 public class HAccountRole implements Serializable, HasUserFriendlyToString {
 
     private static final long serialVersionUID = 9177366120789064801L;
@@ -64,9 +66,8 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
     public Set<HAccountRole> getGroups() {
         return groups;
     }
-    // used in JQL:
-    // org.zanata.seam.security.ZanataJpaIdentityStore.listGrantableRoles()
 
+    // 'conditional' is used in JQL by ZanataJpaIdentityStore.listGrantableRoles()
     public boolean isConditional() {
         return conditional;
     }

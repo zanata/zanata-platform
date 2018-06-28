@@ -79,8 +79,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
       : null
   }
 
-  protected findAddedVariables(sourceVars: string[],
-    targetVars: string[]): string | null {
+  protected findAddedVariables(sourceVars: string[], targetVars: string[]): string | null {
     // missing from source = added
     const added = this.listMissing(targetVars, sourceVars)
     // Push as combined incompleteEntry errors

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global describe expect it */
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'

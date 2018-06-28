@@ -19,16 +19,17 @@
  * site: http://www.fsf.org.
  */
 
-import { isEmpty } from "lodash";
-import Input from "antd/lib/input";
-import "antd/lib/input/style/css";
-import Icon from "../../../components/Icon";
-import * as React from "react";
-import Button from "antd/lib/button";
-import "antd/lib/button/style/css";
+import { isEmpty } from "lodash"
+import Input from "antd/lib/input"
+import "antd/lib/input/style/css"
+import Icon from "../../../components/Icon"
+import React from "react"
+import Button from "antd/lib/button"
+import "antd/lib/button/style/css"
 
 interface Props {
-  postComment: (text: string) => void;
+  postComment: (text: string) => void
+  maxLength: number
 }
 
 interface State {
@@ -38,15 +39,15 @@ interface State {
 class CommentBox extends React.Component<Props, State> {
   private defaultState = {
     commentText: ""
-  };
+  }
 
   constructor (props) {
-    super(props);
-    this.state = this.defaultState;
+    super(props)
+    this.state = this.defaultState
   }
 
   public render () {
-    const { TextArea } = Input;
+    const { TextArea } = Input
     return (
       <div className="TransUnit-commentBox mb4">
           <span>
@@ -54,6 +55,7 @@ class CommentBox extends React.Component<Props, State> {
           </span><br />
           <TextArea
             autosize={{ minRows: 2, maxRows: 6 }}
+            maxLength={this.props.maxLength}
             onChange={this.setCommentText}
             placeholder="..."
             value={this.state.commentText}
@@ -64,19 +66,19 @@ class CommentBox extends React.Component<Props, State> {
          Post comment
         </Button>
       </div>
-    );
+    )
   }
 
   private postComment = () => {
-    const text = this.state.commentText;
+    const text = this.state.commentText
     this.props.postComment(text)
     // reset the input, avoid multiple posts
-    this.setState(this.defaultState);
+    this.setState(this.defaultState)
   }
 
   private setCommentText = (event) => {
-    this.setState({commentText: event.target.value});
+    this.setState({commentText: event.target.value})
   }
 }
 
-export default CommentBox;
+export default CommentBox
