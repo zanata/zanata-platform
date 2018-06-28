@@ -7192,6 +7192,17 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
 </div>
 `;
 
+exports[`Editor Storyshots SearchReplace default 1`] = `
+<div>
+  <Button
+    className="Button--invisible"
+    icon="swap"
+    onClick={[Function]}
+    type="primary"
+  />
+</div>
+`;
+
 exports[`Editor Storyshots SelectButton active 1`] = `
 <Button
   className="Button Button--small u-rounded Button--secondary is-active"
