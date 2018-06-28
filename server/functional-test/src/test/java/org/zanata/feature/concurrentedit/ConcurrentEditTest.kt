@@ -42,7 +42,7 @@ import org.zanata.util.ZanataRestCaller.buildTranslationResource
  */
 @Category(DetailedTest::class)
 class ConcurrentEditTest : ZanataTestCase() {
-    private var restCaller: ZanataRestCaller? = null
+    private lateinit var restCaller: ZanataRestCaller
 
     @Before
     fun setUp() {
@@ -57,13 +57,13 @@ class ConcurrentEditTest : ZanataTestCase() {
         val projectSlug = "base"
         val iterationSlug = "master"
         val projectType = "gettext"
-        restCaller!!.createProjectAndVersion(projectSlug, iterationSlug,
+        restCaller.createProjectAndVersion(projectSlug, iterationSlug,
                 projectType)
         val docId = "test.pot"
         val sourceResource = buildSourceResource(docId,
                 buildTextFlow("res1", "hello world"),
                 buildTextFlow("res2", "greetings"))
-        restCaller!!.postSourceDocResource(projectSlug, iterationSlug,
+        restCaller.postSourceDocResource(projectSlug, iterationSlug,
                 sourceResource, false)
         // open editor
         LoginWorkFlow().signIn("admin", "admin")
@@ -76,7 +76,7 @@ class ConcurrentEditTest : ZanataTestCase() {
         // push target
         val translationsResource = buildTranslationResource(
                 buildTextFlowTarget("res1", "hello world translated"))
-        restCaller!!.postTargetDocResource(projectSlug, iterationSlug, docId,
+        restCaller.postTargetDocResource(projectSlug, iterationSlug, docId,
                 LocaleId("pl"), translationsResource, "auto")
         // REST push broadcast event to editor
         assertThat(editorPage.expectBasicTranslationAtRowIndex(0,
@@ -86,27 +86,26 @@ class ConcurrentEditTest : ZanataTestCase() {
     @Trace(summary = "The system will show concurrently changed translations " +
             "to the web editor user")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
     fun editorReceivesCopyTransResults() {
         // create project and populate master version
         val projectSlug = "base"
         val iterationSlug = "master"
         val projectType = "gettext"
-        restCaller!!.createProjectAndVersion(projectSlug, iterationSlug,
+        restCaller.createProjectAndVersion(projectSlug, iterationSlug,
                 projectType)
         val docId = "test.pot"
         val sourceResource = buildSourceResource(docId,
                 buildTextFlow("res1", "hello world"),
                 buildTextFlow("res2", "greetings"))
-        restCaller!!.postSourceDocResource(projectSlug, iterationSlug,
+        restCaller.postSourceDocResource(projectSlug, iterationSlug,
                 sourceResource, false)
         val translationsResource = buildTranslationResource(
                 buildTextFlowTarget("res1", "hello world translated"))
-        restCaller!!.postTargetDocResource(projectSlug, iterationSlug, docId,
+        restCaller.postTargetDocResource(projectSlug, iterationSlug, docId,
                 LocaleId("pl"), translationsResource, "auto")
         // create and push source but disable copyTrans
-        restCaller!!.createProjectAndVersion(projectSlug, "beta", projectType)
-        restCaller!!.postSourceDocResource(projectSlug, "beta", sourceResource,
+        restCaller.createProjectAndVersion(projectSlug, "beta", projectType)
+        restCaller.postSourceDocResource(projectSlug, "beta", sourceResource,
                 false)
         // open editor
         LoginWorkFlow().signIn("admin", "admin")
@@ -117,7 +116,7 @@ class ConcurrentEditTest : ZanataTestCase() {
         // for some reason getText() will return one space in it
         assertThat(translation.trim { it <= ' ' }).isEmpty()
         // run copyTrans
-        restCaller!!.runCopyTrans(projectSlug, "beta", docId)
+        restCaller.runCopyTrans(projectSlug, "beta", docId)
         // copyTrans broadcast event to editor
         assertThat(editorPage.expectBasicTranslationAtRowIndex(0,
                 "hello world translated")).isTrue()

@@ -56,7 +56,6 @@ class ConcurrentAccessTest : ZanataTestCase() {
     @Trace(summary = "The system will handle concurrent document " +
             "creation gracefully")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(InterruptedException::class)
     fun concurrentDocumentCreationWillNotCauseHibernateException() {
         val projectSlug = "project"
         val iterationSlug = "master"
@@ -85,7 +84,6 @@ class ConcurrentAccessTest : ZanataTestCase() {
     companion object {
 
         @BeforeClass
-        @Throws(Exception::class)
         // Need to ensure that the correct concurrent slots are available
         fun beforeClass() {
             val path = "rest/configurations/c/max.concurrent.req.per.apikey"
