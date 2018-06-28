@@ -60,7 +60,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
     private val projectRootPath = client.getProjectRootPath("plural")
     private val translatorConfig = ClientWorkFlow
             .getUserConfigPath("translator")
-    private val propFilter = FilenameFilter { dir, name -> name.endsWith(".properties") }
+    private val propFilter = FilenameFilter { _, name -> name.endsWith(".properties") }
 
     @Trace(summary = "A non-maintainer user may not push to a project")
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
@@ -71,8 +71,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
 
         // translator tries to push
         val output = client.callWithTimeout(projectRootPath,
-                mvn() + " -e -B zanata:push -Dzanata.userConfig="
-                        + translatorConfig)
+                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.userConfig=$translatorConfig")
 
         val joinedOutput = Joiner.on("\n").skipNulls().join(output)
         assertThat(joinedOutput).contains("Authorization check failed")
@@ -82,13 +81,12 @@ class ProjectMaintainerTest : ZanataTestCase() {
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
     fun pushTransAndCopyTransTest() {
         // translator creates the project and become maintainer
-        val restCaller = ZanataRestCaller("translator",
-                PropertiesHolder.getProperty(
-                        Constants.zanataTranslatorKey.value()))
+        val restCaller = ZanataRestCaller("translator", PropertiesHolder
+                .getProperty(Constants.zanataTranslatorKey.value()))
         restCaller.createProjectAndVersion("plurals", "master", "podir")
         val output = client.callWithTimeout(projectRootPath,
-                mvn() + " -e -B zanata:push -Dzanata.copyTrans=false -Dzanata.userConfig="
-                        + translatorConfig)
+                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.copyTrans=false " +
+                        "-Dzanata.userConfig=$translatorConfig")
 
         assertThat(client.isPushSuccessful(output)).isTrue()
 
@@ -102,8 +100,9 @@ class ProjectMaintainerTest : ZanataTestCase() {
         // push trans
         client.callWithTimeout(
                 projectRootPath,
-                mvn() + " -e -B zanata:push -Dzanata.pushType=trans -Dzanata.copyTrans=false -Dzanata.userConfig="
-                        + translatorConfig)
+                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.pushType=trans " +
+                        "-Dzanata.copyTrans=false " +
+                        "-Dzanata.userConfig=$translatorConfig")
 
         versionPage.reload()
         assertThat(versionPage.getStatisticsForLocale("pl")).contains("6.0%")
@@ -116,10 +115,10 @@ class ProjectMaintainerTest : ZanataTestCase() {
         // push source and run copyTrans
         client.callWithTimeout(
                 projectRootPath,
-                mvn() + " -e -B zanata:push -Dzanata.pushType=source -Dzanata.copyTrans=true -Dzanata.userConfig="
-                        + translatorConfig
-                        + " -Dzanata.projectConfig="
-                        + updatedZanataXml.absolutePath)
+                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.pushType=source " +
+                        "-Dzanata.copyTrans=true " +
+                        "-Dzanata.userConfig=$translatorConfig " +
+                        "-Dzanata.projectConfig=${updatedZanataXml.absolutePath}")
 
         val betaVersionPage = BasicWorkFlow().goToPage(String.format(
                 PROJECT_VERSION_TEMPLATE, "plurals", "beta"),
@@ -132,9 +131,8 @@ class ProjectMaintainerTest : ZanataTestCase() {
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
     @Throws(IOException::class)
     fun projectMaintainerPullTest() {
-        val restCaller = ZanataRestCaller("translator",
-                PropertiesHolder
-                        .getProperty(Constants.zanataTranslatorKey.value()))
+        val restCaller = ZanataRestCaller("translator",PropertiesHolder
+                .getProperty(Constants.zanataTranslatorKey.value()))
         val workDir = Files.createTempDir()
         val projectSlug = "pull-test"
         val iterationSlug = "master"
@@ -153,8 +151,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
         generateZanataXml(File(workDir, "zanata.xml"), projectSlug,
                 iterationSlug, projectType, Lists.newArrayList("pl"))
         client.callWithTimeout(workDir,
-                mvn() + " -B " + MAVEN_PLUGIN + ":push -Dzanata.userConfig="
-                        + translatorConfig)
+                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.userConfig=$translatorConfig")
 
         // only message1 has translation
         val translationsResource = buildTranslationResource(
@@ -165,30 +162,26 @@ class ProjectMaintainerTest : ZanataTestCase() {
         // dryRun creates nothing
         val transDir = Files.createTempDir()
         client.callWithTimeout(workDir,
-                mvn() + " -e -B " + MAVEN_PLUGIN + ":pull -DdryRun -Dzanata.userConfig="
-                        + translatorConfig + " -Dzanata.transDir=" + transDir)
+                "${mvn()} -e -B $MAVEN_PLUGIN:pull -DdryRun " +
+                        "-Dzanata.userConfig=$translatorConfig " +
+                        "-Dzanata.transDir=$transDir")
         assertThat(transDir.listFiles(propFilter)).isEmpty()
 
         // create skeletons is false will only pull translated files
-        client.callWithTimeout(
-                workDir,
-                mvn() + " -e -B " + MAVEN_PLUGIN
-                        + ":pull -Dzanata.createSkeletons=false -Dzanata.userConfig="
-                        + translatorConfig
-                        + " -Dzanata.transDir="
-                        + transDir.absolutePath)
+        client.callWithTimeout(workDir,
+                "${mvn()} -e -B $MAVEN_PLUGIN:pull " +
+                        "-Dzanata.createSkeletons=false " +
+                        "-Dzanata.userConfig=$translatorConfig" +
+                        " -Dzanata.transDir=${transDir.absolutePath}")
 
         assertThat(transDir.listFiles(propFilter)).contains(File(
                 transDir, "prop1_pl.properties"))
 
         // pull both
-        client.callWithTimeout(
-                workDir,
-                mvn() + " -e -B " + MAVEN_PLUGIN
-                        + ":pull -Dzanata.pullType=both -Dzanata.userConfig="
-                        + translatorConfig
-                        + " -Dzanata.transDir="
-                        + transDir.absolutePath)
+        client.callWithTimeout(workDir,
+                "${mvn()} -e -B $MAVEN_PLUGIN:pull -Dzanata.pullType=both " +
+                        "-Dzanata.userConfig=$translatorConfig " +
+                        "-Dzanata.transDir=${transDir.absolutePath}")
 
         assertThat(transDir.listFiles(propFilter)).contains(File(transDir,
                 "prop1_pl.properties"))
@@ -205,7 +198,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
          * This is workaround for https://zanata.atlassian.net/browse/ZNTA-1011
          * TODO: remove this and replace with shared pom.xml file in all zanata-maven-plugin
          */
-        val MAVEN_PLUGIN = "org.zanata:zanata-maven-plugin:3.8.1"
+        const val MAVEN_PLUGIN = "org.zanata:zanata-maven-plugin:4.5.0"
     }
 
 }

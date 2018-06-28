@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.clientserver
 
-import com.google.common.collect.Lists
 import com.google.common.io.Files
 import org.fedorahosted.openprops.Properties
 import org.junit.Before
@@ -42,8 +41,8 @@ import java.io.FileWriter
 import java.io.IOException
 
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.feature.clientserver.ProjectMaintainerTest.Companion.MAVEN_PLUGIN
 import org.zanata.util.MavenHome.mvn
+import org.zanata.feature.clientserver.ProjectMaintainerTest.Companion.MAVEN_PLUGIN
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
@@ -53,39 +52,39 @@ class PropertiesRoundTripTest : ZanataTestCase() {
 
 
     private val client = ClientWorkFlow()
-    private var restCaller: ZanataRestCaller? = null
+    private lateinit var restCaller: ZanataRestCaller
 
     private val tempDir = Files.createTempDir()
 
-    private val userConfigPath = ClientWorkFlow
-            .getUserConfigPath("admin")
+    private val userConfigPath = ClientWorkFlow.getUserConfigPath("admin")
 
     @Before
     @Throws(IOException::class)
     fun setUp() {
         restCaller = ZanataRestCaller()
         // generate a properties source
-        val properties = Properties()
-        properties.setProperty("hello", "hello world")
-        properties.setProperty("greeting", "this is from Huston")
-        properties.setProperty("hey", "hey hey")
+        val properties = Properties().apply {
+            setProperty("hello", "hello world")
+            setProperty("greeting", "this is from Huston")
+            setProperty("hey", "hey hey")
+        }
         val propertiesSource = File(tempDir, "test.properties")
         properties.store(FileWriter(propertiesSource), "comment")
     }
 
     @Trace(summary = "The maintainer user may push and pull properties files")
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION.toLong())
+    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
     @Throws(IOException::class, InterruptedException::class)
     fun canPushAndPullProperties() {
-        restCaller!!.createProjectAndVersion("properties-test", "master",
+        restCaller.createProjectAndVersion("properties-test", "master",
                 "properties")
         // generate a zanata.xml
         TestFileGenerator.generateZanataXml(File(tempDir, "zanata.xml"),
-                "properties-test", "master", "properties", Lists
-                .newArrayList("pl"))
-        var output = client.callWithTimeout(tempDir,
-                mvn() + " -B " + ProjectMaintainerTest.MAVEN_PLUGIN + ":push -Dzanata.srcDir=. " +
-                        "-Dzanata.userConfig=" + userConfigPath)
+                "properties-test", "master", "properties", arrayListOf("pl"))
+        var output = client.callWithTimeout(tempDir, "${mvn()} -B " +
+                "$MAVEN_PLUGIN:push " +
+                "-Dzanata.srcDir=. " +
+                "-Dzanata.userConfig=$userConfigPath")
 
         assertThat(client.isPushSuccessful(output)).isTrue()
 
@@ -97,9 +96,9 @@ class PropertiesRoundTripTest : ZanataTestCase() {
         editorPage.translateTargetAtRowIndex(1, "translation updated fuzzy")
                 .saveAsFuzzyAtRow(1)
 
-        output = client.callWithTimeout(tempDir,
-                mvn() + " -e -B " + ProjectMaintainerTest.MAVEN_PLUGIN + ":pull " +
-                        "-Dzanata.userConfig=" + userConfigPath)
+        output = client.callWithTimeout(tempDir, "${mvn()} -e -B " +
+                "$MAVEN_PLUGIN:pull " +
+                "-Dzanata.userConfig=$userConfigPath")
 
         assertThat(client.isPushSuccessful(output)).isTrue()
         val transFile = File(tempDir, "test_pl.properties")
@@ -116,9 +115,9 @@ class PropertiesRoundTripTest : ZanataTestCase() {
 
         // push again
         client.callWithTimeout(tempDir,
-                mvn() + " -e -B " + ProjectMaintainerTest.MAVEN_PLUGIN + ":push " +
-                        "-Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
-                        + userConfigPath)
+                "${mvn()} -e -B $MAVEN_PLUGIN:push " +
+                        "-Dzanata.pushType=trans -Dzanata.srcDir=. " +
+                        "-Dzanata.userConfig=$userConfigPath")
 
         val editor = BasicWorkFlow().goToEditor("properties-test",
                 "master", "pl", "test")

@@ -31,7 +31,11 @@ import org.zanata.feature.Trace
 import org.zanata.feature.testharness.TestPlan.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.webtrans.EditorPage
-import org.zanata.page.webtrans.Plurals
+import org.zanata.page.webtrans.Plurals.SourceSingular
+import org.zanata.page.webtrans.Plurals.SourcePlural
+import org.zanata.page.webtrans.Plurals.TargetSingular
+import org.zanata.page.webtrans.Plurals.TargetPluralOne
+import org.zanata.page.webtrans.Plurals.TargetPluralTwo
 import org.zanata.rest.dto.resource.TextFlow
 import org.zanata.rest.dto.resource.TextFlowTarget
 import org.zanata.util.ZanataRestCaller
@@ -46,6 +50,8 @@ import java.io.IOException
 
 import org.assertj.core.api.Assertions.assertThat
 import org.zanata.util.MavenHome.mvn
+import org.zanata.feature.clientserver.ProjectMaintainerTest.Companion.MAVEN_PLUGIN
+
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
@@ -54,13 +60,12 @@ import org.zanata.util.MavenHome.mvn
 class GettextPluralSupportTest : ZanataTestCase() {
 
     private val client = ClientWorkFlow()
-    private var restCaller: ZanataRestCaller? = null
+    private lateinit var restCaller: ZanataRestCaller
 
     private val tempDir = Files.createTempDir()
 
-    private val userConfigPath = ClientWorkFlow
-            .getUserConfigPath("admin")
-    private var projectRootPath: File? = null
+    private val userConfigPath = ClientWorkFlow.getUserConfigPath("admin")
+    private lateinit var projectRootPath: File
 
     @Before
     @Throws(IOException::class)
@@ -74,9 +79,9 @@ class GettextPluralSupportTest : ZanataTestCase() {
         potDir.mkdirs()
         val plDir = File(tempDir, "pl")
         plDir.mkdirs()
-        Files.copy(File(projectRootPath!!.toString() + "/pot", "test.pot"),
+        Files.copy(File(projectRootPath.toString() + "/pot", "test.pot"),
                 File(potDir, "test.pot"))
-        Files.copy(File(projectRootPath!!.toString() + "/pl", "test.po"),
+        Files.copy(File(projectRootPath.toString() + "/pl", "test.po"),
                 File(plDir, "test.po"))
         restCaller = ZanataRestCaller()
     }
@@ -85,10 +90,10 @@ class GettextPluralSupportTest : ZanataTestCase() {
     @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
     @Throws(IOException::class)
     fun canPushAndPullPlural() {
-        restCaller!!.createProjectAndVersion("plurals", "master", "podir")
-        var output = client.callWithTimeout(tempDir,
-                mvn() + " -e -B zanata:push -Dzanata.pushType=both -Dzanata.userConfig="
-                        + userConfigPath)
+        restCaller.createProjectAndVersion("plurals", "master", "podir")
+        var output = client.callWithTimeout(tempDir, "${mvn()} -e -B " +
+                "$MAVEN_PLUGIN:push -Dzanata.pushType=both " +
+                "-Dzanata.userConfig=$userConfigPath")
 
         assertThat(client.isPushSuccessful(output)).isTrue()
 
@@ -96,21 +101,23 @@ class GettextPluralSupportTest : ZanataTestCase() {
 
         val pullDir = Files.createTempDir()
         val pullDirPath = pullDir.absolutePath
-        val command = (mvn() + " -e -B zanata:pull -Dzanata.pullType=both -Dzanata.srcDir="
-                + pullDirPath + " -Dzanata.transDir=" + pullDirPath
-                + " -Dzanata.userConfig=" + userConfigPath)
+        val command = ("${mvn()} -e -B $MAVEN_PLUGIN:pull " +
+                "-Dzanata.pullType=both " +
+                "-Dzanata.srcDir=$pullDirPath " +
+                "-Dzanata.transDir=$pullDirPath " +
+                "-Dzanata.userConfig=$userConfigPath")
         output = client.callWithTimeout(tempDir, command)
         assertThat(client.isPushSuccessful(output)).isTrue()
 
         // source round trip
-        val originalTextFlows = getTextFlows(File(projectRootPath!!.toString() +
+        val originalTextFlows = getTextFlows(File(projectRootPath.toString() +
                 "/pot/test.pot"))
         val pulledTextFlows = getTextFlows(File(pullDir, "test.pot"))
         assertThat(pulledTextFlows).isEqualTo(originalTextFlows)
 
         // translation round trip
         val originalTargets = getTextFlowTargets(
-                File(projectRootPath!!.toString() + "/pl/test.po"))
+                File(projectRootPath.toString() + "/pl/test.po"))
         val pulledTargets = getTextFlowTargets(
                 File(pullDir.toString() + "/pl/test.po"))
         assertThat(pulledTargets).isEqualTo(originalTargets)
@@ -133,20 +140,20 @@ class GettextPluralSupportTest : ZanataTestCase() {
         val editorPage = BasicWorkFlow()
                 .goToEditor("plurals", "master", "pl", "test")
 
-        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular))
+        assertThat(editorPage.getMessageSourceAtRowIndex(0, SourceSingular))
                 .isEqualTo("One file removed")
-        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural))
+        assertThat(editorPage.getMessageSourceAtRowIndex(0, SourcePlural))
                 .isEqualTo("%d files removed")
         // nplural for Polish is 3
 
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
-                Plurals.TargetSingular))
+                TargetSingular))
                 .isEqualTo("1 aoeuaouaou")
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
-                Plurals.TargetPluralOne))
+                TargetPluralOne))
                 .isEqualTo("%d aoeuaouao")
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
-                Plurals.TargetPluralTwo))
+                TargetPluralTwo))
                 .isEqualTo("")
 
         return editorPage
