@@ -3,7 +3,7 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { mount } from 'enzyme'
-import { Pager } from '.'
+import Pager from '.'
 import { Icon } from '../../../components'
 import { IntlProvider } from 'react-intl'
 
@@ -16,18 +16,20 @@ describe('PagerTest', () => {
     // `context` as React would, then call `getChildContext()` to get the
     // React Intl API, complete with the `format*()` functions.
     // see: https://github.com/yahoo/react-intl/wiki/Testing-with-React-Intl#relativedate-advanced-uses-injectintl
-    const intlProvider = new IntlProvider({locale: 'en'}, {});
-    const {intl} = intlProvider.getChildContext();
+
     const actual = ReactDOMServer.renderToStaticMarkup(
-        <Pager
-          intl={intl}
-          firstPage={callback}
-          previousPage={callback}
-          nextPage={callback}
-          lastPage={callback}
-          pageNumber={7}
-          pageCount={11}
-        />)
+        <IntlProvider locale={'en'}>
+          <Pager
+            intl={undefined}
+            firstPage={callback}
+            previousPage={callback}
+            nextPage={callback}
+            lastPage={callback}
+            pageNumber={7}
+            pageCount={11}
+            />
+        </IntlProvider>)
+
     const expected = ReactDOMServer.renderToStaticMarkup(
       <ul className='u-listHorizontal u-textCenter'>
         <li>
@@ -44,7 +46,7 @@ describe('PagerTest', () => {
         </li>
         <li className='u-sizeHeight-1 u-sPH-1-4'>
           <span className='u-textNeutral'>
-            7 of 11
+            <option>7 of 11</option>
           </span>
         </li>
         <li>
@@ -71,14 +73,16 @@ describe('PagerTest', () => {
     const goLast = jest.fn()
 
     const d20 = mount(
-      <Pager
-        intl={undefined}
-        firstPage={goFirst}
-        previousPage={goPrev}
-        nextPage={goNext}
-        lastPage={goLast}
-        pageNumber={2}
-        pageCount={20}/>
+      <IntlProvider locale={'en'}>
+        <Pager
+          intl={undefined}
+          firstPage={goFirst}
+          previousPage={goPrev}
+          nextPage={goNext}
+          lastPage={goLast}
+          pageNumber={2}
+          pageCount={20}/>
+      </IntlProvider>
     )
 
     // click events are expected on the <a> tags
