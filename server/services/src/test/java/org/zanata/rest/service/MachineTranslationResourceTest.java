@@ -6,8 +6,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 import static org.zanata.common.LocaleId.EN_US;
 
+import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriInfo;
 
 import org.assertj.core.util.Lists;
@@ -40,13 +42,15 @@ public class MachineTranslationResourceTest {
     @Mock private ZanataIdentity identity;
     @Mock private MachineTranslationsManager machineTranslationManager;
     @Mock private UriInfo uri;
+    private URI mtUrl;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        mtUrl = URI.create("http://MT:8080");
         resource = new MachineTranslationResource(documentDAO, textFlowDAO,
                 machineTranslationService,
-                activeProjectVersionAndLocaleValidator, identity, machineTranslationManager);
+                activeProjectVersionAndLocaleValidator, identity, machineTranslationManager, mtUrl);
     }
 
     @Test
@@ -77,8 +81,8 @@ public class MachineTranslationResourceTest {
         when(machineTranslationService.getSuggestion(textFlow, EN_US,
                 new LocaleId("zh"))).thenReturn(suggestion);
 
-        List<String> result = resource.getMachineTranslationSuggestion("proj",
-                "ver", "docId", "resId", "zh");
+        List<String> result = (List<String>) resource.getMachineTranslationSuggestion("proj",
+                "ver", "docId", "resId", "zh").getEntity();
 
         assertThat(result).isEqualTo(suggestion);
 
