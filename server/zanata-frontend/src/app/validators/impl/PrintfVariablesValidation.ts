@@ -22,7 +22,7 @@
  /* tslint:disable:max-line-length*/
 
 import AbstractValidationAction from '../AbstractValidationAction'
-import ValidationMessages from '../ValidationMessages'
+import ValidationMessages, { ValidationMessageId } from '../ValidationMessages'
 
 import MessageFormat from 'intl-messageformat'
 
@@ -31,7 +31,7 @@ import MessageFormat from 'intl-messageformat'
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
 class PrintfVariablesValidation extends AbstractValidationAction {
-  public id = 'PRINTF_VARIABLES'
+  public readonly id: ValidationMessageId = 'PRINTF_VARIABLES'
   public readonly description: string
   public readonly label: string
 
@@ -52,6 +52,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
     super(locale)
     this.messages = messages
     this.description = messages.printfVariablesValidatorDesc
+    // @ts-ignore
     this.label = messages[this.id]
   }
 

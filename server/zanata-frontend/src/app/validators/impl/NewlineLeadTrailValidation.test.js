@@ -9,6 +9,7 @@ const messages = Messages[locale]
 const NewlineLeadTrailValidator =
   new NewlineLeadTrailValidation(locale, messages)
 
+// @ts-ignore any
 const noErrors = []
 
 describe('NewlineLeadTrailValidation', () => {
@@ -16,12 +17,14 @@ describe('NewlineLeadTrailValidation', () => {
     const source = 'String without newlines'
     const target = 'Different newline-devoid string'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('bothNewlinesBothMatch', () => {
     const source = '\nString with both newlines\n'
     const target = '\nDifferent newline-infested string\n'
     const errorList = NewlineLeadTrailValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('missingLeadingNewline', () => {
