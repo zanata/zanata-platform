@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.stream.Collectors
 import javax.ws.rs.client.Entity
 import javax.ws.rs.client.Invocation
 import javax.ws.rs.core.MediaType
@@ -71,11 +70,8 @@ class ConcurrentAccessTest : ZanataTestCase() {
                     false)
         }
         val tasks = Collections.nCopies(threadCount, task)
-        val executorService = Executors.newFixedThreadPool(threadCount)
-
-        val futures = executorService.invokeAll(tasks)
-
-        val result = getStatusCodes(futures)
+        val result = Executors.newFixedThreadPool(threadCount).invokeAll(tasks)
+                .map { getResult(it) }.toMutableList()
 
         val expectedReturnCode = Collections.nCopies(threadCount, 201)
         assertThat(result).isEqualTo(expectedReturnCode)
@@ -96,12 +92,6 @@ class ConcurrentAccessTest : ZanataTestCase() {
                     buildTextFlow("res$suffix", "content$suffix"))
         }
 
-        private fun getStatusCodes(futures: List<Future<Int>>): MutableList<Int> {
-            return futures.stream()
-                    .map { it -> getResult(it) }
-                    .collect(Collectors.toList())
-        }
-
         private fun getResult(input: Future<Int>): Int? {
             try {
                 return input.get()
@@ -110,7 +100,6 @@ class ConcurrentAccessTest : ZanataTestCase() {
             } catch (e: ExecutionException) {
                 throw RuntimeException(e)
             }
-
         }
 
         private fun clientRequestAsAdmin(path: String): Invocation.Builder {
