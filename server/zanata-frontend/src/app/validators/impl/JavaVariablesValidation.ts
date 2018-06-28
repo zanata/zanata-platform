@@ -250,14 +250,14 @@ class JavaVariablesValidation extends AbstractValidationAction {
  * Holds information about java variables, quoting etc. for a string.
  */
 class StringInfo {
-  public quotedChars: number = 0;
-  public singleApostrophes = 0;
+  public quotedChars: number = 0
+  public singleApostrophes = 0
 
   public vars: string[] = []
   public quotedVars: string[] = []
 
-  public varCounts: Map<string, number>;
-  public quotedVarCounts: Map<string, number>;
+  public varCounts: Map<string, number> = new Map
+  public quotedVarCounts: Map<string, number> = new Map
 }
 
 export default JavaVariablesValidation

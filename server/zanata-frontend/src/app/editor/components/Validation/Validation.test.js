@@ -70,6 +70,7 @@ describe('Validation', () => {
       target: HXTTarget,
       validationOptions: validations
     }
+
     const validationMessages = getValidationMessages(validationProps)
     const actual = ReactDOMServer.renderToStaticMarkup(
       <IntlProvider locale={'en'}>

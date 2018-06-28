@@ -3,6 +3,7 @@ import * as PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
 import { isEmpty } from 'lodash'
 import createValidators from '../../../validators'
+import ValidationAction from '../../../validators/ValidationAction'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
 import Tooltip from 'antd/lib/tooltip'
@@ -30,9 +31,10 @@ const messageList = (messages) => {
 }
 
 export const getValidationMessages = (
-  { locale, source, target, validationOptions }: ValidationProps): ValidationMessages | undefined => {
+  { locale, source, target, validationOptions }: ValidationProps): ValidationMessages => {
+  let validationMessages: ValidationMessages = {} as ValidationMessages
   if (!source || !target || !validationOptions) {
-    return undefined
+    return validationMessages
   }
   const warningValidators = validationOptions.filter((v) => v.active && !v.disabled)
   const errorValidators = validationOptions.filter((v) => v.disabled)
@@ -43,13 +45,13 @@ export const getValidationMessages = (
     return validators.find((validator) => {
       return validator.id === warningOpt.id
     })
-  })
+  }) as ValidationAction[]
 
   const errorProducers = errorValidators.map((errorOpt) => {
     return validators.find((validator) => {
       return validator.id === errorOpt.id
     })
-  })
+  }) as ValidationAction[]
 
   let warningMessages: Message[] = []
   warningProducers.forEach(validator => {
@@ -76,12 +78,14 @@ export const getValidationMessages = (
     }))
     errorMessages = errorMessages.concat(msgs)
   })
-  return {
+
+  validationMessages = {
     warningMessages,
     errorMessages,
     warningCount: warningMessages.length,
     errorCount: errorMessages.length
   }
+  return validationMessages
 }
 
 /**
@@ -136,7 +140,7 @@ const Validation: React.SFC<ValidationMessages> = (validationMessages) => {
   )
 }
 
-interface ValidationProps {
+export interface ValidationProps {
   locale: string,
   source: string,
   target: string,
