@@ -4,37 +4,37 @@
  * @type {Partial<jest.DefaultOptions & jest.InitialOptions>}
  */
 const config = {
-  "automock": false,
-  "collectCoverageFrom": [
+  automock: false,
+  collectCoverageFrom: [
     "app/**/*.{js,jsx,ts,tsx}",
     "!**/node_modules/**",
     "!app/**/*.story.{js,jsx,ts,tsx}",
     "!**/*.d.ts"
   ],
-  "coverageReporters": [
+  coverageReporters: [
     "cobertura",
     "html",
     "lcov",
     "text"
   ],
-  "moduleNameMapper": {
+  moduleNameMapper: {
     "\\.(css|less)$": "<rootDir>/__mocks__/cssMock.js"
   },
-  "transform": {
+  transform: {
     "\\.(jsx?|tsx?)$": "ts-jest"
   },
-  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$",
-  "testPathIgnorePatterns": [
+  testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$",
+  testPathIgnorePatterns: [
     "<rootDir>/dist/",
     "<rootDir>/build/",
     "<rootDir>/node_modules/",
     "<rootDir>/__mocks__"
   ],
-  "unmockedModulePathPatterns": [
+  unmockedModulePathPatterns: [
     "/node_modules",
     "/app"
   ],
-  "moduleFileExtensions": [
+  moduleFileExtensions: [
     "js",
     "jsx",
     "json",
