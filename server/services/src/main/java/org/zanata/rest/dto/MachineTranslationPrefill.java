@@ -18,24 +18,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.rest.dto;
 
-import java.util.List;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-
-import org.zanata.async.handle.MachineTranslationPrefillTaskHandle;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HTextFlow;
-import org.zanata.rest.dto.MachineTranslationPrefill;
 
-public interface MachineTranslationService {
-    int BATCH_SIZE = 100;
+/**
+ * @author Patrick Huang
+ * <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public class MachineTranslationPrefill {
+    private LocaleId toLocale;
+    private ContentState saveState;
 
-    List<String> getSuggestion(HTextFlow textFlow, LocaleId fromLocale,
-            LocaleId toLocale);
+    public LocaleId getToLocale() {
+        return toLocale;
+    }
 
-    Future<Void> prefillWithMachineTranslation(Long versionId, MachineTranslationPrefill prefillRequest,
-            @Nonnull MachineTranslationPrefillTaskHandle taskHandle);
+    public ContentState getSaveState() {
+        return saveState;
+    }
 }

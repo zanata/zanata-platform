@@ -30,14 +30,12 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MachineTranslationPrefillTaskHandle;
-import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.MachineTranslationPrefill;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.MachineTranslationService;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
-
-import com.google.common.base.MoreObjects;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -57,23 +55,28 @@ public class MachineTranslationsManager {
     @Inject
     private MachineTranslationService machineTranslationService;
 
-    public AsyncTaskHandle<Void> prefillVersionWithMachineTranslations(String projectSlug, String versionSlug, HProjectIteration projectIteration, LocaleId localeId) {
+    public AsyncTaskHandle<Void> prefillVersionWithMachineTranslations(String projectSlug, String versionSlug, HProjectIteration projectIteration, MachineTranslationPrefill prefillRequest) {
+        ProjectIterationId projectIterationId =
+                new ProjectIterationId(projectSlug, versionSlug,
+                        projectIteration.getProjectType());
         MachineTranslationsForVersionTaskKey
                 taskKey =
                 new MachineTranslationsForVersionTaskKey(
-                        new ProjectIterationId(projectSlug, versionSlug,
-                                projectIteration.getProjectType()));
+                        projectIterationId);
 
 
         MachineTranslationPrefillTaskHandle taskHandle =
                 (MachineTranslationPrefillTaskHandle) asyncTaskHandleManager.getHandleByKey(taskKey);
 
         if (AsyncTaskHandle.taskIsNotRunning(taskHandle)) {
-            taskHandle = new MachineTranslationPrefillTaskHandle();
+            taskHandle = new MachineTranslationPrefillTaskHandle(taskKey);
 
             taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
+            taskHandle.setTargetVersion(projectIterationId.toString());
             asyncTaskHandleManager.registerTaskHandle(taskHandle, taskKey);
-            machineTranslationService.prefillWithMachineTranslation(projectIteration.getId(), localeId, taskHandle);
+            machineTranslationService.prefillWithMachineTranslation(
+                    projectIteration.getId(), prefillRequest,
+                    taskHandle);
         } else {
             log.warn("there is already a task running {}", taskKey);
             throw new UnsupportedOperationException("task already running");

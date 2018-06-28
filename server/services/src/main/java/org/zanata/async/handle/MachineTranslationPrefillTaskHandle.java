@@ -21,6 +21,7 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.UserTriggeredTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -37,7 +38,10 @@ public class MachineTranslationPrefillTaskHandle extends AsyncTaskHandle<Void>
     private static final long serialVersionUID = 1704257523049053603L;
     private String triggeredBy;
     private String targetVersion;
-    private long totalTextFlows;
+
+    public MachineTranslationPrefillTaskHandle(AsyncTaskKey key) {
+        super.setKeyId(key.id());
+    }
 
     @Override
     public String getTriggeredBy() {
@@ -58,7 +62,8 @@ public class MachineTranslationPrefillTaskHandle extends AsyncTaskHandle<Void>
         return MoreObjects.toStringHelper(this).omitNullValues()
                 .add("targetVersion", targetVersion)
                 .add("currentProgress", currentProgress)
-                .add("maxProgress", maxProgress).add("triggeredBy", triggeredBy)
+                .add("maxProgress", maxProgress)
+                .add("triggeredBy", triggeredBy)
                 .toString();
     }
 }

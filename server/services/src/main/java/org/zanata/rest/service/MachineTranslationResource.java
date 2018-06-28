@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,6 +37,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -45,12 +47,12 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.dto.MachineTranslationPrefill;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.MachineTranslationService;
 import org.zanata.util.HttpUtil;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Patrick Huang
@@ -90,7 +92,7 @@ public class MachineTranslationResource {
 
     @Path("project/{projectSlug}/version/{versionSlug}")
     @GET
-    @CheckRole("machine-translations")
+    @CheckRole("machine-translation")
     public List<String> getMachineTranslationSuggestion(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
@@ -113,14 +115,16 @@ public class MachineTranslationResource {
 
     }
 
-    @CheckRole("machine-translations")
+    @CheckRole("machine-translation")
     @POST
     @Path("project/{projectSlug}/version/{versionSlug}")
-    public Response prefillVersionByMachineTranslation(@PathParam("projectSlug") String projectSlug,
-            @PathParam("versionSlug") String versionSlug, @QueryParam("toLocale") String localeId) {
-        Optional<Response> response =
-                activeProjectVersionAndLocaleValidator
-                        .getResponseIfProjectLocaleAndVersionAreNotActive(projectSlug, versionSlug, new LocaleId(localeId));
+    public Response prefillVersionByMachineTranslation(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("versionSlug") String versionSlug,
+            MachineTranslationPrefill prefillRequest) {
+        Optional<Response> response = activeProjectVersionAndLocaleValidator
+                .getResponseIfProjectLocaleAndVersionAreNotActive(projectSlug,
+                        versionSlug, prefillRequest.getToLocale());
 
         if (response.isPresent()) {
             return response.get();
@@ -131,12 +135,11 @@ public class MachineTranslationResource {
                 activeProjectVersionAndLocaleValidator.getVersion();
         HLocale locale = activeProjectVersionAndLocaleValidator.getLocale();
 
-        identity.checkPermission("modify-translation",
-                hProject, locale);
+        identity.checkPermission("modify-translation", hProject, locale);
 
         AsyncTaskHandle<Void> handle = machineTranslationsManager
                 .prefillVersionWithMachineTranslations(projectSlug, versionSlug,
-                        version, locale.getLocaleId());
+                        version, prefillRequest);
 
         String url = uri.getBaseUri() + "process/key/" + handle.getKeyId();
         ProcessStatus processStatus = AsyncProcessService
