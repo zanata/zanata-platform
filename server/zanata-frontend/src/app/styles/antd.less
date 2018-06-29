@@ -605,3 +605,60 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   height: 2rem;
   line-height: 2rem;
 }
+
+/* NavBar */
+.nav-bar {
+  background-color: @highlight-color;
+  box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.185);
+  display: flex !important;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  flex-shrink: 0;
+  -webkit-flex-shrink: 0;
+  overflow: hidden;
+  position: fixed;
+}
+.nav-icon {
+  display: block;
+}
+.nav-link {
+  /* remove relative font scaling for nav so it
+   is consistent across all of frontend */
+  font-size: 11px !important;
+  background-color: "";
+  color: rgb(237, 242, 248) !important;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  align-items: center;
+  -webkit-align-items: center;
+  flex-shrink: 0;
+  -webkit-flex-shrink: 0;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.nav-link:hover {
+  color: #fff !important;
+  background-color: rgba(255, 255, 255, 0.2);
+  filter: "";
+}
+.nav-link:focus, .nav-link:active {
+  filter: "";
+}
+.nav-link.active {
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
+  color: @color-light !important;
+  cursor: default;
+}
+.nav-link.active:hover {
+  color: "";
+  background-color: "";
+}
+.nav-link.search {
+  margin-top: 0.75rem;
+}
+.navBar-navLogo {
+  display: none;
+}
