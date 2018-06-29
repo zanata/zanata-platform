@@ -33,7 +33,7 @@ class Sidebar extends Component {
     const toggleArrow = this.state.arrow ? 'hide-desktop up' : 'hide-desktop' +
         ' down'
     return (
-      <div id='pvSidebar' className='bstrapReact'>
+      <div id='pvSidebar'>
         <div className='sidebar accordion'>
           <div className='sidebar-wrapper'>
             <div className='sidebar-container'>

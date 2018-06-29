@@ -66,7 +66,7 @@ class DeleteEntryModal extends Component {
     </p>)
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='u-block bstrapReact tc'>
+      <div className='u-block tc'>
         <Tooltip id='delete-glossary' title={info}
           className='tc' visible={show} placement='left' arrowPointAtCenter>
           <Button className='btn-link btn-sm'

@@ -21,7 +21,7 @@ describe('SelectableDropdown', () => {
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
        <DropdownButton id={'dropdown-basic'} bsStyle={'default'}
-        bsSize={'sm'} title={'TestDropdown'} className='bstrapReact'>
+        bsSize={'sm'} title={'TestDropdown'}>
         <MenuItem onClick={callback} active={false}>
           The function says moo
         </MenuItem>

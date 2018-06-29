@@ -35,7 +35,7 @@ const SelectableDropdown = (props) => {
   const selection = selectedValue && valueToDisplay(selectedValue)
   const titleValue = title || selection || ''
   return (
-    <DropdownButton className='bstrapReact' id={id} bsStyle={bsStyle}
+    <DropdownButton id={id} bsStyle={bsStyle}
       bsSize={bsSize} title={titleValue} disabled={disabled}>
       {items}
     </DropdownButton>

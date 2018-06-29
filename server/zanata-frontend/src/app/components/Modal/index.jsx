@@ -38,7 +38,7 @@ const Modal = ({
       {...props}
       onKeyDown={keyboard && handleKeyDown}
       containerClassName='has-modal'
-      className='modal bstrapReact'
+      className='modal'
       onClick={backdrop && handleClickOutside}
     >
       <div className='container'>
