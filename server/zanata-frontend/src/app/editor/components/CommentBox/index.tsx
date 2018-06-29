@@ -41,7 +41,7 @@ class CommentBox extends React.Component<Props, State> {
     commentText: ""
   }
 
-  constructor (props) {
+  constructor (props: any) {
     super(props)
     this.state = this.defaultState
   }
@@ -76,7 +76,7 @@ class CommentBox extends React.Component<Props, State> {
     this.setState(this.defaultState)
   }
 
-  private setCommentText = (event) => {
+  private setCommentText = (event: any) => {
     this.setState({commentText: event.target.value})
   }
 }

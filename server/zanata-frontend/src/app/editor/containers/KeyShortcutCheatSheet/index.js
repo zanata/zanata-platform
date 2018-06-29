@@ -35,6 +35,7 @@ class KeyShortcutCheatSheet extends React.Component {
    *
    * Map this then use flatten to get a flat list of normal and sequence keys.
    */
+  // @ts-ignore any
   expandSequences = (shortcut) => {
     const { sequenceKeys } = shortcut.keyConfig
     if (sequenceKeys) {
@@ -52,6 +53,7 @@ class KeyShortcutCheatSheet extends React.Component {
     return shortcut
   }
 
+  // @ts-ignore any
   renderShortcut = (shortcut) => {
     const { keys } = shortcut.keyConfig
     return (
@@ -97,6 +99,7 @@ class KeyShortcutCheatSheet extends React.Component {
   }
 }
 
+// @ts-ignore any
 function mapStateToProps (state) {
   return {
     show: getKeyShortcutsVisible(state),
@@ -104,6 +107,7 @@ function mapStateToProps (state) {
   }
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => {

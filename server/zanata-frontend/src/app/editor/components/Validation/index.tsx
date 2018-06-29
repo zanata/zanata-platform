@@ -13,7 +13,9 @@ const Panel = Collapse.Panel
 
 const DO_NOT_RENDER: null = null
 
+// @ts-ignore any
 const messageList = (messages) => {
+  // @ts-ignore any
   return messages.map((m, index) => {
     // If description exists, display in Tooltip
     const messageLabel = m.description

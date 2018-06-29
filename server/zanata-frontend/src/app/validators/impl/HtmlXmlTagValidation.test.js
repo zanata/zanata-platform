@@ -12,6 +12,7 @@ const HtmlXmlTagValidator =
 
 const messages = Messages[locale]
 
+// @ts-ignore any
 const noErrors = []
 
 describe('HtmlXmlTagValidation', () => {
@@ -19,18 +20,21 @@ describe('HtmlXmlTagValidation', () => {
     const source = 'HTML TAG Test'
     const target = 'HTML TAG Test'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('matchingHtmlNoError', () => {
     const source = '<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>'
     const target = '<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('matchingXmlNoError', () => {
     const source = '<group><users><user>name</user></users></group>'
     const target = '<group><users><user>name</user></users></group>'
     const errorList = HtmlXmlTagValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('addedTagError', () => {

@@ -74,6 +74,7 @@ class JavaVariablesValidation extends AbstractValidationAction {
       const removed = targetInfo.varCounts.delete(key)
       const targetCount = removed ? value : null
       if (targetCount === null) {
+        // @ts-ignore any
         const quotedCount = targetInfo.quotedVarCounts[key]
         if (quotedCount !== null && quotedCount > 0) {
           missingQuoted.push(`{${key}}`)
@@ -159,6 +160,7 @@ class JavaVariablesValidation extends AbstractValidationAction {
 
       if (argumentIndexCounts.has(argumentIndex)) {
         argumentIndexCounts.set(argumentIndex,
+          // @ts-ignore any
           argumentIndexCounts[argumentIndex]!! + 1)
       } else {
         argumentIndexCounts.set(argumentIndex, 1)

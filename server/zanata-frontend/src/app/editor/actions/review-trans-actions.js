@@ -23,6 +23,7 @@ export const TOGGLE_REVIEW_MODAL = 'TOGGLE_REVIEW_MODAL'
 /**
  * Perform a save of a translation review with the given review data
  */
+// @ts-ignore any
 export function rejectTranslation (dispatch, review) {
   const endpoint = `${apiUrl}/review/trans/${review.localeId}`
   /** @type {APITypes} */
@@ -30,7 +31,9 @@ export function rejectTranslation (dispatch, review) {
     ADD_REVIEW_REQUEST,
     {
       type: ADD_REVIEW_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           dispatch(savePhraseWithStatus(
             review.phrase, STATUS_REJECTED, review.reviewComment))
@@ -55,6 +58,7 @@ export function rejectTranslation (dispatch, review) {
 /**
  * Perform a save of a review comment for a given TransUnit
  */
+// @ts-ignore any
 export function postReviewComment (dispatch, review) {
   const endpoint = `${apiUrl}/review/trans/${review.localeId}`
   /** @type {APITypes} */
@@ -62,7 +66,9 @@ export function postReviewComment (dispatch, review) {
     ADD_REVIEW_REQUEST,
     {
       type: ADD_REVIEW_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           dispatch(fetchTransUnitHistory(
             review.localeId,

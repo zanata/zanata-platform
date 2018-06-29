@@ -13,6 +13,7 @@ export default interface ValidationAction {
     readonly sourceExample: string
     readonly targetExample: string
     readonly exclusiveValidations: ValidationAction[]
+    // @ts-ignore any
     mutuallyExclusive(exclusiveValidations: ValidationAction)
     doValidate(source: string, target: string): string[]
 }

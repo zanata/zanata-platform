@@ -1,6 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 
+// @ts-ignore any
 const percentageDisplayString = (percent) => {
   if (!isFinite(percent)) {
     return undefined

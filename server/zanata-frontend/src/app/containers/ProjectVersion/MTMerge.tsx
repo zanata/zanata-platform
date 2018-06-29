@@ -55,13 +55,13 @@ class MTMerge extends Component<{}, MTMergeState> {
       visible: true
     })
   }
-  handleOk = _ => {
+  handleOk = (_: any) => {
     // console.log(_)
     this.setState({
       visible: false
     })
   }
-  handleCancel = _ => {
+  handleCancel = (_: any) => {
     // console.log(_)
     this.setState({
       visible: false
@@ -110,14 +110,14 @@ class MTMerge extends Component<{}, MTMergeState> {
       </div>
     )
   }
-  onChange = checkedList => {
+  onChange = (checkedList: any) => {
     this.setState({
       checkedList,
       indeterminate: !!checkedList.length && checkedList.length < plainOptions.length,
       checkAll: checkedList.length === plainOptions.length
     })
   }
-  onCheckAllChange = e => {
+  onCheckAllChange = (e: any) => {
     this.setState({
       checkedList: e.target.checked ? plainOptions : [],
       indeterminate: false,

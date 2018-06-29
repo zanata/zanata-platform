@@ -1,3 +1,4 @@
+// @ts-ignore any
 export function startsWith (str, prefix, ignoreCase) {
   if (ignoreCase && str && prefix) {
     str = str.toUpperCase()
@@ -6,6 +7,7 @@ export function startsWith (str, prefix, ignoreCase) {
   return str.lastIndexOf(prefix, 0) === 0
 }
 
+// @ts-ignore any
 export function endsWith (str, suffix, ignoreCase) {
   if (ignoreCase && str && suffix) {
     str = str.toUpperCase()
@@ -14,6 +16,7 @@ export function endsWith (str, suffix, ignoreCase) {
   return str.indexOf(suffix, str.length - suffix.length) !== -1
 }
 
+// @ts-ignore any
 export function equals (from, to, ignoreCase) {
   if (ignoreCase && from && to) {
     from = from.toUpperCase()
@@ -22,6 +25,7 @@ export function equals (from, to, ignoreCase) {
   return from === to
 }
 
+// @ts-ignore any
 export function replaceRange (str, replacement, start, end) {
   const length = end - start
   return str.replace(
@@ -33,6 +37,7 @@ export function replaceRange (str, replacement, start, end) {
  *
  * Removes all newlines and leading whitespace from the template string.
  */
+// @ts-ignore any
 export function oneLiner (strings, ...vars) {
   // interleave strings and vars
   var output = ''

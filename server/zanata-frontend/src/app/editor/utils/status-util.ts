@@ -40,6 +40,7 @@ export function defaultSaveStatus (phrase: Phrase) {
   }
 }
 
+// @ts-ignore any
 export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
   const all = allValidSaveStatuses(phrase, permissions)
   return without(all, defaultSaveStatus(phrase))
@@ -50,6 +51,7 @@ export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
  * that would be valid to save the current new
  * translations of a phrase.
  */
+// @ts-ignore any
 function allValidSaveStatuses (phrase: Phrase, permissions): Status[] {
   if (!permissions.translator && !permissions.reviewer) {
     // User does not have privileges for any operations.

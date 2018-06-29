@@ -73,7 +73,7 @@ export const messages = defineMessages({
   lastPage: { id: 'Pager.lastPage', defaultMessage: 'Last page' }
 })
 
-export const Pager = ({
+const Pager = ({
   intl,
   firstPage,
   previousPage,

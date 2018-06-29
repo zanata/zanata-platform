@@ -10,6 +10,7 @@ const messages = Messages[locale]
 const PrintfXSIExtensionValidator =
   new PrintfXSIExtensionValidation(locale, messages)
 
+// @ts-ignore any
 const noErrors = []
 
 describe('PrintfXSIExtensionValidation', () => {
@@ -17,18 +18,21 @@ describe('PrintfXSIExtensionValidation', () => {
     const source = '%s: Read error at byte %s, while reading %lu byte'
     const target = '%1$s：Read error while reading %3$lu bytes，at %2$s'
     const errorList = PrintfXSIExtensionValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('validExplicitPositionalVariables', () => {
     const source = '%1$s: Read error at byte %2$s, while reading %3$lu byte'
     const target = '%1$s：Read error while reading %3$lu bytes，at %2$s'
     const errorList = PrintfXSIExtensionValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('validExplicitPositionalVariables2', () => {
     const source = '%2$.3f%1$s/day'
     const target = '%2$.3f%1$s/jour'
     const errorList = PrintfXSIExtensionValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('mixPositionalVariablesWithNotPositional', () => {
