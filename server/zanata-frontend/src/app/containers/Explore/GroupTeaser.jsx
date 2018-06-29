@@ -35,7 +35,7 @@ const GroupTeaser = ({
       </View> */}
       <div className='teaser-inner'>
         <div>
-          <Link link={link} useHref className='text-bold'>
+          <Link link={link} useHref className='btn-link b'>
             {details.title}
           </Link>
           {description}

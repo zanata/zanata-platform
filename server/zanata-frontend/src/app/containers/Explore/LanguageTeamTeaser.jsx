@@ -16,7 +16,7 @@ const LanguageTeamTeaser = ({
   return (
     <div className='teamTeaser' name={name}>
       <div className='u-flexRow'>
-        <Link link={link} useHref className='text-bold'>
+        <Link link={link} useHref className='btn-link b'>
           {details.localeDetails.displayName}
         </Link>
         <span className='u-textMuted languageTeamTeaser-id '>

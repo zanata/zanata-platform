@@ -4,9 +4,10 @@
 // antd component overrides - tachyons not used because these apply globally to
 // the antd components
 
-input {
-  line-height: 2.25rem !important;
+input, .textInput {
+  line-height: 2rem !important;
   padding-left: 0.375rem;
+  border-radius: 4px;
 }
 .teaserHeader .ant-layout {
   display: flex;
@@ -25,13 +26,14 @@ input {
   color: #fff;
 }
 
-button.ant-btn.btn-link {
+a.btn-link, button.ant-btn.btn-link {
   border: 0;
   color: @highlight-color;
   background: transparent !important;
   font-weight: 500;
 }
 
+a.btn-link:focus, a.btn-link:hover,
 button.ant-btn.btn-link:hover, button.ant-btn.btn-link:focus {
   color: @primary-color;
 }
@@ -191,9 +193,9 @@ input.ant-input:focus, .textInput:focus, .textInput:hover {
 
 .btn-xs {
   font-size: 0.857rem;
-  line-height: @line-height-button;
-  padding: @spacing-small-vertical @spacing-small-horizontal;
-  border-radius: @border-radius-small;
+  line-height: 1rem;
+  padding: 0.31rem 0.62rem;
+  border-radius: 3px;
 }
 
 .ant-btn.button.close {
@@ -424,14 +426,14 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   background-color: transparent;
 }
 .Select-option {
-  line-height: 2.25rem;
+  line-height: 2rem;
   padding: 0.75rem;
 }
 [class*=LineClamp] {
   text-overflow: ellipsis;
 }
 .Select-multi-value-wrapper {
-  line-height: 2.25rem;
+  line-height: 2rem;
 }
 .selected .row--selected, .editable:hover .editableOp {
   opacity: 1;
@@ -448,4 +450,158 @@ input.textInput::placeholder, textarea.textInput::placeholder {
 .table > thead > tr > th {
   vertical-align: bottom;
   border-bottom: 2px solid @neutral-color;
+}
+.toolbar {
+  padding-top: 1.5rem;
+  flex-direction: row;
+  display: inline-flex;
+  flex-wrap: wrap;
+  line-height: 2rem;
+  max-width: 90%;
+}
+
+.is-searchable.is-open > .Select-control {
+  cursor: text;
+}
+.is-open > .Select-control {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: #fff;
+  border-color: #9cbeca #bdd4dc #cedfe5;
+}
+.Select-menu-outer {
+  border-bottom-right-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+  background-color: #fff;
+  border: 1px solid #bdd4dc;
+  border-top-color: #deeaee;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+}
+.is-searchable.is-open > .Select-control {
+  cursor: text;
+}
+.is-open > .Select-control {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: #fff;
+  border-color: #9cbeca #bdd4dc #cedfe5;
+}
+.Select-menu-outer {
+  border-bottom-right-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+  background-color: #fff;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+}
+.Select-menu {
+  max-height: 198px;
+  overflow-y: auto;
+  position: fixed;
+  border: 2px solid #bdd4dc;
+}
+.Select-option.is-focused {
+  background-color: #1ba7d9;
+  color: #edf2f8;
+}
+.Select-option {
+  background-color: #fff;
+  color: #8799ad;
+  cursor: pointer;
+  display: block;
+  padding: 0.375rem 0.75rem;
+  line-height: 1rem;
+}
+.Select-control {
+  background-color: #fff;
+  border-color: #cedfe5 #bdd4dc #9cbeca;
+  border-radius: 0.375rem;
+  border: 0.125rem solid #bdd4dc;
+  color: #54667a;
+  cursor: default;
+  display: table;
+  border-spacing: 0;
+  border-collapse: separate;
+  height: 2rem;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+.Select--single > .Select-control .Select-value, .Select-placeholder {
+  bottom: 0;
+  color: #bdd4dc;
+  left: 0;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.Select-input {
+  height: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  vertical-align: middle;
+}
+.Select-input input {
+  border: none;
+}
+.Select-input input:focus {
+  outline: 0;
+}
+.Select-input:focus {
+  outline: 0;
+}
+.Select-arrow-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 1.5625rem;
+  padding-right: 0.3125rem;
+}
+.Select-arrow-zone:focus {
+  outline: 0;
+}
+.Select-option:last-child {
+  border-bottom-right-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+.Select-arrow {
+  border-color: #bdd4dc transparent transparent;
+  border-style: solid;
+  border-width: 0.3125rem 0.3125rem 0.15625rem;
+  display: inline-block;
+  height: 0;
+  width: 0;
+}
+.Select-clear-zone {
+  -webkit-animation: Select-animation-fadeIn 0.2s;
+  animation: Select-animation-fadeIn 0.2s;
+  color: #a2b3be;
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  width: 1.6rem;
+  height: 2rem;
+  line-height: 2rem;
 }

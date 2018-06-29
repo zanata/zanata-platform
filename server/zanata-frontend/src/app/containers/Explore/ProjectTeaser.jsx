@@ -38,8 +38,8 @@ const ProjectTeaser = ({
   )
   const link = getProjectUrl(details.id)
   const className = status !== statusIcons.ACTIVE
-    ? 'text-muted-bold'
-    : 'text-bold'
+    ? 'btn-link b txt-muted'
+    : 'btn-link b'
   const tooltip = status === statusIcons.ACTIVE
     ? ''
     : 'This project is currently read only'

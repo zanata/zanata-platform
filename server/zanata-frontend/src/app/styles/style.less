@@ -233,14 +233,7 @@
     padding-left: 0;
   }
 
-  .toolbar {
-    padding-top: @spacing-hr;
-    flex-direction: row;
-    display: inline-flex;
-    flex-wrap: wrap;
-    line-height: 2rem;
-    max-width: 90%;
-  }
+
   .btn-primary .iconPlus {
     margin-right: @spacing-re;
     vertical-align: middle;
@@ -290,18 +283,6 @@
   .headerLoader {
     font-size: 1.2rem;
     margin-left: @spacing-rq;
-  }
-  /* HTML5 fix for old browsers */
-  article, aside, details, figcaption, footer, header, main, menu, nav, section, summary {
-    display: block;
-  }
-  /* Basic elements - no changes to classes */
-  audio, canvas, progress, video {
-    display: inline-block;
-    vertical-align: baseline;
-  }
-  [hidden], template {
-    display: none;
   }
   #nav {
     a:active {
@@ -371,6 +352,98 @@
     padding: 0;
     border: 0;
   }
+  input {
+    line-height: normal;
+  }
+  input[type=checkbox], input[type=radio] {
+    padding: 0;
+  }
+  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    height: auto;
+  }
+  input[type=search] {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    -webkit-appearance: textfield;
+  }
+  input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  legend {
+    font-size: 1.85rem;
+    line-height: inherit;
+    display: block;
+    width: 100%;
+    margin-bottom: @spacing-hr;
+    padding: 0;
+    color: #333;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  label {
+    font-weight: 700;
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: @spacing-hr;
+  }
+  label.control-label span.s0 {
+    vertical-align: text-top;
+    margin-left: @spacing-label-large;
+  }
+  input[type=checkbox], input[type=radio] {
+    line-height: normal;
+    margin: 1px 0 0;
+  }
+  input[type=file] {
+    display: block;
+  }
+  input[type=range] {
+    display: block;
+    width: 100%;
+  }
+  select[multiple], select[size] {
+    height: auto;
+  }
+  input[type=checkbox]:focus, input[type=file]:focus, input[type=radio]:focus {
+    outline: 0;
+    border-color: #1ba7d9;
+  }
+  output {
+    font-size: 1rem;
+    line-height: @line-height-base;
+    display: block;
+    padding-top: @spacing-half-base;
+    color: #555;
+  }
+  fieldset {
+    margin: 0 2px;
+    padding: 0.35rem 0.625rem @spacing-rq;
+    border: 1px solid silver;
+  }
+  legend {
+    padding: 0;
+    border: 0;
+  }
+  textarea {
+    overflow: auto;
+  }
+  optgroup {
+    font-weight: 700;
+  }
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+  table td {
+    font-size: 1.071rem;
+  }
   .tr.tr-flex1 {
     flex: 1;
     -webkit-box-flex: 1;
@@ -395,6 +468,11 @@
   td.inline {
     display: inline-table;
     width: 5.714rem;
+  }
+  .carousel-inner > .item > a > img, .carousel-inner > .item > img, .img-responsive, .thumbnail > img, .thumbnail a > img {
+    display: block;
+    max-width: 100%;
+    height: auto;
   }
   .img-rounded {
     border-radius: @border-radius-large;
@@ -798,111 +876,6 @@
   .table thead tr {
     border-bottom-color: transparent !important;
   }
-  /* Forms - bootstrap specific */
-  .form-control {
-    font-size: 1rem;
-    display: block;
-    width: 100%;
-    line-height: 2rem;
-    height: 2rem;
-    padding: @spacing-small-horizontal @spacing-rq;
-    -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
-    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-    color: @color-dark;
-    border: 1px solid @color-neutral;
-    border-radius: @border-radius-base;
-    background: #fff none;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  }
-  .form-control:focus {
-    outline: 0;
-    border: 2px solid @color-light;
-  }
-  .form-control::-moz-placeholder {
-    opacity: 1;
-    color: #999;
-  }
-  .form-control:-ms-input-placeholder {
-    color: #999;
-  }
-  .form-control::-webkit-input-placeholder {
-    color: #999;
-  }
-  .form-control::-ms-expand {
-    border: 0;
-    background-color: transparent;
-  }
-  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
-    opacity: 1;
-    background-color: #eee;
-  }
-  .form-control[disabled], fieldset[disabled] .form-control {
-    cursor: not-allowed;
-  }
-  textarea.form-control {
-    height: auto;
-  }
-  input[type=search] {
-    -webkit-appearance: none;
-  }
-  .u-thHighlight {
-    background-color: @gray-lighter;
-  }
-  .checkbox + .checkbox, .radio + .radio {
-    margin-top: @spacing-rh;
-  }
-  .checkbox-inline, .radio-inline {
-    font-weight: 400;
-    position: relative;
-    display: inline-block;
-    margin-bottom: 0;
-    padding-left: @spacing-re;
-    cursor: pointer;
-    vertical-align: sub;
-  }
-  .checkbox-inline + .checkbox-inline, .radio-inline + .radio-inline {
-    margin-top: 0;
-    margin-left: @spacing-rq;
-  }
-  fieldset[disabled] input[type=checkbox], fieldset[disabled] input[type=radio], input[type=checkbox].disabled, input[type=checkbox][disabled], input[type=radio].disabled, input[type=radio][disabled] {
-    cursor: not-allowed;
-  }
-  .checkbox-inline.disabled, .radio-inline.disabled, fieldset[disabled] .checkbox-inline, fieldset[disabled] .radio-inline {
-    cursor: not-allowed;
-  }
-  .checkbox.disabled label, .radio.disabled label, fieldset[disabled] .checkbox label, fieldset[disabled] .radio label {
-    cursor: not-allowed;
-  }
-  .form-control-static {
-    min-height: 3rem;
-    margin-bottom: 0;
-    padding-top: @spacing-half-base;
-    padding-bottom: @spacing-half-base;
-  }
-  .form-control-static.input-lg, .form-control-static.input-sm {
-    padding-right: 0;
-    padding-left: 0;
-  }
-  .input-sm {
-    font-size: 0.857rem;
-    line-height: @line-height-small;
-    height: 2.143rem;
-    padding: @spacing-small-horizontal @spacing-large-horizontal;
-    border-radius: @border-radius-small;
-  }
-  select.input-sm {
-    line-height: 2.143rem;
-    height: 2.143rem;
-  }
-  select[multiple].input-sm, textarea.input-sm {
-    height: auto;
-  }
-  span.caret {
-    margin-right: @spacing-heading;
-    color: #546675;
-  }
   /* Buttons */
   .btnCode {
     margin-top: @spacing-base;
@@ -988,400 +961,6 @@
   .has-error .form-control-feedback {
     color: @color-danger;
   }
-  .label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    line-height: 1;
-    display: inline;
-    padding: @spacing-label-small @spacing-label-large @spacing-label-small;
-    text-align: center;
-    vertical-align: baseline;
-    white-space: nowrap;
-    color: #fff;
-    border-radius: @border-radius-label;
-    margin-left: @spacing-tooltip;
-    margin-right: @spacing-tooltip;
-  }
-  .label-success {
-    background-color: @color-success !important;
-  }
-  .label-info {
-    background-color: @color-light;
-  }
-  .label-warning {
-    background-color: @color-warning !important;
-  }
-  .label-danger {
-    background-color: @color-danger !important;
-  }
-  /* Dropdowns - bootstrap styles inherited */
-  .dropdown {
-    position: relative;
-  }
-  .dropdown-toggle:focus {
-    outline: 0;
-  }
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    float: left;
-    min-width: 120px;
-    padding: 0;
-    margin: 2px 0 0;
-    list-style: none;
-    font-size: 14px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: @border-radius-base;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    background-clip: padding-box;
-  }
-  .dropdown-menu.u-pullRight {
-    right: 0;
-    left: auto;
-  }
-  .dropdown-menu .divider {
-    height: 1px;
-    margin: @spacing-divider 0;
-    overflow: hidden;
-    background-color: #e5e5e5;
-  }
-  .dropdown-menu > li > a {
-    display: block;
-    padding: @border-radius-large @spacing-xxl;
-    clear: both;
-    font-weight: normal;
-    line-height: @line-height-base;
-    color: #333;
-    white-space: nowrap;
-  }
-  .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
-    text-decoration: none;
-    color: #fff;
-    background-color: #bbb;
-  }
-  .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-    color: #fff;
-    text-decoration: none;
-    outline: 0;
-    background-color: #bbb;
-  }
-  .dropdown-menu > .disabled > a, .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
-    color: #808080;
-  }
-  .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
-    text-decoration: none;
-    background-color: transparent;
-    background-image: none;
-    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-    cursor: not-allowed;
-  }
-  .dropdown-menu > li > a {
-    color: @color-dark;
-  }
-  .dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
-    color: @color-light;
-  }
-  .open > .dropdown-toggle.btn-primary.focus, .open > .dropdown-toggle.btn-primary:focus, .open > .dropdown-toggle.btn-primary:hover {
-    color: #fff;
-    border-color: #ccc;
-    background-color: @color-dark;
-  }
-  .btn-primary.focus, .btn-primary:focus, .btn-primary:hover {
-    color: #fff;
-    border-color: #ccc;
-    background-color: @color-dark;
-  }
-  // Dropdown menus
-  // --------------------------------------------------
-  // Dropdown arrow/caret
-  .caret {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    margin-left: 2px;
-    vertical-align: middle;
-    border-top: @caret-width-base solid;
-    border-right: @caret-width-base solid transparent;
-    border-left: @caret-width-base solid transparent;
-  }
-  // The dropdown wrapper (div)
-  .dropdown {
-    position: relative;
-  }
-  // Prevent the focus on the dropdown toggle when closing dropdowns
-  .dropdown-toggle:focus {
-    outline: 0;
-  }
-  // The dropdown menu (ul)
-  .dropdown-menu {
-    position: absolute;
-    font-size: 1rem;
-    top: 100%;
-    left: 0;
-    z-index: @zindex-dropdown;
-    display: none; // none by default, but block on "open" of the menu
-    float: left;
-    min-width: 160px;
-    padding: 0;
-    margin: 2px 0 0; // override default ul
-    list-style: none;
-    font-size: @font-size-base;
-    background-color: @dropdown-bg;
-    border: 1px solid @dropdown-fallback-border; // IE8 fallback
-    border: 1px solid @dropdown-border;
-    border-radius: @border-radius-base;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    background-clip: padding-box; // Aligns the dropdown menu to right
-    //
-    // Deprecated as of 3.1.0 in favor of `.dropdown-menu-[dir]`
-    &.u-pullRight {
-      right: 0;
-      left: auto;
-    }
-    // Dividers (basically an hr) within the dropdown
-    .divider {
-      border-bottom: solid 1px @dropdown-divider-bg;
-    }
-    // Links within the dropdown menu
-    > li > a {
-      display: block;
-      padding: @border-radius-small @spacing-re;
-      clear: both;
-      font-weight: normal;
-      line-height: @line-height-base;
-      color: @dropdown-link-color;
-      white-space: nowrap; // prevent links from randomly breaking onto new lines
-    }
-  }
-  // Hover/Focus state
-  .dropdown-menu > li > a {
-    &:hover, &:focus {
-      text-decoration: none;
-      color: @dropdown-link-hover-color;
-      background-color: @dropdown-link-hover-bg;
-    }
-  }
-  // Active state
-  .dropdown-menu > .active > a {
-    &, &:hover, &:focus {
-      color: @dropdown-link-active-color;
-      text-decoration: none;
-      outline: 0;
-      background-color: @dropdown-link-active-bg;
-    }
-  }
-  // Disabled state
-  //
-  // Gray out text and ensure the hover/focus state remains gray
-  .dropdown-menu > .disabled > a {
-    &, &:hover, &:focus {
-      color: @dropdown-link-disabled-color;
-    }
-  }
-  // Nuke hover/focus effects
-  .dropdown-menu > .disabled > a {
-    &:hover, &:focus {
-      text-decoration: none;
-      background-color: transparent;
-      background-image: none; // Remove CSS gradient
-      .reset-filter {
-        cursor: not-allowed;
-      }
-    }
-  }
-  // Open state for the dropdown
-  .open {
-    // Show the menu
-    > .dropdown-menu {
-      display: block;
-    }
-    // Remove the outline when :focus is triggered
-    > a {
-      outline: 0;
-    }
-  }
-  // Menu positioning
-  //
-  // Add extra class to `.dropdown-menu` to flip the alignment of the dropdown
-  // menu with the parent.
-  .dropdown-menu-right {
-    left: auto; // Reset the default from `.dropdown-menu`
-    right: 0;
-  }
-  // With v3, we enabled auto-flipping if you have a dropdown within a right
-  // aligned nav component. To enable the undoing of that, we provide an override
-  // to restore the default dropdown menu alignment.
-  //
-  // This is only for left-aligning a dropdown menu within a `.navbar-right` or
-  // `.pull-right` nav component.
-  .dropdown-menu-left {
-    left: 0;
-    right: auto;
-  }
-  // Dropdown section headers
-  .dropdown-header {
-    display: block;
-    padding: @border-radius-small @spacing-xxl;
-    font-size: @font-size-small;
-    line-height: @line-height-base;
-    color: @dropdown-header-color;
-  }
-  // Backdrop to catch body clicks on mobile, etc.
-  .dropdown-backdrop {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    z-index: (@zindex-dropdown - 10);
-  }
-  // Right aligned dropdowns
-  .u-pullRight > .dropdown-menu {
-    right: 0;
-    left: auto;
-  }
-  // Allow for dropdowns to go bottom up (aka, dropup-menu)
-  //
-  // Just add .dropup after the standard .dropdown class and you"re set, bro.
-  .dropup, .navbar-fixed-bottom .dropdown {
-    // Reverse the caret
-    .caret {
-      border-top: 0;
-      border-bottom: @caret-width-base solid;
-      content: "";
-    }
-    // Different positioning for bottom up menu
-    .dropdown-menu {
-      top: auto;
-      bottom: 100%;
-      margin-bottom: 1px;
-    }
-  }
-  //
-  // Progress bars
-  // --------------------------------------------------
-  // Bar animations
-  // -------------------------
-  // WebKit
-  @-webkit-keyframes progress-bar-stripes {
-    from {
-      background-position: 40px 0;
-    }
-    to {
-      background-position: 0 0;
-    }
-  }
-  // Spec and IE10+
-  @keyframes progress-bar-stripes {
-    from {
-      background-position: 40px 0;
-    }
-    to {
-      background-position: 0 0;
-    }
-  }
-  // Bar itself
-  // -------------------------
-  // Outer container
-  .progress {
-    overflow: hidden;
-    height: 1rem;
-    margin-bottom: @spacing-base;
-    background-color: @progress-bg;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-  // Bar of progress
-  //untranslated
-  .progress-bar {
-    float: left;
-    width: 0%;
-    height: 100%;
-    font-size: @font-size-small;
-    line-height: @line-height-computed;
-    color: @progress-bar-color;
-    text-align: center;
-    background-color: @progress-bar-bg;
-    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-    transition: width 0.6s ease;
-  }
-  // Striped bars
-  .progress-striped .progress-bar {
-    #gradient > .striped {
-      background-size: 40px 40px;
-    }
-  }
-  // Call animation for the active one
-  .progress.active .progress-bar {
-    animation: progress-bar-stripes 2s linear infinite;
-  }
-  // Variations - uses React Bootstrap classes
-  // -------------------------
-  //translated
-  .progress-bar-success {
-    background-color: @progress-bar-translated-bg;
-  }
-  .progress-bar-info {
-    background-color: @progress-bar-approved-bg;
-  }
-  //fuzzy
-  .progress-bar-warning {
-    background-color: @progress-bar-unsure-bg;
-  }
-  //rejected
-  .progress-bar-danger {
-    background-color: @progress-bar-rejected-bg;
-  }
-  ul.list--stats li.progress-bar__expander, li.progress-bar__expander.panels__panel__item, li.progress-bar__expander.list__item--actionable {
-    padding-bottom: @spacing-rh !important;
-  }
-  li.progress-bar__expander.panels__panel__item a .list__item, li.progress-bar__expander a .list__item, li.progress-bar__expander.panels__panel__item a .list__item__content {
-    padding: 0.75em 0.75em 0.75em !important;
-  }
-  li.progress-bar__expander.panels__panel__item a .list__item {
-    width: 100%;
-  }
-  input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].btn-block {
-    width: 100%;
-  }
-  .fade {
-    -webkit-transition: opacity 0.15s linear;
-    -o-transition: opacity 0.15s linear;
-    transition: opacity 0.15s linear;
-    opacity: 0;
-  }
-  .fade.in {
-    opacity: 1;
-  }
-  .collapse {
-    display: none;
-  }
-  .collapse.in {
-    display: block;
-  }
-  tr.collapse.in {
-    display: table-row;
-  }
-  tbody.collapse {
-    display: table-row-group;
-  }
-  .row {
-    display: inline-table;
-  }
-  .rowNotify {
-    width: 100%;
-    justify-content: center;
-  }
-  .notification-modal {
-    margin-top: @spacing-rq;
-    margin-bottom: @spacing-rq;
-    text-align: center;
-  }
   .danger.notification-modal, .row-danger {
     color: rgb(234, 66, 86);
   }
@@ -1393,243 +972,6 @@
   }
   .info.notification-modal {
     color: #000;
-  }
-  .modalNotification-content {
-    border-radius: @spacing-rh;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
-    padding: @spacing-rq;
-    font-size: 1.1rem;
-    margin-top: 2rem;
-  }
-  .collapsing {
-    position: relative;
-    overflow: hidden;
-    height: 0;
-    -webkit-transition-timing-function: ease;
-    -o-transition-timing-function: ease;
-    transition-timing-function: ease;
-    -webkit-transition-duration: 0.35s;
-    -o-transition-duration: 0.35s;
-    transition-duration: 0.35s;
-    -webkit-transition-property: height, visibility;
-    -o-transition-property: height, visibility;
-    transition-property: height, visibility;
-  }
-  .caret {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    margin-left: 2px;
-    vertical-align: middle;
-    border-top: 4px dashed;
-    border-top: 4px solid;
-    border-right: 4px solid transparent;
-    border-left: 4px solid transparent;
-  }
-  .btn .caret {
-    margin-left: 0;
-  }
-  .btn-lg .caret {
-    border-width: 5px 5px 0;
-    border-bottom-width: 0;
-  }
-  //
-  // Breadcrumbs
-  // --------------------------------------------------
-  .breadcrumb {
-    padding: @breadcrumb-padding-vertical @breadcrumb-padding-horizontal;
-    margin-bottom: @line-height-computed;
-    list-style: none;
-    background-color: @breadcrumb-bg;
-    border-radius: @border-radius-base;
-    > li {
-      display: inline-block;
-      + li:before {
-        content: "@{breadcrumb-separator}\00a0"; // Unicode space added since inline-block means non-collapsing white-space
-        padding: 0 @caret-width-large;
-        color: @breadcrumb-color;
-      }
-    }
-    > .active {
-      color: @breadcrumb-active-color;
-    }
-  }
-  .pagination, .searchBox, .showItems {
-    padding: 0;
-    height: 2rem;
-  }
-  .is-searchable.is-open > .Select-control {
-    cursor: text;
-  }
-  .is-open > .Select-control {
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    background: #fff;
-    border-color: #9cbeca #bdd4dc #cedfe5;
-  }
-  .Select-menu-outer {
-    border-bottom-right-radius: 0.375rem;
-    border-bottom-left-radius: 0.375rem;
-    background-color: #fff;
-    border: 1px solid #bdd4dc;
-    border-top-color: #deeaee;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-    margin-top: -1px;
-    max-height: 200px;
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    z-index: 1000;
-    -webkit-overflow-scrolling: touch;
-  }
-  //
-  // Breadcrumbs
-  // --------------------------------------------------
-  .breadcrumb {
-    padding: @breadcrumb-padding-vertical @breadcrumb-padding-horizontal;
-    margin-bottom: @line-height-computed;
-    list-style: none;
-    background-color: @breadcrumb-bg;
-    border-radius: @border-radius-base;
-    > li {
-      display: inline-block;
-      + li:before {
-        content: "@{breadcrumb-separator}\00a0"; // Unicode space added since inline-block means non-collapsing white-space
-        padding: 0 @caret-width-large;
-        color: @breadcrumb-color;
-      }
-    }
-    > .active {
-      color: @breadcrumb-active-color;
-    }
-  }
-  .pagination, .searchBox, .showItems {
-    padding: 0;
-    height: 2rem;
-  }
-  .is-searchable.is-open > .Select-control {
-    cursor: text;
-  }
-  .is-open > .Select-control {
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    background: #fff;
-    border-color: #9cbeca #bdd4dc #cedfe5;
-  }
-  .Select-menu-outer {
-    border-bottom-right-radius: 0.375rem;
-    border-bottom-left-radius: 0.375rem;
-    background-color: #fff;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-    margin-top: -1px;
-    max-height: 200px;
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    z-index: 1000;
-    -webkit-overflow-scrolling: touch;
-  }
-  .Select-menu {
-    max-height: 198px;
-    overflow-y: auto;
-    position: fixed;
-    border: 2px solid #bdd4dc;
-  }
-  .Select-option.is-focused {
-    background-color: #1ba7d9;
-    color: #edf2f8;
-  }
-  .Select-option {
-    background-color: #fff;
-    color: #8799ad;
-    cursor: pointer;
-    display: block;
-    padding: 0.375rem 0.75rem;
-    line-height: 1rem;
-  }
-  .Select-control {
-    background-color: #fff;
-    border-color: #cedfe5 #bdd4dc #9cbeca;
-    border-radius: 0.375rem;
-    border: 0.125rem solid #bdd4dc;
-    color: #54667a;
-    cursor: default;
-    display: table;
-    border-spacing: 0;
-    border-collapse: separate;
-    height: 2.25rem;
-    outline: none;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-  }
-  .Select--single > .Select-control .Select-value, .Select-placeholder {
-    bottom: 0;
-    color: #bdd4dc;
-    left: 0;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    position: absolute;
-    right: 0;
-    top: 0;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .Select-input {
-    height: 2rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    vertical-align: middle;
-  }
-  .Select-input input {
-    border: none;
-  }
-  .Select-input input:focus {
-    outline: 0;
-  }
-  .Select-input:focus {
-    outline: 0;
-  }
-  .Select-arrow-zone {
-    cursor: pointer;
-    display: table-cell;
-    position: relative;
-    text-align: center;
-    vertical-align: middle;
-    width: 1.5625rem;
-    padding-right: 0.3125rem;
-  }
-  .Select-arrow-zone:focus {
-    outline: 0;
-  }
-  .Select-option:last-child {
-    border-bottom-right-radius: 0.375rem;
-    border-bottom-left-radius: 0.375rem;
-  }
-  .Select-arrow {
-    border-color: #bdd4dc transparent transparent;
-    border-style: solid;
-    border-width: 0.3125rem 0.3125rem 0.15625rem;
-    display: inline-block;
-    height: 0;
-    width: 0;
-  }
-  .Select-clear-zone {
-    -webkit-animation: Select-animation-fadeIn 0.2s;
-    animation: Select-animation-fadeIn 0.2s;
-    color: #a2b3be;
-    cursor: pointer;
-    display: table-cell;
-    position: relative;
-    text-align: center;
-    vertical-align: middle;
-    width: 1.6rem;
-  }
-  .pageCurrent {
-    color: @color-muted;
-    margin-left: @spacing-re;
   }
   //
   // Navs
@@ -1807,171 +1149,8 @@
   .rdr-Calendar {
     max-width: 240px;
   }
-  // Dropdowns
-  // -------------------------
-  // Specific dropdowns
-  .nav-tabs .dropdown-menu {
-    // make dropdown border overlap tab border
-    margin-top: -1px; // Remove the top rounded corners here since there is a hard edge above the menu
-  }
-  ul.nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-    background-color: #546677;
-  }
-  ul.nav-pills > li.active > a {
-    background-color: #03a6d7;
-  }
-  .headerClasses {
-    margin-left: 0;
-    margin-bottom: @spacing-xxl;
-  }
-  .pager {
-    margin: @spacing-hr 0;
-    padding-left: 0;
-    list-style: none;
-    text-align: center;
-  }
-  .pager li {
-    display: inline;
-  }
-  .pager li > a, .pager li > span {
-    display: inline-block;
-    padding: @spacing-small-horizontal @spacing-large-vertical;
-    border: 1px solid @color-neutral;
-    border-radius: @border-radius-pager;
-    background-color: #fff;
-  }
-  .pager li > a:focus, .pager li > a:hover {
-    text-decoration: none;
-    background-color: #eee;
-  }
-  .pager .next > a, .pager .next > span {
-    float: right;
-  }
-  .pager .previous > a, .pager .previous > span {
-    float: left;
-  }
-  .pager .disabled > a, .pager .disabled > a:focus, .pager .disabled > a:hover, .pager .disabled > span {
-    cursor: not-allowed;
-    color: #777;
-    background-color: #fff;
-  }
   .button-spacing button:first-of-type {
     margin-right: @spacing-re;
-  }
-  a.label:focus, a.label:hover {
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-  }
-  .label:empty {
-    display: none;
-  }
-  .btn .label {
-    position: relative;
-    top: -1px;
-  }
-  .label-default {
-    background-color: @color-dark;
-  }
-  .label-default[href]:focus, .label-default[href]:hover {
-    background-color: #5e5e5e;
-  }
-  .label-primary {
-    background-color: @color-light !important;
-  }
-  .label-primary[href]:focus, .label-primary[href]:hover {
-    background-color: @color-dark;
-  }
-  .badge {
-    font-size: 1.2rem;
-    font-weight: 700;
-    line-height: 1;
-    display: inline-block;
-    min-width: 1rem;
-    text-align: center;
-    vertical-align: middle;
-    white-space: nowrap;
-    color: @color-muted;
-    border-radius: @spacing-heading;
-    background-color: transparent;
-  }
-  .nav-pills .badge, p .badge {
-    font-size: 0.9rem;
-    line-height: 1rem;
-    background-color: #546677;
-    padding-left: 0.375rem;
-    padding-right: 0.375rem;
-    color: #fff;
-  }
-  .badge:empty {
-    display: none;
-  }
-  .btn .badge {
-    position: relative;
-    top: -1px;
-  }
-  .btn-group-xs > .btn .badge, .btn-xs .badge {
-    top: 0;
-    padding: @spacing-small-vertical @spacing-small-horizontal;
-  }
-  a.badge:focus, a.badge:hover {
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-  }
-  h2 span.badge {
-    vertical-align: middle;
-  }
-  .iconsHeader {
-    margin-right: @spacing-rq;
-  }
-  .userProfile-calendarActivity {
-    margin-bottom: @spacing-rh;
-  }
-  // needs bstrapReact wrapperw
-  .rdr-MonthAndYear-innerWrapper button {
-    padding: 0 !important;
-  }
-  .btn-link-end {
-    margin-right: @spacing-rq;
-  }
-  .btn-left {
-    margin-right: 1.5rem;
-  }
-  /* Panels - inherits classnames from bootstrap */
-  .panel {
-    margin-bottom: @spacing-hr;
-    border: 1px solid transparent;
-    border-radius: @border-radius-base;
-    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    background-color: #fcfcfc;
-  }
-  .panel-body {
-    padding: @spacing-large-vertical;
-    color: @color-dark;
-    font-size: 1rem;
-  }
-  .panel-title {
-    margin-top: 0;
-    margin-bottom: 0;
-    color: inherit;
-    font-size: 1.143rem;
-  }
-  .panel.panel-side {
-    padding: @spacing-half-base;
-    border: solid 1px @color-neutral !important;
-    background-color: #fff !important;
-  }
-  .panel-heading {
-    padding: @spacing-large-horizontal;
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: @border-radius-small;
-    border-top-right-radius: @border-radius-small;
-    font-size: 1.1rem !important;
-    font-weight: 600;
-    color: @color-light;
-    background-color: #fff;
   }
   #documents h2 span#documentLabel {
     max-width: 100%;
@@ -2255,3 +1434,4 @@
     }
   }
 }
+
