@@ -147,12 +147,12 @@ public class TranslationData implements Serializable {
 
     @JsonIgnore
     public Date getLastModifiedDate() {
-        return lastModifiedDate;
+        return new Date(lastModifiedDate.getTime());
     }
 
     @JsonIgnore
     public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+        this.lastModifiedDate = new Date(lastModifiedDate.getTime());
     }
 
     @Override
