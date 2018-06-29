@@ -21,5 +21,8 @@
         "interface-name": [true, "never-prefix"],
         "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"]
     },
+    "linterOptions": {
+      "exclude": ["**/*.js*", ".storybook*/**.js*"]
+    },
     "rulesDirectory": []
 }

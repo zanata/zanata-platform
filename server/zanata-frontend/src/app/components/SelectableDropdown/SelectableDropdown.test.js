@@ -9,6 +9,7 @@ const callback = () => {}
 describe('SelectableDropdown', () => {
   it('can render SelectableDropdown markup', () => {
     // Function used in TMMergeModal for a percentage selection dropdown
+    // @ts-ignore any
     const valueToDisplay = v => `The function says ${v}`
     const actual = ReactDOMServer.renderToStaticMarkup(
         <SelectableDropdown title={'TestDropdown'}

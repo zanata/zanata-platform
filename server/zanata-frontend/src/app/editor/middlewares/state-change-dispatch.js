@@ -29,6 +29,7 @@
  *   -> (end, nothing responding to change in phrase list)
  */
 const stateChangeDispatchMiddleware =
+  // @ts-ignore any
   (...callbacks) => store => next => action => {
     const stateBefore = store.getState()
     const result = next(action)

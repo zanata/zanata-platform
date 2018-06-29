@@ -27,9 +27,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 @Entity
 @Cacheable
 @Table(uniqueConstraints = @UniqueConstraint(name = "UKAccountId", columnNames = "accountId"))
+@GraphQLType(name = "AccountResetPasswordKey")
 public class HAccountResetPasswordKey extends AccountKeyBase implements
         Serializable {
 

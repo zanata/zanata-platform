@@ -20,10 +20,14 @@
  */
 package org.zanata.feature.dashboard;
 
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
@@ -35,6 +39,8 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.HasEmailRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
@@ -89,13 +95,21 @@ public class DashboardTest extends ZanataTestCase {
         return projectsTab.getMaintainedProjectList().size() > 0;
     }
 
-    @Trace(summary = "The user can change their email address")
+    @Trace(summary = "The user can export user data as JSON")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void accountEmailModification() throws Exception {
-        dashboard.goToSettingsTab().gotoSettingsAccountTab()
-                .typeNewAccountEmailAddress("new@fakeemail.com")
-                .clickUpdateEmailButton();
-        assertThat(dashboard.expectNotification(DashboardBasePage.EMAIL_SENT)).isTrue();
+    public void exportUserData() throws Exception {
+        String url =
+                dashboard.goToSettingsTab().gotoSettingsAccountTab()
+                        .getExportUserDataURL();
+        // avoid switching browser tabs (target = _blank)
+        WebDriver driver = dashboard.getDriver();
+        driver.get(url);
+        String json = driver.findElement(By.tagName("pre")).getText();
+
+        // just test that the JSON is valid:
+        Object value = new ObjectMapper().readValue(json, Object.class);
+        assertThat(value).isInstanceOf(Map.class);
+        // NB the contents of the export are handled by the unit test ExportRestServiceTest
     }
 
     @Trace(summary = "The user can change their password")

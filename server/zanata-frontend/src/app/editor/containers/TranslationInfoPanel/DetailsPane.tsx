@@ -19,7 +19,7 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
   if (!hasSelectedPhrase) {
     return <span>Select a phrase to see details.</span>
   }
-  const detailItem = (label, value) => {
+  const detailItem = (label: any, value: any) => {
     const valueDisplay = isEmpty(value)
         ? <span className="SidebarEditor-details--nocontent">No content</span>
         : <span className="SidebarEditor-details--content">{value}</span>
@@ -29,7 +29,7 @@ const DetailsPane: React.SFC<DetailsPaneProps> = ({
       </li>
     )
   }
-  const lastModifiedDisplay = (lastModifiedBy, lastModifiedTime) => {
+  const lastModifiedDisplay = (lastModifiedBy: any, lastModifiedTime: any) => {
     if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
       return undefined
     }

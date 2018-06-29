@@ -4,6 +4,7 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
+import Tooltip from 'antd/lib/tooltip'
 
 /**
  * Header for the source of the selected phrase
@@ -33,22 +34,25 @@ class TransUnitSourceHeader extends React.Component {
       ? undefined
       : (
       <li>
-        <Button size="large" icon="copy"
-          title={'Copy ' + this.props.sourceLocale.name +
-            ' (' + this.props.sourceLocale.id + ')'}
-          onClick={this.copyFromSource}
-          className={buttonClass} />
+        <Tooltip title={'Copy ' + this.props.sourceLocale.name +
+              ' (' + this.props.sourceLocale.id + ')'}>
+          <Button size="large" icon="copy"
+            onClick={this.copyFromSource}
+            className={buttonClass} />
+        </Tooltip>
       </li>)
 
     const closeButtonItem = hasTranslationChanged(this.props.phrase)
       ? undefined
       : (
       <li className="u-gtemd-hidden">
-        <Button
-          icon="close"
-          title="Cancel edit"
-          onClick={this.props.cancelEdit}
-          className={buttonClass} />
+        <Tooltip title="Cancel edit">
+          <Button
+            icon="close"
+
+            onClick={this.props.cancelEdit}
+            className={buttonClass} />
+        </Tooltip>
       </li>
       )
 

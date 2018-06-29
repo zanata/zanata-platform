@@ -165,6 +165,7 @@ describe('PhraseStatusFilterTest', () => {
     }
 
     let filterChangeType = 'none'
+    // @ts-ignore any
     const onFilterChange = statusType => {
       filterChangeType = statusType
     }

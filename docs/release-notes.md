@@ -37,7 +37,7 @@
 
 ##### Bug Fixes
  * [ZNTA-2618](https://zanata.atlassian.net/browse/ZNTA-2618) - GWT editor 'Save/Load settings' button does not work correctly
- * [ZNTA-2617](https://zanata.atlassian.net/browse/ZNTA-2617) - Cancel and delete butttons are not aligned on Delete language pop 
+ * [ZNTA-2617](https://zanata.atlassian.net/browse/ZNTA-2617) - Cancel and delete butttons are not aligned on Delete language pop
  * [ZNTA-2616](https://zanata.atlassian.net/browse/ZNTA-2616) - ReactJS Editor count for approved, translated, need work, rejected is not updated until we specifically reload the page
  * [ZNTA-2615](https://zanata.atlassian.net/browse/ZNTA-2615) - Translate button not working on new editor
  * [ZNTA-2614](https://zanata.atlassian.net/browse/ZNTA-2614) - GWT Editor Contrast on concurrent editor name poor

@@ -398,13 +398,19 @@
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
-        <version>5.1</version>
+        <version>6.0</version>
       </dependency>
 
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-commons</artifactId>
-        <version>5.1</version>
+        <version>6.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-tree</artifactId>
+        <version>6.0</version>
       </dependency>
 
       <dependency>
@@ -1809,6 +1815,11 @@
             <artifactId>javax.interceptor-api</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>io.leangen.graphql</groupId>
+        <artifactId>spqr</artifactId>
+        <version>0.9.7</version>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>

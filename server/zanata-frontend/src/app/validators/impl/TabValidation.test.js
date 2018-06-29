@@ -10,6 +10,7 @@ const messages = Messages[locale]
 const TabValidator =
   new TabValidation(locale, messages)
 
+// @ts-ignore any
 const noErrors = []
 
 describe('TabValidation', () => {
@@ -17,12 +18,14 @@ describe('TabValidation', () => {
     const source = 'Source without tab'
     const target = 'Target without tab'
     const errorList = TabValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('tabsInBoth', () => {
     const source = 'Source with\ttab'
     const target = 'Target with\ttab'
     const errorList = TabValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('noTabsInTarget', () => {

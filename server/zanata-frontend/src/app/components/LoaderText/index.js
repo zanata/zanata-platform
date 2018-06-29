@@ -4,10 +4,10 @@ import { Loader } from '../../components'
 
 /** @type
     { React.StatelessComponent<{
-        children,
+        children: any,
         loading: boolean,
         loadingText: string,
-        props?}>
+        props?: any}>
     } */
 const LoaderText = ({
   children,

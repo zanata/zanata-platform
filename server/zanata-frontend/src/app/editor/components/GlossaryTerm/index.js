@@ -86,12 +86,13 @@ class GlossaryTerm extends React.Component {
           </Button>
         </td>
         <td className="info-icon">
-          <Button
-            icon="info-circle-o"
-            title="Details"
-            className="Button--link s1 v-btm"
-            onClick={this.showDetails}
-          />
+          <Tooltip title="Details">
+            <Button
+              icon="info-circle-o"
+              className="Button--link s1 v-btm"
+              onClick={this.showDetails}
+            />
+          </Tooltip>
         </td>
       </tr>
     )

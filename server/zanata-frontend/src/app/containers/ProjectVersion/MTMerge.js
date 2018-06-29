@@ -8,7 +8,7 @@ import Alert from 'antd/lib/alert'
 import 'antd/lib/alert/style/css'
 import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
-import Select from 'antd/lib/select'
+// import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
 import Checkbox from 'antd/lib/checkbox'
 import 'antd/lib/checkbox/style/css'
@@ -17,7 +17,7 @@ import 'antd/lib/switch/style/css'
 import Card from 'antd/lib/card'
 import 'antd/lib/card/style/css'
 
-const Option = Select.Option
+// const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
 
 const plainOptions = ['Chinese', 'Dutch', 'English', 'German', 'Japanese',
@@ -36,12 +36,14 @@ class MTMerge extends Component {
       visible: true
     });
   }
+  // @ts-ignore any
   handleOk = (e) => {
     console.log(e)
     this.setState({
       visible: false
     })
   }
+  // @ts-ignore any
   handleCancel = (e) => {
     console.log(e);
     this.setState({
@@ -85,6 +87,7 @@ class MTMerge extends Component {
         </div>
     );
   }
+  // @ts-ignore any
   onChange = (checkedList) => {
     this.setState({
       checkedList,
@@ -92,6 +95,7 @@ class MTMerge extends Component {
       checkAll: checkedList.length === plainOptions.length,
     });
   }
+  // @ts-ignore any
   onCheckAllChange = (e) => {
     this.setState({
       checkedList: e.target.checked ? plainOptions : [],

@@ -27,8 +27,8 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Source of action on how translation are being copied.
  *
- * Usage {@link org.zanata.model.HTextFlowTarget.sourceType} and
- * {@link org.zanata.model.HTextFlowTargetHistory.sourceType}
+ * Usage {@link org.zanata.model.HTextFlowTarget#sourceType} and
+ * {@link org.zanata.model.HTextFlowTargetHistory#sourceType}
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -43,50 +43,50 @@ public enum TranslationSourceType implements Serializable {
     API_UPLOAD("API"),
     WEB_UPLOAD("WEB"),
     UNKNOWN("UNK");
-    public static final Collection<TranslationSourceType> AUTOMATED_ENTRIES;
-    static {
-        AUTOMATED_ENTRIES = ImmutableSet.of(TranslationSourceType.COPY_TRANS,
-                TranslationSourceType.COPY_VERSION,
-                TranslationSourceType.MERGE_VERSION,
-                TranslationSourceType.TM_MERGE);
-    }
+    public static final Collection<TranslationSourceType> AUTOMATED_ENTRIES = ImmutableSet.of(
+            COPY_TRANS,
+            COPY_VERSION,
+            MACHINE_TRANS,
+            MERGE_VERSION,
+            TM_MERGE);
+
     private final String abbr;
 
-    private TranslationSourceType(String abbr) {
+    TranslationSourceType(String abbr) {
         this.abbr = abbr;
     }
 
     public static TranslationSourceType getValueOf(String abbr) {
         switch (abbr) {
         case "CT":
-            return TranslationSourceType.COPY_TRANS;
+            return COPY_TRANS;
 
         case "CV":
-            return TranslationSourceType.COPY_VERSION;
+            return COPY_VERSION;
 
         case "MV":
-            return TranslationSourceType.MERGE_VERSION;
+            return MERGE_VERSION;
 
         case "TM":
-            return TranslationSourceType.TM_MERGE;
+            return TM_MERGE;
 
         case "GWT":
-            return TranslationSourceType.GWT_EDITOR_ENTRY;
+            return GWT_EDITOR_ENTRY;
 
         case "JS":
-            return TranslationSourceType.JS_EDITOR_ENTRY;
+            return JS_EDITOR_ENTRY;
 
         case "API":
-            return TranslationSourceType.API_UPLOAD;
+            return API_UPLOAD;
 
         case "WEB":
-            return TranslationSourceType.WEB_UPLOAD;
+            return WEB_UPLOAD;
 
         case "MT":
-            return TranslationSourceType.MACHINE_TRANS;
+            return MACHINE_TRANS;
 
         case "UNK":
-            return TranslationSourceType.UNKNOWN;
+            return UNKNOWN;
 
         default:
             throw new IllegalArgumentException(String.valueOf(abbr));

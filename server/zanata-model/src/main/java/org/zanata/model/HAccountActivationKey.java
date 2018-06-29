@@ -31,9 +31,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 @Entity
 @EntityListeners({ HAccountActivationKey.EntityListener.class })
 @Table(uniqueConstraints = @UniqueConstraint(name = "UKAccountId", columnNames = "accountId"))
+@GraphQLType(name = "AccountActivationKey")
 public class HAccountActivationKey extends AccountKeyBase
         implements Serializable {
     private static final long serialVersionUID = 1L;

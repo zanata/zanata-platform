@@ -8,6 +8,7 @@ import Button from 'antd/lib/button'
 import Tooltip from 'antd/lib/tooltip'
 import Layout from 'antd/lib/layout'
 
+// @ts-ignore any
 const callback = function (_e) {}
 
 describe('DraggableVersionPanels', () => {
@@ -77,12 +78,16 @@ describe('DraggableVersionPanels', () => {
           </a>
         </Tooltip>
         <Item
+          dispatch={callback}
+          key={'meikai1:ver1'}
           // @ts-ignore
-          key={'meikai1:ver1'} index={0}
+          index={0}
           value={someVersions[0]} removeVersion={callback} />
         <Item
+          dispatch={callback}
+          key={'meikai2:ver2'}
           // @ts-ignore
-          key={'meikai2:ver2'} index={1}
+          index={1}
           value={someVersions[1]} removeVersion={callback} />
         </Layout>
       </div>

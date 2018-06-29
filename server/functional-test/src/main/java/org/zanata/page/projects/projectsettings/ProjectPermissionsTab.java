@@ -21,6 +21,7 @@
 package org.zanata.page.projects.projectsettings;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -129,7 +130,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     public List<String> getSettingsMaintainersList() {
         log.info("Query maintainers list");
         List<WebElement> items = getSettingsMaintainersElement();
-        List<String> rows = Lists.transform(items, this::getUsername);
-        return ImmutableList.copyOf(rows);
+        return ImmutableList.copyOf(
+                items.stream().map(this::getUsername).iterator());
     }
 }

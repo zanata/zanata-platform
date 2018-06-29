@@ -28,9 +28,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 import org.zanata.model.HAccount;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.model.validator.Unique;
+import io.leangen.graphql.annotations.types.GraphQLInterface;
 
 /**
  * A set of credentials for a given user against an authentication mechanism.
@@ -43,6 +45,7 @@ import org.zanata.model.validator.Unique;
 @DiscriminatorColumn(name = "type",
         discriminatorType = DiscriminatorType.STRING)
 @Unique(properties = { "user" })
+@GraphQLInterface(name = "Credentials")
 public abstract class HCredentials extends ModelEntityBase {
     private static final long serialVersionUID = 1437030258583468680L;
     private HAccount account;

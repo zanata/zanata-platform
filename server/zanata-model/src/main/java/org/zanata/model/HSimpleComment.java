@@ -35,6 +35,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.BatchSize;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @see org.zanata.rest.dto.extensions.comment.SimpleComment
@@ -43,6 +44,7 @@ import org.hibernate.annotations.BatchSize;
 @EntityListeners({ HSimpleComment.EntityListener.class })
 @Cacheable
 @BatchSize(size = 20)
+@GraphQLType(name = "SimpleComment")
 public class HSimpleComment implements Serializable {
     private static final long serialVersionUID = 5684831285769022524L;
     private Long id;
