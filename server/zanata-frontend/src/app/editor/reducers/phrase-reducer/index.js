@@ -29,6 +29,7 @@ import {
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
+  TOGGLE_SAVE_WITH_ERROR_MODAL,
   UNDO_EDIT,
   VALIDATION_ERRORS
 } from '../../actions/phrases-action-types'
@@ -262,6 +263,11 @@ export const phraseReducer = handleActions({
   [VALIDATION_ERRORS]: (state, { payload: { phraseId, hasValidationError } }) =>
     update(state, {
       detail: { [phraseId]: { errors: { $set: hasValidationError } } }
+    }),
+
+  [TOGGLE_SAVE_WITH_ERROR_MODAL]: (state, { payload: { phraseId, showPopover } }) =>
+    update(state, {
+      detail: { [phraseId]: { showPopover: { $set: showPopover } } }
     })
 }, defaultState)
 

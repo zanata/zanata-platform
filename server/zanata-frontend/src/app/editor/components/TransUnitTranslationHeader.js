@@ -2,9 +2,10 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
-import Tooltip from 'antd/lib/tooltip'
 
 /**
  * Heading that displays locale name and ID
@@ -46,7 +47,7 @@ class TransUnitTranslationHeader extends React.Component {
             icon="rollback"
             className={this.buttonClass}
             onClick={this.props.undoEdit} />
-        </Tooltip>Tooltip>
+        </Tooltip>
       </li>
     )
   }

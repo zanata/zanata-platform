@@ -21,14 +21,26 @@
 
 import React from 'react'
 import * as PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Divider from 'antd/lib/divider'
+import 'antd/lib/divider/style/css'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
 import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
+import { toggleSaveErrorModal } from '../actions/phrases-actions'
+import SyntaxHighlighter, { registerLanguage }
+  from 'react-syntax-highlighter/light'
+import xml from 'react-syntax-highlighter/languages/hljs/xml'
+import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
+
+registerLanguage('xml', xml)
 
 const buttonClassByStatus = {
   untranslated: 'Button--neutral',
@@ -66,6 +78,7 @@ class TransUnitTranslationFooter extends React.Component {
     toggleSuggestionPanel: PropTypes.func.isRequired,
     savePhraseWithStatus: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
+    showErrorModal: PropTypes.func.isRequired,
     saveDropdownKey: PropTypes.any.isRequired,
     openDropdown: PropTypes.any,
     saveAsMode: PropTypes.bool.isRequired,
@@ -75,7 +88,8 @@ class TransUnitTranslationFooter extends React.Component {
     permissions: PropTypes.shape({
       reviewer: PropTypes.bool.isRequired,
       translator: PropTypes.bool.isRequired
-    }).isRequired
+    }).isRequired,
+    validationMessages: PropTypes.any
   }
 
   componentWillMount () {
@@ -140,6 +154,10 @@ class TransUnitTranslationFooter extends React.Component {
     )
   }
 
+  cancelSave = () => {
+    this.props.showErrorModal(this.props.phrase.id, false)
+  }
+
   render () {
     const {
       glossaryCount,
@@ -153,8 +171,10 @@ class TransUnitTranslationFooter extends React.Component {
       suggestionCount,
       suggestionSearchType,
       toggleGlossary,
+      showErrorModal,
       toggleSuggestionPanel,
-      permissions
+      permissions,
+      validationMessages
     } = this.props
 
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
@@ -167,6 +187,11 @@ class TransUnitTranslationFooter extends React.Component {
     const selectedButtonTitle =
       isSaving ? 'Saving...' : statusNames[selectedButtonStatus]
     const saveCallback = isSaving ? undefined : (event) => {
+      savePhraseWithStatus(phrase, selectedButtonStatus, event)
+    }
+
+    const saveWithErrors = () => {
+      showErrorModal(phrase.id, false)
       savePhraseWithStatus(phrase, selectedButtonStatus, event)
     }
 
@@ -235,32 +260,75 @@ class TransUnitTranslationFooter extends React.Component {
       </ul>
       /* eslint-enable max-len */
     )
+    const errorMessages = validationMessages &&
+      validationMessages.errorMessages.map((msg, i) => {
+        return (
+          <li className='red' key={i}>
+            {msg.label}: {msg.defaultMessage}
+          </li>
+        )
+      })
+
+    const syntaxStyle = {
+      width: '90%',
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word'
+    }
     return (
       /* eslint-disable max-len */
-      <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
-        <div className="TransUnit-panelFooterLeftNav u-floatLeft u-sizeHeight-1_1-2">
-          <ul className="u-listHorizontal">
-          {/* don't think this was ever displayed
-            <li class="u-gtemd-hidden" ng-show="appCtrl.PRODUCTION">
-              <button class="Link Link--neutral u-sizeHeight-1_1-2"
-                title="{{::'Details'|translate}}">
-                <icon name="info" title="{{::'Details'|translate}}"
-                      class="u-sizeWidth-1_1-2"></icon>
-              </button>
-            </li>
-          */}
-            {suggestionsIcon}
-            {glossaryIcon}
-          </ul>
-        </div>
-        <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
-          {errorsLabel} {saveAsLabel}
-          <SplitDropdown
-            onToggle={this.toggleDropdown}
-            isOpen={dropdownIsOpen}
-            actionButton={actionButton}
-            toggleButton={dropdownToggleButton}
-            content={otherActionButtonList} />
+      <div>
+        <Modal
+          title='You are trying to save an invalid translation'
+          visible={phrase.showPopover}
+          onCancel={this.cancelSave}
+          footer={[
+            <Button
+              key='back'
+              aria-label='button'
+              onClick={this.cancelSave}>
+              Cancel
+            </Button>,
+            <Button
+              key='ok'
+              aria-label='button'
+              type='primary'
+              className='EditorButton u-sizeHeight-1_1-4 u-textCapitalize Button--unsure'
+              onClick={saveWithErrors}>
+              Save as Needs Work
+            </Button>
+          ]}>
+          <h2>Translation</h2>
+          <SyntaxHighlighter
+            language='html'
+            style={atelierLakesideLight}
+            wrapLines
+            lineStyle={syntaxStyle}>
+            {phrase.newTranslations}
+          </SyntaxHighlighter>
+          <Divider />
+          <div className='red'>
+            <h2>Error Messages</h2>
+            <ul>
+              {errorMessages}
+            </ul>
+          </div>
+        </Modal>
+        <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
+          <div className="TransUnit-panelFooterLeftNav u-floatLeft u-sizeHeight-1_1-2">
+            <ul className="u-listHorizontal">
+              {suggestionsIcon}
+              {glossaryIcon}
+            </ul>
+          </div>
+          <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
+            {errorsLabel} {saveAsLabel}
+            <SplitDropdown
+              onToggle={this.toggleDropdown}
+              isOpen={dropdownIsOpen}
+              actionButton={actionButton}
+              toggleButton={dropdownToggleButton}
+              content={otherActionButtonList} />
+          </div>
         </div>
       </div>
       /* eslint-enable max-len */
@@ -268,4 +336,13 @@ class TransUnitTranslationFooter extends React.Component {
   }
 }
 
-export default TransUnitTranslationFooter
+function mapDispatchToProps (dispatch, _ownProps) {
+  return {
+    showErrorModal: (phraseId, showPopover) => {
+      // @ts-ignore
+      dispatch(toggleSaveErrorModal(phraseId, showPopover))
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(TransUnitTranslationFooter)

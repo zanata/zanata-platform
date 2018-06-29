@@ -152,6 +152,7 @@ class TransUnitTranslationPanel extends React.Component {
     const selectedPluralIndex = phrase.selectedPluralIndex || 0
 
     let translations
+    let validationMsgs
     if (isLoading) {
       translations = <span className="u-textMeta">
         <LoaderText loading />
@@ -169,7 +170,7 @@ class TransUnitTranslationPanel extends React.Component {
             target: translation,
             validationOptions
           }
-          const validationMsgs = getValidationMessages(validationProps)
+          validationMsgs = getValidationMessages(validationProps)
           const hasValidationErrors =
             validationMsgs && validationMsgs.errorCount > 0
           return (
@@ -205,7 +206,7 @@ class TransUnitTranslationPanel extends React.Component {
       ])
       header = <TransUnitTranslationHeader {...headerProps} />
 
-      const footerProps = pick(this.props, [
+      const footerProps = {...pick(this.props, [
         'glossaryCount',
         'glossaryVisible',
         'openDropdown',
@@ -221,7 +222,7 @@ class TransUnitTranslationPanel extends React.Component {
         'toggleSuggestionPanel',
         'showRejectModal',
         'permissions'
-      ])
+      ]), validationMessages: validationMsgs}
       footer = <TransUnitTranslationFooter {...footerProps} />
     }
 
