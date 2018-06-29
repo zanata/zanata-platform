@@ -3,7 +3,7 @@ import React from 'react'
 
 const ModalFooter: React.StatelessComponent<{children: any}> = ({
   children,
-  ...props,
+  ...props
 }) => {
   return (
     <div className='modal-footer'

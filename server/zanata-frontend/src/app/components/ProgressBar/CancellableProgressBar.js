@@ -1,10 +1,12 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { ProgressBar } from 'react-bootstrap'
 import { processStatusType } from '../../utils/prop-types-util'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Progress from 'antd/lib/progress'
+import 'antd/lib/progress/style/css'
 
 /**
  * This component can be used to show progress of a background task running on
@@ -15,16 +17,15 @@ import Button from 'antd/lib/button'
  */
 class CancellableProgressBar extends Component {
   static propTypes = {
-    heading: PropTypes.string,
     onCancelOperation: PropTypes.func.isRequired,
     processStatus: processStatusType.isRequired,
     queryProgress: PropTypes.func.isRequired,
     buttonLabel: PropTypes.string.isRequired
   }
   static defaultProps = {
-    heading: '',
     buttonLabel: 'Cancel Operation'
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = {
@@ -44,6 +45,7 @@ class CancellableProgressBar extends Component {
   componentDidMount () {
     this.queryProgressLoop()
   }
+  // @ts-ignore any
   componentWillUpdate (nextProp, nextState) {
     if (isProcessEnded(nextProp.processStatus) || nextState.stopTimer) {
       this.stopTimer()
@@ -54,12 +56,12 @@ class CancellableProgressBar extends Component {
   }
   render () {
     const {
-      heading, onCancelOperation, processStatus, buttonLabel
+      onCancelOperation, processStatus, buttonLabel
     } = this.props
     return (
       <div className='bstrapReact'>
-        <ProgressBar now={processStatus.percentageComplete}
-          label={`${heading} ${processStatus.percentageComplete}%`}
+        <Progress percent={processStatus.percentageComplete}
+          showInfo
         />
         <Button className='btn-danger' type='danger'
           disabled={isProcessEnded(processStatus)}

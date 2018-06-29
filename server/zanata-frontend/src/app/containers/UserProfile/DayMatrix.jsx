@@ -3,6 +3,7 @@ import React from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
 import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /**
  * Clickable date and word count component for daily statistics
@@ -15,8 +16,9 @@ const cssClass = {
 }
 
 /** @type
-    { React.StatelessComponent<{key?, dateLabel?, date?, wordCount?,
-      selectedDay?, selectedContentState?, handleSelectedDayChanged?}>
+    { React.StatelessComponent<{key?: any, dateLabel?: any, date?: any,
+      wordCount?: any, selectedDay?: any, selectedContentState?: any,
+      handleSelectedDayChanged?: any}>
     } */
 const DayMatrix = ({
   dateLabel,
@@ -39,7 +41,7 @@ const DayMatrix = ({
       {date
         ? <Button aria-label='button'
           onClick={() => handleSelectedDayChanged(date)}
-          className={date === selectedDay ? 'active ' + btnStyle : btnStyle}
+          className={date === selectedDay ? btnStyle + ' active' : btnStyle}
           disabled={dateIsInFuture || !date}
           // @ts-ignore
           title={wordCount + ' words'}>

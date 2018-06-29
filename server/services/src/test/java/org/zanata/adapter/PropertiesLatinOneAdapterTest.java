@@ -27,16 +27,17 @@ import java.io.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.resource.Resource;
 
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -55,8 +56,9 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
     public void parseLatinOneProperties() throws Exception {
         File latin1EncodedFile = createTempPropertiesFile(ISO_8859_1);
         Resource resource =
-                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent());
+                adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                        latin1EncodedFile.toURI(), LocaleId.EN,
+                        ""));
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents())
@@ -89,23 +91,32 @@ public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<Propertie
 
         File latin1EncodedFile = createTempPropertiesFile(ISO_8859_1);
         Resource resource =
-                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent());
+                adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                        latin1EncodedFile.toURI(), LocaleId.EN,
+                        ""));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        adapter.writeTranslatedFile(output,
-                null,
-                resource,
-                tResource,
-                "ru",
-                Optional.absent(),
-                false);
+        File dummyFile = File.createTempFile("temp", ".properties");
+        try {
 
-        // \u00C0 is the escaped unicode form of À
-        assertThat(output.toString(ISO_8859_1)).isEqualTo(
-                "line1=\\u00C0Founde metalkcta\n" +
-                "line2=\\u00C0Tbade metalkcta\n" +
-                "line3=\n");
+            FileFormatAdapter.ParserOptions
+                    sourceOptions =
+                    new FileFormatAdapter.ParserOptions(dummyFile.toURI(),
+                            LocaleId.EN, "");
+            TranslatedDoc translatedDoc =
+                    new TranslatedDoc(resource, tResource, new LocaleId("ru"));
+            adapter.writeTranslatedFile(output,
+                    new WriterOptions(sourceOptions, translatedDoc),
+                    false);
+
+            // \u00C0 is the escaped unicode form of À
+            assertThat(output.toString(ISO_8859_1)).isEqualTo(
+                    "line1=\\u00C0Founde metalkcta\n" +
+                            "line2=\\u00C0Tbade metalkcta\n" +
+                            "line3=\n");
+        } finally {
+            dummyFile.delete();
+        }
     }
 
 }

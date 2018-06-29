@@ -1,6 +1,7 @@
 @import "../../styles/variables.less";
 
 #glossary {
+
   .glossaryPaging .u-textNeutral-top {
     padding-top: @spacing-rh;
   }
@@ -25,13 +26,15 @@
   }
   td.languageSelect .Select-placeholder {
     position: absolute;
-    top: 4px;
   }
   table.glossaryEntry .td-3 .textInput, table.glossaryEntry .hidesmall.td-2 .textInput {
     width: 90%;
   }
   .glossarySelect .Select-value {
     padding-top: 0 !important;
+  }
+  table.glossaryEntry tr {
+    vertical-align: middle;
   }
   table.glossaryEntry .td-3 {
     max-width: 6rem;
@@ -47,6 +50,9 @@
     padding-right: 0.5rem;
     position: relative;
     width: 100%;
+  }
+  .topBtn .s1 {
+    vertical-align: bottom;
   }
   .glossaryHeader-actions input.textInput {
     border: solid 2px @color-neutral;

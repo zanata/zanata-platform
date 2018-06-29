@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
 
+import io.leangen.graphql.annotations.GraphQLIgnore;
+
 /**
  * Entity for request to join language team. See also
  * {@link org.zanata.model.Request}
@@ -19,6 +21,7 @@ import java.io.Serializable;
  */
 @Entity
 @Access(AccessType.FIELD)
+@GraphQLIgnore
 public class LanguageRequest implements Serializable {
     private static final long serialVersionUID = 464624622368897248L;
     @Id

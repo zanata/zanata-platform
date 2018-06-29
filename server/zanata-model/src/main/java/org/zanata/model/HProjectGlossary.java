@@ -14,11 +14,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
 @Table(name = "HProject_Glossary")
+@GraphQLType(name = "ProjectGlossary")
 public class HProjectGlossary implements Serializable {
     private static final long serialVersionUID = -3353891750258196418L;
     private HProjectGlossaryPk id = new HProjectGlossaryPk();

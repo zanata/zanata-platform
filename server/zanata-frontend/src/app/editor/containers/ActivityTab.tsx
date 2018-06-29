@@ -20,12 +20,13 @@ const COUNT_PER_PAGE = 10
 interface ActivityTabProps {
   transHistory?: any,
   postComment: (text: string) => void
-  selectActivityTypeFilter: (text: string) => void,
+  selectActivityTypeFilter: (text: ActivityFilter) => void,
   selectedActivites?: ActivityFilter
 }
 
 type Filter = (transHistory: any) => ActivityItemList
 
+// @ts-ignore any
 const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) => {
   return {
     type: activityTypes.comment,
@@ -38,6 +39,7 @@ const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) =
   }
 })
 
+// @ts-ignore any
 const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map((historyItem) => {
   const lastModified = new Date(historyItem.modifiedDate)
   return {
@@ -53,6 +55,7 @@ const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map
   }
 })), latest: latestHistoryAsItem(latest)})
 
+// @ts-ignore any
 const latestHistoryAsItem = (latest) => ({
   type: activityTypes.revision,
   content: latest.contents[0],
@@ -83,6 +86,7 @@ class ActivityItemsPager extends React.Component<Props, State> {
     currentPage: 0
   }
 
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = this.defaultState
@@ -145,6 +149,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
 }) => {
   const {reviewComments, latest} = transHistory
   /* Returns Activity Items list filtered by comments and updates */
+  // @ts-ignore any
   const filterActivityItems = (activityFilterType) => {
     if (isEmpty(reviewComments) && isEmpty(latest)) {
         return DO_NOT_RENDER

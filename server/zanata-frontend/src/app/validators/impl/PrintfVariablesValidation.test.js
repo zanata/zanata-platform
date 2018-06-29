@@ -10,6 +10,7 @@ const messages = Messages[locale]
 const PrintfVariablesValidator =
   new PrintfVariablesValidation(locale, messages)
 
+// @ts-ignore any
 const noErrors = []
 
 describe('PrintfVariablesValidation', () => {
@@ -17,6 +18,7 @@ describe('PrintfVariablesValidation', () => {
     const source = 'Testing string with variable %1v and %2v'
     const target = '%2v and %1v included, order not relevant'
     const errorList = PrintfVariablesValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('missingVarInTarget', () => {

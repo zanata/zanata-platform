@@ -3,7 +3,7 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import CancellableProgressBar from './CancellableProgressBar'
-import { ProgressBar } from 'react-bootstrap'
+import Progress from 'antd/lib/progress'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
 
 const callback = () => {}
@@ -22,7 +22,7 @@ describe('CancellableProgressBar', () => {
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className='bstrapReact'>
-        <ProgressBar now={0}label={' 0%'} />
+        <Progress percent={0} showInfo />
         <button type='button' className='ant-btn btn-danger ant-btn-danger'>
           <span>Cancel TM Merge</span>
         </button>
@@ -43,7 +43,7 @@ describe('CancellableProgressBar', () => {
         queryProgress={callback} />
     )).toEqual(ReactDOMServer.renderToStaticMarkup(
       <div className='bstrapReact'>
-        <ProgressBar now={0}label={' 0%'} />
+        <Progress percent={0} showInfo />
         <button disabled type='button' className='ant-btn btn-danger ant-btn-danger'>
           <span>Cancel TM Merge</span>
         </button>

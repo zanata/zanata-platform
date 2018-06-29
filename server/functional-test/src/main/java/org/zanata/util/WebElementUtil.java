@@ -23,6 +23,7 @@ package org.zanata.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import org.openqa.selenium.By;
@@ -33,11 +34,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.page.WebDriverFactory;
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public class WebElementUtil {
 
@@ -56,8 +54,9 @@ public class WebElementUtil {
      */
     public static List<String>
             elementsToText(Collection<WebElement> webElements) {
-        return ImmutableList.copyOf(Collections2.transform(webElements,
-                WebElementToTextFunction.FUNCTION));
+        return ImmutableList.copyOf(webElements.stream()
+                .map(WebElementUtil::getTrimmedText)
+                .iterator());
     }
 
     public static List<String> elementsToText(WebDriver driver, final By by) {
@@ -67,8 +66,8 @@ public class WebElementUtil {
                         throw new RuntimeException("Driver is null");
                     }
                     List<WebElement> elements = input.findElements(by);
-                    return ImmutableList.copyOf(Lists.transform(elements,
-                            WebElementToTextFunction.FUNCTION));
+                    return ImmutableList.copyOf(elements.stream()
+                            .map(WebElementUtil::getTrimmedText).iterator());
                 });
     }
 
@@ -79,8 +78,9 @@ public class WebElementUtil {
 
     public static List<String> elementsToInnerHTML(WebDriver driver,
             Collection<WebElement> webElements) {
-        return ImmutableList.copyOf(Collections2.transform(webElements,
-                new WebElementToInnerHTMLFunction(driver)));
+        return ImmutableList.copyOf(webElements.stream()
+                .map(it -> getInnerHTML(driver, it))
+                .iterator());
     }
 
     public static List<TableRow> getTableRows(WebDriver driver,
@@ -94,8 +94,8 @@ public class WebElementUtil {
                             webDriver.findElement(byQueryForTable);
                     List<WebElement> rows =
                             table.findElements(By.xpath(".//tbody[1]/tr"));
-                    return ImmutableList.copyOf(Lists.transform(rows,
-                            WebElementTableRowFunction.FUNCTION));
+                    return ImmutableList.copyOf(rows.stream().map(TableRow::new)
+                            .iterator());
                 });
     }
 
@@ -108,19 +108,19 @@ public class WebElementUtil {
                     }
                     List<WebElement> rows =
                             table.findElements(By.xpath(".//tbody[1]/tr"));
-                    return ImmutableList.copyOf(Lists.transform(rows,
-                            WebElementTableRowFunction.FUNCTION));
+                    return ImmutableList.copyOf(rows.stream().map(
+                            TableRow::new).iterator());
                 });
     }
 
     public static ImmutableList<List<String>>
             transformToTwoDimensionList(List<TableRow> tableRows) {
-        return ImmutableList.copyOf(Lists.transform(tableRows, row -> {
+        return ImmutableList.copyOf(tableRows.stream().map(row -> {
             if (row == null) {
                 throw new RuntimeException("Source table is null");
             }
             return row.getCellContents();
-        }));
+        }).iterator());
     }
 
     public static FluentWait<WebDriver> waitForSeconds(WebDriver webDriver,
@@ -152,16 +152,15 @@ public class WebElementUtil {
                     }
                     List<WebElement> rows =
                             table.findElements(By.xpath(".//tbody[1]/tr"));
-                    List<TableRow> tableRows = Lists.transform(rows,
-                            WebElementTableRowFunction.FUNCTION);
-                    return ImmutableList
-                            .copyOf(Lists.transform(tableRows, row -> {
+                    return ImmutableList.copyOf(rows.stream()
+                            .map(TableRow::new)
+                            .map(row -> {
                                 List<String> cellContents =
                                         row.getCellContents();
                                 Preconditions.checkElementIndex(columnIndex,
                                         cellContents.size(), "column index");
                                 return cellContents.get(columnIndex);
-                            }));
+                            }).iterator());
                 });
     }
 
@@ -175,8 +174,9 @@ public class WebElementUtil {
                     final WebElement table = webDriver.findElement(by);
                     List<WebElement> rows =
                             table.findElements(By.xpath(".//tbody[1]/tr"));
-                    List<TableRow> tableRows = Lists.transform(rows,
-                            WebElementTableRowFunction.FUNCTION);
+                    List<TableRow> tableRows = rows.stream()
+                            .map(TableRow::new)
+                            .collect(Collectors.toList());
                     return transformToTwoDimensionList(tableRows);
                 });
     }
@@ -213,41 +213,8 @@ public class WebElementUtil {
         driver.switchTo().defaultContent();
     }
 
-    private static class WebElementToInnerHTMLFunction
-            implements Function<WebElement, String> {
-        private final WebDriver driver;
-
-        public WebElementToInnerHTMLFunction(WebDriver driver) {
-            this.driver = driver;
-        }
-
-        @Override
-        public String apply(WebElement from) {
-            return getInnerHTML(driver, from);
-        }
-    }
-
-    private static enum WebElementTableRowFunction
-            implements Function<WebElement, TableRow> {
-        FUNCTION;
-
-        @Override
-        public TableRow apply(WebElement element) {
-            return new TableRow(element);
-        }
-    }
-
-    public static enum WebElementToTextFunction
-            implements Function<WebElement, String> {
-        FUNCTION;
-
-        @Override
-        public String apply(@Nullable WebElement from) {
-            if (from == null) {
-                throw new RuntimeException("Source element is null");
-            }
-            return from.getText().trim();
-        }
+    private static String getTrimmedText(WebElement elem) {
+        return elem.getText().trim();
     }
 
     public static void searchAutocomplete(WebDriver driver, String id,
@@ -273,9 +240,8 @@ public class WebElementUtil {
             final String formId, final String id) {
         List<WebElement> results =
                 getSearchAutocompleteResults(driver, formId, id);
-        List<String> resultsText =
-                Lists.transform(results, WebElement::getText);
-        return resultsText;
+        return results.stream()
+                .map(WebElement::getText).collect(Collectors.toList());
     }
 
     public static void triggerScreenshot(final String tag) {

@@ -9,8 +9,11 @@
 @error-color: #ff3b3d;
 @highlight-color: @info-color;
 @warning-color: #ffa800;
-@normal-color: #d9d9d9;
+@normal-color: #f7f7f7;
+@neutral-color: #BDD4DC;
+@muted-color: #A2B3BE;
 @unsure-color: #E9DF1B;
+
 @layout-body-background: #fff;
 @label-color: @primary-color;
 @btn-primary-bg: @primary-color;
@@ -22,12 +25,19 @@
 // http://tachyons.io/#style
 // Detailed documentation:  http://tachyons.io/docs
 
+@checkbox-color: @info-color !important;
+@switch-color: @info-color !important;
+
 .txt-primary {
   color: @primary-color;
 }
 
 .txt-warn {
   color: @warning-color;
+}
+
+.txt-newblue {
+  color: @processing-color;
 }
 
 .txt-error {
@@ -43,11 +53,15 @@
 }
 
 .txt-muted {
-  color: #A2B3BE
+  color: @muted-color;
 }
 
 .txt-neutral {
-  color: #BDD4DC;
+  color: @neutral-color;
+}
+
+.txt-white {
+  color: #fff;
 }
 
 .bg-primary {
@@ -81,3 +95,6 @@
   background-color: #BDD4DC;
 }
 
+.d-inh {
+  display: inherit;
+}

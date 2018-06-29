@@ -27,6 +27,7 @@ import { DEFAULT_LOCALE } from '../../config'
 export const GLOSSARY_TAB = 'GLOSSARY_TAB'
 export const ACTIVITY_TAB = 'ACTIVITY_TAB'
 
+// @ts-ignore any
 export const identity = (key/*: any*/) => {
   // TODO pahuang implement gettextCatalog.getString
   // console.log('gettextCatalog.getString')
@@ -80,12 +81,16 @@ const defaultState /*: State*/ = {
 
 /* selectors */
 export const getNavHeaderVisible =
+  // @ts-ignore any
   (state/*: State*/) => state.panels.navHeader.visible
 // always show sidebar when settings is on
+// @ts-ignore any
 export const getSidebarVisible = (state/*: State*/) =>
   state.panels.sidebar.visible || state.showSettings
+// @ts-ignore any
 export const getSidebarTab = (state/*: State*/) =>
   state.panels.sidebar.selectedTab
+// @ts-ignore any
 export const getShowSettings = (state/*: State*/) => state.showSettings
 export const getGlossaryVisible = createSelector(getSidebarVisible,
   getShowSettings, getSidebarTab,
@@ -97,9 +102,11 @@ export const getActivityVisible = createSelector(getSidebarVisible,
 export const getInfoPanelVisible = createSelector(getSidebarVisible,
   getShowSettings, (sidebar, settings) => sidebar && !settings)
 export const getKeyShortcutsVisible =
+  // @ts-ignore any
   (state/*: State*/) => state.panels.keyShortcuts.visible
 
 /* instruct immutability-helper to toggle a boolean value */
+// @ts-ignore any
 const $toggle = {$apply: bool => !bool}
 
 export default handleActions({

@@ -2,12 +2,14 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {
-  Panel, ListGroup, ListGroupItem, PanelGroup
-} from 'react-bootstrap'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
+
 import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
   versionDtoPropType} from '../../utils/prop-types-util'
+
+const Panel = Collapse.Panel
 
 /**
  * Panels for selecting and prioritising of project-versions
@@ -36,9 +38,10 @@ class ProjectVersionPanels extends Component {
       .filter(p => p.projectSlug === project.id)
       .map(p => p.version)
   }
+
   render () {
     if (this.props.projectVersions.length === 0) {
-      return <PanelGroup />
+      return <span><Panel /></span>
     }
     const panels = this.props.projectVersions.map((project, index) => {
       const selectedVersionsInProject =
@@ -52,7 +55,7 @@ class ProjectVersionPanels extends Component {
         />
       )
     })
-    return <PanelGroup defaultActiveKey={0} accordion>{panels}</PanelGroup>
+    return <span>{panels}</span>
   }
 }
 
@@ -63,33 +66,36 @@ const isVersionInList =
  * Sub Component of a single project with versions.
  * Handles behavior of display or selecting versions of this project.
  */
+
 const SelectableProjectPanel = ({
   project,
   selectedVersionsInProject,
   onAllVersionCheckboxChange,
   onVersionCheckboxChange }) => {
   return (
-    <Panel header={
-      <h3>
-        <SelectAllVersionsCheckbox
-          project={project}
-          onAllVersionCheckboxChange={onAllVersionCheckboxChange}
-          selectedVersionsInProject={selectedVersionsInProject} />
-      </h3>}>
-      <ListGroup fill>
-        {project.versions.map((version, index) => {
-          const checked = isVersionInList(selectedVersionsInProject, version)
-          return (
-            <ListGroupItem className='v' key={index}>
-              <VersionMenuCheckbox version={version}
-                onVersionCheckboxChange={onVersionCheckboxChange}
-                checked={checked}
-                projectSlug={project.id} />
-            </ListGroupItem>
-          )
-        })}
-      </ListGroup>
-    </Panel>
+    <Collapse>
+      <Panel showArrow={false} header={
+        <span className='list-group-item'>
+          <SelectAllVersionsCheckbox
+            project={project}
+            onAllVersionCheckboxChange={onAllVersionCheckboxChange}
+            selectedVersionsInProject={selectedVersionsInProject} />
+        </span>}>
+        <ul>
+          {project.versions.map((version, index) => {
+            const checked = isVersionInList(selectedVersionsInProject, version)
+            return (
+              <li className='v list-group-item' key={index}>
+                <VersionMenuCheckbox version={version}
+                  onVersionCheckboxChange={onVersionCheckboxChange}
+                  checked={checked}
+                  projectSlug={project.id} />
+              </li>
+            )
+          })}
+        </ul>
+      </Panel>
+    </Collapse>
   )
 }
 SelectableProjectPanel.propTypes = {
@@ -126,7 +132,7 @@ class SelectAllVersionsCheckbox extends Component {
       selectedVersionsInProject.length > 0
     return (
       <div className='checkbox'>
-        <label>
+        <span>
           <TriCheckbox
             onChange={this.onAllVersionCheckboxChange}
             checked={allVersionsChecked}
@@ -134,7 +140,7 @@ class SelectAllVersionsCheckbox extends Component {
               title='source project' className='s0'
               parentClassName='iconTMX' /> {project.title} <LockIcon
                 status={project.status} />
-        </label>
+        </span>
       </div>
     )
   }
@@ -162,12 +168,12 @@ class VersionMenuCheckbox extends Component {
     } = this.props
     return (
       <div className='checkbox'>
-        <label>
+        <span>
           <TriCheckbox onChange={this.onVersionCheckboxChange}
             checked={checked} /> <Icon name='version' title='source version'
               className='s0' parentClassName='iconTMX' /> {version.id} <LockIcon
                 status={version.status} />
-        </label>
+        </span>
       </div>
     )
   }

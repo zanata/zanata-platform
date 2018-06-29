@@ -52,6 +52,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
     super(locale)
     this.messages = messages
     this.description = messages.printfVariablesValidatorDesc
+    // @ts-ignore any
     this.label = messages[this.id]
   }
 
@@ -71,7 +72,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
   }
 
   protected findMissingVariables(sourceVars: string[],
-    targetVars?: string[]): string {
+    targetVars: string[]): string | null {
     const missing = this.listMissing(sourceVars, targetVars)
     return (missing.length > 0)
       ? new MessageFormat(this.messages.varsMissing, this.locale)
@@ -79,7 +80,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
       : null
   }
 
-  protected findAddedVariables(sourceVars: string[], targetVars?: string[]): string {
+  protected findAddedVariables(sourceVars: string[], targetVars: string[]): string | null {
     // missing from source = added
     const added = this.listMissing(targetVars, sourceVars)
     // Push as combined incompleteEntry errors

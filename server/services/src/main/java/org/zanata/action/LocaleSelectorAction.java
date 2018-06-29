@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
@@ -137,16 +138,10 @@ public class LocaleSelectorAction implements Serializable {
 
     public List<SelectItem> getSupportedLocales() {
         Iterator<Locale> locales = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
-        List<SelectItem> selectItems =
-                Lists.transform(Lists.newArrayList(locales),
-                        new Function<Locale, SelectItem>() {
-                            @Override
-                            public SelectItem apply(Locale locale) {
-                                return new SelectItem(locale.toString(),
-                                        locale.getDisplayName(locale));
-                            }
-                        });
-        return selectItems;
+        return Lists.newArrayList(locales).stream()
+                .map(locale -> new SelectItem(locale.toString(),
+                        locale.getDisplayName(locale)))
+                .collect(Collectors.toList());
     }
 
     public void setLocale(Locale locale) {

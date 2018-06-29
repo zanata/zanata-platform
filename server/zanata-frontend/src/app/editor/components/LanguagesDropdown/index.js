@@ -29,6 +29,7 @@ class LanguagesDropdown extends React.Component {
     isOpen: PropTypes.bool.isRequired
   }
 
+  // @ts-ignore any
   localeUrl = (locale) => {
     const { projectVersion, selectedDoc } = this.props.context
     const docId = encode(selectedDoc.id)

@@ -23,12 +23,15 @@ package org.zanata.model.po;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 /**
  * @author sflaniga@redhat.com
  * @see org.zanata.rest.dto.extensions.gettext.PoHeader
  */
 @Entity
 @Cacheable
+@GraphQLType(name = "PoHeader")
 public class HPoHeader extends PoHeaderBase {
 
     private static final long serialVersionUID = 1L;

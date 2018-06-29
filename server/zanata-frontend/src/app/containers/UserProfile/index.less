@@ -26,6 +26,9 @@
     max-width: 20rem;
     width: 100%;
   }
+  .userProfile-calendarActivity {
+    padding-bottom: 3rem;
+  }
   .userProfile-wrapper {
     margin-top: @spacing-rh;
   }
@@ -164,7 +167,6 @@
     text-align: center;
     vertical-align: top;
     margin-bottom: @spacing-base-and-a-half;
-    table-layout: fixed;
     width: 100%
   }
   .userProfile-activityGraph h3 {
@@ -194,10 +196,9 @@
     margin-bottom: @spacing-rq;
   }
   #userProfile-activityTable td button {
+    height: 5.5rem;
     padding: 0 !important;
-    height: initial;
-    width: 95%;
-    border: none !important;
+    width: 100%;
   }
   #userProfile-activityTable td button.btn-primary {
     background-color: rgba(84, 102, 119, 0.65) !important;
@@ -300,7 +301,12 @@
   }
   .modal-content {
     max-width: inherit;
-  } // @screen-xs variable depreciated
+  }
+  .matrix-inner {
+    width: 100%;
+    margin-right: @spacing-base;
+  }
+  // @screen-xs variable depreciated
   @media (max-width: 29.375rem) {
     .matrix-table {
       display: block;
@@ -321,10 +327,6 @@
       display: -o-flex;
       flex-direction: row;
       -webkit-flex-direction: row;
-    }
-    .matrix-inner {
-      width: 100%;
-      margin-right: @spacing-base;
     }
     .matrixHeading {
       width: 100%;
@@ -375,4 +377,3 @@
     margin-top: @spacing-rh;
   }
 }
-

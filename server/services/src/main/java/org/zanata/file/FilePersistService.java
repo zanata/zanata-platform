@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.model.HRawDocument;
 
 public interface FilePersistService extends Serializable {
@@ -43,7 +45,7 @@ public interface FilePersistService extends Serializable {
     // with the
     // document resource and cleanup is possible, in case temp files were
     // generated.
-    public InputStream getRawDocumentContentAsStream(HRawDocument document)
+    InputStream getRawDocumentContentAsStream(@Nonnull HRawDocument document)
             throws RawDocumentContentAccessException;
 
     boolean hasPersistedDocument(GlobalDocumentId id);

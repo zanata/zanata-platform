@@ -25,7 +25,6 @@
         // webpack/jest deal with the output themselves.
         // This helps to avoid confusing jest with extra copies of mocks.
         "noEmit": true,
-        // "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         // NB not used if noEmit is true
@@ -34,6 +33,7 @@
         "skipLibCheck": true,
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
+        "strict": true,
         "target": "ES5"
     },
     "include": [

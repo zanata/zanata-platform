@@ -47,6 +47,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -265,11 +267,11 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
     private static List<Integer>
             getResultStatusCodes(List<Future<Integer>> futures) {
-        return Lists.transform(futures, input -> {
+        return futures.stream().map(input -> {
             try {
                 return input.get();
             } catch (Exception e) {
-                // by using filter we lose RESTeasy's exception
+                // by using filter we lose RESTEasy's exception
                 // translation
                 String message = e.getMessage().toLowerCase();
                 if (message.matches(".+429.+too many concurrent request.+")) {
@@ -277,6 +279,6 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 }
                 throw new RuntimeException(e);
             }
-        });
+        }).collect(Collectors.toList());
     }
 }

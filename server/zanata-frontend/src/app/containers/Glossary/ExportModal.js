@@ -4,11 +4,11 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/index.less'
+import 'antd/lib/button/style/css'
 import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/index.less'
+import 'antd/lib/modal/style/css'
 import Select from 'antd/lib/select'
-import 'antd/lib/select/style/index.less'
+import 'antd/lib/select/style/css'
 
 import {
   glossaryUpdateExportType,

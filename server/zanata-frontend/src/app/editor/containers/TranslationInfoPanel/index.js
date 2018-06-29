@@ -21,6 +21,8 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
+// eslint-disable-next-line no-unused-vars
+import { ActivityFilter } from '../../utils/activity-util'
 
 /* Tab keys for tracking active Tab */
 const activityTabKey = '1'
@@ -45,7 +47,6 @@ const commentShape = PropTypes.shape({
   id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
 })
 
-/* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
     activityVisible: PropTypes.bool.isRequired,
@@ -83,19 +84,24 @@ class TranslationInfoPanel extends React.Component {
     }),
     isRTL: PropTypes.bool.isRequired
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.handleSelectTab = this.handleSelectTab.bind(this)
     this.selectActivityTypeFilter =
       this.selectActivityTypeFilter.bind(this)
+
     this.state = {
       key: activityTabKey,
-      selectedActivites: 'all'
+      /** @type {ActivityFilter} */
+      selectedActivites: ('all')
     }
   }
+  // @ts-ignore any
   componentDidUpdate (prevProps) {
     const { notification } = this.props
     if (notification && prevProps.notification !== notification) {
+      // @ts-ignore any
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
@@ -103,6 +109,7 @@ class TranslationInfoPanel extends React.Component {
       })
     }
   }
+  // @ts-ignore any
   handleSelectTab (key) {
     if (key === activityTabKey) {
       this.props.toggleActivity()
@@ -111,9 +118,11 @@ class TranslationInfoPanel extends React.Component {
     }
     this.setState({ key })
   }
+  /** @param activityFilterType {ActivityFilter} */
   selectActivityTypeFilter (activityFilterType) {
     this.setState(({ selectedActivites: activityFilterType }))
   }
+  // @ts-ignore any
   postComment = (postComment) => {
     const reviewData = {
       localeId: this.props.localeId,
@@ -213,6 +222,7 @@ class TranslationInfoPanel extends React.Component {
     )
   }
 }
+// @ts-ignore any
 function mapStateToProps (state) {
   const { glossary, phrases, context, activity } = state
   const { detail, selectedPhraseId, notification } = phrases
@@ -247,10 +257,12 @@ function mapStateToProps (state) {
   return newProps
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
     // @ts-ignore
     close: () => dispatch(setSidebarVisibility(false)),
+    // @ts-ignore any
     postReviewComment: (reviewData) =>
       dispatch(postReviewComment(dispatch, reviewData)),
     toggleActivity: () => dispatch(toggleActivity()),

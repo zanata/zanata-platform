@@ -12,6 +12,7 @@ import {
 } from './phrase-list'
 import { watchSelectedPhraseSearches } from './selected-phrase-searches'
 
+// @ts-ignore any
 export default function addWatchers (store) {
   watchRequiredPhraseList(store)
   watchAdvancedFilterList(store)

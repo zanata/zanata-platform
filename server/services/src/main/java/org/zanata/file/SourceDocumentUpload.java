@@ -20,6 +20,7 @@
  */
 package org.zanata.file;
 
+import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 import java.io.File;
@@ -34,6 +35,8 @@ import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -61,8 +64,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-//TODO damason: add thorough unit testing
 
 @Dependent
 @Named("sourceDocumentUploader")
@@ -262,30 +263,29 @@ public class SourceDocumentUpload implements Serializable {
                     "Uploaded file did not pass virus scan");
         }
         HDocument document;
-        Optional<String> params;
-        params = Optional.fromNullable(
-                Strings.emptyToNull(uploadForm.getAdapterParams()));
-        if (!params.isPresent()) {
+        String params = nullToEmpty(uploadForm.getAdapterParams());
+        if (params.isEmpty()) {
             params = documentDAO.getAdapterParams(id.getProjectSlug(),
                     id.getVersionSlug(), id.getDocId());
         }
         try {
             Optional<String> docType =
                     Optional.fromNullable(uploadForm.getFileType());
+            LocaleId locale = LocaleId.EN_US;
             Resource doc =
                     translationFileServiceImpl.parseUpdatedAdapterDocumentFile(
-                            tempFile.toURI(), id.getDocId(),
-                            uploadForm.getFileType(), params, docType);
-            doc.setLang(LocaleId.EN_US);
+                            id.getDocId(),
+                            uploadForm.getFileType(),
+                            new FileFormatAdapter.ParserOptions(tempFile.toURI(),
+                                    locale, params),
+                            docType);
+            doc.setLang(locale);
             // TODO Copy Trans values
             document = documentServiceImpl.saveDocument(id.getProjectSlug(),
                     id.getVersionSlug(), doc,
                     Sets.newHashSet(PotEntryHeader.ID, SimpleComment.ID),
                     false);
-        } catch (SecurityException e) {
-            throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
-                    e.getMessage(), e);
-        } catch (ZanataServiceException e) {
+        } catch (SecurityException | ZanataServiceException e) {
             throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
                     e.getMessage(), e);
         }
@@ -299,7 +299,7 @@ public class SourceDocumentUpload implements Serializable {
 
     private void persistRawDocument(HDocument document, File rawFile,
             String contentHash, DocumentType documentType,
-            Optional<String> params) {
+            String params) {
         HRawDocument rawDocument = new HRawDocument();
         rawDocument.setDocument(document);
         rawDocument.setContentHash(contentHash);
@@ -307,8 +307,8 @@ public class SourceDocumentUpload implements Serializable {
         rawDocument.setUploadedBy(identity.getCredentials().getUsername());
         filePersistService.persistRawDocumentContentFromFile(rawDocument,
                 rawFile, FilenameUtils.getExtension(rawFile.getName()));
-        if (params.isPresent()) {
-            rawDocument.setAdapterParameters(params.get());
+        if (!params.isEmpty()) {
+            rawDocument.setAdapterParameters(params);
         }
         documentDAO.addRawDocument(document, rawDocument);
         documentDAO.flush();

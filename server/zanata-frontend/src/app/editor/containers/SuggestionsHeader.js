@@ -27,6 +27,7 @@ import 'antd/lib/button/style/css'
 import IconButtonToggle from '../components/IconButtonToggle'
 import SuggestionSearchInput from '../components/SuggestionSearchInput'
 import ToggleSwitch from '../components/ToggleSwitch'
+import Tooltip from 'antd/lib/tooltip'
 
 /**
  * Header of the suggestions panel, with some controls and
@@ -59,6 +60,7 @@ class SuggestionsHeader extends React.Component {
     }
   }
 
+  // @ts-ignore any
   setSearchInput = (ref) => {
     this.searchInput = ref
   }
@@ -129,12 +131,13 @@ class SuggestionsHeader extends React.Component {
                 disabled={!this.props.phraseSelected} />
             </li>
             <li>
-              <Button
-                icon="close"
-                title="Close suggestions"
-                onClick={this.props.closeSuggestions}
-                className="Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1_1-2"
-              />
+              <Tooltip title="Close suggestions">
+                <Button
+                  icon="close"
+                  onClick={this.props.closeSuggestions}
+                  className="Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1_1-2"
+                />
+              </Tooltip>
             </li>
           </ul>
         </div>
