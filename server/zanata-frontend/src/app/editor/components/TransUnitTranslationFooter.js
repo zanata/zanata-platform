@@ -267,6 +267,7 @@ class TransUnitTranslationFooter extends React.Component {
             : <Button
               className={cx('EditorButton u-sizeHeight-1_1-4 u-textCapitalize u-rounded Button--warning')}
               disabled={false}
+              // @ts-ignore
               title={'Resolve Conflict'}
               onClick={toggleConcurrentModal}>
               {'Resolve Conflict'}
