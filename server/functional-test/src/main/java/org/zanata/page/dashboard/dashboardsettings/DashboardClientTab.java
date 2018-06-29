@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DashboardClientTab extends DashboardBasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(DashboardClientTab.class);
-    private By generateApiKeyButton = By.id("generateKeyButton");
+    private By generateApiKeyButton = By.id("apiKeyForm:generate-key-button");
     private By apiKeyLabel = By.id("client_settings_apiKey");
     private By configurationTextArea = By.id("client_settings_config");
 

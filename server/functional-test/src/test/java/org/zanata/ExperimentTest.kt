@@ -18,23 +18,24 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata;
+package org.zanata
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.zanata.util.SampleDataRule;
+import org.junit.Rule
+import org.junit.Test
+import org.zanata.util.SampleDataRule
 
 /**
  * This is a class for experiment some things i.e. populate cargo instance with
  * some example users and languages so that a manual test can be performed.
  * Under normal circumstances it will have no active tests in it.
  */
-public class ExperimentTest {
-    @Rule
-    public SampleDataRule sampleDataRule = new SampleDataRule();
+class ExperimentTest {
+    @get:Rule
+    var sampleDataRule = SampleDataRule()
 
     @Test
-    public void test() {
-        // we need at least a test to apply the rule
+    fun test() {
+        // we need at least a non-empty test to apply the rule
+        assert(true)
     }
 }

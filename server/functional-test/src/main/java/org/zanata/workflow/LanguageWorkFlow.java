@@ -29,6 +29,7 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow {
             org.slf4j.LoggerFactory.getLogger(LanguageWorkFlow.class);
 
     public LanguagePage addLanguageAndJoin(String localeId) {
+        addLanguage(localeId);
         LanguagePage languagePage = goToHome().goToLanguages()
                 .gotoLanguagePage(localeId).gotoMembersTab();
         if (languagePage.getMemberUsernames().contains("admin")) {
@@ -45,11 +46,13 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow {
             log.warn("{} has already been added, enabling by default",
                     localeId);
             languagesPage.gotoLanguagePage(localeId).gotoSettingsTab()
-                    .enableLanguageByDefault(true).saveSettings();
+                    /*.enableLanguageByDefault(true)*/.saveSettings();
             return goToHome().goToLanguages();
         }
         // continue to add the new language
-        return languagesPage.clickAddNewLanguage().enterSearchLanguage(localeId)
-                .enableLanguageByDefault().saveLanguage();
+        return languagesPage.clickAddNewLanguage()
+                .enterSearchLanguage(localeId)
+                .selectSearchLanguage(localeId)
+                /*.enableLanguageByDefault()*/.saveLanguage();
     }
 }
