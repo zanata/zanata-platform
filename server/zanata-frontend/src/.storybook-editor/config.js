@@ -5,8 +5,9 @@ import { addLocaleData } from 'react-intl'
 import enLocaleData from 'react-intl/locale-data/en.js'
 import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@storybook/react'
+// @ts-ignore
 import { setIntlConfig, withIntl } from 'storybook-addon-intl'
-import en from '../messages/en'
+import en from '../messages/en.json'
 import './storybook.css'
 
 // Storyshots test runs this file too, with no document available.
@@ -23,6 +24,7 @@ if (typeof document !== 'undefined') {
 // Set up locale data so formats etc. will work properly
 addLocaleData([...enLocaleData])
 
+// @ts-ignore
 const getMessages = (locale) => en[locale];
 
 // Set intl configuration
