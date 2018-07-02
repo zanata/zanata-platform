@@ -33,7 +33,9 @@ import org.zanata.rest.dto.MachineTranslationPrefill;
 public interface MachineTranslationService {
 
     /**
-     * Synchronously fetches a machine translation from the default back-end, for the specified TextFlow.
+     * Synchronously fetches a machine translation from the default back-end,
+     * for the specified TextFlow.
+     * We request a machine translation of the single text flow's English plural.
      *
      * @param textFlow
      *         textflow
@@ -47,7 +49,10 @@ public interface MachineTranslationService {
             LocaleId toLocale);
 
     /**
-     * Asynchronously fetches machine translations from the default back-end, for all New/Untranslated TextFlows in the Project Version. Any Fuzzy/Translated/Approved translations will be left as is.
+     * Asynchronously fetches machine translations from the default back-end,
+     * for all New/Untranslated TextFlows in the Project Version.
+     * Any Fuzzy/Translated/Approved translations will be left as is.
+     * For each TextFlow we only request translation for the singular case.
      *
      * @param versionId
      *         version id
