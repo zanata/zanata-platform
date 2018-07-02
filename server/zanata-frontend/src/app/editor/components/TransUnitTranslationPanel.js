@@ -318,7 +318,7 @@ export class TranslationItem extends React.Component {
         {/* TODO check that this does not trim strings */}
         {/* TODO translate "Enter a translation..." */}
         <Textarea
-          ref={this.setTextArea}
+          inputRef={this.setTextArea}
           className={directionClass + ' TransUnit-text'}
           disabled={cantEditTranslation}
           rows={1}
@@ -395,9 +395,10 @@ function mapDispatchToProps (dispatch, _ownProps) {
     onSelectionChange: (event) => {
       const { selectionStart, selectionEnd } = event.target
       event.stopPropagation()
-      // This does seem to fire when selected phrase changes, so it is fine
-      // to just transmit the range without info about which row it is for.
-      dispatch(phraseTextSelectionRange(selectionStart, selectionEnd))
+      // Do not update with empty ranges
+      if (selectionStart !== selectionEnd) {
+        dispatch(phraseTextSelectionRange(selectionStart, selectionEnd))
+      }
     }
   }
 }

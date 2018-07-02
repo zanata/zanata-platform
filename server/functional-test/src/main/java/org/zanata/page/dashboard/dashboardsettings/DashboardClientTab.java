@@ -35,9 +35,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DashboardClientTab extends DashboardBasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(DashboardClientTab.class);
-    private By generateApiKeyButton = By.id("apiKeyForm:generate-key-button");
+    private By generateApiKeyButton = By.id("generate-key-button");
     private By apiKeyLabel = By.id("client_settings_apiKey");
     private By configurationTextArea = By.id("client_settings_config");
+    private By alertModalOkButton = By.id("confirm-ok-button");
 
     public DashboardClientTab(WebDriver driver) {
         super(driver);
@@ -47,20 +48,7 @@ public class DashboardClientTab extends DashboardBasePage {
         log.info("Press Generate API Key");
         clickElement(generateApiKeyButton);
         slightPause();
-        Alert alert = waitForAMoment().withMessage("Alert dialog not displayed")
-                .until(webDriver -> webDriver.switchTo().alert());
-        log.info("Press OK on alert to generate API key");
-        alert.accept();
-        waitForAMoment().withMessage("Alert not dismissed")
-                .until(driver -> {
-                    try {
-                        driver.switchTo().alert();
-                    } catch (NoAlertPresentException nape) {
-                        return true;
-                    }
-                    log.info("Alert still present");
-                    return false;
-                });
+        clickElement(alertModalOkButton);
         return new DashboardClientTab(getDriver());
     }
 

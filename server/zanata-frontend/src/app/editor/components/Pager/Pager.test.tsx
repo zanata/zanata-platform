@@ -2,10 +2,13 @@
 
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
-import { mount } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+import Enzyme, { mount } from 'enzyme'
 import Pager from '.'
 import { Icon } from '../../../components'
 import { IntlProvider } from 'react-intl'
+
+Enzyme.configure({ adapter: new Adapter() });
 
 // tslint:disable-next-line:no-empty
 const callback = () => {}
