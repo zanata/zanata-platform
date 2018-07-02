@@ -39,6 +39,7 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.Async;
@@ -188,10 +189,7 @@ public class MachineTranslationServiceImpl implements
             return AsyncTaskResult.completed();
         }
         taskHandle.setMaxProgress(documents.size());
-        // TODO this assumes all documents using same source locale
-        // TODO some document don't have source locale (null)
-        LocaleId fromLocale =
-                documents.values().iterator().next().getSourceLocaleId();
+        LocaleId fromLocale = getSourceLocale(documents);
 
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
@@ -199,6 +197,7 @@ public class MachineTranslationServiceImpl implements
         String versionSlug = version.getSlug();
 
         log.info("prepare to send {} of documents to MT", documents.size());
+        versionStateCache.clearVersionStatsCache(targetVersionId);
 
         boolean cancelled = false;
         for (Iterator<HDocument> iterator = documents.values().iterator();
@@ -224,6 +223,14 @@ public class MachineTranslationServiceImpl implements
                 cancelled ? "CANCELLED" : "COMPLETED",
                 version.userFriendlyToString(), overallStopwatch);
         return AsyncTaskResult.completed();
+    }
+
+    @NotNull
+    private LocaleId getSourceLocale(Map<String, HDocument> documents) {
+        // TODO this assumes all documents using same source locale
+        // TODO some document don't have source locale (null)
+        HDocument firstDoc = documents.values().iterator().next();
+        return firstDoc.getSourceLocaleId();
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
