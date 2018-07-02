@@ -27,7 +27,8 @@ import {
   SAVE_FAILED,
   SAVE_INITIATED,
   SAVE_CONFLICT,
-  SAVE_CONFLICT_RESOLVED,
+  SAVE_CONFLICT_RESOLVED_LATEST,
+  SAVE_CONFLICT_RESOLVED_ORIGINAL,
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
@@ -244,14 +245,14 @@ export const phraseReducer = handleActions({
       }
     }),
 
-  [SAVE_CONFLICT_RESOLVED]: (state, { getState, payload: {
-    phraseId, saveInfo, revision, resolution } }) =>
+  [SAVE_CONFLICT_RESOLVED_LATEST]: (state, { getState, payload: {
+    phraseId, saveInfo, revision } }) =>
     update(state, {
       notification: {
         $set: {
           severity: SEVERITY.INFO,
           message: 'Concurrent edit successfully resolved',
-          description: `Using the ${resolution} edit`,
+          description: `Using the Latest edit`,
           duration: 3.5
         }
       },
@@ -261,9 +262,33 @@ export const phraseReducer = handleActions({
           conflict: { $set: undefined },
           inProgressSave: { $set: undefined },
           newTranslations: {
-            $set: resolution === 'original'
-              ? state.detail[phraseId].newTranslations
-              : [saveInfo.content]
+            $set: [saveInfo.content]
+          },
+          translations: {
+            $set: [saveInfo.content]
+          }
+        }
+      }
+    }),
+
+  [SAVE_CONFLICT_RESOLVED_ORIGINAL]: (state, { getState, payload: {
+    phraseId, saveInfo, revision } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.INFO,
+          message: 'Concurrent edit successfully resolved',
+          description: `Using the Original edit`,
+          duration: 3.5
+        }
+      },
+      detail: {
+        [phraseId]: {
+          revision: { $set: revision },
+          conflict: { $set: undefined },
+          inProgressSave: { $set: undefined },
+          translations: {
+            $set: state.detail[phraseId].newTranslations
           }
         }
       }

@@ -129,12 +129,13 @@ public class TranslationService implements TranslationResource {
         TranslationResult result = translationResults.get(0);
         if (result.isVersionNumConflict()) {
             HTextFlowTarget latest = result.getTranslatedTextFlowTarget();
-            requestData.setContents(latest.getContents());
             // Include latest translator username, last changed date in response
             String lastModifiedByUserName = latest.getLastModifiedBy()
                     != null && latest.getLastModifiedBy().hasAccount()
                     ? latest.getLastModifiedBy().getAccount().getUsername()
                     : "";
+            requestData.setContents(latest.getContents());
+            requestData.setRevision(latest.getVersionNum());
             requestData.setLastModifiedBy(lastModifiedByUserName);
             requestData.setLastModifiedDate(latest.getLastChanged());
             return Response

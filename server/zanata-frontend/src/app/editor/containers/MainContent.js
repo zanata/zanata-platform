@@ -12,7 +12,9 @@ import {
   fetchAllCriteria, toggleReviewModal
 } from '../actions/review-trans-actions'
 import {
-  toggleConcurrentModal, saveResolveConflict
+  toggleConcurrentModal,
+  saveResolveConflictLatest,
+  saveResolveConflictOriginal
 } from '../actions/phrases-actions'
 import { getCriteria } from '../reducers/review-trans-reducer'
 import { MINOR, MAJOR, CRITICAL } from '../utils/reject-trans-util'
@@ -27,7 +29,8 @@ class MainContent extends React.Component {
   static propTypes = {
     activityVisible: PropTypes.bool.isRequired,
     maximised: PropTypes.bool.isRequired,
-    saveResolveConflict: PropTypes.func.isRequired,
+    saveResolveConflictLatest: PropTypes.func.isRequired,
+    saveResolveConflictOriginal: PropTypes.func.isRequired,
     showConflictModal: PropTypes.bool.isRequired,
     showReviewModal: PropTypes.bool.isRequired,
     phrases: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -108,7 +111,8 @@ class MainContent extends React.Component {
         </div>
         <ConcurrentModal
           closeConcurrentModal={this.props.toggleConcurrentModal}
-          saveResolveConflict={this.props.saveResolveConflict}
+          saveResolveConflictLatest={this.props.saveResolveConflictLatest}
+          saveResolveConflictOriginal={this.props.saveResolveConflictOriginal}
           conflictData={selectedPhrase.conflict}
           show={this.props.showConflictModal}
         />
@@ -148,8 +152,10 @@ function mapStateToProps (state, _ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    saveResolveConflict: (latest, original, resolution) => dispatch(
-      saveResolveConflict(latest, original, resolution)),
+    saveResolveConflictLatest: (latest, original) => dispatch(
+      saveResolveConflictLatest(latest, original)),
+    saveResolveConflictOriginal: (latest, original) => dispatch(
+      saveResolveConflictOriginal(latest, original)),
     toggleConcurrentModal: () => dispatch(toggleConcurrentModal()),
     toggleReviewModal: () => dispatch(toggleReviewModal()),
     fetchAllCriteria: () => dispatch(fetchAllCriteria())

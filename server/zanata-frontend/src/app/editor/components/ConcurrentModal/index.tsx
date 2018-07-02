@@ -15,11 +15,6 @@ import 'antd/lib/modal/style/index.less'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import Textarea from 'react-textarea-autosize'
 
-export enum resolution {
-  latest = 'latest',
-  original = 'original',
-}
-
 interface Latest {
   content: string
   id: number
@@ -42,7 +37,8 @@ interface Original {
 
 interface ConcurrentModalProps {
   closeConcurrentModal: () => void
-  saveResolveConflict: (latest: any, original: any, resolution: resolution) => void
+  saveResolveConflictLatest: (latest: any, original: any) => void
+  saveResolveConflictOriginal: (latest: any, original: any) => void
   show: boolean
   conflictData?: {
     response: Latest,
@@ -53,13 +49,18 @@ interface ConcurrentModalProps {
 class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
   public static propTypes = {
     closeConcurrentModal: PropTypes.func,
-    saveResolveConflict: PropTypes.func.isRequired,
+    saveResolveConflictLatest: PropTypes.func.isRequired,
+    saveResolveConflictOriginal: PropTypes.func.isRequired,
     conflictData: PropTypes.any,
     show: PropTypes.bool.isRequired,
   }
   public render () {
     const {
-      closeConcurrentModal, saveResolveConflict, show, conflictData
+      closeConcurrentModal,
+      saveResolveConflictLatest,
+      saveResolveConflictOriginal,
+      show,
+      conflictData
     } = this.props
     if (!conflictData) {
       return null
@@ -71,10 +72,10 @@ class ConcurrentModal extends React.Component<ConcurrentModalProps, {}> {
     const lastModifiedDate = new Date(latest.lastModifiedDate)
     const onCancel = () => closeConcurrentModal()
     const saveLatest = () => {
-      saveResolveConflict(latest, original, resolution.latest)
+      saveResolveConflictLatest(latest, original)
     }
     const saveOriginal = () => {
-      saveResolveConflict(latest, original, resolution.original)
+      saveResolveConflictOriginal(latest, original)
     }
     return (
       /* eslint-disable max-len */

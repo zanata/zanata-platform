@@ -17,7 +17,8 @@ import {
   SAVE_FINISHED,
   SAVE_FAILED,
   SAVE_CONFLICT,
-  SAVE_CONFLICT_RESOLVED,
+  SAVE_CONFLICT_RESOLVED_LATEST,
+  SAVE_CONFLICT_RESOLVED_ORIGINAL,
   TOGGLE_CONCURRENT_MODAL
 } from './phrases-action-types'
 import {
@@ -152,32 +153,31 @@ const saveConflict = createAction(SAVE_CONFLICT,
     response
   }))
 
-const saveConflictResolved = createAction(SAVE_CONFLICT_RESOLVED,
-  (phraseId, saveInfo, response, resolution) => ({
+const saveConflictResolvedLatest = createAction(SAVE_CONFLICT_RESOLVED_LATEST,
+  (phraseId, saveInfo, revision) => ({
     phraseId,
     saveInfo,
-    response,
-    resolution
+    revision
+  }))
+
+const saveConflictResolvedOriginal =
+  createAction(SAVE_CONFLICT_RESOLVED_ORIGINAL,
+  (phraseId, saveInfo, revision) => ({
+    phraseId,
+    saveInfo,
+    revision
   }))
 
 export const toggleConcurrentModal = createAction(TOGGLE_CONCURRENT_MODAL)
 
-export function saveResolveConflict (latest, original, resolution) {
+export function saveResolveConflictLatest (latest, original) {
   return (dispatch, getState) => {
     const stateBefore = getState()
-    const latestData = {...latest, revision: (latest.revision + 1)}
-    const phrase = {
-      ...latest,
-      ...original,
-      translations: original.translations,
-      revision: (latest.revision + 1)
-    }
-    if (resolution === 'latest') {
-      dispatch(saveConflictResolved(
-        phrase.id, latestData, latest.revision, resolution)).then(
+    dispatch(saveConflictResolvedLatest(
+      original.id, latest, latest.revision)).then(
         dispatch(fetchTransUnitHistory(
-          phrase.localeId,
-          phrase.id,
+          original.localeId,
+          original.id,
           stateBefore.context.projectSlug,
           stateBefore.context.versionSlug
         )).then(
@@ -186,31 +186,35 @@ export function saveResolveConflict (latest, original, resolution) {
             getState().context.lang)
         )
       )
-    } else if (resolution === 'original') {
-      savePhrase(latestData, phrase)
-        .then(response => {
-          if (isErrorResponse(response)) {
-            console.error('Failed to save phrase')
-            dispatch(saveFailed(phrase.id, phrase, response))
-          } else {
-            response.json().then(({ revision, status }) => {
-              dispatch(saveConflictResolved(
-                phrase.id, phrase, revision, resolution)).then(
-                  dispatch(fetchTransUnitHistory(
-                    phrase.localeId,
-                    phrase.id,
-                    stateBefore.context.projectSlug,
-                    stateBefore.context.versionSlug
+  }
+}
+
+export function saveResolveConflictOriginal (latest, original) {
+  return (dispatch, getState) => {
+    const stateBefore = getState()
+    savePhrase(latest, original)
+      .then(response => {
+        if (isErrorResponse(response)) {
+          console.error('Failed to save phrase')
+          dispatch(saveFailed(latest.id, original, response))
+        } else {
+          response.json().then(({ revision, status }) => {
+            dispatch(saveConflictResolvedOriginal(
+              latest.id, original, revision)).then(
+                dispatch(fetchTransUnitHistory(
+                  original.localeId,
+                  latest.id,
+                  stateBefore.context.projectSlug,
+                  stateBefore.context.versionSlug
                 )).then(
                   fetchStatisticsInfo(dispatch, getState().context.projectSlug,
                     getState().context.versionSlug, getState().context.docId,
                     getState().context.lang)
                 )
               )
-            })
-          }
-        })
-    }
+          })
+        }
+      })
   }
 }
 
