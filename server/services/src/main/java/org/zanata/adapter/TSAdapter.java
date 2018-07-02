@@ -200,7 +200,7 @@ public class TSAdapter extends OkapiFilterAdapter {
                 if (event.isDocumentPart() &&
                         event.getDocumentPart().hasProperty("language")) {
                     event.getDocumentPart().setSkeleton(
-                            replaceLocaleInDocPart(event, localeId.toString()));
+                            replaceLocaleInDocPart(event, localeId.toBCP47()));
                 } else if (isStartContext(event)) {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
@@ -264,9 +264,6 @@ public class TSAdapter extends OkapiFilterAdapter {
      * @return a GenericSkeleton with the language replaced
      */
     ISkeleton replaceLocaleInDocPart(Event event, String localeId) {
-        if (!Pattern.compile("[\\w\\d@.-]+").matcher(localeId).matches()) {
-            throw new FileFormatAdapterException("Invalid target locale");
-        }
         String part;
         try {
             part = event.getDocumentPart().getSkeleton().clone().toString();

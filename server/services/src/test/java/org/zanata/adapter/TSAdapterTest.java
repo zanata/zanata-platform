@@ -275,55 +275,17 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
     }
 
     @Test
-    public void badTargetLocaleIsCaught() {
-        String base = "<TS version=\"2.1\" language=\"test\">";
+    public void sourceLanguageAttributeIsNotAltered() {
+        String base = "<TS version=\"2.1\" language=\"en-GB\" sourcelanguage=\"mo_PH\">";
         Event event = new Event();
         event.setEventType(EventType.DOCUMENT_PART);
         DocumentPart part = new DocumentPart();
         part.setSkeleton(new GenericSkeleton(base));
         event.setResource(part);
-        try {
-            adapter.replaceLocaleInDocPart(event, "$1");
-            fail("FileFormatAdapterException expected");
-        } catch (FileFormatAdapterException ffae) {
-            // Pass
-        }
-        try {
-            adapter.replaceLocaleInDocPart(event, "()");
-            fail("FileFormatAdapterException expected");
-        } catch (FileFormatAdapterException ffae) {
-            // Pass
-        }
-    }
 
-    @Test
-    public void validateLanguageReplacement() {
-        assertDocpartStringIsChanged("$badname", false);
-        assertDocpartStringIsChanged("bad=name", false);
-        assertDocpartStringIsChanged("badname=", false);
-        assertDocpartStringIsChanged("=badname", false);
-        assertDocpartStringIsChanged("bad name", false);
-        assertDocpartStringIsChanged("", true);
-        assertDocpartStringIsChanged("mo", true);
-        assertDocpartStringIsChanged("mo_PH", true);
-        assertDocpartStringIsChanged("mo-PH", true);
-        assertDocpartStringIsChanged("mo_PH.UTF-8", true);
-        assertDocpartStringIsChanged("mo_PH.UTF-8@5", true);
-    }
-
-    private void assertDocpartStringIsChanged(String originalLoc,
-                                              boolean changed) {
-        String base = "<TS version=\"2.1\" language=\"REPLACE\">";
-        String startSkeleton = base.replace("REPLACE", originalLoc);
-        String expectedSkeleton = changed ?
-                "<TS version=\"2.1\" language=\"en-GB\">" : startSkeleton;
-
-        Event event = new Event(EventType.DOCUMENT_PART,
-                new DocumentPart("test", false,
-                new GenericSkeleton(startSkeleton)));
-
-        assertThat(adapter.replaceLocaleInDocPart(event, "en-GB").toString())
-                .isEqualTo(expectedSkeleton);
+        assertThat(adapter.replaceLocaleInDocPart(event, "en-US").toString())
+                .as("Source language is not altered")
+                .isEqualTo("<TS version=\"2.1\" language=\"en-US\" sourcelanguage=\"mo_PH\">");
     }
 
     private String getContext(TextFlow textFlow) {
