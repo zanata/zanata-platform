@@ -18,12 +18,6 @@
   .table>tbody>tr.highlight>td {
     border-top: none;
   }
-  td.languageSelect span.Select-value-label {
-    line-height: 2.5rem;
-  }
-  td.languageSelect .Selectmenu {
-    min-width: 12.25rem;
-  }
   td.languageSelect .Select-placeholder {
     position: absolute;
   }
@@ -193,8 +187,18 @@
     -webkit-flex: 1;
     margin-left: 0;
   }
+  td.languageSelect.td-3 {
+    display:inline-flex;
+    height: auto;
+    margin-top: 1rem;
+    width: 100%;
+  }
   td.languageSelect .Select {
     position: relative;
+    width: 80%;
+  }
+  td.languageSelect .hidden-xs {
+    width: 20%;
   }
   td.languageSelect .Select-input input {
     margin-top: 0.25rem;

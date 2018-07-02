@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,23 +18,14 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata;
+package org.zanata.feature.dashboard
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.zanata.util.SampleDataRule;
+import org.junit.runner.RunWith
+import org.junit.runners.Suite
 
 /**
- * This is a class for experiment some things i.e. populate cargo instance with
- * some example users and languages so that a manual test can be performed.
- * Under normal circumstances it will have no active tests in it.
+ * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
  */
-public class ExperimentTest {
-    @Rule
-    public SampleDataRule sampleDataRule = new SampleDataRule();
-
-    @Test
-    public void test() {
-        // we need at least a test to apply the rule
-    }
-}
+@RunWith(Suite::class)
+@Suite.SuiteClasses(DashboardTest::class)
+class DashboardTestSuite

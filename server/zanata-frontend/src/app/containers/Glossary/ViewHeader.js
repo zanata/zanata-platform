@@ -133,7 +133,7 @@ class ViewHeader extends Component {
         permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon name='locked' className='s1' parentClassName='iconLocked' />
+        <Icon type='lock' className='s1 iconLocked' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
@@ -255,12 +255,10 @@ class ViewHeader extends Component {
                   />
                   {selectedTransLocale &&
                   (<span className='hidden-xs'>
-                    <Row>
-                      <Icon name='translate' className='s1' parentClassName='iconTranslate-neutral' />
-                      <span className='u-textNeutral'>
+                    <Icon type='global' className='s1 iconTranslate-neutral' />
+                    <span className='u-textNeutral'>
                       {currentLocaleCount}
-                      </span>
-                    </Row>
+                    </span>
                   </span>
                   )}
                 </td>
@@ -270,10 +268,10 @@ class ViewHeader extends Component {
                     <Row>
                       {'part_of_speech' in sort
                           ? (sort.part_of_speech === true)
-                              ? <Icon name='chevron-down'
-                                className='s1' parentClassName='iconChevron' />
-                              : <Icon name='chevron-up'
-                                className='s1' parentClassName='iconChevron' />
+                              ? <Icon type='down'
+                                className='s1 iconChevron' />
+                              : <Icon type='up'
+                                className='s1 iconChevron' />
                           : ''}
                       <span className='u-marginL--rq'>
                       Part of Speech

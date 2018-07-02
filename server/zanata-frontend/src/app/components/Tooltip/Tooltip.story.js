@@ -1,7 +1,12 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Well } from 'react-bootstrap'
-import { Button, Tooltip, Layout } from 'antd'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
 
 const tooltip = <span id='tooltip'><strong>Tooltip ahoy!</strong></span>;
 
