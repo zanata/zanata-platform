@@ -134,7 +134,7 @@ public class MachineTranslationResource {
     @CheckRole("machine-translation")
     @POST
     @Path("project/{projectSlug}/version/{versionSlug}")
-    public Response prefillVersionByMachineTranslation(
+    public Response prefillProjectVersionByMachineTranslation(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
             MachineTranslationPrefill prefillRequest) {

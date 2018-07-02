@@ -74,7 +74,7 @@ public class MachineTranslationsManager {
             taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
             taskHandle.setTargetVersion(projectIterationId.toString());
             asyncTaskHandleManager.registerTaskHandle(taskHandle, taskKey);
-            machineTranslationService.prefillWithMachineTranslation(
+            machineTranslationService.prefillProjectVersionWithMachineTranslation(
                     projectIteration.getId(), prefillRequest,
                     taskHandle);
         } else {

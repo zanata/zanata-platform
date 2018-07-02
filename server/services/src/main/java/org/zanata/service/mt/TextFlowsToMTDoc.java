@@ -55,6 +55,10 @@ public class TextFlowsToMTDoc {
         return new MTDocument(url, contents, fromLocale.getId(), BACKEND_ID);
     }
 
+    /**
+     *
+     * @return URL that complies with our SourceDocResource API.
+     */
     private String buildDocUrl(String projectSlug, String versionSlug,
             String docId) {
         return urlUtil.restPath("project/p/" + projectSlug +"/iterations/i" + versionSlug + "/resource?docId=" + docId);

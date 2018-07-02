@@ -9,7 +9,6 @@ import static org.zanata.common.LocaleId.EN_US;
 import java.net.URI;
 import java.util.List;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriInfo;
 
 import org.assertj.core.util.Lists;
@@ -42,15 +41,16 @@ public class MachineTranslationResourceTest {
     @Mock private ZanataIdentity identity;
     @Mock private MachineTranslationsManager machineTranslationManager;
     @Mock private UriInfo uri;
-    private URI mtUrl;
+    private URI fakeMTUrl;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mtUrl = URI.create("http://MT:8080");
+        fakeMTUrl = URI.create("http://MT:8080");
         resource = new MachineTranslationResource(documentDAO, textFlowDAO,
                 machineTranslationService,
-                activeProjectVersionAndLocaleValidator, identity, machineTranslationManager, mtUrl);
+                activeProjectVersionAndLocaleValidator, identity, machineTranslationManager,
+                fakeMTUrl);
     }
 
     @Test
@@ -77,14 +77,14 @@ public class MachineTranslationResourceTest {
                 .thenReturn(document);
         HTextFlow textFlow = new HTextFlow();
         when(textFlowDAO.getById(document, "resId")).thenReturn(textFlow);
-        List<String> suggestion = Lists.newArrayList("mt suggestion");
+        List<String> expectedSuggestion = Lists.newArrayList("mt suggestion");
         when(machineTranslationService.getSuggestion(textFlow, EN_US,
-                new LocaleId("zh"))).thenReturn(suggestion);
+                new LocaleId("zh"))).thenReturn(expectedSuggestion);
 
         List<String> result = (List<String>) resource.getMachineTranslationSuggestion("proj",
                 "ver", "docId", "resId", "zh").getEntity();
 
-        assertThat(result).isEqualTo(suggestion);
+        assertThat(result).isEqualTo(expectedSuggestion);
 
     }
 

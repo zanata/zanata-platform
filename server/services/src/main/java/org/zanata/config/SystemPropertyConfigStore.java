@@ -20,6 +20,7 @@
  */
 package org.zanata.config;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 
@@ -153,7 +154,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
 
     @Produces
     @MTServiceURL
-    protected URI getMTServiceURL() {
+    protected @Nullable URI getMTServiceURL() {
         String url = System.getProperty(KEY_MT_SERVICE_URL);
         if (!Strings.isNullOrEmpty(url)) {
             try {
@@ -168,13 +169,13 @@ public class SystemPropertyConfigStore implements ConfigStore {
 
     @Produces
     @MTServiceUser
-    protected String getMTServiceUser() {
+    protected @Nullable String getMTServiceUser() {
         return System.getProperty(KEY_MT_SERVICE_USER);
     }
 
     @Produces
     @MTServiceToken
-    protected String getMTServiceToken() {
+    protected @Nullable String getMTServiceToken() {
         return System.getProperty(KEY_MT_SERVICE_TOKEN);
     }
 

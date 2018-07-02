@@ -31,11 +31,33 @@ import org.zanata.model.HTextFlow;
 import org.zanata.rest.dto.MachineTranslationPrefill;
 
 public interface MachineTranslationService {
-    int BATCH_SIZE = 100;
 
+    /**
+     * Synchronously fetches a machine translation from the default back-end, for the specified TextFlow.
+     *
+     * @param textFlow
+     *         textflow
+     * @param fromLocale
+     *         source locale
+     * @param toLocale
+     *         target locale
+     * @return machine translation
+     */
     List<String> getSuggestion(HTextFlow textFlow, LocaleId fromLocale,
             LocaleId toLocale);
 
-    Future<Void> prefillWithMachineTranslation(Long versionId, MachineTranslationPrefill prefillRequest,
+    /**
+     * Asynchronously fetches machine translations from the default back-end, for all New/Untranslated TextFlows in the Project Version. Any Fuzzy/Translated/Approved translations will be left as is.
+     *
+     * @param versionId
+     *         version id
+     * @param prefillRequest
+     *         prefill configuration
+     * @param taskHandle
+     *         async task handle
+     * @return future
+     */
+    Future<Void> prefillProjectVersionWithMachineTranslation(long versionId,
+            MachineTranslationPrefill prefillRequest,
             @Nonnull MachineTranslationPrefillTaskHandle taskHandle);
 }
