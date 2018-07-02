@@ -174,10 +174,10 @@ export function saveResolveConflictLatest (latest, original) {
   return (dispatch, getState) => {
     const stateBefore = getState()
     dispatch(saveConflictResolvedLatest(
-      original.id, latest, latest.revision)).then(
+        latest.id, latest, latest.revision)).then(
         dispatch(fetchTransUnitHistory(
           original.localeId,
-          original.id,
+          latest.id,
           stateBefore.context.projectSlug,
           stateBefore.context.versionSlug
         )).then(
