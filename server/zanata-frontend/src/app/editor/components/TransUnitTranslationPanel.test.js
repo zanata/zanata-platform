@@ -5,11 +5,10 @@ import { TranslationItem } from './TransUnitTranslationPanel'
 import Textarea from 'react-textarea-autosize'
 import SyntaxHighlighter, { registerLanguage }
   from 'react-syntax-highlighter/light'
-import Validation from './Validation'
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
-jest.mock('./Validation', () => 'Validation')
+jest.mock('./Validation')
 
 registerLanguage('xml', xml)
 
@@ -116,7 +115,6 @@ describe('TransUnitTranslationPanel', () => {
           lineStyle={lineStyle}>
           {'Je ne parle pas français'}
         </SyntaxHighlighter>
-        <Validation intl="" source="" target="Je ne parle pas français" validationOptions={[]} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -154,7 +152,6 @@ describe('TransUnitTranslationPanel', () => {
           onFocus={defaultFunc}
           onChange={defaultFunc}
           onSelect={defaultFunc} />
-        <Validation intl="" source="" target="Je ne parle pas français" validationOptions={[]} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -191,7 +188,6 @@ describe('TransUnitTranslationPanel', () => {
           onFocus={defaultFunc}
           onChange={defaultFunc}
           onSelect={defaultFunc} />
-        <Validation intl="" source="" target="Je ne parle pas français" validationOptions={[]} />
       </div>
     )
     expect(actual).toEqual(expected)

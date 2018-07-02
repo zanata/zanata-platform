@@ -94,8 +94,7 @@ export class EditorSearchInput extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      focused: false,
-      open: false
+      focused: false
     }
   }
 
@@ -194,7 +193,6 @@ export class EditorSearchInput extends Component {
             maxLength="1000"
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
-            onClick={this.state.open}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           <span className="EditorInputGroup-addon btn-xs btn-link n1"
             onClick={this.toggleAdvanced}>
