@@ -143,8 +143,8 @@ class Explore extends Component {
     return (
       <div className='scrollView' id='explore'>
         <Helmet title='Search' />
-        <div className='headerClasses'>
-          <h1 className='hidden'>Search</h1>
+        <div>
+          <h1 className='dn'>Search</h1>
           <div className='searchView'>
             <Icon type='search' className='s0' />
             <TextInput

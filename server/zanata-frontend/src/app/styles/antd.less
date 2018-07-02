@@ -24,6 +24,32 @@ input, .textInput {
   align-items: baseline;
 }
 
+img.avatar-round {
+  margin-right: @spacing-md;
+  border-radius: 500px;
+  height: 2.25rem;
+  width: 2.25rem;
+}
+
+.scrollView {
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  overflow: hidden;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-width: 48rem;
+  width: inherit;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: @spacing-base;
+  padding-right: @spacing-base;
+}
+.scrollView h2 {
+  padding-left: @spacing-md;
+  margin-top: 0;
+}
+
 .ant-btn {
   color: @primary-color;
   background-color: #fff;
