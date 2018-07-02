@@ -6,7 +6,8 @@ import ModalHeader from './ModalHeader'
 import ModalTitle from './ModalTitle'
 import ModalBody from './ModalBody'
 import ModalFooter from './ModalFooter'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import { Icon } from '../../components'
 import specialKeys from 'combokeys/helpers/special-keys-map'
 
@@ -38,13 +39,8 @@ const Modal = ({
       {...props}
       onKeyDown={handleKeyDown}
       containerClassName='has-modal'
-<<<<<<< HEAD
       className='modal'
-      onClick={backdrop && handleClickOutside}
-=======
-      className='modal bstrapReact'
       onClick={handleClickOutside}
->>>>>>> bf5935d36e8e4385dc702f6b03a38b3911d278ab
     >
       <div className='container'>
         <div className='modal-content' tabIndex="0">
@@ -52,7 +48,7 @@ const Modal = ({
             <Button aria-label={closeLabel}
               className='close s0'
               onClick={onHide}>
-              <Icon name='cross' className='s2' parentClassName='iconClose' />
+              <Icon name='cross' className='s2 iconClose' />
             </Button>
           )}
           {children}
