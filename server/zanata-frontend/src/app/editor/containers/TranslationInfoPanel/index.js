@@ -83,6 +83,7 @@ class TranslationInfoPanel extends React.Component {
     }),
     isRTL: PropTypes.bool.isRequired
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.handleSelectTab = this.handleSelectTab.bind(this)
@@ -95,9 +96,11 @@ class TranslationInfoPanel extends React.Component {
       selectedActivites: ('all')
     }
   }
+  // @ts-ignore any
   componentDidUpdate (prevProps) {
     const { notification } = this.props
     if (notification && prevProps.notification !== notification) {
+      // @ts-ignore any
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
@@ -105,6 +108,7 @@ class TranslationInfoPanel extends React.Component {
       })
     }
   }
+  // @ts-ignore any
   handleSelectTab (key) {
     if (key === activityTabKey) {
       this.props.toggleActivity()
@@ -117,6 +121,7 @@ class TranslationInfoPanel extends React.Component {
   selectActivityTypeFilter (activityFilterType) {
     this.setState(({ selectedActivites: activityFilterType }))
   }
+  // @ts-ignore any
   postComment = (postComment) => {
     const reviewData = {
       localeId: this.props.localeId,
@@ -216,6 +221,7 @@ class TranslationInfoPanel extends React.Component {
     )
   }
 }
+// @ts-ignore any
 function mapStateToProps (state) {
   const { glossary, phrases, context, activity } = state
   const { detail, selectedPhraseId, notification } = phrases
@@ -250,10 +256,12 @@ function mapStateToProps (state) {
   return newProps
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
     // @ts-ignore
     close: () => dispatch(setSidebarVisibility(false)),
+    // @ts-ignore any
     postReviewComment: (reviewData) =>
       dispatch(postReviewComment(dispatch, reviewData)),
     toggleActivity: () => dispatch(toggleActivity()),

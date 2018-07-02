@@ -27,6 +27,7 @@ test('can require all local js files', () => {
       return newName
     },
     // parse all matching source files
+    // @ts-ignore any
     require: _name => true
   })
   const count = Object.keys(modules).length

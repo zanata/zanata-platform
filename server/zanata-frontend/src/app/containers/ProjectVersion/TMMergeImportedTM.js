@@ -28,10 +28,12 @@ class TMMergeImportedTM extends Component {
   defaultState = {
     enabled: true
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = this.defaultState
   }
+  // @ts-ignore any
   toggleChange = (e) => {
     const checked = e.target.checked
     this.setState(() => ({

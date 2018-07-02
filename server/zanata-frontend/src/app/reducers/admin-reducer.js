@@ -20,14 +20,17 @@ const defaultState = {
 }
 
 // selectors
+// @ts-ignore any
 const getCriteria = state => state.review.criteria
 
 export const selectors = {
   getCriteria,
+  // @ts-ignore any
   getNotification: state => state.notification
 }
 
 // utility function
+// @ts-ignore any
 const getErrorMessage = action => {
   if (action.error) {
     return action.payload && action.payload.message

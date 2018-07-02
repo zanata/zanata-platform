@@ -7,6 +7,7 @@ import * as renderer from 'react-test-renderer'
  * This custom test function strips the decorating icon and other components
  * so that the tests are cleaner and not dependent on the wrapping decorators.
  */
+// @ts-ignore any
 export function snapshotWithoutDecorators ({ story, context }) {
   const storyElement = story.render(context)
   // @ts-ignore
@@ -26,10 +27,12 @@ export function snapshotWithoutDecorators ({ story, context }) {
 export function mockAddons () {
   jest.mock('storybook-host', () => ({
     // ignore host options, just render the inner story
+    // @ts-ignore any
     host: (_options) => (story) => story()
   }))
   jest.mock('@storybook/addon-info', () => ({
     // without info, muahahahaha! 😈
+    // @ts-ignore any
     withInfo: (_info) => (story) => story
   }))
 }

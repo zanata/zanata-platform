@@ -30,10 +30,12 @@ export const updateDateRange = createAction(DATE_RANGE_UPDATE)
 export const updateFilter = createAction(FILTER_UPDATE)
 export const updateSelectDay = createAction(SELECT_DAY_UPDATE)
 
+// @ts-ignore any
 const getStatsEndPoint = (username, fromDate, toDate) => {
   return apiUrl + '/stats/user/' + username + '/' + fromDate + '..' + toDate
 }
 
+// @ts-ignore any
 const getUserStatistics = (username, fromDate, toDate) => {
   const endpoint = getStatsEndPoint(username, fromDate, toDate)
   /** @type {APITypes} */
@@ -41,9 +43,11 @@ const getUserStatistics = (username, fromDate, toDate) => {
     USER_STATS_REQUEST,
     {
       type: USER_STATS_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -60,13 +64,16 @@ const getUserStatistics = (username, fromDate, toDate) => {
   }
 }
 
+// @ts-ignore any
 const loadUserStats = (username, dateRangeOption) => {
+  // @ts-ignore any
   return (dispatch, _getState) => {
     const dateRange = utilsDate.getDateRangeFromOption(dateRangeOption)
     dispatch(getUserStatistics(username, dateRange.fromDate, dateRange.toDate))
   }
 }
 
+// @ts-ignore any
 const getLocaleDetail = (localeId) => {
   const endpoint = apiUrl + '/locales/locale/' + localeId
 
@@ -75,9 +82,11 @@ const getLocaleDetail = (localeId) => {
     GET_LOCALE_REQUEST,
     {
       type: GET_LOCALE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -94,6 +103,7 @@ const getLocaleDetail = (localeId) => {
   }
 }
 
+// @ts-ignore any
 const getUserInfo = (dispatch, username, dateRangeOption) => {
   const endpoint = apiUrl + '/user' + (isEmpty(username) ? '' : '/' + username)
 
@@ -102,9 +112,11 @@ const getUserInfo = (dispatch, username, dateRangeOption) => {
     LOAD_USER_REQUEST,
     {
       type: LOAD_USER_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             forEach(json.languageTeams, function (localeId) {
               dispatch(getLocaleDetail(localeId))
@@ -125,7 +137,9 @@ const getUserInfo = (dispatch, username, dateRangeOption) => {
   }
 }
 
+// @ts-ignore any
 export const profileInitialLoad = (username) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     if (isEmpty(username) && !isLoggedIn) {
       // redirect to login screen if no username is found url
@@ -138,7 +152,9 @@ export const profileInitialLoad = (username) => {
   }
 }
 
+// @ts-ignore any
 export const dateRangeChanged = (dataRangeOption) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     const username = getState().profile.user.username
     // @ts-ignore
@@ -147,7 +163,9 @@ export const dateRangeChanged = (dataRangeOption) => {
   }
 }
 
+// @ts-ignore any
 export const filterUpdate = (contentState) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     if (getState().profile.contentStateOption !== contentState) {
       // @ts-ignore
@@ -156,7 +174,9 @@ export const filterUpdate = (contentState) => {
   }
 }
 
+// @ts-ignore any
 export const selectDayChanged = (day) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     // click the same day again will cancel selection
     const selectedDay = getState().profile.selectedDay !== day ? day : null

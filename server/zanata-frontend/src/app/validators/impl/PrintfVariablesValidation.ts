@@ -52,7 +52,7 @@ class PrintfVariablesValidation extends AbstractValidationAction {
     super(locale)
     this.messages = messages
     this.description = messages.printfVariablesValidatorDesc
-    // @ts-ignore
+    // @ts-ignore any
     this.label = messages[this.id]
   }
 

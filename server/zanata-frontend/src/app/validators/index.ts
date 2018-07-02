@@ -18,9 +18,11 @@ import ValidationMessages from './ValidationMessages'
  */
 function createValidators(locale: string): ValidationAction[] {
   // Default to en locale if intl messages unavailable
+  // @ts-ignore any
   const resolvedLocale = Messages[locale]
     ? locale
     : 'en'
+  // @ts-ignore any
   const resolvedMessages: ValidationMessages = Messages[resolvedLocale]
   return [
     new HtmlXmlTagValidation(resolvedLocale, resolvedMessages),

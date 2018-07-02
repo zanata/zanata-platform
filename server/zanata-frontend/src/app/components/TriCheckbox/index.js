@@ -17,6 +17,7 @@ class TriCheckbox extends Component {
     useDefaultStyle: true
   }
 
+  // @ts-ignore any
   setNativeComponent = (nativeComponent) => {
     this.nativeComponent = nativeComponent
     if (nativeComponent) {
@@ -24,6 +25,7 @@ class TriCheckbox extends Component {
     }
   }
 
+  // @ts-ignore any
   componentWillReceiveProps (nextProps) {
     if (this.nativeComponent &&
       (nextProps.indeterminate !== this.props.indeterminate)) {

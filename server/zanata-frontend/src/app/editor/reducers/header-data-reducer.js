@@ -50,6 +50,7 @@ const defaultState = {
   }
 }
 
+// @ts-ignore any
 const gravatarUrl = (hash, size) => {
   return `https://www.gravatar.com/avatar/${hash}?d=mm&r=g&s=${size}`
 }

@@ -5,6 +5,7 @@ import {
 } from './storyshots-util'
 
 jest.mock('antd/lib/button', () => 'Button')
+jest.mock('antd/lib/modal', () => 'Modal')
 
 initStoryshots({
   suite: 'Editor Storyshots',

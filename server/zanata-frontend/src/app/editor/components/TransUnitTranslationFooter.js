@@ -97,6 +97,7 @@ class TransUnitTranslationFooter extends React.Component {
     this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
   }
 
+  // @ts-ignore any
   componentWillReceiveProps (nextProps) {
     const { toggleDropdown, saveDropdownKey, saveAsMode } = nextProps
     this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
@@ -106,12 +107,14 @@ class TransUnitTranslationFooter extends React.Component {
     }
   }
 
+  // @ts-ignore any
   saveButtonElement = (status) => {
     const { phrase, saveAsMode, savePhraseWithStatus } = this.props
     const className = cx('EditorButton u-sizeHeight-1_1-4',
                          'u-sizeFull u-textLeft',
                          buttonClassByStatus[status])
 
+    // @ts-ignore any
     const saveCallback = (event) => {
       if (status === STATUS_REJECTED) {
         this.props.showRejectModal()
@@ -132,6 +135,7 @@ class TransUnitTranslationFooter extends React.Component {
   }
 
   /* Icons for suggestion and glossary count */
+  // @ts-ignore any
   renderCountIconIfNonZero = ({count, active, onClick, iconName}) => {
     if (count === 0) {
       return undefined
@@ -186,6 +190,7 @@ class TransUnitTranslationFooter extends React.Component {
     // TODO translate "Saving..."
     const selectedButtonTitle =
       isSaving ? 'Saving...' : statusNames[selectedButtonStatus]
+    // @ts-ignore any
     const saveCallback = isSaving ? undefined : (event) => {
       savePhraseWithStatus(phrase, selectedButtonStatus, event)
     }
