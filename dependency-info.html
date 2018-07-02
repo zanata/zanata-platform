@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Zanata Platform &#x2013; About</title>
+    <title>Zanata Platform &#x2013; Dependency Information</title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -80,8 +80,8 @@
                           <a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
             </li>
                       <li class="none">
-                          <a href="dependency-info.html" title="Dependency Information">Dependency Information</a>
-            </li>
+            <strong>Dependency Information</strong>
+          </li>
                       <li class="none">
                           <a href="dependency-management.html" title="Dependency Management">Dependency Management</a>
             </li>
@@ -89,8 +89,8 @@
                           <a href="distribution-management.html" title="Distribution Management">Distribution Management</a>
             </li>
                       <li class="none">
-            <strong>About</strong>
-          </li>
+                          <a href="index.html" title="About">About</a>
+            </li>
                       <li class="none">
                           <a href="issue-tracking.html" title="Issue Tracking">Issue Tracking</a>
             </li>
@@ -133,33 +133,44 @@
     <div id="bodyColumn">
       <div id="contentBox">
         <div class="section">
-<h2><a name="About_Zanata_Platform"></a>About Zanata Platform</h2><a name="About_Zanata_Platform"></a>
-<p>Parent pom for Zanata modules</p>
+<h2><a name="Dependency_Information"></a>Dependency Information</h2><a name="Dependency_Information"></a>
 <div class="section">
-<h3><a name="Project_Modules"></a>Project Modules</h3><a name="Project_Modules"></a>
-<p>This project has declared the following modules:</p>
-<table border="0" class="bodyTable">
-<tr class="a">
-<th>Name</th>
-<th>Description</th></tr>
-<tr class="b">
-<td><a href="build-tools/index.html">Build Tools</a></td>
-<td>Build tools for Zanata modules</td></tr>
-<tr class="a">
-<td><a href="parent/index.html">Zanata Parent POM</a></td>
-<td>Parent pom for Zanata modules</td></tr>
-<tr class="b">
-<td><a href="api/index.html">Zanata API modules</a></td>
-<td>Parent pom for Zanata API</td></tr>
-<tr class="a">
-<td><a href="common/index.html">Zanata common modules</a></td>
-<td>Parent pom for Zanata modules</td></tr>
-<tr class="b">
-<td><a href="client/index.html">Zanata client modules</a></td>
-<td>Parent pom for Zanata modules</td></tr>
-<tr class="a">
-<td><a href="server/index.html">Zanata server modules</a></td>
-<td>Parent pom for Zanata modules</td></tr></table></div></div>
+<h3><a name="Apache_Maven"></a>Apache Maven</h3><a name="Apache_Maven"></a>
+<div class="source">
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;org.zanata&lt;/groupId&gt;
+  &lt;artifactId&gt;zanata-platform&lt;/artifactId&gt;
+  &lt;version&gt;4.5.1-SNAPSHOT&lt;/version&gt;
+  &lt;type&gt;pom&lt;/type&gt;
+&lt;/dependency&gt;</pre></div></div>
+<div class="section">
+<h3><a name="Apache_Buildr"></a>Apache Buildr</h3><a name="Apache_Buildr"></a>
+<div class="source">
+<pre>'org.zanata:zanata-platform:pom:4.5.1-SNAPSHOT'</pre></div></div>
+<div class="section">
+<h3><a name="Apache_Ivy"></a>Apache Ivy</h3><a name="Apache_Ivy"></a>
+<div class="source">
+<pre>&lt;dependency org=&quot;org.zanata&quot; name=&quot;zanata-platform&quot; rev=&quot;4.5.1-SNAPSHOT&quot;&gt;
+  &lt;artifact name=&quot;zanata-platform&quot; type=&quot;pom&quot; /&gt;
+&lt;/dependency&gt;</pre></div></div>
+<div class="section">
+<h3><a name="Groovy_Grape"></a>Groovy Grape</h3><a name="Groovy_Grape"></a>
+<div class="source">
+<pre>@Grapes(
+@Grab(group='org.zanata', module='zanata-platform', version='4.5.1-SNAPSHOT')
+)</pre></div></div>
+<div class="section">
+<h3><a name="Grails"></a>Grails</h3><a name="Grails"></a>
+<div class="source">
+<pre>compile 'org.zanata:zanata-platform:4.5.1-SNAPSHOT'</pre></div></div>
+<div class="section">
+<h3><a name="Leiningen"></a>Leiningen</h3><a name="Leiningen"></a>
+<div class="source">
+<pre>[org.zanata/zanata-platform &quot;4.5.1-SNAPSHOT&quot;]</pre></div></div>
+<div class="section">
+<h3><a name="SBT"></a>SBT</h3><a name="SBT"></a>
+<div class="source">
+<pre>libraryDependencies += &quot;org.zanata&quot; % &quot;zanata-platform&quot; % &quot;4.5.1-SNAPSHOT&quot;</pre></div></div></div>
       </div>
     </div>
     <div class="clear">
