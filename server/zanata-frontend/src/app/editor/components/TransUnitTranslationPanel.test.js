@@ -8,7 +8,7 @@ import SyntaxHighlighter, { registerLanguage }
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
-jest.mock('./Validation')
+jest.mock('./Validation', () => 'div')
 
 registerLanguage('xml', xml)
 
@@ -116,6 +116,7 @@ describe('TransUnitTranslationPanel', () => {
           lineStyle={lineStyle}>
           {'Je ne parle pas français'}
         </SyntaxHighlighter>
+        <div></div>{/* Validation Mock */ }
       </div>
     )
     expect(actual).toEqual(expected)

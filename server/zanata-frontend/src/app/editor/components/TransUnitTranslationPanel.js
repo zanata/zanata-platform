@@ -419,6 +419,9 @@ function mapDispatchToProps (dispatch, _ownProps) {
       if (selectionStart !== selectionEnd) {
         dispatch(phraseTextSelectionRange(selectionStart, selectionEnd))
       }
+    },
+    onValidationErrorChange: (phraseId, hasValidationErrors) => {
+      dispatch(validationError(phraseId, hasValidationErrors))
     }
   }
 }

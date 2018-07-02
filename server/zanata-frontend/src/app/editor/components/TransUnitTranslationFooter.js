@@ -266,6 +266,7 @@ class TransUnitTranslationFooter extends React.Component {
       /* eslint-enable max-len */
     )
     const errorMessages = validationMessages &&
+      // @ts-ignore any
       validationMessages.errorMessages.map((msg, i) => {
         return (
           <li className='red' key={i}>
@@ -341,10 +342,12 @@ class TransUnitTranslationFooter extends React.Component {
   }
 }
 
+    // @ts-ignore any
 function mapDispatchToProps (dispatch, _ownProps) {
   return {
+    // @ts-ignore any
     showErrorModal: (phraseId, showPopover) => {
-      // @ts-ignore
+      // @ts-ignore any
       dispatch(toggleSaveErrorModal(phraseId, showPopover))
     }
   }
