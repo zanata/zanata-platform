@@ -60,9 +60,9 @@ export const undoEdit = createAction(UNDO_EDIT)
  * Open a modal to confirm saving a translation with validation errors.
  */
 export const toggleSaveErrorModal = createAction(TOGGLE_SAVE_WITH_ERROR_MODAL,
-  (phraseId, showPopover) => ({
+  (phraseId, showValidationErrorModal) => ({
     phraseId,
-    showPopover
+    showValidationErrorModal
   }))
 
 /**

@@ -265,9 +265,9 @@ export const phraseReducer = handleActions({
       detail: { [phraseId]: { errors: { $set: hasValidationError } } }
     }),
 
-  [TOGGLE_SAVE_WITH_ERROR_MODAL]: (state, { payload: { phraseId, showPopover } }) =>
+  [TOGGLE_SAVE_WITH_ERROR_MODAL]: (state, { payload: { phraseId, showValidationErrorModal } }) =>
     update(state, {
-      detail: { [phraseId]: { showPopover: { $set: showPopover } } }
+      detail: { [phraseId]: { showValidationErrorModal: { $set: showValidationErrorModal } } }
     })
 }, defaultState)
 

@@ -161,7 +161,7 @@ interface ValidationOption {
   disabled: boolean
 }
 
-interface ValidationMessages {
+export interface ValidationMessages {
   errorMessages: Message[],
   errorCount: number
   warningMessages: Message[],

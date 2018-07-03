@@ -25,22 +25,13 @@ import { connect } from 'react-redux'
 import cx from 'classnames'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
-import Divider from 'antd/lib/divider'
-import 'antd/lib/divider/style/css'
-import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/css'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
+import ValidationErrorsModal from '../components/ValidationErrorsModal'
 import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
 import { toggleSaveErrorModal } from '../actions/phrases-actions'
-import SyntaxHighlighter, { registerLanguage }
-  from 'react-syntax-highlighter/light'
-import xml from 'react-syntax-highlighter/languages/hljs/xml'
-import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
-
-registerLanguage('xml', xml)
 
 const buttonClassByStatus = {
   untranslated: 'Button--neutral',
@@ -195,11 +186,6 @@ class TransUnitTranslationFooter extends React.Component {
       savePhraseWithStatus(phrase, selectedButtonStatus, event)
     }
 
-    const saveWithErrors = () => {
-      showErrorModal(phrase.id, false)
-      savePhraseWithStatus(phrase, selectedButtonStatus, event)
-    }
-
     const suggestionsIcon = this.renderCountIconIfNonZero({
       count: suggestionCount,
       active: showSuggestions && suggestionSearchType === 'phrase',
@@ -265,60 +251,17 @@ class TransUnitTranslationFooter extends React.Component {
       </ul>
       /* eslint-enable max-len */
     )
-    const errorMessages = validationMessages &&
-      // @ts-ignore any
-      validationMessages.errorMessages.map((msg, i) => {
-        return (
-          <li className='red' key={i}>
-            {msg.label}: {msg.defaultMessage}
-          </li>
-        )
-      })
-
-    const syntaxStyle = {
-      width: '90%',
-      whiteSpace: 'pre-wrap',
-      wordWrap: 'break-word'
-    }
     return (
       /* eslint-disable max-len */
-      <div>
-        <Modal
-          title='You are trying to save an invalid translation'
-          visible={phrase.showPopover}
-          onCancel={this.cancelSave}
-          footer={[
-            <Button
-              key='back'
-              aria-label='button'
-              onClick={this.cancelSave}>
-              Cancel
-            </Button>,
-            <Button
-              key='ok'
-              aria-label='button'
-              type='primary'
-              className='EditorButton u-sizeHeight-1_1-4 u-textCapitalize Button--unsure'
-              onClick={saveWithErrors}>
-              Save as Needs Work
-            </Button>
-          ]}>
-          <h2>Translation</h2>
-          <SyntaxHighlighter
-            language='html'
-            style={atelierLakesideLight}
-            wrapLines
-            lineStyle={syntaxStyle}>
-            {phrase.newTranslations}
-          </SyntaxHighlighter>
-          <Divider />
-          <div className='red'>
-            <h2>Error Messages</h2>
-            <ul>
-              {errorMessages}
-            </ul>
-          </div>
-        </Modal>
+      <React.Fragment>
+        {validationMessages && validationMessages.errorCount > 0 &&
+          <ValidationErrorsModal
+            phrase={phrase}
+            savePhraseWithStatus={savePhraseWithStatus}
+            selectedButtonStatus={selectedButtonStatus}
+            showErrorModal={showErrorModal}
+            validationMessages={validationMessages}
+          />}
         <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
           <div className="TransUnit-panelFooterLeftNav u-floatLeft u-sizeHeight-1_1-2">
             <ul className="u-listHorizontal">
@@ -336,7 +279,7 @@ class TransUnitTranslationFooter extends React.Component {
               content={otherActionButtonList} />
           </div>
         </div>
-      </div>
+      </React.Fragment>
       /* eslint-enable max-len */
     )
   }
@@ -346,9 +289,9 @@ class TransUnitTranslationFooter extends React.Component {
 function mapDispatchToProps (dispatch, _ownProps) {
   return {
     // @ts-ignore any
-    showErrorModal: (phraseId, showPopover) => {
+    showErrorModal: (phraseId, showValidationErrorModal) => {
       // @ts-ignore any
-      dispatch(toggleSaveErrorModal(phraseId, showPopover))
+      dispatch(toggleSaveErrorModal(phraseId, showValidationErrorModal))
     }
   }
 }
