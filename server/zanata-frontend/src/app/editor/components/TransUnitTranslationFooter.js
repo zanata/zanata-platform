@@ -206,10 +206,6 @@ class TransUnitTranslationFooter extends React.Component {
       <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
         Save as
       </span>
-    const errorsLabel = phrase.errors &&
-      <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
-        <Icon name="warning" className="n2" title="Validation Errors Detected" /> Errors detected
-      </span>
     /* eslint-enable max-len */
     const actionButtonKeyShortcut =
       saveAsMode && statusShortcutKeys[selectedButtonStatus]
@@ -270,7 +266,7 @@ class TransUnitTranslationFooter extends React.Component {
             </ul>
           </div>
           <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
-            {errorsLabel} {saveAsLabel}
+            {saveAsLabel}
             <SplitDropdown
               onToggle={this.toggleDropdown}
               isOpen={dropdownIsOpen}
