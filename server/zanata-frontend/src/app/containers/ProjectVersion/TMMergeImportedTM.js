@@ -62,9 +62,8 @@ class TMMergeImportedTM extends Component {
                 <span>I don't mind at all</span><br />
                 <CopyLabel type={IGNORE_CHECK} value={fromImportedTM} />
                 <Tooltip placement='right' overlay={tooltip}>
-                  <a className="btn-link tooltip-btn" role="button">
-                    <Icon name="info" className="s0"
-                      parentClassName="iconInfoVersionMerge" />
+                  <a className="btn-link pa0" role="button">
+                    <Icon name="info" className="s0 v-mid ml1 txt-info" />
                   </a>
                 </Tooltip>
               </Radio>

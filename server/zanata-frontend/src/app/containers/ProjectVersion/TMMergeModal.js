@@ -492,7 +492,7 @@ class TMMergeModal extends Component {
         footer={modalFooter}
         width={'48rem'}>
         <span>
-          <p className='u-textDanger modalText-danger'>
+          <p className='txt-error tc pt3 mb0'>
             {notification && notification.message}</p>
           {modalBody}
         </span>

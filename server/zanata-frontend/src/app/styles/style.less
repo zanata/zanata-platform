@@ -22,53 +22,12 @@
  */
 
 .bstrapReact {
-  .container {
-    margin-right: auto;
-    margin-left: auto;
-    padding-right: @spacing-base;
-    padding-left: @spacing-base;
-  }
-  .container:focus {
-    outline: 0;
-  }
-  .container:after {
-    display: block;
-    clear: both;
-    content: "";
-  }
-  .container--fluid {
-    margin-right: auto;
-    margin-left: auto;
-    padding-right: @spacing-base;
-    padding-left: @spacing-base;
-  }
-  .containerSidebar {
-    margin-left: 4.5rem;
-    background-color: #fff;
-    padding-bottom: 3rem;
-  }
-  .wideView {
-    align-items: center;
-    -webkit-align-items: center;
-    /* Safari 7.0+ */
-    overflow: hidden;
-    -webkit-overflow-scrolling: touch;
-    width: 99%;
-    padding-left: @spacing-base;
-    padding-right: @spacing-base;
-  }
   .wideView#glossary {
     padding-bottom: 3rem;
   }
   .gwtBase {
     background-color: #fff;
     font-size: 16px;
-  }
-  img.avatar-round {
-    margin-right: @spacing-rq;
-    border-radius: @border-radius-img;
-    height: 2.25rem;
-    width: 2.25rem;
   }
   #messages {
     margin-left: 4rem;
@@ -511,770 +470,576 @@
   dd {
     margin-left: 0;
   }
-  .containerSidebar td.tight {
-    padding: @spacing-tight;
-  }
-  .containerSidebar td.td-3 {
-    width: 37.5%;
-  }
-  .containerSidebar td.td-1 {
-    width: 16.6667%;
-  }
-  .containerSidebar td.td-2 {
-    width: 25%;
-  }
-  .containerSidebar td.td-4 {
-    width: 50%;
-    overflow: hidden;
-    word-wrap: normal;
-  }
-  .containerSidebar tr {
-    border-bottom: solid 1px;
-    border-color: rgb(237, 242, 248);
-    height: 3rem;
-  }
-  .containerSidebar tr.highlight {
-    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-    vertical-align: text-bottom;
-  }
-  .containerSidebar tr.highlight:hover {
-    background-color: rgb(237, 242, 248);
-  }
-  .containerSidebar tr.selected {
-    background-color: rgb(237, 242, 248);
-  }
-  /* Utility classes for text styling */
-  .u-textMutedBold {
-    color: @color-muted;
-    font-weight: 600;
-  }
-  .u-textItalic, dfn {
-    font-style: italic;
-  }
-  .u-textSmall {
-    font-size: 0.833rem;
-  }
-  .u-marginL--rq {
-    margin-left: @spacing-rq;
-  }
-  .u-textSuggestion {
-    color: @color-muted;
-    font-size: 0.833rem;
-    margin-left: @spacing-rh;
-  }
-  .u-textLight {
-    font-weight: 400;
-  }
-  .u-textLeft {
-    text-align: left;
-  }
-  .u-textRight {
-    text-align: right;
-  }
-  .u-textCenter {
-    text-align: center;
-  }
-  .u-textJustify {
-    text-align: justify;
-  }
-  .u-textBold {
-    font-weight: 600;
-  }
-  .u-textNoWrap {
-    white-space: nowrap;
-  }
-  .u-textLowercase {
-    text-transform: lowercase;
-  }
-  .u-textUppercase {
-    text-transform: uppercase;
-  }
-  .u-textUppercaseBold {
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-  .u-textCapitalize {
-    text-transform: capitalize;
-  }
-  .u-textMuted {
-    color: @color-muted;
-    font-weight: 500;
-  }
-  .u-textUnsupported {
-    color: @color-danger;
-    margin-top: @spacing-rq;
-  }
-  .u-textLoadingMuted {
-    color: @color-muted;
-    margin-bottom: @spacing-rq;
-  }
-  .glossaryText-muted {
-    color: @color-muted;
-    margin-left: 7rem;
-  }
-  .u-textNewBlue {
-    color: @color-new-zanata-blue;
-  }
-  .u-textDark {
-    color: @color-dark;
-  }
-  h2.u-textDark {
-    font-size: 1.2rem;
-    padding-left: 0;
-    margin-bottom: 0;
-  }
-  td span.u-textUnderstated {
-    color: @color-muted;
-    font-size: 0.9rem;
-  }
-  .u-textPrimary {
-    color: @color-light;
-  }
-  .u-textWarning {
-    color: @color-warning;
-  }
-  .u-textDanger {
-    color: @color-danger;
-  }
-  .languageDropdown-field {
-    width: auto;
-    display: inline-block;
-  }
-  .modalText-danger {
-    text-align: center;
-    padding-top: 1rem;
-    margin-bottom: 0;
-  }
-  .modalText-muted {
-    color: @color-muted;
-    padding-top: @spacing-rq;
-  }
-  .u-textSuccess {
-    color: @color-success;
-  }
-  .u-textInfo {
-    color: @color-light;
-  }
-  a.u-textPrimary:focus, a.u-textPrimary:hover {
-    color: @color-dark;
-  }
-  .u-bgPrimary {
-    color: #fff;
-    background-color: @color-dark;
-  }
-  a.u-bgPrimary:focus, a.u-bgPrimary:hover {
-    background-color: @color-dark;
-  }
-  .u-listUnstyled {
-    padding-left: 0;
-    list-style: none;
-  }
-  .listInline {
-    margin-left: -5px;
-    padding-left: 0;
-    list-style: none;
-  }
-  h2.modal-title .listInline {
-    vertical-align: sub;
-    font-weight: 400;
-  }
-  .listInline > li {
-    display: inline-block;
-    padding-right: @spacing-small-horizontal;
-    padding-left: @spacing-small-horizontal;
-  }
-  p.bgWarning {
-    font-style: italic;
-    padding: @spacing-large-horizontal;
-  }
-  .bgInfo label {
-    font-weight: 500;
-  }
-  span.infoText {
-    font-size: 0.9rem;
-    font-weight: 400;
-    margin-right: @spacing-xxl;
-    margin-left: @spacing-heading;
-    color: @color-info;
-  }
-  span.infoText {
-    margin-left: 0;
-  }
-  /* Tables - bootstrap specific */
-  table {
-    background-color: transparent;
-  }
-  caption {
-    padding-top: @spacing-half-base;
-    padding-bottom: @spacing-half-base;
-    text-align: left;
-    color: #777;
-  }
-  th {
-    text-align: left;
-  }
-  .searchTable.table tbody tr td, .searchTable.table thead tr th {
-    text-align: left !important;
-  }
-  .table thead tr {
-    border-bottom-color: transparent !important;
-  }
-  /* Buttons */
-  .btnCode {
-    margin-top: @spacing-base;
-    margin-left: 0;
-  }
-  button.btnSort {
-    padding: 0;
-    margin: 0;
-  }
-  button.btnSort i.fa.fa-sort {
-    color: @color-neutral;
-    margin-right: 1rem;
-  }
-  .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
-    background-color: @color-dark;
-  }
-  .nav-pills > li.active > a {
-    background-color: @color-light;
-  }
-  .btn-success:active, .btn-success:hover {
-    background-color: #50a360;
-    color: #fff;
-  }
-  .btn-success {
-    background-color: @color-success;
-  }
-  .btn-info:active, .btn-info:hover {
-    background-color: @color-dark;
-    color: #fff;
-  }
-  .btn-info {
-    background-color: @color-info;
-  }
-  .btn-danger:active, .btn-danger:hover {
-    background-color: #cf3031;
-    color: #fff;
-  }
-  .btn-danger {
-    background-color: @color-danger;
-    color: #fff;
-  }
-  .btn-danger .loaderText, .btn-primary .loaderText {
-    color: #fff;
-  }
-  .btn-warning:active, .btn-warning:hover {
-    background-color: #cf8800;
-    color: #fff;
-  }
-  .btn-warning {
-    background-color: @color-warning;
-  }
-  button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown-toggle > span.caret, button.btn.btn-primary.dropdown-toggle > span.caret, button.btn.btn-success.dropdown-toggle > span.caret, button.btn.btn-warning.dropdown-toggle > span.caret {
-    color: #fff;
-  }
-  /* Labels - bootstrap styles inherited */
-  .control-label {
-    color: @color-dark;
-  }
-  .has-success .control-label, .checkbox.has-success, .radio.has-success {
-    color: @color-success;
-  }
-  .has-success .form-control {
-    border-color: @color-success;
-  }
-  .has-success .form-control-feedback {
-    color: @color-success;
-  }
-  .has-warning .control-label, .checkbox.has-warning, .radio.has-warning {
-    color: @color-warning;
-  }
-  .has-warning .form-control {
-    border-color: @color-warning;
-  }
-  .has-warning .form-control-feedback {
-    color: @color-warning;
-  }
-  .has-error .control-label, .checkbox.has-error, .radio.has-error {
-    color: @color-danger;
-  }
-  .has-error .form-control {
-    border-color: @color-danger;
-  }
-  .has-error .form-control-feedback {
-    color: @color-danger;
-  }
-  .danger.notification-modal, .row-danger {
-    color: rgb(234, 66, 86);
-  }
-  .warning.notification-modal, .row-warning {
-    color: rgb(252, 153, 71);
-  }
-  .u-rowInfo {
-    color: @color-light;
-  }
-  .info.notification-modal {
-    color: #000;
-  }
-  //
-  // Navs
-  // --------------------------------------------------
-  // Base class
-  // --------------------------------------------------
-  .nav {
-    margin-bottom: 0;
-    padding-left: 0; // Override default ul/ol
-    list-style: none;
-    &:extend(.clearfix all);
-    > li {
-      position: relative;
-      display: block;
-      > a {
-        position: relative;
-        display: block;
-        padding: @nav-link-padding;
-        &:hover, &:focus {
-          text-decoration: none;
-          background-color: @nav-link-hover-bg;
-        }
-      }
-      // Disabled state sets text to gray and nukes hover/tab effects
-      &.disabled > a {
-        color: @nav-disabled-link-color;
-        &:hover, &:focus {
-          color: @nav-disabled-link-hover-color;
-          text-decoration: none;
-          background-color: transparent;
-          cursor: not-allowed;
-        }
-      }
+    /* Utility classes for text styling */
+    .u-textMutedBold {
+      color: @color-muted;
+      font-weight: 600;
     }
-    // Open dropdowns
-    .open > a {
-      &, &:hover, &:focus {
-        background-color: @nav-link-hover-bg;
-        border-color: @link-color;
-      }
+    .u-textItalic, dfn {
+      font-style: italic;
     }
-    // Prevent IE8 from misplacing imgs
-    //
-    // See https://github.com/h5bp/html5-boilerplate/issues/984#issuecomment-3985989
-    > li > a > img {
-      max-width: none;
+    .u-textSmall {
+      font-size: 0.833rem;
     }
-  }
-  // Tabs
-  // -------------------------
-  // Give the tabs something to sit on
-  .nav-tabs {
-    border-bottom: 1px solid @nav-tabs-border-color;
-    > li {
-      float: left; // Make the list-items overlay the bottom border
-      margin-bottom: -1px; // Actual tabs (as links)
-      > a {
-        margin-right: 2px;
-        line-height: @line-height-base;
-        border: 1px solid transparent;
-        border-radius: @border-radius-base @border-radius-base 0 0;
-        &:hover {
-          border-color: @nav-tabs-link-hover-border-color @nav-tabs-link-hover-border-color @nav-tabs-border-color;
-        }
-      }
-      // Active state, and its :hover to override normal :hover
-      &.active > a {
-        &, &:hover, &:focus {
-          color: @color-dark;
-          background-color: @nav-tabs-active-link-hover-bg;
-          border: 1px solid @nav-tabs-active-link-hover-border-color;
-          border-bottom-color: transparent;
-          cursor: default;
-        }
-      }
+    .u-marginL--rq {
+      margin-left: @spacing-rq;
     }
-    // pulling this in mainly for less shorthand
-    &.nav-justified {
-      .nav-justified();
-      .nav-tabs-justified();
+    .u-textSuggestion {
+      color: @color-muted;
+      font-size: 0.833rem;
+      margin-left: @spacing-rh;
     }
-  }
-  // Pills
-  // -------------------------
-  .nav-pills {
-    > li {
-      float: left; // Links rendered as pills
-      > a {
-        border-radius: @nav-pills-border-radius;
-      }
-      + li {
-        margin-left: 2px;
-      }
-      // Active state
-      &.active > a {
-        &, &:hover, &:focus {
-          color: @nav-pills-active-link-hover-color;
-          background-color: @nav-pills-active-link-hover-bg;
-        }
-      }
+    .u-textLight {
+      font-weight: 400;
     }
-  }
-  // Stacked pills - used for sidebar links
-  .nav-stacked {
-    > li {
-      float: none;
-      + li {
-        margin-top: 2px;
-        margin-left: 0; // no need for this gap between nav items
-      }
+    .u-textLeft {
+      text-align: left;
     }
-  }
-  // Nav variations
-  // --------------------------------------------------
-  // Justified nav links
-  // -------------------------
-  .nav-justified {
-    width: 100%;
-    > li {
-      float: none;
-      > a {
-        text-align: center;
-        margin-bottom: @spacing-half-base;
-      }
+    .u-textRight {
+      text-align: right;
     }
-    > .dropdown .dropdown-menu {
-      top: auto;
-      left: auto;
+    .u-textCenter {
+      text-align: center;
     }
-    @media (min-width: @screen-sm-min) {
-      > li {
-        display: table-cell;
-        width: 1%;
-        > a {
-          margin-bottom: 0;
-        }
-      }
+    .u-textJustify {
+      text-align: justify;
     }
-  }
-  // Move borders to anchors instead of bottom of list
-  //
-  // Mixin for adding on top the shared `.nav-justified` styles for our tabs
-  .nav-tabs-justified {
-    border-bottom: 0;
-    > li > a {
-      // Override margin from .nav-tabs
-      margin-right: 0;
-      border-radius: @border-radius-base;
+    .u-textBold {
+      font-weight: 600;
     }
-    > .active > a, > .active > a:hover, > .active > a:focus {
-      border: 1px solid @nav-tabs-justified-link-border-color;
+    .u-textNoWrap {
+      white-space: nowrap;
     }
-    @media (min-width: @screen-sm-min) {
-      > li > a {
-        border-bottom: 1px solid @nav-tabs-justified-link-border-color;
-        border-radius: @border-radius-base @border-radius-base 0 0;
-      }
-
-      > .active > a, > .active > a:hover, > .active > a:focus {
-        border-bottom-color: @nav-tabs-justified-active-link-border-color;
-      }
+    .u-textLowercase {
+      text-transform: lowercase;
     }
-  }
-  // Tabbable tabs
-  // -------------------------
-  // Hide tabbable panes to start, show them when `.active`
-  .tab-content {
-    > .tab-pane {
-      display: none;
+    .u-textUppercase {
+      text-transform: uppercase;
     }
-    > .active {
-      display: block;
+    .u-textUppercaseBold {
+      font-weight: 600;
+      text-transform: uppercase;
     }
-  }
-  .rdr-Calendar {
-    max-width: 240px;
-  }
-  .button-spacing button:first-of-type {
-    margin-right: @spacing-re;
-  }
-  #documents h2 span#documentLabel {
-    max-width: 100%;
-    hyphens: initial;
-  }
-  .tmPanel .panel-body {
-    padding: 0.375rem;
-    margin-left: 1rem;
-    color: @color-neutral;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-  .tmPanel .panel-body .and {
-    background-color: white;
-  }
-  .panel-body .iconTMX {
-    padding-right: @spacing-re;
-    color: @color-muted;
-    vertical-align: sub;
-  }
-  #settingsMaintainersForm #maintainerAutocomplete {
-    margin-bottom: 11rem;
-  }
-  #groupInfo h1 {
-    height: 1.1rem;
-  }
-  .ellipsis {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    word-wrap: normal;
-  }
-  .hidden {
-    display: none !important;
-  }
-  .content {
-    font-size: 1rem;
-    padding-top: @spacing-hr;
-    padding-bottom: @spacing-hr;
-    background-color: #fff;
-    width: 100%;
-  }
-  button {
-    border-radius: @border-radius-base;
-    box-shadow: none;
-  }
-  .iconClose svg {
-    opacity: 0.7;
-    height: 1rem;
-    width: 1rem;
-    text-align: center;
-    color: #f00;
-  }
-  .glyphicon-modal-window:before {
-    content: "\e237";
-  }
-  .moreContent {
-    align-self: center;
-  }
-  li.moreContent-listItem {
-    border-bottom: solid 1px #edf2f8;
-    padding-top: @spacing-rq;
-    padding-bottom: @spacing-rq;
-  }
-  li.moreContent-contact {
-    padding-top: @spacing-rh;
-    padding-bottom: @spacing-rh;
-  }
-  li.moreContent-info {
-    padding-top: @spacing-base-and-a-half;
-    font-size: 0.833rem !important;
-    color: @color-muted;
-  }
-  li.moreContent-language {
-    padding-top: @spacing-base-and-a-half;
-  }
-  table.tableSearch {
-    max-width: 36.05rem;
-  }
-  .tabsContent {
-    padding-bottom: @spacing-base-and-a-half;
-  }
-  .g--padded {
-    padding-bottom: 4.2rem !important;
-  }
-  li.moreContent-info {
-    padding-top: @spacing-base-and-a-half;
-    font-size: 0.833rem !important;
-    color: @color-muted;
-  }
-  li.moreContent-language {
-    padding-top: @spacing-base-and-a-half;
-  }
-  table.tableSearch {
-    max-width: 36.05rem;
-  }
-  .textMeta.content {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .tabsContent {
-    padding-bottom: @spacing-base-and-a-half;
-  }
-  .tmPanel ul.list-group {
-    padding: 0;
-    margin: 0;
-  }
-  .translationContainer pre {
-    word-wrap: normal;
-    word-break: normal;
-    word-break: break-word;
-    /*Chrome specific*/
-    -webkit-hyphens: initial;
-    -moz-hyphens: initial;
-    hyphens: initial;
-  }
-  .flexGrow1 {
-    flex-grow: 1;
-  }
-  .form-group.u-flexGrow1 {
-    flex-grow: 1;
-  }
-  .form-group.flexGrow2 {
-    flex-grow: 2;
-  }
-  // @screen-xs variable depreciated
-  @media (max-width: 29.375rem) {
-    .view {
-      flex-direction: column;
-      -webkit-flex-direction: column;
-      display: inline-flex;
-      width: 100%;
-      flex-shrink: 0;
-      -webkit-flex-shrink: 0;
-      height: inherit !important;
+    .u-textCapitalize {
+      text-transform: capitalize;
     }
-
-    .wideView {
-      margin-left: 0;
-      flex: 1;
-      -webkit-box-flex: 1;
-      -moz-flex: 1;
-      -webkit-flex: 1;
-      margin-left: 0;
-      margin-top: 0;
+    .u-textMuted {
+      color: @color-muted;
+      font-weight: 500;
     }
-
-    .logoLink {
-      display: none;
+    .u-textUnsupported {
+      color: @color-danger;
+      margin-top: @spacing-rq;
     }
-
-    .hidden-lesm {
-      position: absolute !important;
-      clip: rect(1px, 1px, 1px, 1px);
-      padding: 0 !important;
-      border: 0 !important;
-      height: 1px !important;
-      width: 1px !important;
-      overflow: hidden;
+    .u-textLoadingMuted {
+      color: @color-muted;
+      margin-bottom: @spacing-rq;
     }
-
-    main {
-      margin-left: 0;
+    .glossaryText-muted {
+      color: @color-muted;
+      margin-left: 7rem;
     }
-
-    #root {
-      order: 1;
-      width: 100%;
-      height: 3.5rem;
+    .u-textNewBlue {
+      color: @color-new-zanata-blue;
     }
-
-    .containerSidebar {
-      position: absolute;
-      top: 0;
-      margin-bottom: 4.5rem;
-      margin-left: 0;
-      margin-right: 0;
-      width: 100%;
+    .u-textDark {
+      color: @color-dark;
     }
-  }
-  @media (min-width: 29.376rem) {
-    .view {
-      display: flex;
-      display: -webkit-flex;
-      display: -moz-flex;
-      display: -ms-flex;
-      display: -o-flex;
-      align-items: flex-start;
-      -webkit-align-items: flex-start;
-      flex-direction: row;
-      -webkit-flex-direction: row;
-      flex-shrink: 0;
-      -webkit-flex-shrink: 0;
-      min-height: 100%;
-    }
-
-    main {
-      margin-left: 4.5rem;
-    }
-
-    .containerSidebar {
-      margin-left: 4.5rem;
-      width: 95%;
+    h2.u-textDark {
+      font-size: 1.2rem;
+      padding-left: 0;
       margin-bottom: 0;
     }
-
-    #root {
-      height: 100vh;
+    td span.u-textUnderstated {
+      color: @color-muted;
+      font-size: 0.9rem;
     }
-  }
-  @media (max-width: @screen-sm-max) {
-    .hidden-lesm {
-      position: absolute !important;
-      *clip: rect(1px 1px 1px 1px);
-      clip: rect(1px, 1px, 1px, 1px);
-      padding: 0 !important;
-      border: 0 !important;
-      height: 1px !important;
-      width: 1px !important;
-      overflow: hidden;
+    .u-textPrimary {
+      color: @color-light;
     }
-
-  }
-  // @screen-xs variable depreciated
-  @media (max-width: 29.375rem) {
-    .view {
-      flex-direction: column;
-      -webkit-flex-direction: column;
-      display: inline-flex;
+    .u-textWarning {
+      color: @color-warning;
+    }
+    .u-textDanger {
+      color: @color-danger;
+    }
+    .languageDropdown-field {
+      width: auto;
+      display: inline-block;
+    }
+    .modalText-muted {
+      color: @color-muted;
+      padding-top: @spacing-rq;
+    }
+    .u-textSuccess {
+      color: @color-success;
+    }
+    .u-textInfo {
+      color: @color-light;
+    }
+    a.u-textPrimary:focus, a.u-textPrimary:hover {
+      color: @color-dark;
+    }
+    .u-bgPrimary {
+      color: #fff;
+      background-color: @color-dark;
+    }
+    a.u-bgPrimary:focus, a.u-bgPrimary:hover {
+      background-color: @color-dark;
+    }
+    .u-listUnstyled {
+      padding-left: 0;
+      list-style: none;
+    }
+    .listInline {
+      margin-left: -5px;
+      padding-left: 0;
+      list-style: none;
+    }
+    h2.modal-title .listInline {
+      vertical-align: sub;
+      font-weight: 400;
+    }
+    .listInline > li {
+      display: inline-block;
+      padding-right: @spacing-small-horizontal;
+      padding-left: @spacing-small-horizontal;
+    }
+    p.bgWarning {
+      font-style: italic;
+      padding: @spacing-large-horizontal;
+    }
+    .bgInfo label {
+      font-weight: 500;
+    }
+    span.infoText {
+      font-size: 0.9rem;
+      font-weight: 400;
+      margin-right: @spacing-xxl;
+      margin-left: @spacing-heading;
+      color: @color-info;
+    }
+    span.infoText {
+      margin-left: 0;
+    }
+    /* Tables - bootstrap specific */
+    table {
+      background-color: transparent;
+    }
+    caption {
+      padding-top: @spacing-half-base;
+      padding-bottom: @spacing-half-base;
+      text-align: left;
+      color: #777;
+    }
+    th {
+      text-align: left;
+    }
+    .searchTable.table tbody tr td, .searchTable.table thead tr th {
+      text-align: left !important;
+    }
+    .table thead tr {
+      border-bottom-color: transparent !important;
+    }
+    /* Buttons */
+    .btnCode {
+      margin-top: @spacing-base;
+      margin-left: 0;
+    }
+    button.btnSort {
+      padding: 0;
+      margin: 0;
+    }
+    button.btnSort i.fa.fa-sort {
+      color: @color-neutral;
+      margin-right: 1rem;
+    }
+    .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
+      background-color: @color-dark;
+    }
+    .nav-pills > li.active > a {
+      background-color: @color-light;
+    }
+    .btn-success:active, .btn-success:hover {
+      background-color: #50a360;
+      color: #fff;
+    }
+    .btn-success {
+      background-color: @color-success;
+    }
+    .btn-info:active, .btn-info:hover {
+      background-color: @color-dark;
+      color: #fff;
+    }
+    .btn-info {
+      background-color: @color-info;
+    }
+    .btn-danger:active, .btn-danger:hover {
+      background-color: #cf3031;
+      color: #fff;
+    }
+    .btn-danger {
+      background-color: @color-danger;
+      color: #fff;
+    }
+    .btn-danger .loaderText, .btn-primary .loaderText {
+      color: #fff;
+    }
+    .btn-warning:active, .btn-warning:hover {
+      background-color: #cf8800;
+      color: #fff;
+    }
+    .btn-warning {
+      background-color: @color-warning;
+    }
+    button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown-toggle > span.caret, button.btn.btn-primary.dropdown-toggle > span.caret, button.btn.btn-success.dropdown-toggle > span.caret, button.btn.btn-warning.dropdown-toggle > span.caret {
+      color: #fff;
+    }
+    /* Labels - bootstrap styles inherited */
+    .control-label {
+      color: @color-dark;
+    }
+    .has-success .control-label, .checkbox.has-success, .radio.has-success {
+      color: @color-success;
+    }
+    .has-success .form-control {
+      border-color: @color-success;
+    }
+    .has-success .form-control-feedback {
+      color: @color-success;
+    }
+    .has-warning .control-label, .checkbox.has-warning, .radio.has-warning {
+      color: @color-warning;
+    }
+    .has-warning .form-control {
+      border-color: @color-warning;
+    }
+    .has-warning .form-control-feedback {
+      color: @color-warning;
+    }
+    .has-error .control-label, .checkbox.has-error, .radio.has-error {
+      color: @color-danger;
+    }
+    .has-error .form-control {
+      border-color: @color-danger;
+    }
+    .has-error .form-control-feedback {
+      color: @color-danger;
+    }
+    .danger.notification-modal, .row-danger {
+      color: rgb(234, 66, 86);
+    }
+    .warning.notification-modal, .row-warning {
+      color: rgb(252, 153, 71);
+    }
+    .u-rowInfo {
+      color: @color-light;
+    }
+    .info.notification-modal {
+      color: #000;
+    }
+    //
+    // Navs
+    // --------------------------------------------------
+    // Base class
+    // --------------------------------------------------
+    .nav {
+      margin-bottom: 0;
+      padding-left: 0; // Override default ul/ol
+      list-style: none;
+      &:extend(.clearfix all);
+      > li {
+        position: relative;
+        display: block;
+        > a {
+          position: relative;
+          display: block;
+          padding: @nav-link-padding;
+          &:hover, &:focus {
+            text-decoration: none;
+            background-color: @nav-link-hover-bg;
+          }
+        }
+        // Disabled state sets text to gray and nukes hover/tab effects
+        &.disabled > a {
+          color: @nav-disabled-link-color;
+          &:hover, &:focus {
+            color: @nav-disabled-link-hover-color;
+            text-decoration: none;
+            background-color: transparent;
+            cursor: not-allowed;
+          }
+        }
+      }
+      // Open dropdowns
+      .open > a {
+        &, &:hover, &:focus {
+          background-color: @nav-link-hover-bg;
+          border-color: @link-color;
+        }
+      }
+      // Prevent IE8 from misplacing imgs
+      //
+      // See https://github.com/h5bp/html5-boilerplate/issues/984#issuecomment-3985989
+      > li > a > img {
+        max-width: none;
+      }
+    }
+    // Tabs
+    // -------------------------
+    // Give the tabs something to sit on
+    .nav-tabs {
+      border-bottom: 1px solid @nav-tabs-border-color;
+      > li {
+        float: left; // Make the list-items overlay the bottom border
+        margin-bottom: -1px; // Actual tabs (as links)
+        > a {
+          margin-right: 2px;
+          line-height: @line-height-base;
+          border: 1px solid transparent;
+          border-radius: @border-radius-base @border-radius-base 0 0;
+          &:hover {
+            border-color: @nav-tabs-link-hover-border-color @nav-tabs-link-hover-border-color @nav-tabs-border-color;
+          }
+        }
+        // Active state, and its :hover to override normal :hover
+        &.active > a {
+          &, &:hover, &:focus {
+            color: @color-dark;
+            background-color: @nav-tabs-active-link-hover-bg;
+            border: 1px solid @nav-tabs-active-link-hover-border-color;
+            border-bottom-color: transparent;
+            cursor: default;
+          }
+        }
+      }
+      // pulling this in mainly for less shorthand
+      &.nav-justified {
+        .nav-justified();
+        .nav-tabs-justified();
+      }
+    }
+    // Pills
+    // -------------------------
+    .nav-pills {
+      > li {
+        float: left; // Links rendered as pills
+        > a {
+          border-radius: @nav-pills-border-radius;
+        }
+        + li {
+          margin-left: 2px;
+        }
+        // Active state
+        &.active > a {
+          &, &:hover, &:focus {
+            color: @nav-pills-active-link-hover-color;
+            background-color: @nav-pills-active-link-hover-bg;
+          }
+        }
+      }
+    }
+    // Stacked pills - used for sidebar links
+    .nav-stacked {
+      > li {
+        float: none;
+        + li {
+          margin-top: 2px;
+          margin-left: 0; // no need for this gap between nav items
+        }
+      }
+    }
+    // Nav variations
+    // --------------------------------------------------
+    // Justified nav links
+    // -------------------------
+    .nav-justified {
       width: 100%;
-      flex-shrink: 0;
-      -webkit-flex-shrink: 0;
-      height: inherit !important;
+      > li {
+        float: none;
+        > a {
+          text-align: center;
+          margin-bottom: @spacing-half-base;
+        }
+      }
+      > .dropdown .dropdown-menu {
+        top: auto;
+        left: auto;
+      }
+      @media (min-width: @screen-sm-min) {
+        > li {
+          display: table-cell;
+          width: 1%;
+          > a {
+            margin-bottom: 0;
+          }
+        }
+      }
     }
+    // Move borders to anchors instead of bottom of list
+    //
+    // Mixin for adding on top the shared `.nav-justified` styles for our tabs
+    .nav-tabs-justified {
+      border-bottom: 0;
+      > li > a {
+        // Override margin from .nav-tabs
+        margin-right: 0;
+        border-radius: @border-radius-base;
+      }
+      > .active > a, > .active > a:hover, > .active > a:focus {
+        border: 1px solid @nav-tabs-justified-link-border-color;
+      }
+      @media (min-width: @screen-sm-min) {
+        > li > a {
+          border-bottom: 1px solid @nav-tabs-justified-link-border-color;
+          border-radius: @border-radius-base @border-radius-base 0 0;
+        }
 
-    .wideView {
-      margin-left: 0;
-      flex: 1;
-      -webkit-box-flex: 1;
-      -moz-flex: 1;
-      -webkit-flex: 1;
-      margin-left: 0;
-      margin-top: 0;
+        > .active > a, > .active > a:hover, > .active > a:focus {
+          border-bottom-color: @nav-tabs-justified-active-link-border-color;
+        }
+      }
     }
-
-    .logoLink {
-      display: none;
+    // Tabbable tabs
+    // -------------------------
+    // Hide tabbable panes to start, show them when `.active`
+    .tab-content {
+      > .tab-pane {
+        display: none;
+      }
+      > .active {
+        display: block;
+      }
     }
-
-    .hidden-lesm {
-      position: absolute !important;
-      clip: rect(1px, 1px, 1px, 1px);
-      padding: 0 !important;
-      border: 0 !important;
-      height: 1px !important;
-      width: 1px !important;
+    .rdr-Calendar {
+      max-width: 240px;
+    }
+    .button-spacing button:first-of-type {
+      margin-right: @spacing-re;
+    }
+    #documents h2 span#documentLabel {
+      max-width: 100%;
+      hyphens: initial;
+    }
+    .tmPanel .panel-body {
+      padding: 0.375rem;
+      margin-left: 1rem;
+      color: @color-neutral;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .tmPanel .panel-body .and {
+      background-color: white;
+    }
+    .panel-body .iconTMX {
+      padding-right: @spacing-re;
+      color: @color-muted;
+      vertical-align: sub;
+    }
+    #settingsMaintainersForm #maintainerAutocomplete {
+      margin-bottom: 11rem;
+    }
+    #groupInfo h1 {
+      height: 1.1rem;
+    }
+    .ellipsis {
+      text-overflow: ellipsis;
+      white-space: nowrap;
       overflow: hidden;
+      word-wrap: normal;
     }
-
-    .containerSidebar {
-      margin-left: 0;
-      margin-right: 0;
+    .hidden {
+      display: none !important;
+    }
+    .content {
+      font-size: 1rem;
+      padding-top: @spacing-hr;
+      padding-bottom: @spacing-hr;
+      background-color: #fff;
       width: 100%;
-      position: absolute;
-      top: 0;
-      margin-bottom: 4.5rem;
+    }
+    button {
+      border-radius: @border-radius-base;
+      box-shadow: none;
+    }
+    .iconClose svg {
+      opacity: 0.7;
+      height: 1rem;
+      width: 1rem;
+      text-align: center;
+      color: #f00;
+    }
+    .glyphicon-modal-window:before {
+      content: "\e237";
+    }
+    .moreContent {
+      align-self: center;
+    }
+    li.moreContent-listItem {
+      border-bottom: solid 1px #edf2f8;
+      padding-top: @spacing-rq;
+      padding-bottom: @spacing-rq;
+    }
+    li.moreContent-contact {
+      padding-top: @spacing-rh;
+      padding-bottom: @spacing-rh;
+    }
+    li.moreContent-info {
+      padding-top: @spacing-base-and-a-half;
+      font-size: 0.833rem !important;
+      color: @color-muted;
+    }
+    li.moreContent-language {
+      padding-top: @spacing-base-and-a-half;
+    }
+    table.tableSearch {
+      max-width: 36.05rem;
+    }
+    .tabsContent {
+      padding-bottom: @spacing-base-and-a-half;
+    }
+    .g--padded {
+      padding-bottom: 4.2rem !important;
+    }
+    li.moreContent-info {
+      padding-top: @spacing-base-and-a-half;
+      font-size: 0.833rem !important;
+      color: @color-muted;
+    }
+    li.moreContent-language {
+      padding-top: @spacing-base-and-a-half;
+    }
+    table.tableSearch {
+      max-width: 36.05rem;
+    }
+    .textMeta.content {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .tabsContent {
+      padding-bottom: @spacing-base-and-a-half;
+    }
+    .tmPanel ul.list-group {
+      padding: 0;
+      margin: 0;
+    }
+    .translationContainer pre {
+      word-wrap: normal;
+      word-break: normal;
+      word-break: break-word;
+      /*Chrome specific*/
+      -webkit-hyphens: initial;
+      -moz-hyphens: initial;
+      hyphens: initial;
+    }
+    .flexGrow1 {
+      flex-grow: 1;
+    }
+    .form-group.u-flexGrow1 {
+      flex-grow: 1;
+    }
+    .form-group.flexGrow2 {
+      flex-grow: 2;
     }
   }
-  @media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
-    .containerSidebar td.td-3, .containerSidebar td.td-4 {
-      width: 33.33%;
-    }
-
-    .containerSidebar td.td-2 {
-      width: 25%;
-    }
-  }
-  @media (min-width: @screen-lg-min) {
-    .containerSidebar td.td-2 {
-      width: 16.6667%;
-    }
-  }
-}
 
