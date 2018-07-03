@@ -77,7 +77,7 @@ class RecentContributions extends React.Component {
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
           <div className='dateRange-container'>
-            <Button className='btn-link u-pullRight' aria-label='button'
+            <Button className='btn-link fr txt-primary pl1 pr1' aria-label='button'
               onClick={() => this.onToggleShowDateRange()}>
               <span className='dateRange-textField'>
                 <TextInput editable={false} value={displayDateRange} />
@@ -103,7 +103,7 @@ class RecentContributions extends React.Component {
                     () => handleDateRangeChanged(this.state.dateRange)}>
                     Apply
                   </Button>]} >
-                <span className='u-textMuted'>(Maximum 365 days)</span>
+                <span className='txt-muted'>(Maximum 365 days)</span>
                 <DateRange
                   startDate={this.state.dateRange.startDate}
                   endDate={this.state.dateRange.endDate}
