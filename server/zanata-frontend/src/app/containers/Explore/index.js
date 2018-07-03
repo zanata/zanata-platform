@@ -143,7 +143,7 @@ class Explore extends Component {
     return (
       <div className='scrollView' id='explore'>
         <Helmet title='Search' />
-        <div>
+        <div className='mb5'>
           <h1 className='dn'>Search</h1>
           <div className='searchView'>
             <Icon type='search' className='s0' />

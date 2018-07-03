@@ -5,8 +5,8 @@
     max-width: 48rem;
     width: 100%;
     margin-top: @spacing-base;
-    margin-left: @spacing-base;
-    margin-right: @spacing-base;
+    margin-left: auto;
+    margin-right: auto;
   }
   .searchView {
     align-items: center;
@@ -87,19 +87,12 @@
     align-items: left;
     flex-direction: row;
   }
-  .teaserHeader-inner .iconsHeader {
-    margin-right: 0;
-    vertical-align: baseline;
-  }
   .teamTeaser {
     align-items: center;
     -webkit-align-items: center;
     /* Safari 7.0+ */
     margin-bottom: @spacing-rq;
     margin-right: 1.75rem;
-  }
-  .languageTeamTeaser-id {
-    margin-left: @spacing-rq;
   }
   .languageTeamTeaser-members {
     align-items: center;
@@ -126,20 +119,14 @@
     /* Safari 7.0+ */
     font-size: 0.833rem;
   }
-  .wordsTranslatedView {
-    align-items: center;
-    -webkit-align-items: center;
-    /* Safari 7.0+ */
-    margin-left: auto;
-  }
   .searchView svg {
     vertical-align: sub;
   }
   #explore h1 {
     font-size: 1.2rem !important;
     margin-bottom: 0;
-  } // @screen-xs variable depreciated
-  @media (max-width: 29.375rem) {
+  }
+  @media (max-width: 576px) {
     .teaser-inner {
       flex-direction: row;
       -webkit-flex-direction: row;
@@ -157,5 +144,8 @@
     .searchView .textInput {
       width: 70%;
     }
+  }
+  .containerContentView {
+    width: 80%;
   }
 }

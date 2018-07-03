@@ -19,11 +19,11 @@ const LanguageTeamTeaser = ({
         <Link link={link} useHref className='btn-link b'>
           {details.localeDetails.displayName}
         </Link>
-        <span className='txt-muted languageTeamTeaser-id '>
+        <span className='txt-muted ml2'>
           {details.id}
         </span>
         <div className='languageTeamTeaser-members'>
-          <Icon name='users' className='s1 txt-muted' />
+          <Icon name='users' className='s1 txt-muted v-mid mr2' />
           {details.memberCount}
         </div>
       </div>
