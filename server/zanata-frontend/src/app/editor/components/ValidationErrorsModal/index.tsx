@@ -16,7 +16,7 @@ registerLanguage('xml', xml)
 /**
  * Modal to confirm saving a textflow with Validation errors
  */
-const ValidaitonErrorsModal: React.SFC<ValidaitonErrorsModalProps> = (props) => {
+const ValidationErrorsModal: React.SFC<ValidationErrorsModalProps> = (props) => {
   const {
     phrase,
     validationMessages,
@@ -85,13 +85,13 @@ const ValidaitonErrorsModal: React.SFC<ValidaitonErrorsModalProps> = (props) => 
   )
 }
 
-ValidaitonErrorsModal.propTypes = {
+ValidationErrorsModal.propTypes = {
   phrase: PropTypes.any.isRequired,
   showErrorModal: PropTypes.func.isRequired,
   validationMessages: PropTypes.any.isRequired
 }
 
-interface ValidaitonErrorsModalProps {
+interface ValidationErrorsModalProps {
   phrase: Phrase
   savePhraseWithStatus: (phrase: Phrase, status: string) => void
   selectedButtonStatus: Status
@@ -99,4 +99,4 @@ interface ValidaitonErrorsModalProps {
   validationMessages: ValidationMessages
 }
 
-export default ValidaitonErrorsModal
+export default ValidationErrorsModal
