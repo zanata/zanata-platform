@@ -71,8 +71,12 @@
 }
 
 .cc-link {
-  color: @color-light !important;
+  color: @info-color !important;
   font-weight: 600;
+}
+
+.ant-select-selection:hover {
+  border: solid 2px @info-color;
 }
 
 input, .textInput {
@@ -137,6 +141,7 @@ button.ant-btn.btn-link:hover, button.ant-btn.btn-link:focus {
 
 table {
   width: 100% !important;
+  font-size: 1rem;
 }
 
 .ant-btn .btn-sm {
@@ -189,9 +194,9 @@ table {
 }
 
 .ant-btn:hover, .ant-btn:focus {
-  color: @info-color !important;
-  background-color: #fff !important;
-  border-color: @info-color !important;
+  color: @info-color;
+  background-color: #fff;
+  border-color: @info-color;
 }
 
 .teaser-inner div a.text-muted-bold {
@@ -201,6 +206,7 @@ table {
 .ant-tag {
   vertical-align: middle;
   background-color: @info-color;
+  cursor: default;
 }
 
 .ant-card {
