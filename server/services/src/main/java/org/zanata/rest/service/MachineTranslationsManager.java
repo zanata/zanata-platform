@@ -86,13 +86,13 @@ public class MachineTranslationsManager {
     }
 
     @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")
-    static class MachineTranslationsForVersionTaskKey extends
+    public static class MachineTranslationsForVersionTaskKey extends
             GenericAsyncTaskKey {
 
         private static final String KEY_NAME = "MachineTranslationsForVersionTaskKey";
         private static final long serialVersionUID = -6461799115582311574L;
 
-        MachineTranslationsForVersionTaskKey(ProjectIterationId projectIterationId) {
+        public MachineTranslationsForVersionTaskKey(ProjectIterationId projectIterationId) {
             super(joinFields(KEY_NAME, projectIterationId.toString()));
         }
     }
