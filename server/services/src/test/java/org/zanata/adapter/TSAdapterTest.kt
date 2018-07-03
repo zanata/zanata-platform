@@ -58,6 +58,7 @@ import java.io.File
 import org.zanata.common.LocaleId.FR
 import org.zanata.common.dto.TranslatedDoc
 import org.zanata.rest.dto.resource.TranslationsResource
+import org.zanata.util.OkapiUtil.toOkapiLocale
 
 /**
  * @author Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
@@ -326,7 +327,7 @@ class TSAdapterTest : AbstractAdapterTest<TSAdapter>() {
             assertThat(outputStream.toString(Charsets.UTF_8)).isEqualTo("""
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE TS []>
-            <TS version="2.1" language="mo-ph">
+            <TS version="2.1" language="mo-PH">
             <context>
               <name>testContext1</name>
               <message>
@@ -427,7 +428,7 @@ class TSAdapterTest : AbstractAdapterTest<TSAdapter>() {
             }
         }
         try {
-            adapter.replaceLocaleInDocPart(event, "en-GB")
+            adapter.replaceLocaleInDocPart(event, LocaleId("en-GB"))
             fail("FileFormatAdapterException expected")
         } catch (ffae: FileFormatAdapterException) {
             // Pass
@@ -444,9 +445,26 @@ class TSAdapterTest : AbstractAdapterTest<TSAdapter>() {
                 skeleton = GenericSkeleton(base)
             }
         }
-        assertThat(adapter.replaceLocaleInDocPart(event, "en-US").toString())
+        assertThat(adapter.replaceLocaleInDocPart(event,
+                toOkapiLocale(org.zanata.common.LocaleId("en-US"))).toString())
                 .describedAs("Source language is not altered")
                 .isEqualTo("""<TS version="2.1" language="en-US" sourcelanguage="mo_PH">""")
+    }
+
+    @Test
+    fun localeModifiersAreNotLost() {
+        val base = """<TS version="2.1" language="en-GB">"""
+        val event = Event().apply {
+            eventType = EventType.DOCUMENT_PART
+            resource = DocumentPart().apply {
+                skeleton = GenericSkeleton(base)
+            }
+        }
+        assertThat(adapter.replaceLocaleInDocPart(event,
+                toOkapiLocale(org.zanata.common.LocaleId("en-US@VARIANT.UTF-8")))
+                    .toString())
+                .describedAs("Source language is not altered")
+                .isEqualTo("""<TS version="2.1" language="en-US@VARIANT.UTF-8">""")
     }
 
     private fun getContext(textFlow: TextFlow): String? {

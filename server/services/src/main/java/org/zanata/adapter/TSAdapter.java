@@ -99,8 +99,7 @@ public class TSAdapter extends OkapiFilterAdapter {
         document.setContentType(ContentType.TextPlain);
         updateParamsWithDefaults(filter.getParameters());
         List<TextFlow> resources = document.getTextFlows();
-        Map<String, HasContents> addedResources =
-                new HashMap<String, HasContents>();
+        Map<String, HasContents> addedResources = new HashMap<String, HasContents>();
         RawDocument rawDoc = new RawDocument(options.getRawFile(), "UTF-8",
                 net.sf.okapi.common.LocaleId.fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
@@ -192,7 +191,6 @@ public class TSAdapter extends OkapiFilterAdapter {
         updateParamsWithDefaults(filter.getParameters());
         try {
             filter.open(rawDoc);
-            String subDocName = "";
             // TS can contain similar source strings in different contexts
             String context = "";
             while (filter.hasNext()) {
@@ -200,45 +198,14 @@ public class TSAdapter extends OkapiFilterAdapter {
                 if (event.isDocumentPart() &&
                         event.getDocumentPart().hasProperty("language")) {
                     event.getDocumentPart().setSkeleton(
-                            replaceLocaleInDocPart(event, localeId.toBCP47()));
+                            replaceLocaleInDocPart(event, localeId));
                 } else if (isStartContext(event)) {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
                     context = "";
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
-                    TextUnit tu = (TextUnit) event.getResource();
-                    if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
-                        String translatable = getTranslatableText(tu);
-                        // Ignore if the source is empty
-                        if (!translatable.isEmpty()) {
-                            String id = getIdFor(tu,
-                                    context.concat(translatable), subDocName);
-                            TextFlowTarget tft = translations.get(id);
-                            if (tft != null) {
-                                if (!encounteredIds.contains(id)) {
-                                    // Dismiss duplicate numerusforms
-                                    encounteredIds.add(id);
-                                    for (String translated : tft
-                                            .getContents()) {
-                                        boolean finished = usable(tft.getState(), approvedOnly);
-                                        String propVal = finished ? "yes" : "no";
-                                        // Okapi will map approved=no to type=unfinished in the .TS file
-                                        tu.getTargetProperty(localeId, "approved").setValue(propVal);
-                                        // TODO: Find a method of doing this in
-                                        // one object, not a loop
-                                        tu.setTargetContent(localeId,
-                                                GenericContent
-                                                        .fromLetterCodedToFragment(
-                                                                translated,
-                                                                tu.getSource()
-                                                                        .getFirstContent()
-                                                                        .clone(),
-                                                                true, true));
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    processTranslation(event, context, localeId,
+                            translations, encounteredIds, approvedOnly);
                 }
                 writer.handleEvent(event);
             }
@@ -248,6 +215,49 @@ public class TSAdapter extends OkapiFilterAdapter {
         } finally {
             filter.close();
             writer.close();
+        }
+    }
+
+    /**
+     * Process a textunit event (TS message), adding any available translations
+     *
+     * @param event Okapi event of type TextUnit
+     * @param context parent context of the TS message
+     * @param localeId target locale
+     * @param translations list of available translations
+     * @param encounteredIds text unit ids already encountered
+     * @param approvedOnly whether to include Translated entries
+     */
+    private void processTranslation(Event event, String context,
+                                    net.sf.okapi.common.LocaleId localeId,
+                                    Map<String, TextFlowTarget> translations,
+                                    List<String> encounteredIds,
+                                    boolean approvedOnly) {
+        TextUnit tu = (TextUnit) event.getResource();
+        if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
+            String translatable = getTranslatableText(tu);
+            // Ignore if the source is empty
+            if (!translatable.isEmpty()) {
+                String id = getIdFor(tu, context + translatable, StringUtils.EMPTY);
+                TextFlowTarget tft = translations.get(id);
+                if (tft != null && !encounteredIds.contains(id)) {
+                    // Dismiss duplicate numerusforms
+                    encounteredIds.add(id);
+                    for (String translated : tft.getContents()) {
+                        boolean finished = usable(tft.getState(), approvedOnly);
+                        String propVal = finished ? "yes" : "no";
+                        // Okapi will map approved=no to type=unfinished in the .TS file
+                        tu.getTargetProperty(localeId, "approved").setValue(propVal);
+                        // TODO: Find a method of doing this in
+                        // one object, not a loop
+                        tu.setTargetContent(localeId,
+                                GenericContent.fromLetterCodedToFragment(
+                                    translated,
+                                    tu.getSource().getFirstContent().clone(),
+                                    true, true));
+                    }
+                }
+            }
         }
     }
 
@@ -263,7 +273,8 @@ public class TSAdapter extends OkapiFilterAdapter {
      * @param localeId the desired target locale
      * @return a GenericSkeleton with the language replaced
      */
-    ISkeleton replaceLocaleInDocPart(Event event, String localeId) {
+    ISkeleton replaceLocaleInDocPart(Event event,
+                                     net.sf.okapi.common.LocaleId localeId) {
         String part;
         try {
             part = event.getDocumentPart().getSkeleton().clone().toString();
@@ -275,7 +286,7 @@ public class TSAdapter extends OkapiFilterAdapter {
 
         try {
             part = part.replaceAll("\\slanguage\\s*=\\s*\"[\\w\\d@.-]*\"",
-                    " language=\"" + localeId + "\"");
+                    " language=\"" + localeId.toBCP47() + "\"");
         } catch (Exception exception) {
             throw new FileFormatAdapterException("Invalid target locale");
         }
