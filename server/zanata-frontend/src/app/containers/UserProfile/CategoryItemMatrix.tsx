@@ -16,8 +16,8 @@ const CategoryItemMatrix: React.SFC<{itemTitle: string, itemName: string, wordCo
       <td className='l--pad-left-0 l--pad-v-0 w--1'>
         {title} <span className='f6 txt-muted'>({name})</span>
       </td>
-      <td className='txt--align-right l--pad-right-0 l--pad-v-0 txt--nowrap'>
-        {wordCount} <span className='l--pad-left-quarter f6 txt-muted fr'>
+      <td className='txt--align-right l--pad-right-0 l--pad-v-0 txt--nowrap fr'>
+        {wordCount} <span className='l--pad-left-quarter f6 txt-muted'>
         words</span>
       </td>
     </tr>

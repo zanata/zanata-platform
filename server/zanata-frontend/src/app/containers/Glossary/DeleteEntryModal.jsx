@@ -73,7 +73,7 @@ class DeleteEntryModal extends Component {
             aria-label='button' disabled={isDeleting}
             onClick={deleteConfirm}>
             <LoaderText loading={isDeleting} loadingText='Deleting'>
-              <Icon name='trash' className='txt-error s1' />
+              <Icon name='trash' className='txt-error s1 v-top' />
               <span className='txt-error fw4 hidden-lesm'>Delete</span>
             </LoaderText>
           </Button>

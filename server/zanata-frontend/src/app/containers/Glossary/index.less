@@ -5,15 +5,9 @@
   .glossaryPaging .u-textNeutral-top {
     padding-top: @spacing-rh;
   }
-  .iconTranslate-neutral {
-    color: @color-neutral;
-  }
   .glossaryHeader .Select-menu-outer {
     top: 0 !important;
     position: relative;
-  }
-  .delete-link .iconDelete {
-    vertical-align: sub;
   }
   .table>tbody>tr.highlight>td {
     border-top: none;
@@ -37,6 +31,9 @@
     flex-direction: row-reverse;
     -webkit-flex-direction: row-reverse;
   }
+  .glossaryHeader-actions .u-flexRowCenter {
+    line-height: 2rem;
+  }
   .glossaryHeader .row {
     display: inline-flex;
     padding-top: @spacing-rq;
@@ -52,6 +49,8 @@
     border: solid 2px @color-neutral;
     flex-grow: 1;
     width: 80%;
+    line-height: 2rem;
+    height: 2rem;
   }
   .glossaryHeader .row .row {
     width: 5rem;
@@ -77,6 +76,7 @@
   }
   .glossaryTable table {
     width: 100%;
+    font-size: 1rem;
   }
   .glossaryTable button {
     padding-left: 0;
@@ -88,6 +88,7 @@
   .glossaryHeader-actions {
     flex-grow: 1;
     -webkit-flex-grow: 1;
+    height: 2rem;
   }
   #deleteEntries .tooltip-inner {
     max-width: 14rem;
@@ -118,12 +119,6 @@
   table.glossaryEntry {
     width: 100%;
     margin-bottom: 0;
-  }
-  .glossaryBtn {
-    margin-left: @spacing-rq;
-  }
-  .glossaryBtn span.s1 {
-    vertical-align: sub;
   }
   .glossaryRow {
     padding-right: @spacing-rq;

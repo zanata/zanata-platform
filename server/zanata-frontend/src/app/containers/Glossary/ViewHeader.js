@@ -168,9 +168,9 @@ class ViewHeader extends Component {
               icon='close' title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={this.handleClearSearch} />
-            <div className='glossaryButtons'>
+            <div className='inline-flex items-end'>
               {permission.canAddNewEntry && (
-                <div className='glossaryBtn topBtn'>
+                <div>
                   <Button className='btn-link' type='button'
                     aria-label='button'
                     onClick={() => handleImportFileDisplay(true)}>
@@ -183,7 +183,7 @@ class ViewHeader extends Component {
                 </div>)}
 
               {permission.canDownload && !isEmptyTerms && (
-                <div className='glossaryBtn topBtn'>
+                <div>
                   <Button className='btn-link' type='button'
                     aria-label='button'
                     onClick={() => handleExportFileDisplay(true)}>
@@ -196,7 +196,7 @@ class ViewHeader extends Component {
                 </div>)}
 
               {permission.canAddNewEntry && (
-                <div className='glossaryBtn topBtn'>
+                <div>
                   <Button className='btn-link' aria-label='button'
                     onClick={() =>
                         handleNewEntryDisplay(true)}>
@@ -209,7 +209,7 @@ class ViewHeader extends Component {
                 </div>)}
 
               {showDeleteAll && (
-                <div className='glossaryBtn topBtn'>
+                <div>
                   <DeleteAllEntriesModal show={deleteAll.show}
                     isDeleting={deleteAll.isDeleting}
                     handleDeleteAllEntriesDisplay={
