@@ -20,7 +20,6 @@
  */
 package org.zanata.service.mt;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +39,15 @@ import org.zanata.util.UrlUtil;
 @Dependent
 public class TextFlowsToMTDoc {
     protected static final String BACKEND_ID = "dev";
-    @Inject
     private UrlUtil urlUtil;
+
+    @Inject
+    public TextFlowsToMTDoc(UrlUtil urlUtil) {
+        this.urlUtil = urlUtil;
+    }
+
+    public TextFlowsToMTDoc() {
+    }
 
     public MTDocument fromTextFlows(String projectSlug, String versionSlug, String docId, LocaleId fromLocale, List<HTextFlow> textFlows) {
         String url = buildDocUrl(projectSlug, versionSlug, docId);

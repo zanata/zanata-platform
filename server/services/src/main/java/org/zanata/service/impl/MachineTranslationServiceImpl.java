@@ -51,6 +51,7 @@ import org.zanata.config.MTServiceToken;
 import org.zanata.config.MTServiceURL;
 import org.zanata.config.MTServiceUser;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -91,6 +92,7 @@ public class MachineTranslationServiceImpl implements
     private String mtToken;
     private TextFlowsToMTDoc textFlowsToMTDoc;
     private TextFlowDAO textFlowDAO;
+    private TextFlowTargetDAO textFlowTargetDAO;
     private LocaleService localeService;
     private EntityManager entityManager;
     private TransactionUtil transactionUtil;
@@ -106,6 +108,7 @@ public class MachineTranslationServiceImpl implements
             @MTServiceToken String mtToken,
             TextFlowsToMTDoc textFlowsToMTDoc,
             TextFlowDAO textFlowDAO,
+            TextFlowTargetDAO textFlowTargetDAO,
             LocaleService localeService,
             EntityManager entityManager,
             TransactionUtil transactionUtil,
@@ -116,6 +119,7 @@ public class MachineTranslationServiceImpl implements
         this.mtToken = mtToken;
         this.textFlowsToMTDoc = textFlowsToMTDoc;
         this.textFlowDAO = textFlowDAO;
+        this.textFlowTargetDAO = textFlowTargetDAO;
         this.localeService = localeService;
         this.entityManager = entityManager;
         this.transactionUtil = transactionUtil;
@@ -182,12 +186,13 @@ public class MachineTranslationServiceImpl implements
             @Nonnull MachineTranslationPrefillTaskHandle taskHandle) {
         // need to reload all entities
         HProjectIteration version = entityManager.find(HProjectIteration.class, versionId);
-        HLocale targetLocale = localeService.getByLocaleId(prefillRequest.getToLocale());
         Map<String, HDocument> documents = version.getDocuments();
         if (documents.isEmpty()) {
             log.warn("no document in this version {}", version.userFriendlyToString());
             return AsyncTaskResult.completed();
         }
+        HLocale targetLocale = localeService.getByLocaleId(prefillRequest.getToLocale());
+
         taskHandle.setMaxProgress(documents.size());
         LocaleId fromLocale = getSourceLocale(documents);
 
@@ -256,12 +261,13 @@ public class MachineTranslationServiceImpl implements
                     transDoc.getContents().subList(index, bound);
 
             index += bound;
-            List<TransUnitUpdateRequest> updateRequests =
-                    makeUpdateRequestsForBatch(targetLocale, saveState,
-                            sourceBatch,
-                            transContentBatch);
+
             try {
                 transactionUtil.run(() -> {
+                    List<TransUnitUpdateRequest> updateRequests =
+                            makeUpdateRequestsForBatch(targetLocale, saveState,
+                                    sourceBatch,
+                                    transContentBatch);
                     translationService.translate(targetLocale.getLocaleId(), updateRequests);
                 });
             } catch (Exception e) {
@@ -281,8 +287,8 @@ public class MachineTranslationServiceImpl implements
         for (int i = 0; i < sourceBatch.size(); i++) {
             HTextFlow textFlow = sourceBatch.get(i);
             TypeString matchingTranslationFromMT = transContentBatch.get(i);
-            HTextFlowTarget maybeTarget =
-                    textFlow.getTargets().get(targetLocale.getId());
+
+            HTextFlowTarget maybeTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, targetLocale);
             int baseRevision = maybeTarget == null ? 0 : maybeTarget.getVersionNum();
             List<String> translation = Lists.newArrayList(
                     matchingTranslationFromMT.getValue());
