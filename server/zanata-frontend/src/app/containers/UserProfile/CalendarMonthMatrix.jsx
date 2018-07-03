@@ -94,7 +94,7 @@ const CalendarMonthMatrix = ({
     <div id='userProfile-activityTable'>
       <div className='userProfile-activityTable-inner'>
         <div>
-          <h3 className='u-textUppercaseBold'>
+          <h3 className='ttu b'>
             {header}
           </h3>
         </div>
