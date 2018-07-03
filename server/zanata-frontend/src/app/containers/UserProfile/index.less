@@ -32,6 +32,9 @@
   .userProfile-wrapper {
     margin-top: @spacing-rh;
   }
+  .matrixHeading {
+    width: 100%;
+  }
   h2.matrixHeading {
     width: 100%;
     flex-grow: 1;
@@ -54,6 +57,9 @@
   }
   .dateRange-container button {
     width: 100%;
+  }
+  .dateRange-container button:focus, .dateRange-container button:hover {
+    border: solid 1px @color-info;
   }
   #userProfile-matrix canvas {
     width: 100% !important;
@@ -219,34 +225,34 @@
     padding-left: 0;
     padding-right: 0;
   }
- .success.btn-default, .plain.btn-default, .primary.btn-default, .unsure.btn-default {
+ .ant-btn.success.btn-default.ant-btn-sm, .ant-btn.plain.btn-default.ant-btn-sm, .ant-btn.primary.btn-default.ant-btn-sm, .ant-btn.unsure.btn-default.ant-btn-sm {
     border-radius: 1.071rem;
     margin-right: @spacing-half-base;
     border: solid 1px @gray;
     margin-bottom: @spacing-half-base;
   }
-  .plain.btn-default:focus, .plain.btn-default:hover, .plain.btn-default.active {
+  .ant-btn.plain.btn-default.ant-btn-sm:focus, .ant-btn.plain.btn-default.ant-btn-sm:hover, .ant-btn.plain.btn-default.ant-btn-sm.active {
     background-color: rgba(84, 102, 119, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  .primary.btn-default:focus, .primary.btn-default:hover, .primary.btn-default.active {
+  .ant-btn.primary.btn-default.ant-btn-sm:focus, .ant-btn.primary.btn-default.ant-btn-sm:hover, .ant-btn.primary.btn-default.ant-btn-sm.active {
     background-color: rgba(3, 166, 215, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  .success.btn-default:focus, .success.btn-default:hover, .success.btn-default.active {
+  .ant-btn.success.btn-default.ant-btn-sm:focus, .ant-btn.success.btn-default.ant-btn-sm:hover, .ant-btn.success.btn-default.ant-btn-sm.active {
     background-color: rgba(98, 200, 118, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  .unsure.btn-default:focus, .unsure.btn-default:hover, .unsure.btn-default.active {
+  .ant-btn.unsure.btn-default.ant-btn-sm:focus, .ant-btn.unsure.btn-default.ant-btn-sm:hover, .ant-btn.unsure.btn-default.ant-btn-sm.active {
     background-color: rgba(233, 221, 0, 1);
     color: @color-dark;
     text-decoration: none;
@@ -328,9 +334,6 @@
       display: -o-flex;
       flex-direction: row;
       -webkit-flex-direction: row;
-    }
-    .matrixHeading {
-      width: 100%;
     }
     #userProfile-matrix h2 {
       margin-top: 0;

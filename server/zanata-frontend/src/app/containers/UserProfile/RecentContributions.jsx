@@ -77,7 +77,7 @@ class RecentContributions extends React.Component {
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
           <div className='dateRange-container'>
-            <Button className='btn-link fr txt-primary pl1 pr1' aria-label='button'
+            <Button className='btn-link fr pa0' aria-label='button'
               onClick={() => this.onToggleShowDateRange()}>
               <span className='dateRange-textField'>
                 <TextInput editable={false} value={displayDateRange} />
