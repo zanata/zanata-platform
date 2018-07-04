@@ -290,12 +290,13 @@ input.react-autosuggest__input {
   border-bottom: solid 1px @neutral-color;
 }
 
-.ant-input.textInput, input.ant-input, .textInput {
+.ant-input.textInput, input.ant-input, .textInput, textarea {
   border: solid 1px @neutral-color;
 }
 
 .ant-input.textInput:focus, .ant-input.textInput:hover, input.ant-input:hover,
-input.ant-input:focus, .textInput:focus, .textInput:hover {
+input.ant-input:focus, .textInput:focus, .textInput:hover, textarea:hover,
+textarea:focus {
   border: 2px solid @info-color !important;
 }
 
@@ -884,12 +885,6 @@ input.textInput::placeholder, textarea.textInput::placeholder {
     height: 1px !important;
     width: 1px !important;
     overflow: hidden;
-  }
-}
-
-@media (min-width: 991.99px) {
-  .containerSidebar {
-    width: 95%;
   }
 }
 
