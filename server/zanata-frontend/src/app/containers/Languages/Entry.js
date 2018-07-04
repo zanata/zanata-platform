@@ -55,7 +55,7 @@ class Entry extends Component {
               {localeDetails.localeId} [{localeDetails.nativeName}]
             </span>
             {localeDetails.enabledByDefault &&
-              <Tag className='label-default' color='03A6D7'>
+              <Tag color='03A6D7'>
                 DEFAULT
               </Tag>
             }
@@ -76,13 +76,12 @@ class Entry extends Component {
           </span>
         </td>
         <td>
-          <span className='u-textMuted'>
-            <Icon name='user' className='s1' parentClassName='iconUser' />
+          <span className='txt-muted'>
+            <Icon name='user' className='s1 mr1' />
             {locale.memberCount} &nbsp;
             {permission.canAddLocale &&
-              <span>
-                <Icon name='notification' className='s1'
-                  parentClassName='iconUser' />
+              <span className='ml2'>
+                <Icon name='notification' className='s1 mr1' />
                 {locale.requestCount}
               </span>
             }

@@ -5,6 +5,7 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
+import { Icon } from '../../components'
 
 class DeleteEntry extends Component {
   static propTypes = {
@@ -45,13 +46,14 @@ class DeleteEntry extends Component {
     )
 
     return (
-      <div className='di'>
+      <div className='di fr'>
         <Tooltip placement='top'
           title={deleteLanguage} onVisibleChange={show}>
-          <Button className='btn-sm btn-default fr' icon='close'
+          <Button className='btn-link btn-sm'
             aria-label='button'
             onClick={() => handleDeleteEntryDisplay(true)}>
-            Delete
+            <Icon name='trash' className='txt-error s1 v-top' />
+            <span className='txt-error fw4 hidden-lesm'>Delete</span>
           </Button>
         </Tooltip>
       </div>

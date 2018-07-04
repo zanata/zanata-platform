@@ -4,6 +4,9 @@
 // antd component overrides - tachyons not used because these apply globally to
 // the antd components
 
+.ant-pagination *, .ant-pagination-disabled * {
+  border: none !important;
+}
 .container {
   margin-right: auto;
   margin-left: auto;
@@ -124,6 +127,10 @@ img.avatar-round {
 
 .lock {
   color: @warning-color;
+}
+
+.ant-tag:hover {
+  opacity: 1;
 }
 
 .ant-input-search > .ant-input-suffix > .ant-input-search-button {
