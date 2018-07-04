@@ -156,6 +156,7 @@
             <ignoredResourcePattern>schema/xml\.xsd</ignoredResourcePattern>
             <!-- infinispan-core/common -->
             <ignoredResourcePattern>features\.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>about.html</ignoredResourcePattern>
           </ignoredResourcePatterns>
         </configuration>
       </plugin>
@@ -1004,6 +1005,14 @@
         <exclusion>
           <groupId>javax.servlet</groupId>
           <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xmlunit</groupId>
+          <artifactId>xmlunit-legacy</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>net.minidev</groupId>
+          <artifactId>accessors-smart</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
