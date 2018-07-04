@@ -6,6 +6,7 @@ import {
   selectDoc,
   selectLocale
 } from '../actions/header-actions'
+import { selectPhrase } from '../actions/phrases-actions'
 import { UPDATE_PAGE } from '../actions/controls-header-actions'
 import { every, isUndefined, max, negate } from 'lodash'
 
@@ -38,7 +39,6 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
   // FIXME replace with watcher
   (dispatch, oldState, newState) => {
     const { lang, docId } = newState.context
-
     const docChanged = oldState.context.docId !== docId
     const localeChanged = oldState.context.lang !== lang
 
@@ -71,6 +71,15 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
     if (!hasAllContextInfo(oldState) && hasAllContextInfo(newState)) {
       const { projectSlug, versionSlug, lang, docId } = newState.context
       dispatch(fetchHeaderInfo(projectSlug, versionSlug, docId, lang))
+    }
+
+    if (newState.context.textflow &&
+      newState.context.textflow !== oldState.context.textflow) {
+      const {
+        textflow, lang, projectSlug, versionSlug, docId
+      } = newState.context
+      dispatch(selectPhrase(
+        Number(textflow), lang, projectSlug, versionSlug, docId, true))
     }
   }
 )

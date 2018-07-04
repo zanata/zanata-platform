@@ -2,9 +2,13 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
+import Popover from 'antd/lib/popover'
+import 'antd/lib/popover/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
-import Tooltip from 'antd/lib/tooltip'
+import { FormattedMessage } from 'react-intl'
 
 /**
  * Heading that displays locale name and ID
@@ -56,7 +60,28 @@ class TransUnitTranslationHeader extends React.Component {
     const button = displayUndo
       ? this.undoButtonElement()
       : this.closeButtonElement()
-
+    const phraseHref = window.location.origin + window.location.pathname +
+      '?lang=' + this.props.translationLocale.id +
+      '&textflow=' + this.props.phrase.id
+    // FIXME: Allow linking to text flows with no translation history
+    const phraseLink = this.props.phrase.revision > 0
+      ? <li className={'mr2'}>
+        <Popover
+          content={
+            <a href={phraseHref}>{phraseHref}</a>
+          }
+          title={
+            <FormattedMessage
+              id='TransUnitHeader.translationlink'
+              defaultMessage='Link to this Translation'
+            />
+          }>
+          <Button size="large" icon="link"
+            href={phraseHref}
+            className={this.buttonClass} />
+        </Popover>
+      </li>
+      : null
     return (
       <div
         className="TransUnit-panelHeader TransUnit-panelHeader--translation">
@@ -65,6 +90,7 @@ class TransUnitTranslationHeader extends React.Component {
           {...this.props.translationLocale} />
 
         <ul className="u-floatRight u-listHorizontal">
+          {phraseLink}
           {button}
         </ul>
       </div>
