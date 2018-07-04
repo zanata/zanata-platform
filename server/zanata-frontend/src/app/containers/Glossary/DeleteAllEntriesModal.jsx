@@ -52,10 +52,11 @@ class DeleteAllEntriesModal extends Component {
     return (
       <div className='u-block'>
         <Tooltip
-          placement='left'
+          placement='top'
           visible={show}
           title={deleteAll}
           className='tc'
+          trigger='click'
           arrowPointAtCenter>
           <Button className='btn-link icon-delete' aria-label='button'
             onClick={() => handleDeleteAllEntriesDisplay(true)}

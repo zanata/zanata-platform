@@ -47,7 +47,7 @@ class DeleteEntry extends Component {
 
     return (
       <div className='di fr'>
-        <Tooltip placement='top'
+        <Tooltip placement='left' trigger='click' arrowPointAtCenter
           title={deleteLanguage} onVisibleChange={show}>
           <Button className='btn-link btn-sm'
             aria-label='button'
