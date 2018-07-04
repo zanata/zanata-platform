@@ -1014,6 +1014,10 @@
           <groupId>net.minidev</groupId>
           <artifactId>accessors-smart</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-runtime</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
