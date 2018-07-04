@@ -160,7 +160,7 @@ class Languages extends Component {
                 </div>
                 : (
                 <span className='w-100 mt2'>
-                  <Col xs={24} sm={23} md={11} className='ml3'>
+                  <Col xs={24} sm={23} md={8} className='ml3'>
                     <span>
                       <Search
                         value={this.state.searchText}
@@ -168,7 +168,7 @@ class Languages extends Component {
                         enterButton />
                     </span>
                   </Col>
-                  <Col xs={24} sm={12} md={3} className='ml3 mb2'>
+                  <Col xs={24} sm={12} md={6} className='ml3 mb2'>
                     <Select className='w-100'
                       id='sort-options'
                       onChange={handleOnUpdateSort} value={sort.value}>
@@ -178,7 +178,7 @@ class Languages extends Component {
                       })}
                     </Select>
                   </Col>
-                  <Col xs={24} sm={6} md={3} className='ml3'>
+                  <Col xs={24} sm={6} md={4} className='ml3'>
                     <span className='mr1'>Show</span>
                     <Select
                       onChange={handleOnUpdatePageSize} value={size}
@@ -198,9 +198,9 @@ class Languages extends Component {
                 </span>)}
                 {noResults &&
                   <div className='loader-loadingContainer'>
-                    <span className='txt-muted'>
+                    <p className='tc txt-muted f4'>
                       <Icon type='global' /> No results
-                    </span>
+                    </p>
                   </div>
                 }
                 {!loading && !noResults &&

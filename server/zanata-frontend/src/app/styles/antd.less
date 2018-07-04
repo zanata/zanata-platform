@@ -822,6 +822,7 @@ input.textInput::placeholder, textarea.textInput::placeholder {
     margin-bottom: 4.5rem;
     margin-left: 0;
     margin-right: 0;
+    padding-right: 2rem;
     width: 100%;
   }
 }
@@ -846,8 +847,8 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   }
 
   .containerSidebar {
-    margin-left: 4.5rem;
-    width: 95%;
+    margin-left: 5rem;
+    width: 85%;
     margin-bottom: 0;
     background-color: #fff;
     padding-bottom: 3rem;
@@ -855,6 +856,21 @@ input.textInput::placeholder, textarea.textInput::placeholder {
 
   #root {
     height: 100vh;
+  }
+}
+
+@media (min-width: 767.99px) {
+  .containerSidebar {
+    width: 90%;
+  }
+}
+
+@media (min-width: 767.99px) and (max-width: 1199.98px) {
+  .containerSidebar td.td-3, .containerSidebar td.td-4 {
+    width: 33.33%;
+  }
+  .containerSidebar td.td-2 {
+    width: 25%;
   }
 }
 
@@ -871,12 +887,9 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   }
 }
 
-@media (min-width: 767.99px) and (max-width: 1199.98px) {
-  .containerSidebar td.td-3, .containerSidebar td.td-4 {
-    width: 33.33%;
-  }
-  .containerSidebar td.td-2 {
-    width: 25%;
+@media (min-width: 991.99px) {
+  .containerSidebar {
+    width: 95%;
   }
 }
 
