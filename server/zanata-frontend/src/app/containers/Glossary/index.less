@@ -31,9 +31,6 @@
     flex-direction: row-reverse;
     -webkit-flex-direction: row-reverse;
   }
-  .glossaryHeader-actions .u-flexRowCenter {
-    line-height: 2rem;
-  }
   .glossaryHeader .row {
     display: inline-flex;
     padding-top: @spacing-rq;
@@ -89,29 +86,6 @@
     flex-grow: 1;
     -webkit-flex-grow: 1;
     height: 2rem;
-  }
-  #deleteEntries .tooltip-inner {
-    max-width: 14rem;
-  }
-  table.glossaryEntry {
-    width: 100%;
-    margin: 0;
-    margin-bottom: 0 !important;
-  }
-  .glossaryBtn {
-    margin-left: @spacing-rq;
-  }
-  .glossaryBtn span.s1 {
-    vertical-align: sub;
-  }
-  .iconChevron {
-    vertical-align: sub;
-  }
-  .languageSelect .iconGlossary-neutral {
-    vertical-align: sub;
-  }
-  .iconLanguage-neutral {
-    vertical-align: text-top;
   }
   #deleteEntries .tooltip-inner {
     max-width: 14rem;
@@ -194,22 +168,10 @@
   td.languageSelect .hidden-xs {
     width: 20%;
   }
-  td.languageSelect .Select-input input {
-    margin-top: 0.25rem;
-  }
-  .glossaryHeader .row .Select-control {
-    width: 4rem;
-  }
   td.languageSelect .row {
     position: absolute;
     top: 0.9rem;
     right: 5rem;
-  }
-  td.languageSelect .row span {
-    vertical-align: middle;
-  }
-  td.languageSelect .row span svg {
-    vertical-align: inherit;
   }
   .entry-row, .glossaryPaging {
     display: flex !important;
@@ -320,6 +282,7 @@
   @media (min-width: 29.376rem) {
     .glossaryList {
       margin-top: @spacing-xlarge;
+      margin-bottom: @spacing-xlarge;
     }
     .glossaryHeader-title {
       margin-right: @spacing-base;
