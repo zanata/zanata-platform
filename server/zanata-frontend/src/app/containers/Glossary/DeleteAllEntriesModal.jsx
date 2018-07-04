@@ -52,7 +52,7 @@ class DeleteAllEntriesModal extends Component {
     return (
       <div className='u-block'>
         <Tooltip
-          placement='top'
+          placement='left'
           visible={show}
           title={deleteAll}
           className='tc'
