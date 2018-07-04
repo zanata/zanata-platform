@@ -55,14 +55,24 @@ class TransUnitTranslationHeader extends React.Component {
     )
   }
 
+  /**
+   * @param {string} localeId
+   * @param {string} phraseId
+   * @return {string}
+   */
+  buildPhraseHref = (localeId, phraseId) => {
+    return window.location.origin + window.location.pathname +
+      '?lang=' + localeId +
+      '&textflow=' + phraseId
+  }
+
   render () {
     const displayUndo = hasTranslationChanged(this.props.phrase)
     const button = displayUndo
       ? this.undoButtonElement()
       : this.closeButtonElement()
-    const phraseHref = window.location.origin + window.location.pathname +
-      '?lang=' + this.props.translationLocale.id +
-      '&textflow=' + this.props.phrase.id
+    const phraseHref = this.buildPhraseHref(
+      this.props.translationLocale.id, this.props.phrase.id)
     // FIXME: Allow linking to text flows with no translation history
     const phraseLink = this.props.phrase.revision > 0
       ? <li className={'mr2'}>
