@@ -53,7 +53,7 @@ class TransUnitStatus extends React.Component<TransUnitStatusProps, any> {
         <button tabIndex={-1}
           className="TransUnit-metaDataButton"
           title="1 Error">
-          <span className="u-textDanger">
+          <span className="txt-error">
             <Icon name="dot" title="Error" className="n1" />
           </span>
           <br />

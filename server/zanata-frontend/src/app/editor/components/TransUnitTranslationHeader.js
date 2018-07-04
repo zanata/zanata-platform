@@ -23,7 +23,7 @@ class TransUnitTranslationHeader extends React.Component {
   // TODO this is duplicated between source header and translation header,
   //      de-duplicate it
   buttonClass =
-    'Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1 u-textCenter'
+    'Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1 tc'
 
   closeButtonElement = () => {
     return (
@@ -46,7 +46,7 @@ class TransUnitTranslationHeader extends React.Component {
             icon="rollback"
             className={this.buttonClass}
             onClick={this.props.undoEdit} />
-        </Tooltip>Tooltip>
+        </Tooltip>
       </li>
     )
   }

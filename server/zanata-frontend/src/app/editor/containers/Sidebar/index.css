@@ -591,6 +591,10 @@ h3.SettingsHeading {
   background-color: var(--Sidebar-color-text);
 }
 
+.SidebarEditor-wrapper .ant-btn-sm {
+  height: auto;
+}
+
 /* Media queries */
 
 @media (max-width: 740px) {

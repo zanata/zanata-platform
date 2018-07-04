@@ -37,7 +37,7 @@ const PagerButton = ({ action, disabled, icon, title }) => {
   return (
     <li>
       {disabled
-        ? <span className="u-textNeutral u-sizeHeight-1_1-2 u-textNoSelect"
+        ? <span className="txt-neutral u-sizeHeight-1_1-2 u-textNoSelect"
           title={title}>
           {iconElement}
         </span>
@@ -117,7 +117,7 @@ const Pager = ({
   }
 
   return (
-    <ul className="u-listHorizontal u-textCenter">
+    <ul className="u-listHorizontal tc">
       <PagerButton {...buttons.first} />
       <PagerButton {...buttons.prev} />
       <li className="u-sizeHeight-1 u-sPH-1-4">

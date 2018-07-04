@@ -36,7 +36,7 @@ class TransUnitSourcePanel extends React.Component {
     const isLoading = !this.props.phrase.sources
 
     const sources = isLoading
-      ? <span className="u-textMeta">
+      ? <span className="txt-neutral">
         <LoaderText loading />
       </span>
       : this.props.phrase.sources.map(
@@ -57,7 +57,7 @@ class TransUnitSourcePanel extends React.Component {
                   title={'Copy ' + this.props.sourceLocale.name +
                     ' (' + this.props.sourceLocale.id + ')'}
                   onClick={copySource}
-                  className="u-floatRight Link Link--neutral u-sizeHeight-1 u-sizeWidth-1 u-textCenter" />
+                  className="u-floatRight Link Link--neutral u-sizeHeight-1 u-sizeWidth-1 tc" />
               </li>
             </ul>
             /* eslint-enable max-len */

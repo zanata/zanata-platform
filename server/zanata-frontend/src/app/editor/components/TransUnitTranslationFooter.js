@@ -191,7 +191,7 @@ class TransUnitTranslationFooter extends React.Component {
     // TODO translate "Save as"
     const saveAsLabel = translationHasChanged &&
       /* eslint-disable max-len */
-      <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
+      <span className="txt-neutral u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
           Save as
       </span>
       /* eslint-enable max-len */
@@ -200,7 +200,7 @@ class TransUnitTranslationFooter extends React.Component {
       saveAsMode && statusShortcutKeys[selectedButtonStatus]
     const actionButton = (
       <Button
-        className={cx('EditorButton u-sizeHeight-1_1-4 u-textCapitalize',
+        className={cx('EditorButton u-sizeHeight-1_1-4 ttu',
                       buttonClassByStatus[selectedButtonStatus])}
         disabled={isSaving || !translationHasChanged}
         onClick={saveCallback}>
