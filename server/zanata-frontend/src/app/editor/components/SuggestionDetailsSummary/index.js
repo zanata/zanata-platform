@@ -69,7 +69,7 @@ class SuggestionDetailsSummary extends React.Component {
 
     return (
       <div className={className} onClick={this.props.onClick}>
-        <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
+        <ul className="txt-neutral u-listInline u-sizeLineHeight-1">
           {projectIcon}
           {versionIcon}
           {documentIcon}

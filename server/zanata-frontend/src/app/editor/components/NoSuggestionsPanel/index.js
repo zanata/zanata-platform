@@ -24,7 +24,7 @@ class NoSuggestionsPanel extends React.Component {
         : <p>{this.props.message}</p>
 
     return (
-      <div className="u-posCenterCenter u-textEmpty u-textCenter">
+      <div className="u-posCenterCenter u-textEmpty tc">
         <div className="u-sMB-1-4">
           {icon}
         </div>

@@ -13,7 +13,7 @@ describe('NoSuggestionsPanelTest', () => {
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div
-        className="u-posCenterCenter u-textEmpty u-textCenter">
+        className="u-posCenterCenter u-textEmpty tc">
         <div className="u-sMB-1-4">
           <Icon
             name="search"
@@ -33,7 +33,7 @@ describe('NoSuggestionsPanelTest', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
         <div
-            className="u-posCenterCenter u-textEmpty u-textCenter">
+            className="u-posCenterCenter u-textEmpty tc">
           <div className="u-sMB-1-4">
             <LoaderText
               loading loadingText='You&apos;re on your own'>

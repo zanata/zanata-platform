@@ -121,7 +121,7 @@ const Pager = ({
       <PagerButton {...buttons.first} />
       <PagerButton {...buttons.prev} />
       <li className="u-sizeHeight-1 u-sPH-1-4">
-        <span className="u-textNeutral">
+        <span className="txt-neutral">
           {pageXofY}
         </span>
       </li>

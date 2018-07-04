@@ -38,7 +38,7 @@ describe('SuggestionContentTest', () => {
       <div>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
-            <span className="u-textMeta">Singular Form</span>
+            <span className="txt-neutral">Singular Form</span>
           </div>
           <div className="TransUnit-text">
             As thick as you are, pay attention!
@@ -46,7 +46,7 @@ describe('SuggestionContentTest', () => {
         </div>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
-            <span className="u-textMeta">Plural Form</span>
+            <span className="txt-neutral">Plural Form</span>
           </div>
           <div className="TransUnit-text">
             Even you can be caught unawares
@@ -97,7 +97,7 @@ describe('SuggestionContentTest', () => {
       <div>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
-            <span className="u-textMeta">Singular Form</span>
+            <span className="txt-neutral">Singular Form</span>
           </div>
           <TextDiff
             className="TransUnit-text Difference"
@@ -107,7 +107,7 @@ describe('SuggestionContentTest', () => {
         </div>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
-            <span className="u-textMeta">Plural Form</span>
+            <span className="txt-neutral">Plural Form</span>
           </div>
           <TextDiff
             className="TransUnit-text Difference"
@@ -158,7 +158,7 @@ describe('SuggestionContentTest', () => {
       <div>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
-            <span className="u-textMeta">Singular Form</span>
+            <span className="txt-neutral">Singular Form</span>
           </div>
           <TextDiff
             className="TransUnit-text Difference"
@@ -168,7 +168,7 @@ describe('SuggestionContentTest', () => {
         </div>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
-            <span className="u-textMeta">Plural Form</span>
+            <span className="txt-neutral">Plural Form</span>
           </div>
           <TextDiff
             className="TransUnit-text Difference"

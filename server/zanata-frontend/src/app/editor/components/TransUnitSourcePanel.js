@@ -65,7 +65,7 @@ class TransUnitSourcePanel extends React.Component {
 
           const itemHeader = isPlural
             ? <div className="TransUnit-itemHeader">
-              <span className="u-textMeta">
+              <span className="txt-neutral">
                 {headerLabel}
               </span>
               {copyButton}

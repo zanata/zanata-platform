@@ -31,7 +31,7 @@ class ProjectVersionLink extends React.Component {
         </span>
         <span className="Editor-currentProject u-sm-hidden u-sML-1-2">
           <span>{this.props.project.name}</span> <span
-            className="u-textMuted">{this.props.version}</span>
+            className="txt-muted">{this.props.version}</span>
         </span>
       </a>
     )

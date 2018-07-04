@@ -18,7 +18,7 @@ storiesOf('DateAndTimeDisplay', module)
       </li>
       <li>
         <DateAndTimeDisplay dateTime={new Date(1985, 9, 26, 1, 20)}
-          className="u-textMuted u-textMini" />
+          className="txt-muted u-textMini" />
       </li>
       <li className="u-sP-1-4">
         <DateAndTimeDisplay dateTime={new Date(2015, 9, 21)}
@@ -26,7 +26,7 @@ storiesOf('DateAndTimeDisplay', module)
       </li>
       <li className="u-sP-1-2">
         <DateAndTimeDisplay dateTime={new Date(1955, 10, 12)}
-          className="u-bgHigher u-sP-1-2 u-textMuted" />
+          className="u-bgHigher u-sP-1-2 txt-muted" />
       </li>
     </ul>
   ))

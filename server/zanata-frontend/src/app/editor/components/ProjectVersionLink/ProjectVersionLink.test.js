@@ -19,7 +19,7 @@ describe('ProjectVersionLinkTest', () => {
         </span>
         <span className="Editor-currentProject u-sm-hidden u-sML-1-2">
           <span>Weight Gain</span> <span
-            className="u-textMuted">4000</span>
+            className="txt-muted">4000</span>
         </span>
       </a>
     )

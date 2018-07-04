@@ -262,7 +262,7 @@ class ActivityFeedItem extends Component {
           </span>
         </Card>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
-          className='u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
+          className='u-block small u-sMT-1-2 u-sPB-1-4 txt-muted u-textSecondary' />
       </div>
       /* eslint-enable max-len */
     )
