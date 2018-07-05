@@ -147,7 +147,7 @@ const MergeOptions = (
       </Col>
       <Col className='mb4'>
         <p className='b f4'>For every potential translation:</p>
-        <div className='di u-textNewBlue'>
+        <div className='di txt-newblue'>
           If text is less than <Select
             value={mergeOptions.matchPercentage}
             style={{ width: '5rem' }}

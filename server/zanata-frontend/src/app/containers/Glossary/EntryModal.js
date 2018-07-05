@@ -93,7 +93,7 @@ class EntryModal extends Component {
               ? (<span>
                 <Icon name='language' className='s1'
                   parentClassName='iconLanguage-neutral' />
-                <span className='u-textMuted'>{selectedTransLocale}</span>
+                <span className='txt-muted'>{selectedTransLocale}</span>
               </span>)
               : (<span>
                 <Icon name='translate' className='s1'

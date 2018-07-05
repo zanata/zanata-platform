@@ -216,8 +216,11 @@ table {
 
 .ant-tag {
   vertical-align: middle;
-  background-color: @info-color;
   cursor: default;
+}
+
+.ant-tag-has-color {
+  background-color: @info-color;
 }
 
 .ant-card {
@@ -266,6 +269,7 @@ table {
   border: none !important;
   background-color: initial !important;
   padding: initial !important;
+  box-shadow: none;
 }
 
 .ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
@@ -740,7 +744,6 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   /* remove relative font scaling for nav so it
    is consistent across all of frontend */
   font-size: 11px !important;
-  background-color: unset;
   color: rgb(237, 242, 248) !important;
   flex-direction: column;
   -webkit-flex-direction: column;
@@ -764,10 +767,6 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
   color: @color-light !important;
   cursor: default;
-}
-.nav-link.active:hover {
-  color: unset;
-  background-color: unset;
 }
 .nav-link.search {
   margin-top: 0.75rem;
