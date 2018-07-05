@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react'
-import { Alert } from 'react-bootstrap'
+import Alert from 'antd/lib/alert'
+import 'antd/lib/alert/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Card from 'antd/lib/card'
@@ -32,7 +33,7 @@ class ConcurrentModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alert bsStyle="danger"><span className="alert-link"><a
+          <Alert type="danger"><span className="alert-link"><a
             href="">Username</a></span> has saved a new version while you
             are editing. Please resolve conflicts.</Alert>
             <Card>
