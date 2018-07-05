@@ -46,10 +46,10 @@ storiesOf('Icon', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> Icons</h2>
-          <p bsSize="large">Icons for use throughout frontend. Use <code>className</code> prop to set size.</p>
+          <p>Icons for use throughout frontend. Use <code>className</code> prop to set size.</p>
       <hr/>
           <h3>Props</h3>
-      <table striped bordered condensed hover>
+      <table>
         <thead>
         <tr>
           <th>Name</th>

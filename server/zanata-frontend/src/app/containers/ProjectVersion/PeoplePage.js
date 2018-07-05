@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
-import * as PropTypes from "prop-types";
+import * as PropTypes from "prop-types"
 import { Button, InputGroup, FormGroup, FormControl, Pagination, Table
 } from 'react-bootstrap'
 import { Icon } from '../../components'

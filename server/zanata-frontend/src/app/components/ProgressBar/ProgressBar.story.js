@@ -8,6 +8,6 @@ const now = 60
 storiesOf('ProgressBar', module)
     .add('default', () => (
         <span>
-          <Progress percent={now} showInfo={} />
+          <Progress percent={now} showInfo />
         </span>
        ))

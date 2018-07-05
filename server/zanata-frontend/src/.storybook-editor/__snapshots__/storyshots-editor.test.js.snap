@@ -5680,40 +5680,16 @@ exports[`Editor Storyshots Concurrent editing modal 1`] = `undefined`;
 
 exports[`Editor Storyshots Concurrent editing notification 1`] = `
 <div
-  className="alert alert-danger"
-  role="alert"
+  className="ant-alert ant-alert-danger ant-alert-no-icon"
+  data-show={true}
+  style={undefined}
 >
   <span
-    className=""
-  >
-    <svg
-      className="s2"
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-        }
-      }
-      style={
-        Object {
-          "fill": "currentColor",
-        }
-      }
-    />
-  </span>
-  <strong>
-    Concurrent editing detected.
-  </strong>
-   
+    className="ant-alert-message"
+  />
   <span
-    className="alert-link"
-  >
-    <a
-      href=""
-    >
-      Resolve merge conflicts
-    </a>
-     before continuing.
-  </span>
+    className="ant-alert-description"
+  />
 </div>
 `;
 
@@ -6806,7 +6782,7 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
           className="ant-col-12"
         >
           <h3
-            className="txt-info"
+            className="u-textInfo"
           >
             Translation : 
             de

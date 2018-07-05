@@ -48,7 +48,7 @@ describe('PagerTest', () => {
           </a>
         </li>
         <li className='u-sizeHeight-1 u-sPH-1-4'>
-          <span className='txt-neutral'>
+          <span className='u-textNeutral'>
             <option>7 of 11</option>
           </span>
         </li>
