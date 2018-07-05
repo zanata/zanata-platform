@@ -18,6 +18,7 @@
   "TranslatingIndicator.reviewing": "添削モード",
   "TranslatingIndicator.translating": "翻訳モード",
   "TranslatingIndicator.viewing": "表示専用モード",
+  "TransUnitHeader.translationlink": "この翻訳へのリンク",
   "Validator.header.warnings": "警告: {warningCount}",
   "Validator.header.errors": "エラー: {errorCount}",
   "ControlsHeader.suggestion.hide": "TM提案パネルを隠す",

@@ -9,9 +9,10 @@ import Languages from '../containers/Languages'
 import ProjectVersion from '../containers/ProjectVersion'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
-import { user } from '../config'
 import AdminReview from '../containers/Admin/Review'
+import ServerSettings from '../containers/Admin/ServerSettings'
 import Admin from '../containers/Admin/index'
+import {user, isAdmin, links as configLinks} from '../config'
 
 export default class Root extends Component {
   static propTypes = {
@@ -20,6 +21,13 @@ export default class Root extends Component {
   }
 
   render () {
+    const loginUrl = configLinks.loginUrl ? configLinks.loginUrl : '/login'
+
+    /* eslint-disable no-return-assign, react/jsx-no-bind */
+    const redirectLogin = !isAdmin &&
+      <Route path='admin/*' component={() => window.location = loginUrl} />
+    /* eslint-enable no-return-assign, react/jsx-no-bind */
+
     const username = user.username
     const {
       store,
@@ -36,13 +44,17 @@ export default class Root extends Component {
             <Route path='languages' component={Languages} />
             <Route path='project/:project/version/:version'
               component={ProjectVersion} />
-            <Route path='admin/home' component={Admin} />
-            <Route path='admin/review' component={AdminReview} />
+            {isAdmin && <Route path='admin/home' component={Admin} />}
+            {isAdmin && <Route path='admin/review' component={AdminReview} />}
+            {isAdmin && <Route path='admin/server_settings'
+              component={ServerSettings} />}
             <Route path='profile/view/:username' component={UserProfile} />
             <Redirect from='profile' to={`profile/view/${username}`} />
+            {redirectLogin}
           </Route>
         </Router>
       </Provider>
     )
   }
+
 }
