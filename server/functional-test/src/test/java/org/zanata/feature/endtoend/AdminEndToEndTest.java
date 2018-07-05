@@ -31,6 +31,7 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.RoleAssignmentsPage;
+import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
@@ -63,7 +64,8 @@ public class AdminEndToEndTest extends ZanataTestCase {
     public void adminEndToEndTest() {
 
         // Change admin contact address
-        AdministrationPage administrationPage = setUpAdminContactEmail();
+        AdministrationPage administrationPage =
+                setUpAdminContactEmail().goToAdministration();
 
         // Add a new user to the system
         ManageUserPage manageUserPage = addNewUser(administrationPage);
@@ -91,7 +93,7 @@ public class AdminEndToEndTest extends ZanataTestCase {
         updateTheHomePage(dashboardBasePage);
     }
 
-    private AdministrationPage setUpAdminContactEmail() {
+    private ServerConfigurationPage setUpAdminContactEmail() {
         return new LoginWorkFlow()
                 .signIn(ADMINUSER, ADMINUSER)
                 .goToAdministration()

@@ -178,6 +178,7 @@ table {
 
 .ant-checkbox-wrapper {
   color: @primary-color !important;
+  margin-bottom: 0!important;
 }
 
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
@@ -773,6 +774,22 @@ input.textInput::placeholder, textarea.textInput::placeholder {
 }
 .navBar-navLogo {
   display: none;
+}
+
+.multi-rows-label .ant-form-item-label {
+  padding: 0.25rem 0 !important;
+  label {
+    white-space: normal;
+    margin-right: 0.5rem;
+    line-height: 12px;
+    &:after {
+      content: none !important;
+    }
+    &.ant-form-item-required:before {
+      position: absolute;
+      left: -7px;
+    }
+  }
 }
 
 // media queries
