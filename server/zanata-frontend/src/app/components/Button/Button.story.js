@@ -9,3 +9,4 @@ storiesOf('Button', module)
         <Layout>
           <Button type='primary'>Primary style</Button>
         </Layout>
+    ))
