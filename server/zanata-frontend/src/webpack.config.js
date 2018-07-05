@@ -6,8 +6,9 @@
 var webpack = require('webpack')
 var join = require('path').join
 var _ = require('lodash')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 var MiniCssExtractPlugin = require('mini-css-extract-plugin')
-// var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
@@ -196,16 +197,17 @@ module.exports = function (env, isEditor, devServerPort) {
          */
         {
           test: /\.less$/,
-          use: [{
-            loader: 'style-loader'
-          }, {
-            loader: 'css-loader'
-          }, {
-            loader: 'less-loader', options: {
-              javascriptEnabled: true
+          use: [
+            {
+              loader: 'style-loader'
+            }, {
+              loader: 'css-loader'
+            }, {
+              loader: 'less-loader', options: {
+                javascriptEnabled: true
+              }
             }
-          }]
-        }
+          ]}
       ])
     },
 
@@ -229,10 +231,11 @@ module.exports = function (env, isEditor, devServerPort) {
 
       new CheckerPlugin(),
 
-      /* Outputs css to a separate file per entry-point.
-         Note the call to .extract above */
       new MiniCssExtractPlugin({
-        filename: '[name].[chunkhash:8].cache.css'
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: dev ? '[name].css' : '[name].[hash].css',
+        chunkFilename: dev ? '[id].css' : '[id].[hash].css'
       }),
 
       new webpack.DefinePlugin({
@@ -267,6 +270,14 @@ module.exports = function (env, isEditor, devServerPort) {
     // Suppress warnings about assets and entrypoint size
     // performance: { hints: true },
     optimization: {
+      minimizer: [
+        new UglifyJsPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: true
+        }),
+        new OptimizeCSSAssetsPlugin({})
+      ],
       // namedModules: true, // NamedModulesPlugin()
       splitChunks: { // CommonsChunkPlugin()
         name: 'runtime'
