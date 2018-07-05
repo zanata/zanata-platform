@@ -117,7 +117,7 @@ class RejectionsForm extends Component {
       </Tooltip>
       ) : DO_NOT_RENDER
     const commentToggle = isAdminMode ? (
-      <Form.Item label='Comment required' className='review-label'>
+      <Form.Item label='Comment required' className='comment review-label'>
         <Switch className='ml2'
           checked={this.state.isCommentRequired}
           onChange={this.onEditableChange} />

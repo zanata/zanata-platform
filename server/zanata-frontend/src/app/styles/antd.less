@@ -740,7 +740,7 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   /* remove relative font scaling for nav so it
    is consistent across all of frontend */
   font-size: 11px !important;
-  background-color: "";
+  background-color: unset;
   color: rgb(237, 242, 248) !important;
   flex-direction: column;
   -webkit-flex-direction: column;
@@ -766,8 +766,8 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   cursor: default;
 }
 .nav-link.active:hover {
-  color: "";
-  background-color: "";
+  color: unset;
+  background-color: unset;
 }
 .nav-link.search {
   margin-top: 0.75rem;
