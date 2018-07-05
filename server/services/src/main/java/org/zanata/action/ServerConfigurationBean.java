@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
@@ -33,22 +32,16 @@ import org.apache.commons.beanutils.BeanUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.constraints.Pattern;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.action.validator.DomainList;
-import org.zanata.model.validator.ZanataEmail;
 import org.zanata.security.annotations.CheckRole;
-import org.zanata.ApplicationConfiguration;
-import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.model.HApplicationConfiguration;
-import org.zanata.model.validator.Url;
 import org.zanata.rest.service.ServerConfigurationService;
 import org.zanata.ui.faces.FacesMessages;
 
-import static java.util.Arrays.asList;
-import static org.zanata.model.HApplicationConfiguration.*;
+import static org.zanata.model.HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER;
+import static org.zanata.model.HApplicationConfiguration.KEY_HOME_CONTENT;
 
 @Named("serverConfigurationBean")
 @ViewScoped
@@ -62,106 +55,24 @@ public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
     @Inject
     private FacesMessages facesMessages;
-    public static final String DEFAULT_HELP_URL = "http://docs.zanata.org/en/release/";
+    public static final String DEFAULT_HELP_URL =
+        "http://docs.zanata.org/en/release/";
     public static final String DEFAULT_TERM_OF_USE_URL =
-            "http://zanata.org/terms";
+        "http://zanata.org/terms";
     @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
-    @Inject
-    private ApplicationConfiguration applicationConfiguration;
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<HomeContentChangedEvent> homeContentChangedEventEvent;
-    @Url(canEndInSlash = true)
-    private String registerUrl;
-    @Url(canEndInSlash = false)
-    private String serverUrl;
-    private String emailDomain;
-    @EmailList
-    private String adminEmail;
-    @ZanataEmail
-    private String fromEmailAddr;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithDBKey<String> fromEmailAddrProperty =
-            new PropertyWithDBKey<String>("fromEmailAddr",
-                    KEY_EMAIL_FROM_ADDRESS);
     private String homeContent = "";
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithDBKey<String> homeContentProperty =
-            new PropertyWithDBKey<String>("homeContent", KEY_HOME_CONTENT);
-    private boolean enableLogEmail;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithDBKey<Boolean> enableLogEmailProperty =
-            new PropertyWithDBKey<Boolean>("enableLogEmail",
-                    KEY_EMAIL_LOG_EVENTS);
-    private boolean displayUserEmail;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithDBKey<Boolean> displayUserEmailProperty =
-            new PropertyWithDBKey<Boolean>("displayUserEmail",
-                    KEY_DISPLAY_USER_EMAIL);
+            new PropertyWithDBKey<>("homeContent", KEY_HOME_CONTENT);
     private boolean allowAnonymousUser = true;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithDBKey<Boolean> allowAnonymousUserProperty =
-            new PropertyWithDBKey<Boolean>("allowAnonymousUser",
+            new PropertyWithDBKey<>("allowAnonymousUser",
                     KEY_ALLOW_ANONYMOUS_USER);
-    private boolean autoAcceptRequests = false;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private PropertyWithDBKey<Boolean> autoAcceptRequestsProperty =
-            new PropertyWithDBKey<Boolean>("autoAcceptRequests",
-                    KEY_AUTO_ACCEPT_TRANSLATOR);
-
-    @EmailList
-    private String logDestinationEmails;
-    private String logEmailLevel;
-    @Url(canEndInSlash = true)
-    private String piwikUrl;
-    private String piwikIdSite;
-    @Url(canEndInSlash = true)
-    private String termsOfUseUrl;
-    @Url(canEndInSlash = true)
-    private String helpUrl;
-    @Pattern(regexp = "\\d{0,5}",
-            message = "value must be an integer number between 0 to 99999")
-    private String maxConcurrentRequestsPerApiKey;
-    @Pattern(regexp = "\\d{0,5}",
-            message = "value must be an integer number between 0 to 99999")
-    private String maxActiveRequestsPerApiKey;
-    @Pattern(regexp = "\\d{0,5}",
-            message = "value must be an integer number between 0 to 99999")
-    private String maxFilesPerUpload;
-    @DomainList
-    private String permittedUserEmailDomains;
-    private String gravatarRating;
-    // TODO add validation by calling
-    // org.zanata.service.tm.merge.TMBandDefsKt.parseBands
-    private String tmFuzzyBands;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private List<PropertyWithDBKey<String>> commonStringProperties = asList(
-            // Please keep these sorted by DB key (to make it easy to
-            // compare with the keys in HApplicationConfiguration):
-            new PropertyWithDBKey<>("adminEmail", KEY_ADMIN_EMAIL),
-            new PropertyWithDBKey<>("displayUserEmail", KEY_DISPLAY_USER_EMAIL),
-            new PropertyWithDBKey<>("emailDomain", KEY_DOMAIN),
-            new PropertyWithDBKey<>("logEmailLevel", KEY_EMAIL_LOG_LEVEL),
-            new PropertyWithDBKey<>("gravatarRating", KEY_GRAVATAR_RATING),
-            new PropertyWithDBKey<>("helpUrl", KEY_HELP_URL),
-            new PropertyWithDBKey<>("serverUrl", KEY_HOST),
-            new PropertyWithDBKey<>("logDestinationEmails",
-                    KEY_LOG_DESTINATION_EMAIL),
-            new PropertyWithDBKey<>("maxActiveRequestsPerApiKey",
-                    KEY_MAX_ACTIVE_REQ_PER_API_KEY),
-            new PropertyWithDBKey<>("maxConcurrentRequestsPerApiKey",
-                    KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
-            new PropertyWithDBKey<>("maxFilesPerUpload",
-                    KEY_MAX_FILES_PER_UPLOAD),
-            new PropertyWithDBKey<>("permittedUserEmailDomains",
-                    KEY_PERMITTED_USER_EMAIL_DOMAIN),
-            new PropertyWithDBKey<>("piwikUrl", KEY_PIWIK_URL),
-            new PropertyWithDBKey<>("piwikIdSite", KEY_PIWIK_IDSITE),
-            new PropertyWithDBKey<>("registerUrl", KEY_REGISTER),
-            new PropertyWithDBKey<>("termsOfUseUrl", KEY_TERMS_CONDITIONS_URL),
-            new PropertyWithDBKey<>("tmFuzzyBands", KEY_TM_FUZZY_BANDS),
-            homeContentProperty);
 
     public String updateHomeContent() {
         persistPropertyToDatabase(homeContentProperty);
@@ -173,18 +84,8 @@ public class ServerConfigurationBean implements Serializable {
 
     @PostConstruct
     public void onCreate() {
-        setPropertiesFromConfigIfNotNull(commonStringProperties);
-        setBooleanPropertyFromConfigIfNotNull(enableLogEmailProperty);
+        setPropertyFromConfigIfNotNull(homeContentProperty);
         setBooleanPropertyFromConfigIfNotNull(allowAnonymousUserProperty);
-        setBooleanPropertyFromConfigIfNotNull(autoAcceptRequestsProperty);
-        this.fromEmailAddr = applicationConfiguration.getFromEmailAddr();
-    }
-
-    private void setPropertiesFromConfigIfNotNull(
-            List<PropertyWithDBKey<String>> properties) {
-        for (PropertyWithDBKey<String> property : properties) {
-            setPropertyFromConfigIfNotNull(property);
-        }
     }
 
     private void
@@ -212,56 +113,6 @@ public class ServerConfigurationBean implements Serializable {
                 log.error("error setting boolean property: {} -> {}",
                         property.getKey(), valueHolder.getValue(), e);
             }
-        }
-    }
-
-    @Transactional
-    public String update() {
-        persistPropertiesToDatabase(commonStringProperties);
-        persistPropertyToDatabase(fromEmailAddrProperty);
-        HApplicationConfiguration emailLogEventsValue =
-                applicationConfigurationDAO.findByKey(
-                        HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
-        if (emailLogEventsValue == null) {
-            emailLogEventsValue = new HApplicationConfiguration(
-                    HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS,
-                    Boolean.toString(enableLogEmail));
-        } else {
-            emailLogEventsValue.setValue(Boolean.toString(enableLogEmail));
-        }
-        applicationConfigurationDAO.makePersistent(emailLogEventsValue);
-        HApplicationConfiguration allowAnonymousUserValue =
-                applicationConfigurationDAO.findByKey(KEY_ALLOW_ANONYMOUS_USER);
-        if (allowAnonymousUserValue == null) {
-            allowAnonymousUserValue =
-                    new HApplicationConfiguration(KEY_ALLOW_ANONYMOUS_USER,
-                            Boolean.toString(allowAnonymousUser));
-        } else {
-            allowAnonymousUserValue
-                    .setValue(Boolean.toString(allowAnonymousUser));
-        }
-        HApplicationConfiguration autoAcceptRequestsValue =
-                applicationConfigurationDAO.findByKey(KEY_AUTO_ACCEPT_TRANSLATOR);
-        if (autoAcceptRequestsValue == null) {
-            autoAcceptRequestsValue =
-                    new HApplicationConfiguration(KEY_AUTO_ACCEPT_TRANSLATOR,
-                            Boolean.toString(autoAcceptRequests));
-        } else {
-            autoAcceptRequestsValue
-                    .setValue(Boolean.toString(autoAcceptRequests));
-        }
-        applicationConfigurationDAO.makePersistent(allowAnonymousUserValue);
-        applicationConfigurationDAO.makePersistent(autoAcceptRequestsValue);
-        applicationConfigurationDAO.flush();
-        facesMessages.clear();
-        facesMessages.addGlobal("Configuration was successfully updated.");
-        return "success";
-    }
-
-    private void persistPropertiesToDatabase(
-            List<PropertyWithDBKey<String>> properties) {
-        for (PropertyWithDBKey<String> property : properties) {
-            persistPropertyToDatabase(property);
         }
     }
 
@@ -358,54 +209,6 @@ public class ServerConfigurationBean implements Serializable {
         }
     }
 
-    public String getDefaultTermOfUseUrl() {
-        return DEFAULT_TERM_OF_USE_URL;
-    }
-
-    public String getDefaultHelpUrl() {
-        return DEFAULT_HELP_URL;
-    }
-
-    public String getRegisterUrl() {
-        return this.registerUrl;
-    }
-
-    public void setRegisterUrl(final String registerUrl) {
-        this.registerUrl = registerUrl;
-    }
-
-    public String getServerUrl() {
-        return this.serverUrl;
-    }
-
-    public void setServerUrl(final String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-
-    public String getEmailDomain() {
-        return this.emailDomain;
-    }
-
-    public void setEmailDomain(final String emailDomain) {
-        this.emailDomain = emailDomain;
-    }
-
-    public String getAdminEmail() {
-        return this.adminEmail;
-    }
-
-    public void setAdminEmail(final String adminEmail) {
-        this.adminEmail = adminEmail;
-    }
-
-    public String getFromEmailAddr() {
-        return this.fromEmailAddr;
-    }
-
-    public void setFromEmailAddr(final String fromEmailAddr) {
-        this.fromEmailAddr = fromEmailAddr;
-    }
-
     public String getHomeContent() {
         return this.homeContent;
     }
@@ -414,134 +217,11 @@ public class ServerConfigurationBean implements Serializable {
         this.homeContent = homeContent;
     }
 
-    public boolean isEnableLogEmail() {
-        return this.enableLogEmail;
-    }
-
-    public void setEnableLogEmail(final boolean enableLogEmail) {
-        this.enableLogEmail = enableLogEmail;
-    }
-
-    public boolean isDisplayUserEmail() {
-        return this.displayUserEmail;
-    }
-
-    public void setDisplayUserEmail(final boolean displayUserEmail) {
-        this.displayUserEmail = displayUserEmail;
-    }
-
     public boolean isAllowAnonymousUser() {
         return this.allowAnonymousUser;
     }
 
     public void setAllowAnonymousUser(final boolean allowAnonymousUser) {
         this.allowAnonymousUser = allowAnonymousUser;
-    }
-
-    public boolean isAutoAcceptRequests() {
-        return this.autoAcceptRequests;
-    }
-
-    public void setAutoAcceptRequests(final boolean autoAcceptRequests) {
-        this.autoAcceptRequests = autoAcceptRequests;
-    }
-
-    public String getLogDestinationEmails() {
-        return this.logDestinationEmails;
-    }
-
-    public void setLogDestinationEmails(final String logDestinationEmails) {
-        this.logDestinationEmails = logDestinationEmails;
-    }
-
-    public String getLogEmailLevel() {
-        return this.logEmailLevel;
-    }
-
-    public void setLogEmailLevel(final String logEmailLevel) {
-        this.logEmailLevel = logEmailLevel;
-    }
-
-    public String getPiwikUrl() {
-        return this.piwikUrl;
-    }
-
-    public void setPiwikUrl(final String piwikUrl) {
-        this.piwikUrl = piwikUrl;
-    }
-
-    public String getPiwikIdSite() {
-        return this.piwikIdSite;
-    }
-
-    public void setPiwikIdSite(final String piwikIdSite) {
-        this.piwikIdSite = piwikIdSite;
-    }
-
-    public String getTermsOfUseUrl() {
-        return this.termsOfUseUrl;
-    }
-
-    public void setTermsOfUseUrl(final String termsOfUseUrl) {
-        this.termsOfUseUrl = termsOfUseUrl;
-    }
-
-    public String getHelpUrl() {
-        return this.helpUrl;
-    }
-
-    public void setHelpUrl(final String helpUrl) {
-        this.helpUrl = helpUrl;
-    }
-
-    public String getMaxConcurrentRequestsPerApiKey() {
-        return this.maxConcurrentRequestsPerApiKey;
-    }
-
-    public void setMaxConcurrentRequestsPerApiKey(
-            final String maxConcurrentRequestsPerApiKey) {
-        this.maxConcurrentRequestsPerApiKey = maxConcurrentRequestsPerApiKey;
-    }
-
-    public String getMaxActiveRequestsPerApiKey() {
-        return this.maxActiveRequestsPerApiKey;
-    }
-
-    public void setMaxActiveRequestsPerApiKey(
-            final String maxActiveRequestsPerApiKey) {
-        this.maxActiveRequestsPerApiKey = maxActiveRequestsPerApiKey;
-    }
-
-    public String getMaxFilesPerUpload() {
-        return this.maxFilesPerUpload;
-    }
-
-    public void setMaxFilesPerUpload(final String maxFilesPerUpload) {
-        this.maxFilesPerUpload = maxFilesPerUpload;
-    }
-
-    public String getPermittedUserEmailDomains() {
-        return this.permittedUserEmailDomains;
-    }
-
-    public void setPermittedUserEmailDomains(
-            final String permittedUserEmailDomains) {
-        this.permittedUserEmailDomains = permittedUserEmailDomains;
-    }
-
-    public String getGravatarRating() {
-        return this.gravatarRating;
-    }
-
-    public void setGravatarRating(String gravatarRating) {
-        this.gravatarRating = gravatarRating;
-    }
-
-    public String getTmFuzzyBands() {
-        return tmFuzzyBands;
-    }
-
-    public void setTmFuzzyBands(String tmFuzzyBands) {
-        this.tmFuzzyBands = tmFuzzyBands;
     }
 }
