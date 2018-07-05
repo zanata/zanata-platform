@@ -4,10 +4,10 @@
  */
 
 var webpack = require('webpack')
-var autoprefixer = require('autoprefixer')
 var join = require('path').join
 var _ = require('lodash')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ManifestPlugin = require('webpack-manifest-plugin')
 // `CheckerPlugin` is optional. Use it if you want async error reporting.
@@ -31,17 +31,7 @@ var postCssLoader = {
       require('postcss-import')(),
       require('postcss-url')(),
       require('postcss-cssnext')(),
-      require('postcss-reporter')(),
-      autoprefixer({
-        browsers: [
-          'Explorer >= 9',
-          'last 2 Chrome versions',
-          'last 2 Firefox versions',
-          'last 2 Safari versions',
-          'last 2 iOS versions',
-          'Android 4'
-        ]
-      })
+      require('postcss-reporter')()
     ]
   }
 }
@@ -61,7 +51,6 @@ var postCssLoader = {
  * @param {any} env
  * @param {boolean=} isEditor
  * @param {number=} devServerPort
- * @returns {webpack.Configuration}
  */
 module.exports = function (env, isEditor, devServerPort) {
   var buildtype = env && env.buildtype || 'prod'
@@ -112,6 +101,9 @@ module.exports = function (env, isEditor, devServerPort) {
   }
 
   return dropUndef({
+    // Built in Webpack mode definition
+    mode: dev ? 'development' : 'production',
+
     entry: storybook ? undefined : dropUndef({
       'frontend': './app/entrypoint/index',
       'editor': './app/editor/entrypoint/index.js',
@@ -127,8 +119,8 @@ module.exports = function (env, isEditor, devServerPort) {
       // required for hot module replacement
       // or is it https://github.com/webpack-contrib/style-loader/issues/55 ?
       publicPath: dev
-      ? `http://localhost:${devServerPort}/`
-      : undefined
+        ? `http://localhost:${devServerPort}/`
+        : undefined
     }),
     module: {
       rules: _.compact([
@@ -168,7 +160,7 @@ module.exports = function (env, isEditor, devServerPort) {
           loader: 'awesome-typescript-loader',
           // load antd through modular import plugin
           options: {
-            /** @type {any} */
+            transpileOnly: true,
             getCustomTransformers: () => ({
               before: [ tsImportPluginFactory({
                 libraryName: 'antd',
@@ -193,42 +185,26 @@ module.exports = function (env, isEditor, devServerPort) {
          */
         {
           test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: _.compact([
-              {
-                loader: 'css-loader',
-                options: {
-                  importLoaders: 1
-                }
-              },
-              postCssLoader
-            ])
-          })
+          use: [
+            dev ? 'style-loader' : MiniCssExtractPlugin.loader,
+            'css-loader',
+            postCssLoader
+          ]
         },
 
-        /* Bundles bootstrap css into the same bundle as the other css.
+        /* Bundles less files into the same bundle as the other css.
          */
         {
           test: /\.less$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              {
-                loader: 'postcss-loader',
-                options: {
-                  plugins: [
-                    require('postcss-discard-duplicates')
-                  ]
-                }
-              },
-              postCssLoader,
-              {
-                loader: 'less-loader',
-                options: {javascriptEnabled: true}
-              }
-            ]
-          })
+          use: [{
+            loader: 'style-loader'
+          }, {
+            loader: 'css-loader'
+          }, {
+            loader: 'less-loader', options: {
+              javascriptEnabled: true
+            }
+          }]
         }
       ])
     },
@@ -238,7 +214,7 @@ module.exports = function (env, isEditor, devServerPort) {
       // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
       // There's probably a config option for this (stats?) but I can't find it.
       function () {
-        // @ts-ignore
+        // @ts-ignore any
         this.plugin('watch-run',
           /**
            * @param {any} _watching
@@ -255,20 +231,9 @@ module.exports = function (env, isEditor, devServerPort) {
 
       /* Outputs css to a separate file per entry-point.
          Note the call to .extract above */
-      new ExtractTextPlugin({
-        filename: '[name].[chunkhash:8].cache.css',
-        // storybook should use the fallback: style-loader
-        disable: storybook || dev
+      new MiniCssExtractPlugin({
+        filename: '[name].[chunkhash:8].cache.css'
       }),
-      new webpack.NoEmitOnErrorsPlugin(),
-
-      prod
-        ? new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
-        : undefined,
-      prod
-        // Workaround to switch old loaders to minimize mode
-        ? new webpack.LoaderOptionsPlugin({ minimize: true })
-        : undefined,
 
       new webpack.DefinePlugin({
         'process.env': {
@@ -279,10 +244,6 @@ module.exports = function (env, isEditor, devServerPort) {
 
       fullBuild ? new webpack.HashedModuleIdsPlugin() : undefined,
 
-      storybook || dev ? undefined : new webpack.optimize.CommonsChunkPlugin({
-        name: 'runtime'
-      }),
-
       // Convert source (en) and translated strings to the format the app
       // can consume, in the dist directory.
       fullBuild
@@ -292,11 +253,8 @@ module.exports = function (env, isEditor, devServerPort) {
             to: 'messages',
             toType: 'dir',
             flatten: true,
-            /**
-             * @param content {string}
-             * @param _path {any}
-             */
-            transform (content, _path) {
+            // @ts-ignore any
+            transform (content, path) {
               // Minimize the JSON files
               return JSON.stringify(JSON.parse(content))
             }
@@ -306,6 +264,16 @@ module.exports = function (env, isEditor, devServerPort) {
 
       new ManifestPlugin()
     ]),
+    // Suppress warnings about assets and entrypoint size
+    // performance: { hints: true },
+    optimization: {
+      // namedModules: true, // NamedModulesPlugin()
+      splitChunks: { // CommonsChunkPlugin()
+        name: 'runtime'
+      },
+      noEmitOnErrors: true // NoEmitOnErrorsPlugin
+      // concatenateModules: true // ModuleConcatenationPlugin
+    },
 
     resolve: {
       /* Subdirectories to check while searching up tree for module
