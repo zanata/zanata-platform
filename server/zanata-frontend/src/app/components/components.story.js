@@ -5,6 +5,7 @@
  */
 
 require('./foundation.story.js')
+require('./Button/Button.story.js')
 require('./EditableText/EditableText.story.js')
 require('./Icon/Icon.story.js')
 require('./Link/Link.story.js')

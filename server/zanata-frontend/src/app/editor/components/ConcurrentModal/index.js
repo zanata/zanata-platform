@@ -37,11 +37,11 @@ class ConcurrentModal extends React.Component {
             href="">Username</a></span> has saved a new version while you
             are editing. Please resolve conflicts.</Alert>
             <Card>
-              <p className="u-sizeHeight-1_1-2">
+              <span className="u-sizeHeight-1_1-2">
                 <strong>Username</strong> created a <span
                   className='u-textSuccess'>Translated</span> revision
                 <Tag color='blue'>latest</Tag>
-              </p>
+              </span>
               <span className="revisionBox">
                 <Textarea
                   className='form-control'
@@ -59,9 +59,9 @@ class ConcurrentModal extends React.Component {
               </span>
             </Card>
             <Card>
-              <p className="u-sizeHeight-1_1-2"><strong>You</strong> created
+              <span className="u-sizeHeight-1_1-2"><strong>You</strong> created
                 an <span className="u-textHighlight">Unsaved</span> revision.
-              </p>
+              </span>
               <span className="revisionBox">
                 <Textarea
                   className='form-control'
