@@ -14,10 +14,10 @@ const options = [
     <span>Minor</span>
   </Select.Option>,
   <Select.Option key={2}>
-    <span className='txt-warn'>Major</span>
+    <span className='u-textWarning'>Major</span>
   </Select.Option>,
   <Select.Option key={3}>
-    <span className='txt-error'>Critical</span>
+    <span className='u-textDanger'>Critical</span>
   </Select.Option>
 ]
 /* global describe it expect */
@@ -58,7 +58,7 @@ describe('PriorityDropdown', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <span className='PriorityDropdown'>
         <Icon name='warning' className='s2'
-          parentClassName='txt-warn' />
+          parentClassName='u-textWarning' />
         <span id='PriorityTitle'>Priority</span>
         <Select
           className={majorStyle}

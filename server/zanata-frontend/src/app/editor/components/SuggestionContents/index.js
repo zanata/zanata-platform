@@ -27,7 +27,7 @@ class SuggestionContents extends React.Component {
       //    - use react-intl for it
       const text = index ? 'Plural Form' : 'Singular Form'
       return (
-        <span className="txt-neutral">
+        <span className="u-textMeta">
           {text}
         </span>
       )

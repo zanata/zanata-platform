@@ -23,7 +23,7 @@ describe('SuggestionDetailsSummaryTest', () => {
     //       ' ' + 'champagne'
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="TransUnit-details">
-        <ul className="txt-neutral u-listInline u-sizeLineHeight-1">
+        <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
             <Icon name="import" className="n1" /> {'champagne'}
           </li>
@@ -52,7 +52,7 @@ describe('SuggestionDetailsSummaryTest', () => {
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="TransUnit-details">
-        <ul className="txt-neutral u-listInline u-sizeLineHeight-1">
+        <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li title="sausages">
             <Icon name="project" className="n1" /> {'Sausages'}
           </li>
@@ -102,7 +102,7 @@ describe('SuggestionDetailsSummaryTest', () => {
     //       ' ' + 'champagne'
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="TransUnit-details">
-        <ul className="txt-neutral u-listInline u-sizeLineHeight-1">
+        <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
             <Icon name="import" className="n1" /> {'champagne'}
           </li>

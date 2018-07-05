@@ -51,7 +51,7 @@ class GlossaryTerm extends React.Component {
           <Tooltip placement="top" title={sourceTip}>
             <Button className="btn-link">
               <span>
-                <span className="hide-mdplus txt-neutral">
+                <span className="hide-mdplus u-textMeta">
                   Source
                 </span>
                 <span className={directionClassSource}>{term.source}</span>
@@ -64,7 +64,7 @@ class GlossaryTerm extends React.Component {
             <Button className="btn-link">
               <span className={
                 cx({'u-textMuted': isEmpty(term.target)})}>
-                <span className="hide-mdplus txt-neutral">
+                <span className="hide-mdplus u-textMeta">
                   Translation
                 </span>
                 <span className={directionClassTarget}>

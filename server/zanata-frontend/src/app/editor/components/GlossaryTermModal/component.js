@@ -129,7 +129,7 @@ class GlossaryTermModal extends React.Component {
             </table>
           </Col>
         </Row>
-        <span className="u-pullRight txt-neutral">
+        <span className="u-pullRight u-textMeta">
         {lastModifiedRow}
         </span>
       </Modal>
