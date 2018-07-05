@@ -94,12 +94,14 @@ not conflict with the other frontend code
 
 .Button--secondary:hover, .ant-btn.Button--secondary:hover {
   background-color: color(var(--Button-color-secondary) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--secondary:active,
 .Button--secondary.is-active,
-.ant-btn.Button--secondary:active {
+.ant-btn.Button--secondary:active, .ant-btn.Button--secondary.is-active {
   background-color: color(var(--Button-color-secondary) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Hightlight */

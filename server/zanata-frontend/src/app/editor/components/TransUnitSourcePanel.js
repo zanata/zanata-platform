@@ -36,7 +36,7 @@ class TransUnitSourcePanel extends React.Component {
     const isLoading = !this.props.phrase.sources
 
     const sources = isLoading
-      ? <span className="txt-neutral">
+      ? <span className="u-textNeutral">
         <LoaderText loading />
       </span>
       : this.props.phrase.sources.map(

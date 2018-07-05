@@ -463,6 +463,8 @@ h1.SidebarEditor-heading button svg {
   margin-left: 0.75rem;
   margin-right: 0.75rem;
   margin-top: 1rem;
+  border-bottom: solid 1px #f7f7f7;
+  padding-bottom: 1rem;
 }
 
 .RevisionBox p {
@@ -491,6 +493,15 @@ h1.SidebarEditor-heading button svg {
 .RevisionBox p .s0 {
   padding-right: 0.375rem;
   vertical-align: sub;
+}
+
+td.info-icon .ant-btn.Button--link {
+  color: var(--Sidebar-color-highlight);
+}
+
+td.info-icon .ant-btn.Button--link:hover,
+td.info-icon .ant-btn.Button--link:focus {
+  color: var(--Sidebar-panel-dark);
 }
 
 img.ActivityAvatar {

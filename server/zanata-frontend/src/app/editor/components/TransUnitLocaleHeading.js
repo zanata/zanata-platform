@@ -14,7 +14,7 @@ class TransUnitLocaleHeading extends React.Component {
     const { id, name } = this.props
     return (
       <h3 className="TransUnit-heading">
-        {name} <span className="txt-muted ttu">{id}</span>
+        {name} <span className="u-textMuted ttu">{id}</span>
       </h3>
     )
   }
