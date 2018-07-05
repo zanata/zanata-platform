@@ -100,6 +100,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .where("path").matches(anyOf(
                         "admin/review",
                         "admin/home",
+                        "admin/server_settings",
                         "explore",
                         "glossary",
                         "glossary/project/[^/]*",

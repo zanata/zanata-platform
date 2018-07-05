@@ -5,6 +5,7 @@ import 'antd/lib/button/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
 import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 /**
  * Header for the source of the selected phrase
@@ -49,13 +50,11 @@ class TransUnitSourceHeader extends React.Component {
         <Tooltip title="Cancel edit">
           <Button
             icon="close"
-
             onClick={this.props.cancelEdit}
             className={buttonClass} />
         </Tooltip>
       </li>
       )
-
     return (
       <div className="TransUnit-panelHeader TransUnit-panelHeader--source">
         <TransUnitLocaleHeading {...this.props.sourceLocale} />
