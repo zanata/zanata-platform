@@ -10,6 +10,7 @@ describe('ButtonTest', () => {
     const clickFun = function (_e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
+        title="Come on! Do it! Do it!"
         onClick={clickFun}
         className="im here">
         Come on!
@@ -33,6 +34,7 @@ describe('ButtonTest', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <Button
         disabled={true}
+        title="No such thing, ol' buddy"
         onClick={clickFun}
         className="one-way-ticket">
         Who&apos;s our backup?
