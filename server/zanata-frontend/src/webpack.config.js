@@ -268,7 +268,7 @@ module.exports = function (env, isEditor, devServerPort) {
       new ManifestPlugin()
     ]),
     // Suppress warnings about assets and entrypoint size
-    // performance: { hints: true },
+    performance: { hints: false },
     optimization: {
       minimizer: [
         new UglifyJsPlugin({
