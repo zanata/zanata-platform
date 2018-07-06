@@ -68,7 +68,7 @@ class TranslationInfoPanel extends React.Component {
     notification: PropTypes.shape({
       severity: PropTypes.string,
       message: PropTypes.string,
-      description: PropTypes.string,
+      description: PropTypes.any,
       duration: PropTypes.number
     }),
     selectedPhrase: PropTypes.shape({

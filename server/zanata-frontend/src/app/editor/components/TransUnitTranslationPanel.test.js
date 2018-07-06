@@ -8,7 +8,7 @@ import SyntaxHighlighter, { registerLanguage }
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
-jest.mock('./Validation')
+jest.mock('./Validation', () => 'div')
 
 registerLanguage('xml', xml)
 
@@ -78,6 +78,7 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
+        onValidationErrorChange={defaultFunc}
         phrase={phrase}
         selected
         selectedPluralIndex={1}
@@ -115,6 +116,7 @@ describe('TransUnitTranslationPanel', () => {
           lineStyle={lineStyle}>
           {'Je ne parle pas français'}
         </SyntaxHighlighter>
+        <div></div>{/* Validation Mock */ }
       </div>
     )
     expect(actual).toEqual(expected)
@@ -128,6 +130,7 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
+        onValidationErrorChange={defaultFunc}
         phrase={phrase}
         selected={false}
         selectedPluralIndex={1}
@@ -164,6 +167,7 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
+        onValidationErrorChange={defaultFunc}
         phrase={phrase}
         selected={false}
         selectedPluralIndex={1}

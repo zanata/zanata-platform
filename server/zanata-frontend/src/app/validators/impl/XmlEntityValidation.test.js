@@ -9,7 +9,6 @@ const messages = Messages[locale]
 
 const XmlEntityValidator =
   new XmlEntityValidation(locale, messages)
-
 // @ts-ignore any
 const noErrors = []
 

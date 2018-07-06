@@ -21,14 +21,17 @@
 
 import React from 'react'
 import * as PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
+import ValidationErrorsModal from '../components/ValidationErrorsModal'
 import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
+import { toggleSaveErrorModal } from '../actions/phrases-actions'
 
 const buttonClassByStatus = {
   untranslated: 'Button--neutral',
@@ -66,6 +69,7 @@ class TransUnitTranslationFooter extends React.Component {
     toggleSuggestionPanel: PropTypes.func.isRequired,
     savePhraseWithStatus: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
+    showErrorModal: PropTypes.func.isRequired,
     saveDropdownKey: PropTypes.any.isRequired,
     openDropdown: PropTypes.any,
     saveAsMode: PropTypes.bool.isRequired,
@@ -75,7 +79,8 @@ class TransUnitTranslationFooter extends React.Component {
     permissions: PropTypes.shape({
       reviewer: PropTypes.bool.isRequired,
       translator: PropTypes.bool.isRequired
-    }).isRequired
+    }).isRequired,
+    validationMessages: PropTypes.any
   }
 
   componentWillMount () {
@@ -144,6 +149,10 @@ class TransUnitTranslationFooter extends React.Component {
     )
   }
 
+  cancelSave = () => {
+    this.props.showErrorModal(this.props.phrase.id, false)
+  }
+
   render () {
     const {
       glossaryCount,
@@ -157,15 +166,18 @@ class TransUnitTranslationFooter extends React.Component {
       suggestionCount,
       suggestionSearchType,
       toggleGlossary,
+      showErrorModal,
       toggleSuggestionPanel,
-      permissions
+      permissions,
+      validationMessages
     } = this.props
 
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
     const translationHasChanged = hasTranslationChanged(phrase)
     const isSaving = !!phrase.inProgressSave
-    const selectedButtonStatus =
-      isSaving ? phrase.inProgressSave.status : defaultSaveStatus(phrase)
+    const selectedButtonStatus = isSaving
+      ? phrase.inProgressSave.status
+      : defaultSaveStatus(phrase)
     // TODO translate "Saving..."
     const selectedButtonTitle =
       isSaving ? 'Saving...' : statusNames[selectedButtonStatus]
@@ -189,13 +201,12 @@ class TransUnitTranslationFooter extends React.Component {
     })
 
     // TODO translate "Save as"
+    /* eslint-disable max-len */
     const saveAsLabel = translationHasChanged &&
-      /* eslint-disable max-len */
-      <span className="txt-neutral u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
-          Save as
+      <span className="u-textMeta u-sMR-1-4 u-floatLeft u-sizeLineHeight-1_1-4">
+        Save as
       </span>
-      /* eslint-enable max-len */
-
+    /* eslint-enable max-len */
     const actionButtonKeyShortcut =
       saveAsMode && statusShortcutKeys[selectedButtonStatus]
     const actionButton = (
@@ -208,7 +219,8 @@ class TransUnitTranslationFooter extends React.Component {
       </Button>
     )
 
-    const otherStatuses = nonDefaultValidSaveStatuses(phrase, permissions)
+    const otherStatuses = nonDefaultValidSaveStatuses(
+      phrase, permissions)
     const otherActionButtons = otherStatuses.map((status, index) => {
       return (
         <li key={index}>
@@ -237,35 +249,47 @@ class TransUnitTranslationFooter extends React.Component {
     )
     return (
       /* eslint-disable max-len */
-      <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
-        <div className="TransUnit-panelFooterLeftNav u-floatLeft u-sizeHeight-1_1-2">
-          <ul className="u-listHorizontal">
-          {/* don't think this was ever displayed
-            <li class="u-gtemd-hidden" ng-show="appCtrl.PRODUCTION">
-              <button class="Link Link--neutral u-sizeHeight-1_1-2"
-                title="{{::'Details'|translate}}">
-                <icon name="info" title="{{::'Details'|translate}}"
-                      class="u-sizeWidth-1_1-2"></icon>
-              </button>
-            </li>
-          */}
-            {suggestionsIcon}
-            {glossaryIcon}
-          </ul>
+      <React.Fragment>
+        {validationMessages && validationMessages.errorCount > 0 &&
+          <ValidationErrorsModal
+            phrase={phrase}
+            savePhraseWithStatus={savePhraseWithStatus}
+            selectedButtonStatus={selectedButtonStatus}
+            showErrorModal={showErrorModal}
+            validationMessages={validationMessages}
+          />}
+        <div className="TransUnit-panelFooter u-cf TransUnit-panelFooter--translation">
+          <div className="TransUnit-panelFooterLeftNav u-floatLeft u-sizeHeight-1_1-2">
+            <ul className="u-listHorizontal">
+              {suggestionsIcon}
+              {glossaryIcon}
+            </ul>
+          </div>
+          <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
+            {saveAsLabel}
+            <SplitDropdown
+              onToggle={this.toggleDropdown}
+              isOpen={dropdownIsOpen}
+              actionButton={actionButton}
+              toggleButton={dropdownToggleButton}
+              content={otherActionButtonList} />
+          </div>
         </div>
-        <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
-          {saveAsLabel}
-          <SplitDropdown
-            onToggle={this.toggleDropdown}
-            isOpen={dropdownIsOpen}
-            actionButton={actionButton}
-            toggleButton={dropdownToggleButton}
-            content={otherActionButtonList} />
-        </div>
-      </div>
+      </React.Fragment>
       /* eslint-enable max-len */
     )
   }
 }
 
-export default TransUnitTranslationFooter
+    // @ts-ignore any
+function mapDispatchToProps (dispatch, _ownProps) {
+  return {
+    // @ts-ignore any
+    showErrorModal: (phraseId, showValidationErrorModal) => {
+      // @ts-ignore any
+      dispatch(toggleSaveErrorModal(phraseId, showValidationErrorModal))
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(TransUnitTranslationFooter)
