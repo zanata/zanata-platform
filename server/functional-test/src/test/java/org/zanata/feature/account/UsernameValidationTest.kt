@@ -20,25 +20,25 @@
  */
 package org.zanata.feature.account
 
-import org.junit.Test
-import org.junit.experimental.categories.Category
 import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.RegisterPage
 import org.zanata.workflow.BasicWorkFlow
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class UsernameValidationTest : ZanataTestCase() {
 
     @Trace(summary = "The user must enter acceptable username characters to register")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun usernameCharacterValidation() {
+    @Test
+    @DisplayName("Invalid characters in username will be rejected")
+    fun `Invalid characters in username will be rejected`() {
         val registerPage = BasicWorkFlow().goToHome()
                 .goToRegistration().enterUserName("user|name")
         registerPage.defocus(registerPage.usernameField)

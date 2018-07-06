@@ -22,29 +22,22 @@ package org.zanata.feature.account.comp
 
 import org.assertj.core.api.Assertions.assertThat
 
-import org.junit.Rule
-import org.junit.Test
-import org.junit.experimental.categories.Category
+import org.junit.jupiter.api.Test
 import org.zanata.feature.Trace
 import org.zanata.feature.testharness.ZanataTestCase
-import org.zanata.feature.testharness.TestPlan.DetailedTest
-import org.zanata.page.account.InactiveAccountPage
-import org.zanata.util.HasEmailRule
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.workflow.LoginWorkFlow
 import org.zanata.workflow.RegisterWorkFlow
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class InactiveUserLoginCTest : ZanataTestCase() {
-    @get:Rule
-    val hasEmailRule = HasEmailRule()
 
     @Trace(summary = "The user can update the account activation email address",
             testCaseIds = [5696])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
+    @Test
     fun updateActivationEmail() {
         val usernamepassword = "tester3"
         RegisterWorkFlow().registerInternal(usernamepassword,

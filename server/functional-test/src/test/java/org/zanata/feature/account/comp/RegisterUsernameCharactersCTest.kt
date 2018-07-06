@@ -20,23 +20,22 @@
  */
 package org.zanata.feature.account.comp
 
-import org.junit.Test
-import org.junit.experimental.categories.Category
+import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import org.zanata.feature.testharness.TestPlan
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.RegisterPage
 import org.zanata.workflow.BasicWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.zanata.feature.testharness.ComprehensiveTest
 
 /**
  * Test available characters to ensure only the specified set is allowed
  *
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(TestPlan.ComprehensiveTest::class)
+@ComprehensiveTest
 @RunWith(Parameterized::class)
 class RegisterUsernameCharactersCTest(private val testCharacter: String)
     : ZanataTestCase() {
@@ -59,7 +58,7 @@ class RegisterUsernameCharactersCTest(private val testCharacter: String)
         }
     }
 
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun usernameCharacters() {
         log.info("")
         val registerPage = BasicWorkFlow()

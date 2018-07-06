@@ -20,10 +20,9 @@
  */
 package org.zanata.feature.account
 
-import org.junit.Test
-import org.junit.experimental.categories.Category
+import org.junit.jupiter.api.Test
 import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.RegisterPage
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab
@@ -32,17 +31,18 @@ import org.zanata.util.PropertiesHolder
 import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class ProfileTest : ZanataTestCase() {
 
     @Trace(summary = "The user can view their account details")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun verifyProfileData() {
+    @Test
+    @DisplayName("User account details are visible")
+    fun `User account details are visible`() {
         val dashboardClientTab = LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToSettingsTab()
@@ -66,10 +66,10 @@ class ProfileTest : ZanataTestCase() {
     }
 
     @Trace(summary = "The user can change their API key")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     //@Ignore("Procedure call tracking appears to be flaky in this test")
-    @Throws(Exception::class)
-    fun changeUsersApiKey() {
+    @DisplayName("User's api key can be changed")
+    fun `User's api key can be changed`() {
         var dashboardClientTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -94,9 +94,9 @@ class ProfileTest : ZanataTestCase() {
     }
 
     @Trace(summary = "The user can change their display name")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun changeUsersName() {
+    @Test
+    @DisplayName("User's display name can be changed")
+    fun `User's display name can be changed`() {
         val dashboardProfileTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -112,9 +112,9 @@ class ProfileTest : ZanataTestCase() {
     }
 
     @Trace(summary = "The user's email address change is validated")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun emailValidationIsUsedOnProfileEdit() {
+    @Test
+    @DisplayName("User's email can be changed")
+    fun `User's email can be changed`() {
         var dashboardAccountTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()

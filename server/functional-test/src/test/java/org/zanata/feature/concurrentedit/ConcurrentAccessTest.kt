@@ -31,11 +31,10 @@ import javax.ws.rs.client.Invocation
 import javax.ws.rs.core.MediaType
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder
-import org.junit.BeforeClass
-import org.junit.Test
-import org.junit.experimental.categories.Category
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.rest.dto.resource.Resource
 import org.zanata.util.Constants
@@ -49,12 +48,12 @@ import org.zanata.util.ZanataRestCaller.buildTextFlow
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class ConcurrentAccessTest : ZanataTestCase() {
 
     @Trace(summary = "The system will handle concurrent document " +
             "creation gracefully")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun concurrentDocumentCreationWillNotCauseHibernateException() {
         val projectSlug = "project"
         val iterationSlug = "master"
@@ -79,7 +78,7 @@ class ConcurrentAccessTest : ZanataTestCase() {
 
     companion object {
 
-        @BeforeClass
+        @BeforeAll
         // Need to ensure that the correct concurrent slots are available
         fun beforeClass() {
             val path = "rest/configurations/c/max.concurrent.req.per.apikey"

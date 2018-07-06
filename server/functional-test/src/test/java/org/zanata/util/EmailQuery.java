@@ -43,14 +43,14 @@ public class EmailQuery {
     public static boolean hasLink(WiserMessage emailMessage, LinkType linkType) {
         log.info("Query {} has a {} link", emailMessage, linkType.name());
         Pattern linkPattern = getLinkRegex(linkType);
-        Matcher matcher = linkPattern.matcher(HasEmailRule.getEmailContent(emailMessage));
+        Matcher matcher = linkPattern.matcher(HasEmailExtension.getEmailContent(emailMessage));
         return matcher.find();
     }
 
     public static String getLink(WiserMessage emailMessage, LinkType linkType) {
         log.info("Get {} link from email {}", linkType.name(), emailMessage);
         Pattern linkPattern = getLinkRegex(linkType);
-        Matcher matcher = linkPattern.matcher(HasEmailRule.getEmailContent(emailMessage));
+        Matcher matcher = linkPattern.matcher(HasEmailExtension.getEmailContent(emailMessage));
         assert matcher.find();
         return matcher.group(1);
     }

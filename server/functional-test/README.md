@@ -61,7 +61,7 @@ public class RegisterTest extends ZanataTestCase {
     Map<String, String> fields;
     private HomePage homePage;
 
-    @Before
+    @BeforeEach
     public void before() {
         // fields contains a set of data that can be successfully registered
         fields = new HashMap<String, String>();
