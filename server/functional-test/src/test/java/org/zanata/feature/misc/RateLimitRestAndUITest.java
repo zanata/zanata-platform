@@ -77,7 +77,8 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey())
                 .isEqualTo(String.valueOf(SampleDataRule.ACTIVE_RATE_LIMIT));
         AdministrationPage administrationPage =
-                serverConfigPage.inputMaxConcurrent(5).inputMaxActive(3).save();
+                serverConfigPage.inputMaxConcurrent(5).inputMaxActive(3).save()
+                        .goToAdministration();
         // RHBZ1160651
         // assertThat(administrationPage.getNotificationMessage())
         // .isEqualTo("Configuration was successfully updated.");
