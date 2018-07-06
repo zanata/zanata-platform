@@ -100,7 +100,7 @@ public class MachineTranslationResource {
 
     @Path("project/{projectSlug}/version/{versionSlug}")
     @GET
-    @CheckRole("machine-translation")
+    @CheckRole("mt-suggestion")
     public Response getMachineTranslationSuggestion(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
@@ -132,7 +132,7 @@ public class MachineTranslationResource {
 
     }
 
-    @CheckRole("machine-translation")
+    @CheckRole("mt-bulk")
     @POST
     @Path("project/{projectSlug}/version/{versionSlug}")
     public Response prefillProjectVersionByMachineTranslation(
