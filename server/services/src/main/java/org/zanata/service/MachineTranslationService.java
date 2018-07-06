@@ -35,7 +35,7 @@ public interface MachineTranslationService {
     /**
      * Synchronously fetches a machine translation from the default back-end,
      * for the specified TextFlow.
-     * We request a machine translation of the single text flow. The result\
+     * We request a machine translation of the single text flow. The result
      * includes both singular and plural form translation.
      *
      * @param textFlow

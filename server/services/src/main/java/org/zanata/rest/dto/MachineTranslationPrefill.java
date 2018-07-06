@@ -28,8 +28,8 @@ import org.zanata.common.LocaleId;
  * <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class MachineTranslationPrefill {
-    private LocaleId toLocale;
-    private ContentState saveState;
+    private final LocaleId toLocale;
+    private final ContentState saveState;
 
     public MachineTranslationPrefill(LocaleId toLocale,
             ContentState saveState) {
@@ -37,7 +37,9 @@ public class MachineTranslationPrefill {
         this.saveState = saveState;
     }
 
-    public MachineTranslationPrefill() {
+    @SuppressWarnings("unused")
+    MachineTranslationPrefill() {
+        this(null, null);
     }
 
     public LocaleId getToLocale() {

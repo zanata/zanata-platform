@@ -7,20 +7,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Produces;
@@ -72,12 +69,8 @@ import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeSet;
 
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({
@@ -88,8 +81,8 @@ import com.google.common.collect.RangeSet;
 public class MachineTranslationServiceImplTest extends ZanataJpaTest {
     private static final int NUM_OF_TEXTFLOWS = 110;
 
-    private WireMockServer wireMockServer =
-            new WireMockServer(wireMockConfig().dynamicPort());
+    // TODO use http://wiremock.org/docs/junit-rule/
+    private WireMockServer wireMockServer;
     @Produces
     @MTServiceURL
     URI mtServiceURL() {
@@ -164,9 +157,10 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
                         new ProjectIterationId("project",
                                 "master",
                                 ProjectType.Gettext)));
+        wireMockServer =
+                new WireMockServer(wireMockConfig().dynamicPort());
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-
     }
 
     @After
@@ -176,7 +170,8 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
 
     @Test
     @InRequestScope
-    public void willCompleteIfNoDocumentInProjectVersion() {
+    public void willCompleteIfNoDocumentInProjectVersion()
+            throws Exception {
         HProjectIteration version = makeProjectVersion("project", "master");
 
         Future<Void> future =
@@ -184,7 +179,8 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
                         new MachineTranslationPrefill(LocaleId.DE,
                                 ContentState.NeedReview),
                         taskHandle);
-
+        // not running via AsyncMethodInterceptor, so we don't need to wait
+        future.get(0, SECONDS);
         assertThat(future.isDone()).isTrue();
     }
 
@@ -204,7 +200,7 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
     @Test
     @InRequestScope
     public void canGetTranslationFromMT()
-            throws InterruptedException, ExecutionException, TimeoutException {
+            throws Exception {
         HProjectIteration version = makeProjectVersion("project", "master");
         // given 3 docs in the version
         int numOfDocs = 3;
@@ -227,19 +223,20 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
 
         stubForMachineTranslationRequest();
 
-        ListStubMappingsResult listStubMappingsResult =
-                WireMock.listAllStubMappings();
-        System.out.println(listStubMappingsResult);
+//        ListStubMappingsResult listStubMappingsResult =
+//                WireMock.listAllStubMappings();
+//        System.out.println(listStubMappingsResult);
 
         Future<Void> future =
                 service.prefillProjectVersionWithMachineTranslation(version.getId(),
                         new MachineTranslationPrefill(LocaleId.DE,
                                 ContentState.NeedReview), taskHandle);
 
-        future.get(5, TimeUnit.SECONDS);
+        future.get(5, SECONDS);
 
         // we have 3 docs and each has 110 text flows
-        // we translate 100 per batch so the total translation batch is 6
+        // we translate 100 per batch, thus 2 batches per doc
+        // and the total number of batches is 6
         verify(translationService, times(6)).translate(Mockito.eq(targetLocale.getLocaleId()), transUnitUpdateRequestCaptor.capture());
         List<List<TransUnitUpdateRequest>> allRequests =
                 transUnitUpdateRequestCaptor.getAllValues();

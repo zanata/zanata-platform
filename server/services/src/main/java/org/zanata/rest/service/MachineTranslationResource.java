@@ -94,7 +94,8 @@ public class MachineTranslationResource {
         this.mtServiceURL = mtServiceURL;
     }
 
-    public MachineTranslationResource() {
+    @SuppressWarnings("unused")
+    MachineTranslationResource() {
     }
 
     @Path("project/{projectSlug}/version/{versionSlug}")

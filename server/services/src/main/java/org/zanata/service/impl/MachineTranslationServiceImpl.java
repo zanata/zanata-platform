@@ -87,6 +87,9 @@ public class MachineTranslationServiceImpl implements
     private static final Logger log =
             LoggerFactory.getLogger(MachineTranslationServiceImpl.class);
 
+    // this is org.zanata.magpie.model.BackendID#GOOGLE
+    private static final String BACKEND_GOOGLE = "GOOGLE";
+
     private URI mtServiceURL;
     private String mtUser;
     private String mtToken;
@@ -99,7 +102,8 @@ public class MachineTranslationServiceImpl implements
     private TranslationService translationService;
     private VersionStateCache versionStateCache;
 
-    public MachineTranslationServiceImpl() {
+    @SuppressWarnings("unused")
+    MachineTranslationServiceImpl() {
     }
 
     @Inject
@@ -191,10 +195,8 @@ public class MachineTranslationServiceImpl implements
             log.warn("no document in this version {}", version.userFriendlyToString());
             return AsyncTaskResult.completed();
         }
-        HLocale targetLocale = localeService.getByLocaleId(prefillRequest.getToLocale());
-
         taskHandle.setMaxProgress(documents.size());
-        LocaleId fromLocale = getSourceLocale(documents);
+        HLocale targetLocale = localeService.getByLocaleId(prefillRequest.getToLocale());
 
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
@@ -202,26 +204,21 @@ public class MachineTranslationServiceImpl implements
         String versionSlug = version.getSlug();
 
         log.info("prepare to send {} of documents to MT", documents.size());
+        // We clear the cache because we apparently don't trust the incremental
+        // stats calculations. By clearing first, we save the cache from
+        // trying to keep stats up to date during the merge.
         versionStateCache.clearVersionStatsCache(targetVersionId);
 
         boolean cancelled = false;
         for (Iterator<HDocument> iterator = documents.values().iterator();
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
-            DocumentId documentId = new DocumentId(doc.getId(),
-                    doc.getDocId());
-            List<HTextFlow> untranslatedTextFlows =
-                    getTextFlowsByDocumentIdWithConstraints(targetLocale,
-                            documentId);
-            MTDocument mtDocument = textFlowsToMTDoc
-                    .fromTextFlows(projectSlug, versionSlug,
-                            doc.getDocId(), fromLocale,
-                            untranslatedTextFlows);
-            MTDocument result = getTranslationFromMT(mtDocument,
-                    targetLocale.getLocaleId());
-            translateInBatch(untranslatedTextFlows, result, targetLocale, prefillRequest.getSaveState());
+            addMachineTranslationsToDoc(doc, targetLocale, projectSlug,
+                    versionSlug, prefillRequest.getSaveState());
             taskHandle.increaseProgress(1);
         }
+        // Clear the cache again to force recalculation (just in case of
+        // concurrent activity):
         versionStateCache.clearVersionStatsCache(targetVersionId);
 
         log.info("{} prefill translation with machine translations for version {}, {}",
@@ -230,12 +227,29 @@ public class MachineTranslationServiceImpl implements
         return AsyncTaskResult.completed();
     }
 
+    private void addMachineTranslationsToDoc(HDocument doc,
+            HLocale targetLocale, String projectSlug,
+            String versionSlug, ContentState saveState) {
+        DocumentId documentId = new DocumentId(doc.getId(),
+                doc.getDocId());
+        List<HTextFlow> untranslatedTextFlows =
+                getTextFlowsByDocumentIdWithConstraints(targetLocale,
+                        documentId);
+        MTDocument mtDocument = textFlowsToMTDoc
+                .fromTextFlows(projectSlug, versionSlug,
+                        doc.getDocId(), doc.getSourceLocaleId(),
+                        untranslatedTextFlows);
+        MTDocument result = getTranslationFromMT(mtDocument,
+                targetLocale.getLocaleId());
+        translateInBatch(untranslatedTextFlows, result, targetLocale, saveState);
+    }
+
     @NotNull
     private LocaleId getSourceLocale(Map<String, HDocument> documents) {
+        assert !documents.isEmpty();
         // TODO this assumes all documents using same source locale
-        // TODO some document don't have source locale (null)
-        HDocument firstDoc = documents.values().iterator().next();
-        return firstDoc.getSourceLocaleId();
+        Iterator<HDocument> iterator = documents.values().iterator();
+        return iterator.next().getSourceLocaleId();
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
@@ -265,7 +279,9 @@ public class MachineTranslationServiceImpl implements
             try {
                 transactionUtil.run(() -> {
                     List<TransUnitUpdateRequest> updateRequests =
-                            makeUpdateRequestsForBatch(targetLocale, saveState,
+                            makeUpdateRequestsForBatch(targetLocale,
+                                    transDoc.getBackendId(),
+                                    saveState,
                                     sourceBatch,
                                     transContentBatch);
                     translationService.translate(targetLocale.getLocaleId(), updateRequests);
@@ -279,8 +295,11 @@ public class MachineTranslationServiceImpl implements
     /**
      * for each batch of text flows, we get the matching translation from MT result.
      */
-    private List<TransUnitUpdateRequest> makeUpdateRequestsForBatch(HLocale targetLocale,
-            ContentState saveState, List<HTextFlow> sourceBatch,
+    private List<TransUnitUpdateRequest> makeUpdateRequestsForBatch(
+            HLocale targetLocale,
+            String backendId,
+            ContentState saveState,
+            List<HTextFlow> sourceBatch,
             List<TypeString> transContentBatch) {
         List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
 
@@ -292,19 +311,27 @@ public class MachineTranslationServiceImpl implements
             int baseRevision = maybeTarget == null ? 0 : maybeTarget.getVersionNum();
             List<String> translation = Lists.newArrayList(
                     matchingTranslationFromMT.getValue());
-            // TODO TranslationSourceType only says MT but without provider name
+            // TODO store backendID/provider in a new DB column (perhaps JSON)
             TransUnitUpdateRequest updateRequest =
                     new TransUnitUpdateRequest(
                             new TransUnitId(textFlow.getId()),
                             translation,
                             saveState,
                             baseRevision,
-                            TranslationSourceType.MACHINE_TRANS
-                                    .getAbbr());
-            updateRequest.addRevisionComment("Translated by Google");
+                            TranslationSourceType.MACHINE_TRANS.getAbbr());
+            updateRequest.addRevisionComment(getRevisionComment(backendId));
             updateRequests.add(updateRequest);
         }
         return updateRequests;
+    }
+
+    private String getRevisionComment(String backendId) {
+        if (BACKEND_GOOGLE.equals(backendId)) {
+            return "Translated by Google";
+        } else {
+            log.warn("Unexpected MT backendId: {}", backendId);
+            return "Translated by MT backendId: " + backendId;
+        }
     }
 
 }

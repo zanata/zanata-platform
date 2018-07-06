@@ -61,8 +61,8 @@ public class MachineTranslationPrefillTaskHandle extends AsyncTaskHandle<Void>
     public String toString() {
         return MoreObjects.toStringHelper(this).omitNullValues()
                 .add("targetVersion", targetVersion)
-                .add("currentProgress", currentProgress)
-                .add("maxProgress", maxProgress)
+                .add("currentProgress", getCurrentProgress())
+                .add("maxProgress", getMaxProgress())
                 .add("triggeredBy", triggeredBy)
                 .toString();
     }

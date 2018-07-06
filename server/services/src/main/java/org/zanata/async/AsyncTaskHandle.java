@@ -44,13 +44,14 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+// TODO this doesn't look thread safe
 public class AsyncTaskHandle<V> implements Serializable {
 
     private static final long serialVersionUID = -2896367626313653728L;
     @SuppressFBWarnings("SE_BAD_FIELD")
     private CompletableFuture<V> futureResult;
-    public long maxProgress = 100;
-    public long currentProgress = 0;
+    private long maxProgress = 100;
+    private long currentProgress = 0;
     private long startTime = -1;
     private long finishTime = -1;
     private String cancelledBy;
