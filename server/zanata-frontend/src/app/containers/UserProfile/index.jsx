@@ -103,10 +103,10 @@ class UserProfile extends Component {
             src={user.imageUrl ? user.imageUrl : ''} alt={username} />
           <div className='u-flexColumn details-text'>
             {name &&
-              <div className='username h1 ellipsis'
+              <h1 className='fw5 ellipsis'
                 id='profile-displayname'>
               {name}
-              </div>
+              </h1>
             }
             <ul className='largeFontList'>
               <li className='u-flexCenter' id='profile-username'>
