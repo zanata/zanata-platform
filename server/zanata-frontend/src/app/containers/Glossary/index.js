@@ -223,7 +223,7 @@ class Glossary extends Component {
         <div className='wideView' id='glossary'>
           <Layout>
             <ViewHeader title={headerTitle} />
-            <div className='glossaryHeader'>
+            <div>
               <Row>
                 {termCount > 0 &&
                   <Row>
