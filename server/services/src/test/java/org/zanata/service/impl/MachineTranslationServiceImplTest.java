@@ -7,6 +7,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -199,7 +201,19 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
 
     @Test
     @InRequestScope
-    public void canGetTranslationFromMT()
+    public void canGetTranslationFromMTSingular()
+            throws Exception {
+        canGetTranslationFromMT(false);
+    }
+
+    @Test
+    @InRequestScope
+    public void canGetTranslationFromMTPlural()
+            throws Exception {
+        canGetTranslationFromMT(true);
+    }
+
+    private void canGetTranslationFromMT(boolean plurals)
             throws Exception {
         HProjectIteration version = makeProjectVersion("project", "master");
         // given 3 docs in the version
@@ -212,8 +226,13 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
             getEm().persist(doc);
             // each document has the same number of text flows
             for (int j = 0; j < NUM_OF_TEXTFLOWS; j++) {
-                HTextFlow textFlow =
-                        new HTextFlow(doc, "resId" + j, "content" + j);
+                List<String> contents = plurals ?
+                        asList("contentSingular" + j, "contentPlural" + j) :
+                        singletonList("content" + j);
+                HTextFlow textFlow = new HTextFlow();
+                textFlow.setDocument(doc);
+                textFlow.setResId("resId" + j);
+                textFlow.setContents(contents);
                 doc.getTextFlows().add(textFlow);
                 getEm().persist(textFlow);
             }
@@ -230,20 +249,31 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
         Future<Void> future =
                 service.prefillProjectVersionWithMachineTranslation(version.getId(),
                         new MachineTranslationPrefill(LocaleId.DE,
-                                ContentState.NeedReview), taskHandle);
+                                ContentState.Translated), taskHandle);
 
         future.get(5, SECONDS);
 
         // we have 3 docs and each has 110 text flows
         // we translate 100 per batch, thus 2 batches per doc
         // and the total number of batches is 6
-        verify(translationService, times(6)).translate(Mockito.eq(targetLocale.getLocaleId()), transUnitUpdateRequestCaptor.capture());
-        List<List<TransUnitUpdateRequest>> allRequests =
+        int expectedBatches = 6;
+        int expectedTranslations = NUM_OF_TEXTFLOWS * numOfDocs;
+        ContentState expectedState = plurals ? ContentState.NeedReview : ContentState.Translated;
+        verify(translationService, times(expectedBatches))
+                .translate(Mockito.eq(targetLocale.getLocaleId()),
+                        transUnitUpdateRequestCaptor.capture());
+        List<List<TransUnitUpdateRequest>> allRequestsLists =
                 transUnitUpdateRequestCaptor.getAllValues();
-        List<TransUnitUpdateRequest> flattened =
-                allRequests.stream().flatMap(Collection::stream)
+        List<TransUnitUpdateRequest> allRequestsFlat =
+                allRequestsLists.stream().flatMap(Collection::stream)
                         .collect(Collectors.toList());
-        assertThat(flattened).hasSize(NUM_OF_TEXTFLOWS * numOfDocs);
+
+        assertThat(allRequestsFlat)
+                .as("number of translations added")
+                .hasSize(expectedTranslations)
+                .as("state of translations")
+                .extracting(TransUnitUpdateRequest::getNewContentState)
+                .allMatch(it -> it.equals(expectedState));
     }
 
     private void stubForMachineTranslationRequest() {

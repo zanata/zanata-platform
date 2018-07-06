@@ -21,11 +21,13 @@
 package org.zanata.service.mt;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
 import org.zanata.service.mt.dto.MTDocument;
@@ -38,7 +40,7 @@ import org.zanata.util.UrlUtil;
  */
 @Dependent
 public class TextFlowsToMTDoc {
-    protected static final String BACKEND_ID = "dev";
+    private static final String BACKEND_ID = "source";
     private UrlUtil urlUtil;
 
     @Inject
@@ -46,15 +48,35 @@ public class TextFlowsToMTDoc {
         this.urlUtil = urlUtil;
     }
 
-    public TextFlowsToMTDoc() {
+    @SuppressWarnings("unused")
+    TextFlowsToMTDoc() {
     }
 
-    public MTDocument fromTextFlows(String projectSlug, String versionSlug, String docId, LocaleId fromLocale, List<HTextFlow> textFlows) {
+    public static String extractSingular(HasContents textFlow) {
+        return textFlow.getContents().get(0);
+    }
+
+    // For messages with plural forms, the plural form will typically be more
+    // general than singular. For example: singular: "One file was saved",
+    // versus plural: "%d files were saved."
+    // (but note that MT generally doesn't understand variables like %d)
+    public static String extractPluralIfPresent(HasContents textFlow) {
+        List<String> contents = textFlow.getContents();
+        if (contents.size() > 1) {
+            return contents.get(1);
+        } else {
+            return contents.get(0);
+        }
+    }
+
+    public MTDocument fromTextFlows(String projectSlug,
+            String versionSlug, String docId, LocaleId fromLocale,
+            List<HTextFlow> textFlows,
+            Function<HTextFlow, String> contentExtractor) {
         String url = buildDocUrl(projectSlug, versionSlug, docId);
         List<TypeString> contents =
                 textFlows.stream()
-                        // TODO we can't support plural yet
-                        .map(textFlow -> textFlow.getContents().get(0))
+                        .map(contentExtractor)
                         .map(TypeString::new)
                         .collect(Collectors.toList());
 

@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
@@ -39,7 +38,6 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.Async;
@@ -75,6 +73,8 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Patrick Huang
@@ -147,7 +147,7 @@ public class MachineTranslationServiceImpl implements
         try {
             MTDocument result = getTranslationFromMT(doc, toLocale);
             return result.getContents().stream().map(TypeString::getValue)
-                    .collect(Collectors.toList());
+                    .collect(toList());
         } catch (ZanataServiceException e) {
             log.error("failed to get translations from machine translation");
             return Collections.emptyList();
@@ -204,6 +204,7 @@ public class MachineTranslationServiceImpl implements
         String versionSlug = version.getSlug();
 
         log.info("prepare to send {} of documents to MT", documents.size());
+
         // We clear the cache because we apparently don't trust the incremental
         // stats calculations. By clearing first, we save the cache from
         // trying to keep stats up to date during the merge.
@@ -232,24 +233,18 @@ public class MachineTranslationServiceImpl implements
             String versionSlug, ContentState saveState) {
         DocumentId documentId = new DocumentId(doc.getId(),
                 doc.getDocId());
-        List<HTextFlow> untranslatedTextFlows =
+        List<HTextFlow> textFlowsToTranslate =
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
                         documentId);
+
         MTDocument mtDocument = textFlowsToMTDoc
                 .fromTextFlows(projectSlug, versionSlug,
                         doc.getDocId(), doc.getSourceLocaleId(),
-                        untranslatedTextFlows);
+                        textFlowsToTranslate,
+                        TextFlowsToMTDoc::extractPluralIfPresent);
         MTDocument result = getTranslationFromMT(mtDocument,
                 targetLocale.getLocaleId());
-        translateInBatch(untranslatedTextFlows, result, targetLocale, saveState);
-    }
-
-    @NotNull
-    private LocaleId getSourceLocale(Map<String, HDocument> documents) {
-        assert !documents.isEmpty();
-        // TODO this assumes all documents using same source locale
-        Iterator<HDocument> iterator = documents.values().iterator();
-        return iterator.next().getSourceLocaleId();
+        translateInBatch(textFlowsToTranslate, result, targetLocale, saveState);
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
@@ -298,13 +293,19 @@ public class MachineTranslationServiceImpl implements
     private List<TransUnitUpdateRequest> makeUpdateRequestsForBatch(
             HLocale targetLocale,
             String backendId,
-            ContentState saveState,
+            ContentState requestedSaveState,
             List<HTextFlow> sourceBatch,
             List<TypeString> transContentBatch) {
         List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
 
         for (int i = 0; i < sourceBatch.size(); i++) {
             HTextFlow textFlow = sourceBatch.get(i);
+            ContentState saveState =
+                    getActualSaveState(requestedSaveState, textFlow);
+            // Note that org.zanata.service.impl.TranslationServiceImpl.saveBatch
+            // will skip the save for any TFT where validation fails.
+            // TODO it would generally be better to save as Fuzzy, unless there
+            // is an existing translation which passes validation.
             TypeString matchingTranslationFromMT = transContentBatch.get(i);
 
             HTextFlowTarget maybeTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, targetLocale);
@@ -323,6 +324,20 @@ public class MachineTranslationServiceImpl implements
             updateRequests.add(updateRequest);
         }
         return updateRequests;
+    }
+
+    private ContentState getActualSaveState(ContentState requestedSaveState,
+            HTextFlow textFlow) {
+        // If text flow has plurals, there's a higher chance it contains
+        // variables, eg "%d files were saved."
+        // So we save its machine translation as NeedReview
+        // because MT probably won't handle cases like this well.
+        // TODO perhaps we should just decide this based on validation in TranslationService
+        return hasPluralForm(textFlow) ? ContentState.NeedReview : requestedSaveState;
+    }
+
+    private boolean hasPluralForm(HTextFlow it) {
+        return it.getContents().size() > 1;
     }
 
     private String getRevisionComment(String backendId) {
