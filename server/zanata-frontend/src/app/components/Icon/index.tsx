@@ -15,7 +15,7 @@ const Icon: React.StatelessComponent<IconProps> = ({
   name,
   parentClassName,
   className,
-  ...props,
+  ...props
 }) => {
   const svgIcon = `<use xlink:href="#Icon-${name}" />`
   const parentCSS = isUndefined(parentClassName) ? '' : parentClassName

@@ -86,6 +86,7 @@ import javax.transaction.UserTransaction;
 @RunWith(CdiUnitRunner.class)
 @SupportDeltaspikeCore
 @AdditionalClasses({
+        LocaleDAO.class,
         VersionStateCacheImpl.class,
         // needed by service locator
         TransactionUtilImpl.class
@@ -473,8 +474,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(newVersion.getProjectType()).isEqualTo(
                 existingVersion.getProjectType());
         assertThat(newVersion.getStatus()).isEqualTo(expectedStatus);
-        assertThat(newVersion.getRequireTranslationReview()).isEqualTo(
-                existingVersion.getRequireTranslationReview());
     }
 
     private void assertDocument(HDocument existingDoc, HDocument newDoc) {

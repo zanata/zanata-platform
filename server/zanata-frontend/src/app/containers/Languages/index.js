@@ -4,14 +4,24 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {
-  Button, InputGroup, FormGroup, FormControl,
-  Badge, Pagination
+  InputGroup, FormGroup, FormControl,
+  Pagination
 } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import { debounce, find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
-import {Icon, Notification, LoaderText} from '../../components'
+import {LoaderText} from '../../components'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
+import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
 
 import {
   initialLoad,
@@ -63,6 +73,17 @@ class Languages extends Component {
     this.props.handleInitLoad()
   }
 
+  componentDidUpdate (prevProps) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: null
+      })
+    }
+  }
+
   resetSearchText = (localeId) => {
     this.setState({
       searchText: ''
@@ -89,7 +110,6 @@ class Languages extends Component {
       user,
       loading,
       deleting,
-      notification,
       handleOnUpdatePageSize,
       handleOnUpdateSort,
       handlePageChanged,
@@ -105,118 +125,110 @@ class Languages extends Component {
 
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
-      <div className='wideView bstrapReact languages'>
-        {notification &&
-        (<Notification severity={notification.severity}
-          message={notification.message}
-          details={notification.details}
-          show={!!notification} />
-        )
-        }
-        <Helmet title='Languages' />
-        <div className='u-centerBlock'>
-          <div className='clearfix'
-            id='languages-form'>
-            <h1>
-              Languages {!loading &&
-                <Badge className='default'>{totalCount}</Badge>}
-            </h1>
-            {permission.canAddLocale &&
-              <div>
-                <Button bsStyle='primary'
-                  id='btn-language-add-new'
-                  onClick={handleOnDisplayNewLanguage}>
-                  <Icon name='plus' className='n1' parentClassName='plusicon'
-                    title='plus' />&nbsp;
-                  Add new language
-                </Button>
-                <NewLanguageModal />
-              </div>
-            }
-            <div>
-              {loading
-                ? <div className='containerContentView'>
-                  <span className='listInline'>
-                    <LoaderText loading />
-                  </span>
-                </div>
-                : (
-                <div className='toolbar'>
-                  <FormGroup className='searchBox'>
-                    <InputGroup>
-                      <FormControl type='text'
-                        value={this.state.searchText}
-                        onChange={this.onUpdateSearch} />
-                      <InputGroup.Addon>
-                        <Icon name='search'
-                          className='s1'
-                          title='search' />
-                      </InputGroup.Addon>
-                    </InputGroup>
-                  </FormGroup>
-                  <div className='sortItems'>
-                    <FormControl componentClass='select'
-                      id='sort-options'
-                      onChange={handleOnUpdateSort} value={sort.value}>
-                      {sortOption.map(function (sort, i) {
-                        return <option key={i} value={sort.value}>
-                        {sort.display}</option>
-                      })}
-                    </FormControl>
-                  </div>
-                  <div className='showItems u-pullRight'>
-                    <span>Show</span>
-                    <FormControl componentClass='select'
-                      onChange={handleOnUpdatePageSize} value={size}
-                      id='page-size-options'>
-                      {pageSizeOption.map(function (value, i) {
-                        return <option key={i} value={value}>
-                        {value}</option>
-                      })}
-                    </FormControl>
-                  </div>
-                  <div className='pageCount col-xs-7 col-sm-8 col-md-12'>
-                    <Pagination
-                      prev
-                      next
-                      bsSize='medium'
-                      items={totalPage}
-                      activePage={page}
-                      onSelect={handlePageChanged} />
-                  </div>
-                </div>)}
-                {noResults &&
-                  <div className='loader-loadingContainer'>
-                    <span className='u-textLoadingMuted'>
-                      <Icon name='language' />
-                    </span>
-                    <p className='glossaryText-muted'>No results</p>
-                  </div>
+      <div className='bstrapReact languages'>
+        <Layout>
+          <Helmet title='Languages' />
+          <div className='u-centerBlock'>
+            <div className='clearfix'
+              id='languages-form'>
+              <h1>
+                Languages {!loading &&
+                  <Tag color='03A6D7'>{totalCount}</Tag>
                 }
-                {!loading && !noResults &&
-                  <div className='left-form'>
-                    <table className='table' id='languages-table'>
-                      <thead>
-                        <tr className='hidden'>
-                          <th>Language</th>
-                          <th>&nbsp;</th>
-                          <th>&nbsp;</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                       {results.map(function (value, i) {
-                         return <Entry key={i} locale={value}
-                           userLanguageTeams={user.languageTeams}
-                           permission={permission}
-                           handleDelete={resetSearchText}
-                           isDeleting={deleting} />
-                       })}
-                      </tbody>
-                    </table>
-                  </div>}
+              </h1>
+              {permission.canAddLocale &&
+                <div>
+                  <Button type="primary" icon="plus"
+                    id="btn-language-add-new"
+                    aria-label="button"
+                    onClick={handleOnDisplayNewLanguage}>
+                  Add new language</Button>
+                  <NewLanguageModal />
+                </div>
+              }
+              <div>
+                {loading
+                  ? <div className='containerContentView'>
+                    <span className='listInline'>
+                      <LoaderText loading />
+                    </span>
+                  </div>
+                  : (
+                  <div className='toolbar'>
+                    <FormGroup className='searchBox'>
+                      <InputGroup>
+                        <FormControl type='text'
+                          className='textInput'
+                          value={this.state.searchText}
+                          onChange={this.onUpdateSearch} />
+                        <InputGroup.Addon>
+                          <Icon type='search' />
+                        </InputGroup.Addon>
+                      </InputGroup>
+                    </FormGroup>
+                    <div className='sortItems'>
+                      <FormControl componentClass='select'
+                        id='sort-options'
+                        onChange={handleOnUpdateSort} value={sort.value}>
+                        {sortOption.map(function (sort, i) {
+                          return <option key={i} value={sort.value}>
+                          {sort.display}</option>
+                        })}
+                      </FormControl>
+                    </div>
+                    <div className='showItems u-pullRight'>
+                      <span>Show</span>
+                      <FormControl componentClass='select'
+                        onChange={handleOnUpdatePageSize} value={size}
+                        id='page-size-options'>
+                        {pageSizeOption.map(function (value, i) {
+                          return <option key={i} value={value}>
+                          {value}</option>
+                        })}
+                      </FormControl>
+                    </div>
+                    <div className='pageCount col-xs-7 col-sm-8 col-md-12'>
+                      <Pagination
+                        prev
+                        next
+                        bsSize='medium'
+                        items={totalPage}
+                        activePage={page}
+                        onSelect={handlePageChanged} />
+                    </div>
+                  </div>)}
+                  {noResults &&
+                    <div className='loader-loadingContainer'>
+                      <span className='u-textLoadingMuted'>
+                        <Icon type='global' /> No results
+                      </span>
+                    </div>
+                  }
+                  {!loading && !noResults &&
+                    <div className='left-form'>
+                      <table className='table' id='languages-table'>
+                        <thead>
+                          <tr className='hidden'>
+                            <th>Language</th>
+                            <th>&nbsp;</th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                         {results.map(function (value, i) {
+                           return <Entry key={i} locale={value}
+                             userLanguageTeams={user.languageTeams}
+                             permission={permission}
+                             handleDelete={resetSearchText}
+                             isDeleting={deleting} />
+                         })}
+                        </tbody>
+                      </table>
+                    </div>}
+              </div>
             </div>
           </div>
-        </div>
+        </Layout>
       </div>)
       /* eslint-enable max-len, react/jsx-no-bind */
   }

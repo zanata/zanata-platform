@@ -62,12 +62,14 @@ import org.zanata.model.type.EntityType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @Cacheable
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Access(AccessType.FIELD)
+@GraphQLType(name = "ProjectIteration")
 public class HProjectIteration extends SlugEntityBase
         implements Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType,
         HasUserFriendlyToString {
@@ -123,8 +125,6 @@ public class HProjectIteration extends SlugEntityBase
     @NotNull
     @Column(columnDefinition = "char(1)")
     private EntityStatus status = EntityStatus.ACTIVE;
-    @Column(nullable = true)
-    private Boolean requireTranslationReview = false;
 
     @Override
     public Iterator<DocumentWithId> iterator() {
@@ -136,13 +136,6 @@ public class HProjectIteration extends SlugEntityBase
     @Transient
     public EntityType getEntityType() {
         return EntityType.HProjectIteration;
-    }
-
-    public Boolean getRequireTranslationReview() {
-        if (requireTranslationReview == null) {
-            return Boolean.FALSE;
-        }
-        return requireTranslationReview;
     }
 
     @Override
@@ -198,11 +191,6 @@ public class HProjectIteration extends SlugEntityBase
 
     public void setStatus(final EntityStatus status) {
         this.status = status;
-    }
-
-    public void setRequireTranslationReview(
-            final Boolean requireTranslationReview) {
-        this.requireTranslationReview = requireTranslationReview;
     }
 
     public HProject getProject() {

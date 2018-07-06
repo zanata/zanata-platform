@@ -1,9 +1,11 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Icon, Loader } from '../../components'
-import { Button } from 'react-bootstrap'
-
+import { Loader, Icon } from '../../components'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
 /**
  * Header with icon and paging for the TeaserList.
  */
@@ -32,34 +34,34 @@ const TeaserListHeader = ({
   /* eslint-disable react/jsx-no-bind */
   return (
     <div className='teaserHeader'>
-      {headerIcon}
-      <h2 className='u-textDark u-textUppercase'>
-        {title}
-        <span className='u-textMutedLeft' title='Total records'>
-          {totalCount}
-        </span>
-      </h2>
-      {totalPage > 1 && (
-        <div className='teaserHeader-inner'>
-          <div className='teaserHeader-pagination'>
-            <Button bsStyle='link' disabled={currentPage === 1}
-              onClick={() => {
-                updatePage(type, currentPage, totalPage, false)
-              }}>
-              <Icon className='s1' parentClassName='iconsHeader'
-                name='chevron-left' />
-            </Button>
-            <span className='pageCurrent'>{currentPage} of {totalPage}</span>
-            <Button bsStyle='link' disabled={currentPage === totalPage}
-              onClick={() => {
-                updatePage(type, currentPage, totalPage, true)
-              }}>
-              <Icon className='iconsHeader s1' name='chevron-right' />
-            </Button>
+      <Layout>
+        {headerIcon}
+        <h2 className='u-textDark u-textUppercase'>
+          {title}
+          <span className='u-textMutedLeft' title='Total records'>
+            {totalCount}
+          </span>
+        </h2>
+        {totalPage > 1 && (
+          <div className='teaserHeader-inner'>
+            <div className='teaserHeader-pagination'>
+              <Button icon='left' className='btn-link iconsHeader'
+                aria-label='button'
+                disabled={currentPage === 1}
+                onClick={() => {
+                  updatePage(type, currentPage, totalPage, false)
+                }} />
+              <span className='pageCurrent'>{currentPage} of {totalPage}</span>
+              <Button icon='right' className='btn-link iconsHeader'
+                disabled={currentPage === totalPage} aria-label='button'
+                onClick={() => {
+                  updatePage(type, currentPage, totalPage, false)
+                }} />
+            </div>
           </div>
-        </div>
-      )}
-      {loading && <Loader className='headerLoader s1' />}
+        )}
+        {loading && <Loader className='headerLoader s1' />}
+      </Layout>
     </div>
   )
   /* eslint-enable react/jsx-no-bind */

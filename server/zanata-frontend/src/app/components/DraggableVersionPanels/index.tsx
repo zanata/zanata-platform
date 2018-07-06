@@ -1,31 +1,25 @@
-import * as PropTypes from 'prop-types'
-import React from 'react'
-import { Component } from 'react'
-import {Icon, LockIcon} from '../../components'
+import * as PropTypes from "prop-types";
+import React from "react";
+import { Component } from "react";
+import {LockIcon, Icon} from "../../components";
 import { FromProjectVersion, FromProjectVersionType
-} from '../../utils/prop-types-util'
+} from "../../utils/prop-types-util";
 import {
   SortableContainer,
   SortableElement,
   SortableHandle,
-} from 'react-sortable-hoc'
-import {
-  Button,
-  ListGroup,
-  ListGroupItem,
-  Tooltip,
-  OverlayTrigger
-} from 'react-bootstrap'
+} from "react-sortable-hoc";
+import Button from "antd/lib/button";
+import "antd/lib/button/style/css";
+import Tooltip from "antd/lib/tooltip";
+import "antd/lib/tooltip/style/css";
+import Layout from "antd/lib/layout";
+import "antd/lib/layout/style/css";
 
-export const tooltipSort = (
-  <Tooltip id='tooltipsort'>Best match will be chosen based on the priority of
-    selected projects. Exact matches take precendence.
-  </Tooltip>
-)
+export const tooltipSort = <span>Best match</span>;
 
 export const DragHandle = SortableHandle(() =>
-  <Icon name='menu' className='n1' parentClassName='drag-handle'
-    title='click to drag' />)
+  <Icon name="menu" className="n1 drag" title="click to drag" />);
 
 interface ItemProps {
   dispatch: (action: any) => void
@@ -42,17 +36,18 @@ export class Item extends Component<ItemProps, {}> {
   // styling for panel appears in TMMergeModal (ProjectVersion/index.less) css
   public render () {
     const { value: { version, projectSlug } } = this.props
-    return <ListGroupItem className='v' >
+    return <li className="v list-group-item" >
       <DragHandle />
-      {version.id} <span className='u-textMuted'> {projectSlug}
+      <span className="ml2">
+        {version.id}
+      </span>
+      <span className="txt-muted ml1">
+        {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
-      <Button bsSize='xsmall' className='close rm-version-btn'
-        onClick={this.removeVersion}>
-        <Icon name='cross' className='n2' parentClassName='iconCross'
-          title='remove version' />
-      </Button>
-    </ListGroupItem>
+      <Button className="close btn-xs" aria-label="button"
+        onClick={this.removeVersion} icon="close" />
+    </li>;
   }
 
   private removeVersion = () => {
@@ -78,21 +73,23 @@ class Items extends Component<ItemsProps, {}> {
     const { items, removeVersion } = this.props
     const sortableItems = items.map((value, index) => (
       <SortableItem
-        key={value.projectSlug + ':' + value.version.id} index={index}
+        key={value.projectSlug + ":" + value.version.id} index={index}
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
-        <span className='versionMergeTitle-adjusted VersionMergeTitle'>
+        <Layout className="d-inh">
         Adjust priority of selected versions
-        </span><br />
-        <span className='u-textMuted versionMergeTitle-sub'>
+        <br />
+        <span className="txt-muted">
         (best first)
         </span>
-        <OverlayTrigger placement='top' overlay={tooltipSort}>
-          <Icon name='info' className='s0'
-            parentClassName='iconInfoVersionMerge' />
-        </OverlayTrigger>
+        <Tooltip placement="top" title={tooltipSort} trigger="hover">
+          <a className="btn-xs btn-link">
+            <Icon name="info" className="s0" />
+          </a>
+        </Tooltip>
         {sortableItems}
+        </Layout>
       </div>
     )
   }
@@ -117,19 +114,19 @@ class DraggableVersionPanels extends Component<{
   public render () {
     if (this.props.selectedVersions.length === 0) {
       return (
-        <span className="no-v text-muted">
+        <p className="no-v tc txt-muted">
           Please select versions to sort<br />
           <Icon name="version" className="s8" />
-        </span>
+        </p>
       )
     }
     return (
-      <ListGroup>
+      <span>
         <SortableList items={this.props.selectedVersions}
           onSortEnd={this.props.onDraggableMoveEnd} useDragHandle
           removeVersion={this.props.removeVersion}
-          helperClass='sortable-helper' />
-      </ListGroup>
+          helperClass="sortable-helper" />
+      </span>
     )
   }
 }

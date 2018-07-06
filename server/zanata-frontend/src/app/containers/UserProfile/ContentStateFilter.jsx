@@ -5,7 +5,8 @@ import {
   ContentStates,
   ContentStateStyles
 } from '../../constants/Options'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /**
  * Component to filter statistics on content state
@@ -21,10 +22,9 @@ const ContentStateFilter = ({
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <Button bsStyle='default' bsSize='small' key={option}
-        active={active}
-        className={ContentStateStyles[index]}
-        onClick={() => handleFilterChanged(option)}>
+      <Button key={option} active={active} aria-label='button'
+        className={ContentStateStyles[index] + ' btn-default'}
+        onClick={() => handleFilterChanged(option)} size='small'>
         {option}
       </Button>
     )

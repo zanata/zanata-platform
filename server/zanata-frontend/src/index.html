@@ -5,7 +5,6 @@
     <link rel="shortcut icon" href="http://zanata.org/images/logo/logo.ico" type="image/x-icon" />
     <link rel="icon" href="http://zanata.org/images/logo/logo.ico" type="image/x-icon" />
     <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1.0'>
-    <link rel="stylesheet" type="text/css" href="frontend.css" />
 
     <!-- Custom styles for admin-lang template -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
@@ -21,7 +20,7 @@
     api-server-url: base URL for all API requests -->
     <div id="config"
       data-app-url="http://localhost:8000"
-      data-server-url="http://localhost:8080"
+      data-server-url=""
       data-api-server-url="http://localhost:8080/rest"
 
       data-user='{"username": "admin", "email":"zanata@zanata.org", "name": "admin-name", "imageUrl":"https://www.gravatar.com/avatar/dda6e90e3f2a615fb8b31205e8b4894b?d=mm&r=g&s=115", "languageTeams": ["English, French, German, Yodish (Yoda English)"]}'
@@ -36,6 +35,6 @@
       window.config = document.getElementById('config').dataset
     </script>
     <div id="root" />
-    <script src="frontend.js" ></script>
+    <script type="text/javascript" src="/frontend.js" ></script>
   </body>
 </html>

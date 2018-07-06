@@ -27,7 +27,8 @@ import { FormattedMessage } from 'react-intl'
 import { Icon } from '../../../components'
 import { Link } from '../../../components'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
-import { Well } from 'react-bootstrap'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 import { profileUrl } from '../../api'
 import { priorities } from '../../utils/reject-trans-util'
 import { statuses } from '../../utils/phrase'
@@ -36,7 +37,7 @@ const statusToWellClass = {
   approved: 'well-approved',
   rejected: 'well-rejected',
   translated: 'well-translated',
-  fuzzy: 'well-fuzzy',
+  needswork: 'well-fuzzy',
   // FIXME class does not exist, create it
   untranslated: 'well-untranslated'
 }
@@ -63,10 +64,10 @@ class ActivityFeedItem extends Component {
     // Uses href because editor app is separate from frontend app
     const comment = (
       <span className='comment'>
-        <Well bsSize='small'>
+        <Card>
           <Icon name='comment' className='s0' />
           {this.props.commentText}
-        </Well>
+        </Card>
       </span>
     )
     const criteria = (
@@ -250,15 +251,16 @@ class ActivityFeedItem extends Component {
           </Link>
           {this.getMessage()}
         </p>
-        <Well className={isComment ? '' : statusToWellClass[status]}>
+        <Card bordered={false}
+          className={isComment ? '' : statusToWellClass[status]}>
           {content}
           <span className='u-pullRight'>
             <button onClick={copyToClipboard}
               className='Link Link--neutral' title='Copy'>
-              <Icon name='copy' className='s1' />
+              <Icon name='project' className='s1' />
             </button>
           </span>
-        </Well>
+        </Card>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
           className='u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
       </div>

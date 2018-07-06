@@ -58,33 +58,35 @@ public class RebuildTMXPlainText implements CustomTaskChange {
         try (Statement stmt = conn
                 .createStatement(ResultSet.TYPE_FORWARD_ONLY,
                         ResultSet.CONCUR_UPDATABLE)) {
-            ResultSet rsCount = null;
-            ResultSet rsUpdatable = null;
-            try {
-                String countSql =
-                        "select count(*) from TransMemoryUnitVariant";
-                rsCount = stmt.executeQuery(countSql);
+            String countSql =
+                    "select count(*) from TransMemoryUnitVariant";
+            try (ResultSet rsCount = stmt.executeQuery(countSql)) {
                 rsCount.next();
                 this.segmentCount = rsCount.getLong(1);
-                log.info("RebuildTMXPlainText: visiting " + segmentCount
-                        + " rows");
-                // NB primary key is needed for updatable ResultSet
-                String updatableSql =
-                        "select id, lastChanged, tagged_segment, " +
-                                "plain_text_segment, plain_text_segment_hash " +
-                                "from TransMemoryUnitVariant";
-                rsUpdatable = stmt.executeQuery(updatableSql);
-                long rowsVisited = 0;
+            }
+            log.info("RebuildTMXPlainText: visiting " + segmentCount
+                    + " rows");
+            // NB primary key is needed for updatable ResultSet
+            String updatableSql =
+                    "select id, lastChanged, tagged_segment, " +
+                            "plain_text_segment, plain_text_segment_hash " +
+                            "from TransMemoryUnitVariant";
+            long rowsVisited = 0;
+            try (ResultSet rsUpdatable = stmt.executeQuery(updatableSql)) {
                 while (rsUpdatable.next()) {
                     String taggedSegment = rsUpdatable.getString(3);
                     String oldPlainSegment = rsUpdatable.getString(4);
                     String oldPlainSegHash = rsUpdatable.getString(5);
-                    String newPlainSegment = TMXUtil.removeFormattingMarkup(taggedSegment);
-                    String newPlainSegHash = HashUtil.generateHash(newPlainSegment);
+                    String newPlainSegment =
+                            TMXUtil.removeFormattingMarkup(taggedSegment);
+                    String newPlainSegHash =
+                            HashUtil.generateHash(newPlainSegment);
                     // if the hashes match, the segments probably will, but it won't hurt to check
-                    if (!newPlainSegHash.equals(oldPlainSegHash) || !newPlainSegment.equals(oldPlainSegment)) {
+                    if (!newPlainSegHash.equals(oldPlainSegHash) ||
+                            !newPlainSegment.equals(oldPlainSegment)) {
                         // update timestamp to avoid breaking etag caching
-                        rsUpdatable.updateTimestamp(2, new Timestamp(System.currentTimeMillis()));
+                        rsUpdatable.updateTimestamp(2,
+                                new Timestamp(System.currentTimeMillis()));
                         rsUpdatable.updateString(4, newPlainSegment);
                         rsUpdatable.updateString(5, newPlainSegHash);
                         rsUpdatable.updateRow();
@@ -95,16 +97,13 @@ public class RebuildTMXPlainText implements CustomTaskChange {
                                 + rowsVisited + "/" + segmentCount);
                     }
                 }
-                log.info("RebuildTMXPlainText: finished");
-                if (modifiedCount != 0) {
-                    log.warning("RebuildTMXPlainText: " + modifiedCount + " segments modified. Please reindex TransMemoryUnit in the Manage Search page.");
-                }
-                if (rowsVisited != segmentCount) {
-                    log.warning("RebuildTMXPlainText: expected " + segmentCount + "rows but visited " + rowsVisited);
-                }
-            } finally {
-                rsCount.close();
-                rsUpdatable.close();
+            }
+            log.info("RebuildTMXPlainText: finished");
+            if (modifiedCount != 0) {
+                log.warning("RebuildTMXPlainText: " + modifiedCount + " segments modified. Please reindex TransMemoryUnit in the Manage Search page.");
+            }
+            if (rowsVisited != segmentCount) {
+                log.warning("RebuildTMXPlainText: expected " + segmentCount + "rows but visited " + rowsVisited);
             }
         } catch (SQLException | DatabaseException e) {
             throw new CustomChangeException(e);

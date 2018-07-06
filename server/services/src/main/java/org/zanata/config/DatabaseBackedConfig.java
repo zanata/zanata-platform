@@ -124,6 +124,10 @@ public class DatabaseBackedConfig implements Serializable {
         return getConfigValue(HApplicationConfiguration.KEY_MAX_FILES_PER_UPLOAD);
     }
 
+    public String getTMFuzzyBands() {
+        return getConfigValue(HApplicationConfiguration.KEY_TM_FUZZY_BANDS);
+    }
+
     public boolean isDisplayUserEmail() {
         return Boolean.valueOf(getConfigValue(HApplicationConfiguration.KEY_DISPLAY_USER_EMAIL));
     }

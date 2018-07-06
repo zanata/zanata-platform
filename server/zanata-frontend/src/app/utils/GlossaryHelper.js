@@ -10,6 +10,7 @@ var GlossaryHelper = {
    *
    * @param data
    */
+  // @ts-ignore any
   generateTermDTO: function (data, trimContent) {
     if (isUndefined(data) || isEmpty(data.locale)) {
       return
@@ -26,6 +27,7 @@ var GlossaryHelper = {
    * Generate org.zanata.rest.dto.GlossaryEntry object
    * @param data
    */
+  // @ts-ignore any
   convertToDTO: function (data, qualifiedName) {
     var entry = {}
 
@@ -34,6 +36,7 @@ var GlossaryHelper = {
     entry.description = trim(data.description)
     entry.srcLang = data.srcTerm.locale
     entry.sourceReference = data.srcTerm.reference
+    /** @type {any[]} */
     entry.glossaryTerms = []
     entry.qualifiedName = {name: qualifiedName}
 
@@ -49,6 +52,7 @@ var GlossaryHelper = {
     return [entry]
   },
 
+  // @ts-ignore any
   generateEmptyTerm: function (localeId) {
     return {
       content: '',
@@ -59,17 +63,20 @@ var GlossaryHelper = {
     }
   },
 
+  // @ts-ignore any
   generateEmptySrcTerm: function (localeId) {
     let term = this.generateEmptyTerm(localeId)
     term.reference = ''
     return term
   },
 
+  // @ts-ignore any
   getTermByLocale: function (terms, localeId) {
     let term = filter(terms, ['locale', localeId])
     return term.length ? term[0] : undefined
   },
 
+  // @ts-ignore any
   generateEmptyEntry: function (srcLocaleId) {
     return {
       description: undefined,
@@ -78,6 +85,7 @@ var GlossaryHelper = {
     }
   },
 
+  // @ts-ignore any
   generateEntry: function (entry, transLocaleId) {
     let srcTerm =
       this.getTermByLocale(entry.glossaryTerms, entry.srcLang)
@@ -85,6 +93,7 @@ var GlossaryHelper = {
     const srcDate = toString(srcTerm.lastModifiedDate)
     if (!isEmpty(srcDate)) {
       srcTerm.lastModifiedDate =
+        // @ts-ignore
         DateHelpers.shortDateTime(DateHelpers.getDate(srcDate))
     }
 
@@ -95,6 +104,7 @@ var GlossaryHelper = {
         const transDate = toString(transTerm.lastModifiedDate)
         if (!isEmpty(transDate)) {
           transTerm.lastModifiedDate =
+            // @ts-ignore
             DateHelpers.shortDateTime(DateHelpers.getDate(transDate))
         }
         if (isEmpty(transTerm.comment)) {
@@ -116,10 +126,12 @@ var GlossaryHelper = {
     }
   },
 
+  // @ts-ignore any
   toEmptyString: (val) => {
     return isEmpty(val) ? '' : val
   },
 
+  // @ts-ignore any
   getEntryStatus: function (entry, originalEntry) {
     if (entry && originalEntry) {
       const source = this.toEmptyString(entry.srcTerm.content)
@@ -163,6 +175,7 @@ var GlossaryHelper = {
     }
   },
 
+  // @ts-ignore any
   convertSortToObject: function (sortString) {
     if (!sortString) {
       return {
@@ -179,12 +192,16 @@ var GlossaryHelper = {
     }
   },
 
+  // @ts-ignore any
   convertSortToParam: function (sort) {
+    // @ts-ignore any
     let params = []
     forOwn(sort, function (value, field) {
       let param = (value ? '' : '-') + field
+      // @ts-ignore any
       params.push(param)
     })
+    // @ts-ignore any
     return params.length ? params.join() : ''
   }
 }

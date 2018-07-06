@@ -6,7 +6,6 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Table } from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import GlossaryTerm from '../components/GlossaryTerm'
 import GlossaryTermModal from '../components/GlossaryTermModal'
@@ -89,7 +88,7 @@ class GlossaryTab extends React.Component {
     })
 
     return (
-      <Table>
+      <table>
         <thead className="hide-small">
           <tr>
             <th>Source</th>
@@ -98,10 +97,10 @@ class GlossaryTab extends React.Component {
             <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className='v-top'>
           {resultsDisplay}
         </tbody>
-      </Table>
+      </table>
     )
   }
 

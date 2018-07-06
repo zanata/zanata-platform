@@ -7,7 +7,8 @@ import {
   updateSetting,
   updateValidationSetting
 } from '../actions/settings-actions'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Icon from '../../components/Icon'
 import SettingsOptions from '../components/SettingsOptions'
 import {
@@ -34,9 +35,6 @@ import {
   PRINTF_XSI_EXTENSION
 } from '../reducers/settings-reducer'
 import { ERROR, WARNING } from '../utils/validation-util'
-import { showValidationOptions } from '../../utils/FeatureToggles'
-
-const DO_NOT_RENDER = undefined
 
 export const SettingsPanel = ({
   enterSavesImmediately,
@@ -57,63 +55,60 @@ export const SettingsPanel = ({
   const validatorChecked = (validator) => {
     return (validator === ERROR || validator === WARNING)
   }
-  const validationOptionsHeader = showValidationOptions()
-    ? <h2 className='SettingsHeading'>Validation options</h2>
-    : DO_NOT_RENDER
-  const validationOptions = showValidationOptions()
-    ? <SettingsOptions
-      settings={[
-        {
-          id: HTML_XML,
-          label: 'HTML/XML tags',
-          active: validatorChecked(validateHtmlXml),
-          disabled: validateHtmlXml === ERROR
-        },
-        {
-          id: JAVA_VARIABLES,
-          label: 'Java variables',
-          active: validatorChecked(validateJavaVariables),
-          disabled: validateJavaVariables === ERROR
-        },
-        {
-          id: NEW_LINE,
-          label: 'Leading/trailing newline (\\n)',
-          active: validatorChecked(validateNewLine),
-          disabled: validateNewLine === ERROR
-        },
-        {
-          id: PRINTF_XSI_EXTENSION,
-          label: 'Positional printf (XSI extention)',
-          active: validatorChecked(validatePrintfXsi),
-          disabled: validatePrintfXsi === ERROR
-        },
-        {
-          id: PRINTF_VARIABLES,
-          label: 'Printf variables',
-          active: validatorChecked(validatePrintfVariables),
-          disabled: validatePrintfVariables === ERROR
-        },
-        {
-          id: TAB,
-          label: 'Tab characters (\\t)',
-          active: validatorChecked(validateTab),
-          disabled: validateTab === ERROR
-        },
-        {
-          id: XML_ENTITY,
-          label: 'XML entity reference',
-          active: validatorChecked(validateXmlEntity),
-          disabled: validateXmlEntity === ERROR
-        }
-      ]}
-      updateSetting={updateValidationSetting} />
-    : DO_NOT_RENDER
+  const validationOptionsHeader =
+    <h2 className='SettingsHeading'>Validation options</h2>
+  const validationOptions = <SettingsOptions
+    settings={[
+      {
+        id: HTML_XML,
+        label: 'HTML/XML tags',
+        active: validatorChecked(validateHtmlXml),
+        disabled: validateHtmlXml === ERROR
+      },
+      {
+        id: JAVA_VARIABLES,
+        label: 'Java variables',
+        active: validatorChecked(validateJavaVariables),
+        disabled: validateJavaVariables === ERROR
+      },
+      {
+        id: NEW_LINE,
+        label: 'Leading/trailing newline (\\n)',
+        active: validatorChecked(validateNewLine),
+        disabled: validateNewLine === ERROR
+      },
+      {
+        id: PRINTF_XSI_EXTENSION,
+        label: 'Positional printf (XSI extention)',
+        active: validatorChecked(validatePrintfXsi),
+        disabled: validatePrintfXsi === ERROR
+      },
+      {
+        id: PRINTF_VARIABLES,
+        label: 'Printf variables',
+        active: validatorChecked(validatePrintfVariables),
+        disabled: validatePrintfVariables === ERROR
+      },
+      {
+        id: TAB,
+        label: 'Tab characters (\\t)',
+        active: validatorChecked(validateTab),
+        disabled: validateTab === ERROR
+      },
+      {
+        id: XML_ENTITY,
+        label: 'XML entity reference',
+        active: validatorChecked(validateXmlEntity),
+        disabled: validateXmlEntity === ERROR
+      }
+    ]}
+    updateSetting={updateValidationSetting} />
   return (
     <div>
       <h1 className="SidebarEditor-heading">
-        <Icon name="settings" className="s1" /> Settings
+        <Icon className="s1" name="settings" /> Settings
         <span className="s1 u-pullRight">
-          <Button bsStyle="link" onClick={hideSettings}>
+          <Button className="btn-link transparent" onClick={hideSettings}>
             <Icon name="cross" />
           </Button>
         </span>

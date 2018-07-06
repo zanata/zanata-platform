@@ -1,6 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Checkbox } from 'react-bootstrap'
+import Checkbox from 'antd/lib/checkbox'
+import 'antd/lib/checkbox/style/css'
 
 class SettingOption extends React.Component {
   static propTypes = {
@@ -12,6 +13,7 @@ class SettingOption extends React.Component {
     disabled: PropTypes.bool
   }
 
+  // @ts-ignore any
   updateSetting = (event) => {
     this.props.updateSetting(this.props.id, event.target.checked)
   }

@@ -3,7 +3,8 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import TransUnitSourceHeader from './TransUnitSourceHeader'
 import { LoaderText } from '../../components'
-import IconButton from './IconButton'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import { getFilterString } from '../selectors'
 import { connect } from 'react-redux'
 
@@ -51,7 +52,7 @@ class TransUnitSourcePanel extends React.Component {
           /* eslint-disable max-len */
             ? <ul className="u-floatRight u-listHorizontal">
               <li>
-                <IconButton
+                <Button
                   icon="copy"
                   title={'Copy ' + this.props.sourceLocale.name +
                     ' (' + this.props.sourceLocale.id + ')'}

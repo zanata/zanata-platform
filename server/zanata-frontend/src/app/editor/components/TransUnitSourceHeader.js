@@ -1,8 +1,11 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import IconButton from './IconButton'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
 import { hasTranslationChanged } from '../utils/phrase-util'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 /**
  * Header for the source of the selected phrase
@@ -25,31 +28,33 @@ class TransUnitSourceHeader extends React.Component {
   render () {
     // TODO remove duplication of this between source and translation headers
     const buttonClass =
-      'Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1 u-textCenter'
+      'btn-link Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1' +
+        ' u-textCenter'
 
     const copyButtonItem = this.props.phrase.plural
       ? undefined
       : (
       <li>
-        <IconButton icon="copy"
-          title={'Copy ' + this.props.sourceLocale.name +
-                     ' (' + this.props.sourceLocale.id + ')'}
-          onClick={this.copyFromSource}
-          className={buttonClass} />
+        <Tooltip title={'Copy ' + this.props.sourceLocale.name +
+              ' (' + this.props.sourceLocale.id + ')'}>
+          <Button size="large" icon="copy"
+            onClick={this.copyFromSource}
+            className={buttonClass} />
+        </Tooltip>
       </li>)
 
     const closeButtonItem = hasTranslationChanged(this.props.phrase)
       ? undefined
       : (
       <li className="u-gtemd-hidden">
-        <IconButton
-          icon="cross"
-          title="Cancel edit"
-          onClick={this.props.cancelEdit}
-          className={buttonClass} />
+        <Tooltip title="Cancel edit">
+          <Button
+            icon="close"
+            onClick={this.props.cancelEdit}
+            className={buttonClass} />
+        </Tooltip>
       </li>
       )
-
     return (
       <div className="TransUnit-panelHeader TransUnit-panelHeader--source">
         <TransUnitLocaleHeading {...this.props.sourceLocale} />

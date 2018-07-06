@@ -34,7 +34,7 @@ if (appServerHome == null) {
     throw new Exception('Missing appserver properties.  Please invoke mvn with -Dappserver=jbosseap6/wildfly8 or -Dappserver.home=jboss_home_dir')
 }
 
-String scriptName = 'configureAppServer.js'
+String scriptName = 'configure-app-server.js'
 String zanataConfigScript = new File("${project.basedir}/../etc/scripts/$scriptName").canonicalPath
 String javaHome = System.getProperty('java.home')
 String nashornJar = "$javaHome/lib/ext/nashorn.jar"
@@ -47,27 +47,37 @@ def args = [
 
         // TODO add sun.scripting to -dependencies and use -class instead of -classpath
         // Depends on https://issues.jboss.org/browse/WFCORE-3686
-        // and https://issues.jboss.org/browse/MODULES-271
-        '-dependencies', 'org.jboss.as.cli,org.jboss.logmanager',
-        '-classpath', nashornJar,
+        // and https://issues.jboss.org/browse/MODULES-271 being fixed
+        // for WildFly and JBoss EAP.
+
         // '-dependencies', 'org.jboss.as.cli,org.jboss.logmanager,sun.scripting',
         // '-class',
 
+        '-dependencies', 'org.jboss.as.cli,org.jboss.logmanager',
+        '-classpath', nashornJar,
+
         'jdk.nashorn.tools.Shell',
+        '--language=es6',
         '-scripting',
-        '-strict',
-        zanataConfigScript
-        // ,'--verbose'
+        zanataConfigScript,
+        '--',
+        '--auth-internal',
+        '--auth-openid',
+        '--auth-saml2',
+        '--integration-test',
+        '--oauth',
+        '--quiet'
 ]
 
 boolean runningArquillian = project.artifactId != 'functional-test'
-if (runningArquillian) args.add('--datasource')
+if (runningArquillian) args.add('--datasource-h2')
 
 println "Executing $scriptName"
 //println args
 
 // 'as String[]' coerces any GStrings and Files to Strings
 def processBuilder = new ProcessBuilder(args as String[])
+processBuilder.directory(project.basedir)
 processBuilder.environment().put('JBOSS_HOME', appServerHome)
 def resultCode = processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start().waitFor()
 if (resultCode) {

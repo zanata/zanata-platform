@@ -23,11 +23,11 @@ export const STATUS_REJECTED = phrases.STATUS_REJECTED
  * Restricts the status to only valid values, based on
  * which translations are currently entered.
  */
-export function defaultSaveStatus (phrase: Phrase) {
+export function defaultSaveStatus(phrase: Phrase) {
   if (hasNoTranslation(phrase)) {
     // only possible state is untranslated
     return STATUS_UNTRANSLATED
-  } else if (hasEmptyTranslation(phrase)) {
+  } else if (hasEmptyTranslation(phrase) || phrase.errors) {
     return STATUS_NEEDS_WORK
   } else if (hasTranslationChanged(phrase)) {
     // TODO may also need to handle 'approved' and 'rejected'
@@ -40,6 +40,7 @@ export function defaultSaveStatus (phrase: Phrase) {
   }
 }
 
+// @ts-ignore any
 export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
   const all = allValidSaveStatuses(phrase, permissions)
   return without(all, defaultSaveStatus(phrase))
@@ -50,6 +51,7 @@ export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
  * that would be valid to save the current new
  * translations of a phrase.
  */
+// @ts-ignore any
 function allValidSaveStatuses (phrase: Phrase, permissions): Status[] {
   if (!permissions.translator && !permissions.reviewer) {
     // User does not have privileges for any operations.
@@ -58,7 +60,7 @@ function allValidSaveStatuses (phrase: Phrase, permissions): Status[] {
   if (hasNoTranslation(phrase)) {
     // only possible state is untranslated
     return [STATUS_UNTRANSLATED]
-  } else if (hasEmptyTranslation(phrase)) {
+  } else if (hasEmptyTranslation(phrase) || phrase.errors) {
     return [STATUS_NEEDS_WORK]
   } else if
     (phrase.status === STATUS_REJECTED && !hasTranslationChanged(phrase)) {

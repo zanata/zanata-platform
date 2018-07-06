@@ -3,12 +3,14 @@ import { getSelectedPhrase } from '../selectors'
 import { glossarySearchTextEntered } from '../actions/glossary-actions'
 import { findPhraseSuggestions } from '../actions/suggestions-actions'
 
+// @ts-ignore any
 export function watchSelectedPhraseSearches (store) {
   const watcher = watch(
     'selected-phrase-searches > watchSelectedPhraseSearches')(
     () => getSelectedPhrase(store.getState()))
 
   store.subscribe(watcher(
+    // @ts-ignore any
     (phrase, prevPhrase) => {
       // only want to search if there is a phrase and it has different phrase id
       const newPhrase = phrase && (!prevPhrase || phrase.id !== prevPhrase.id)

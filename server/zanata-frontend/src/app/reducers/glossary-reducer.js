@@ -204,7 +204,7 @@ const glossary = handleActions({
     notification: {
       severity: SEVERITY.INFO,
       message: 'File imported successfully',
-      details: size(action.payload.glossaryEntries) + ' terms imported.'
+      description: size(action.payload.glossaryEntries) + ' terms imported.'
     }
   }),
   [GLOSSARY_UPLOAD_FAILURE]: (state, action) => ({
@@ -535,19 +535,37 @@ const glossary = handleActions({
   },
   [GLOSSARY_CREATE_SUCCESS]: (state, action) => {
     const newEntry = state.newEntry
-    return {
-      ...state,
-      newEntry: {
-        ...newEntry,
-        isSaving: false,
-        entry: GlossaryHelper.generateEmptyEntry(state.src),
-        show: false
-      },
-      notification: {
-        severity: SEVERITY.INFO,
-        message: 'Glossary term created.'
+    return (action.payload.warnings.length > 0)
+      ? {
+        ...state,
+        newEntry: {
+          ...newEntry,
+          isSaving: false,
+          entry: GlossaryHelper.generateEmptyEntry(state.src),
+          show: false
+        },
+        notification: {
+          severity: SEVERITY.ERROR,
+          message:
+            'We were unable to save the glossary entry.',
+          description: action.payload.warnings,
+          duration: null
+        }
       }
-    }
+      : {
+        ...state,
+        newEntry: {
+          ...newEntry,
+          isSaving: false,
+          entry: GlossaryHelper.generateEmptyEntry(state.src),
+          show: false
+        },
+        notification: {
+          severity: SEVERITY.INFO,
+          message: 'Glossary term created.',
+          duration: 3.5
+        }
+      }
   },
   [GLOSSARY_CREATE_FAILURE]: (state, action) => {
     const newEntry = state.newEntry
@@ -562,8 +580,9 @@ const glossary = handleActions({
       notification: {
         severity: SEVERITY.ERROR,
         message:
-        'We were unable save glossary entry. ' +
-        'Please refresh this page and try again.'
+        'We were unable to save the glossary entry.',
+        description: action.payload.response,
+        duration: null
       }
     }
   },

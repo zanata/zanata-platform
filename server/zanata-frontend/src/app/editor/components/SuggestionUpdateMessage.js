@@ -2,7 +2,6 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { FormattedDate } from 'react-intl'
 import { Icon } from '../../components'
-import { Row } from 'react-bootstrap'
 
 /**
  * Show an appropriate message about the source and time of the most
@@ -48,10 +47,8 @@ class SuggestionUpdateMessage extends React.Component {
   render () {
     return (
       <span className="u-textMeta">
-        <Row>
-          <Icon name="history" className="s0" />
-          <span className="u-sML-1-4">{this.message()}</span>
-        </Row>
+        <Icon name="history" className="s0" />
+        <span className="u-sML-1-4">{this.message()}</span>
       </span>
     )
   }

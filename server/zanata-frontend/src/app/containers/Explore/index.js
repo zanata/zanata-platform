@@ -5,7 +5,8 @@ import * as PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import TeaserList from './TeaserList'
 import { TextInput, Icon } from '../../components'
 import {
@@ -157,8 +158,8 @@ class Explore extends Component {
               onChange={handleSearchTextChange}
             />
             <Button
-              bsStyle='link' disabled={isEmpty(searchText)}
-              onClick={this.handleClearSearch}>
+              className='btn-link' disabled={isEmpty(searchText)}
+              onClick={this.handleClearSearch} aria-label='button'>
               Cancel
             </Button>
           </div>

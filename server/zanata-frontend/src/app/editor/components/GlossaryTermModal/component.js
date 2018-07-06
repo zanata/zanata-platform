@@ -1,11 +1,16 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Panel, Row, Table } from 'react-bootstrap'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import { FormattedDate, FormattedTime } from 'react-intl'
-import { Icon, LoaderText, Modal } from '../../../components'
+import { Icon, LoaderText } from '../../../components'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
 
 /**
  * Modal to show detail for a single glossary term
@@ -87,29 +92,30 @@ class GlossaryTermModal extends React.Component {
       })
 
     return (
-      <Modal show={show}
-        onHide={close}
-        key="glosssary-term-modal"
-        id="GlossaryTermModal">
-        <Modal.Header>
-          <Modal.Title><small><span className="u-pullLeft">
-          Glossary details</span></small></Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Panel className={directionClassSource + ' split-panel'}>
+      <Modal
+        visible={show}
+        onCancel={close}
+        title={'Glossary Details'}
+        key='glosssary-term-modal'
+        id='GlossaryTermModal'
+        width={'90%'}
+        footer={null}>
+        <Row className='mb4'>
+          <Col span={12} className={directionClassSource}>
             <h3>Source Term : {sourceLocale}</h3>
             <span className="modal-term">{term.source}</span>
-          </Panel>
-          <Panel className={directionClassTarget + ' split-panel'}>
-            <h3>Translation : {targetLocale}</h3>
+          </Col>
+          <Col span={12} className={directionClassTarget}>
+            <h3 className='txt-info'>Translation : {targetLocale}</h3>
             <span className={
               cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
                 {isEmpty(term.target) ? '-none-' : term.target}
             </span>
-          </Panel>
-          <br />
-          <Panel className="gloss-details-panel">
-            <Table className={directionClassTarget + ' GlossaryDetails-table'}>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="mb2">
+            <table className={directionClassTarget + ' GlossaryDetails-table'}>
               <thead>
                 <tr>
                   <th>Description</th>
@@ -120,13 +126,12 @@ class GlossaryTermModal extends React.Component {
               <tbody>
                 {detailsDisplay}
               </tbody>
-            </Table>
-          </Panel>
-
-          <span className="u-pullRight u-textMeta">
-          {lastModifiedRow}
-          </span>
-        </Modal.Body>
+            </table>
+          </Col>
+        </Row>
+        <span className="u-pullRight u-textMeta">
+        {lastModifiedRow}
+        </span>
       </Modal>
     )
   }

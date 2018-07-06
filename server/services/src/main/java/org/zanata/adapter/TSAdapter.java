@@ -20,7 +20,6 @@
  */
 package org.zanata.adapter;
 
-import com.google.common.base.Optional;
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.IParameters;
@@ -88,19 +87,18 @@ public class TSAdapter extends OkapiFilterAdapter {
     }
 
     @Override
-    public Resource parseDocumentFile(@Nonnull URI documentContent,
-            @Nonnull LocaleId sourceLocale, Optional<String> filterParams)
+    public Resource parseDocumentFile(ParserOptions options)
             throws  FileFormatAdapterException,
                     IllegalArgumentException {
         IFilter filter = getFilter();
         Resource document = new Resource();
-        document.setLang(sourceLocale);
+        document.setLang(options.getLocale());
         document.setContentType(ContentType.TextPlain);
         updateParamsWithDefaults(filter.getParameters());
         List<TextFlow> resources = document.getTextFlows();
         Map<String, HasContents> addedResources =
                 new HashMap<String, HasContents>();
-        RawDocument rawDoc = new RawDocument(documentContent, "UTF-8",
+        RawDocument rawDoc = new RawDocument(options.getRawFile(), "UTF-8",
                 net.sf.okapi.common.LocaleId.fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
             rawDoc.setTargetLocale(net.sf.okapi.common.LocaleId.EMPTY);
@@ -122,7 +120,7 @@ public class TSAdapter extends OkapiFilterAdapter {
                         String content = getTranslatableText(tu);
                         if (!content.isEmpty()) {
                             TextFlow tf = processTextFlow(tu, context, content,
-                                    subDocName, sourceLocale);
+                                    subDocName, options.getLocale());
                             if (!addedResources.containsKey(tf.getId())) {
                                 tf = addExtensions(tf, tu, context);
                                 addedResources.put(tf.getId(), tf);
@@ -180,7 +178,7 @@ public class TSAdapter extends OkapiFilterAdapter {
     protected void generateTranslatedFile(URI originalFile,
             Map<String, TextFlowTarget> translations,
             net.sf.okapi.common.LocaleId localeId, IFilterWriter writer,
-            Optional<String> params) {
+            String params, boolean approvedOnly) {
         RawDocument rawDoc = new RawDocument(originalFile, "UTF-8",
                 net.sf.okapi.common.LocaleId.fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
@@ -196,7 +194,10 @@ public class TSAdapter extends OkapiFilterAdapter {
             String context = "";
             while (filter.hasNext()) {
                 Event event = filter.next();
-                if (isStartContext(event)) {
+                if (event.isDocumentPart() &&
+                        event.getDocumentPart().hasProperty("language")) {
+                    // TODO ZNTA-2483 change readonly language property
+                } else if (isStartContext(event)) {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
                     context = "";
@@ -215,6 +216,10 @@ public class TSAdapter extends OkapiFilterAdapter {
                                     encounteredIds.add(id);
                                     for (String translated : tft
                                             .getContents()) {
+                                        boolean finished = usable(tft.getState(), approvedOnly);
+                                        String propVal = finished ? "yes" : "no";
+                                        // Okapi will map approved=no to type=unfinished in the .TS file
+                                        tu.getTargetProperty(localeId, "approved").setValue(propVal);
                                         // TODO: Find a method of doing this in
                                         // one object, not a loop
                                         tu.setTargetContent(localeId,
@@ -225,17 +230,13 @@ public class TSAdapter extends OkapiFilterAdapter {
                                                                         .getFirstContent()
                                                                         .clone(),
                                                                 true, true));
-                                        writer.handleEvent(event);
                                     }
                                 }
-                            } else {
-                                writer.handleEvent(event);
                             }
                         }
                     }
-                } else {
-                    writer.handleEvent(event);
                 }
+                writer.handleEvent(event);
             }
         } catch (OkapiIOException e) {
             throw new FileFormatAdapterException(
@@ -244,6 +245,11 @@ public class TSAdapter extends OkapiFilterAdapter {
             filter.close();
             writer.close();
         }
+    }
+
+    private boolean usable(ContentState state, boolean approvedOnly) {
+        return state.isApproved() ||
+                (!approvedOnly && state.isTranslated());
     }
 
     @Override
@@ -290,7 +296,7 @@ public class TSAdapter extends OkapiFilterAdapter {
 
     @Override
     protected TranslationsResource parseTranslationFile(RawDocument rawDoc,
-            Optional<String> params) {
+            String params) {
         TranslationsResource transRes = new TranslationsResource();
         List<TextFlowTarget> translations = transRes.getTextFlowTargets();
         Map<String, HasContents> addedResources =

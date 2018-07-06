@@ -38,6 +38,7 @@ const transUnitClassByStatus = {
  */
 class TransUnit extends React.Component {
   static propTypes = {
+    activityVisible: PropTypes.bool.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
@@ -74,10 +75,10 @@ class TransUnit extends React.Component {
   }
 
   selectPhrase = () => {
-    const {
-      phrase, selectPhrase, translationLocale, projectSlug, versionSlug
-    } = this.props
-    selectPhrase(phrase.id, translationLocale.id, projectSlug, versionSlug)
+    const { activityVisible, phrase, selectPhrase, translationLocale,
+      projectSlug, versionSlug } = this.props
+    selectPhrase(phrase.id, translationLocale.id, projectSlug, versionSlug,
+      activityVisible)
   }
 
   render () {
@@ -230,7 +231,8 @@ function mapDispatchToProps (dispatch, ownProps) {
         ownProps.phrase.id,
         ownProps.translationLocale.id,
         ownProps.projectSlug,
-        ownProps.versionSlug))
+        ownProps.versionSlug,
+        ownProps.activityVisible))
     },
     selectPhrasePluralIndex: (phraseId, index) => {
       dispatch(selectPhrasePluralIndex(
@@ -238,7 +240,8 @@ function mapDispatchToProps (dispatch, ownProps) {
         index,
         ownProps.translationLocale.id,
         ownProps.projectSlug,
-        ownProps.versionSlug))
+        ownProps.versionSlug,
+        ownProps.activityVisible))
     },
     textChanged: (id, index, event) => {
       const text = event.target.value

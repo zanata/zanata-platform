@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
@@ -63,9 +65,6 @@ public class PoWriter2 {
     private static final int DEFAULT_NPLURALS = 1;
     private static final String CONTINUE_ERROR_MESSAGE_FMT =
             "%s. %s, please use --continue-after-error option.";
-    private final PoWriter poWriter;
-    private boolean mapIdToMsgctxt;
-    private boolean continueAfterError;
 
     // TODO Expose and use the one in
     // org.fedorahosted.tennera.jgettext.HeaderFields
@@ -73,6 +72,11 @@ public class PoWriter2 {
     private static final Pattern pluralPattern = Pattern.compile(
             "nplurals(\\s*?)=(\\s*?)(\\d*?)(\\s*?);(\\s*?)(.*)",
             Pattern.CASE_INSENSITIVE);
+
+    private final PoWriter poWriter;
+    private final boolean mapIdToMsgctxt;
+    private final boolean continueAfterError;
+    private final boolean approvedOnly;
 
     /**
      * @param encodeTabs
@@ -85,23 +89,36 @@ public class PoWriter2 {
      * @param continueAfterError
      *            true to try to workaround an error and continue
      */
-    public PoWriter2(boolean encodeTabs, boolean mapIdToMsgctxt,
-            boolean continueAfterError) {
-        this.continueAfterError = continueAfterError;
+    private PoWriter2(boolean encodeTabs, boolean mapIdToMsgctxt,
+            boolean continueAfterError, boolean approvedOnly) {
         this.poWriter = new PoWriter(encodeTabs);
+        this.continueAfterError = continueAfterError;
         this.mapIdToMsgctxt = mapIdToMsgctxt;
+        this.approvedOnly = approvedOnly;
     }
 
+    /**
+     * @deprecated use PoWriter2Builder
+     */
+    @Deprecated
     public PoWriter2(boolean encodeTabs, boolean mapIdToMsgctxt) {
-        this(encodeTabs, mapIdToMsgctxt, false);
+        this(encodeTabs, mapIdToMsgctxt, false, false);
     }
 
+    /**
+     * @deprecated use PoWriter2Builder
+     */
+    @Deprecated
     public PoWriter2(boolean encodeTabs) {
-        this(encodeTabs, false, false);
+        this(encodeTabs, false, false, false);
     }
 
+    /**
+     * @deprecated use PoWriter2Builder
+     */
+    @Deprecated
     public PoWriter2() {
-        this(false);
+        this(false, false, false, false);
     }
 
     /**
@@ -185,7 +202,8 @@ public class PoWriter2 {
     }
 
     /**
-     * Generates a po file from a Resource and a TranslationsResource.
+     * Generates a po file from a Resource and a TranslationsResource,
+     * returning FileDetails with the File and its MD5 digest.
      *
      * @param poFile
      *            file to be written
@@ -193,8 +211,6 @@ public class PoWriter2 {
      *            a source Resource whose translation is to be written
      * @param targetDoc
      *            translated document to be written
-     * @return
-     * @throws IOException
      */
     public FileDetails writePoToFile(File poFile, Resource doc,
             TranslationsResource targetDoc) throws IOException {
@@ -205,18 +221,14 @@ public class PoWriter2 {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        Writer fWriter =
-                new OutputStreamWriter(new FileOutputStream(poFile),
-                        Charsets.UTF_8);
-        try {
+        try (Writer fWriter = new OutputStreamWriter(
+                new FileOutputStream(poFile), Charsets.UTF_8)) {
             DigestWriter dWriter = new DigestWriter(fWriter, md5Digest);
             write(dWriter, "UTF-8", doc, targetDoc);
 
             FileDetails details = new FileDetails(poFile);
             details.setMd5(new String(Hex.encodeHex(md5Digest.digest())));
             return details;
-        } finally {
-            fWriter.close();
         }
     }
 
@@ -248,7 +260,7 @@ public class PoWriter2 {
      * @throws IOException
      */
     private void write(Writer writer, String charset, Resource document,
-            TranslationsResource targetDoc) throws IOException {
+            @Nullable TranslationsResource targetDoc) throws IOException {
         PoHeader poHeader =
                 document.getExtensions(true).findByType(PoHeader.class);
         HeaderFields hf = new HeaderFields();
@@ -305,7 +317,8 @@ public class PoWriter2 {
                             "ID from target doesn't match text-flow ID");
                 }
                 tftContents.addAll(tfTarget.getContents());
-                if (tfTarget.getState() == ContentState.NeedReview) {
+                if (tfTarget.getState() == ContentState.NeedReview ||
+                        (approvedOnly && !tfTarget.getState().isApproved())) {
                     message.setFuzzy(true);
                 }
                 copyCommentsToMessage(tfTarget, message);
@@ -515,4 +528,35 @@ public class PoWriter2 {
         return DEFAULT_NPLURALS;
     }
 
+    public static class Builder {
+        private boolean encodeTabs = false;
+        private boolean mapIdToMsgctxt = false;
+        private boolean continueAfterError = false;
+        private boolean approvedOnly = false;
+
+        public Builder encodeTabs(boolean encodeTabs) {
+            this.encodeTabs = encodeTabs;
+            return this;
+        }
+
+        public Builder mapIdToMsgctxt(boolean mapIdToMsgctxt) {
+            this.mapIdToMsgctxt = mapIdToMsgctxt;
+            return this;
+        }
+
+        public Builder continueAfterError(boolean continueAfterError) {
+            this.continueAfterError = continueAfterError;
+            return this;
+        }
+
+        public Builder approvedOnly(boolean approvedOnly) {
+            this.approvedOnly = approvedOnly;
+            return this;
+        }
+
+        public PoWriter2 create() {
+            return new PoWriter2(encodeTabs, mapIdToMsgctxt, continueAfterError,
+                    approvedOnly);
+        }
+    }
 }

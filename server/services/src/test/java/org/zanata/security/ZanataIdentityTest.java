@@ -130,10 +130,12 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
     @Test
     public void canAddRole() {
-        assertThat(identity.addRole("admin")).isFalse()
-                .as("before login addRole will not be successful");
-        assertThat(identity.hasRole("admin")).isFalse()
-                .as("before login hasRole is always false");
+        assertThat(identity.addRole("admin"))
+                .as("before login addRole will not be successful")
+                .isFalse();
+        assertThat(identity.hasRole("admin"))
+                .as("before login hasRole is always false")
+                .isFalse();
 
         identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
@@ -141,8 +143,9 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
         assertThat(identity.hasRole("admin")).isFalse();
 
-        assertThat(identity.addRole("admin")).isTrue()
-                .as("after login addRole can be done");
+        assertThat(identity.addRole("admin"))
+                .as("after login addRole can be done")
+                .isTrue();
 
         assertThat(identity.hasRole("admin")).isTrue();
         identity.checkRole("admin"); // checkRole will not cause an exception
@@ -197,8 +200,9 @@ public class ZanataIdentityTest extends ZanataJpaTest {
     public void canTestPermission() {
         HAccountRole target = new HAccountRole();
         target.setName("user");
-        assertThat(identity.hasPermission(target, "seam.insert")).isFalse()
-                .as("only admin can create role");
+        assertThat(identity.hasPermission(target, "seam.insert"))
+                .as("only admin can create role")
+                .isFalse();
 
         identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
@@ -207,8 +211,9 @@ public class ZanataIdentityTest extends ZanataJpaTest {
         boolean addedUser = identity.addRole("user");
         assert addedUser;
 
-        assertThat(identity.hasPermission(target, "seam.insert")).isFalse()
-                .as("ordinary user do not have permission to create role");
+        assertThat(identity.hasPermission(target, "seam.insert"))
+                .as("ordinary user do not have permission to create role")
+                .isFalse();
 
         boolean addedAdmin = identity.addRole("admin");
         assert addedAdmin;

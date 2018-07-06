@@ -22,7 +22,9 @@ package org.zanata.model.security;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+
 import org.zanata.model.HAccount;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author Carlos Munoz
@@ -30,6 +32,8 @@ import org.zanata.model.HAccount;
  */
 @Entity
 @DiscriminatorValue("OPENID")
+@GraphQLType(name = "OpenIdCredentials")
+//@GraphQLIgnore
 public class HOpenIdCredentials extends HCredentials {
 
     private static final long serialVersionUID = 931978104598219757L;

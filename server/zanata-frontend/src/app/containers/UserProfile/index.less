@@ -26,6 +26,9 @@
     max-width: 20rem;
     width: 100%;
   }
+  .userProfile-calendarActivity {
+    padding-bottom: 3rem;
+  }
   .userProfile-wrapper {
     margin-top: @spacing-rh;
   }
@@ -66,6 +69,7 @@
   }
   #profileLanguages a {
     display: block;
+    padding-right: @spacing-rq;
   }
   #profileLanguages .iconLanguage {
     padding-right: @spacing-rq;
@@ -91,6 +95,7 @@
     margin-left: auto;
     float: right;
     overflow: hidden;
+    width: 30%;
   }
   .userProfile .userProfile-details-text {
     margin-right: @spacing-rq;
@@ -105,6 +110,7 @@
   }
   ul.largeFontList {
     padding-left: 0;
+    overflow: hidden;
   }
   span.userProfile-email {
     margin-left: @spacing-rh;
@@ -135,6 +141,7 @@
     margin-bottom: @spacing-rh;
     margin-top: 0;
     padding-right: @spacing-rh;
+    height: 100%;
   }
   #userProfile-matrix h2, #userProfile-matrix h3 {
     color: @color-dark;
@@ -160,7 +167,6 @@
     text-align: center;
     vertical-align: top;
     margin-bottom: @spacing-base-and-a-half;
-    table-layout: fixed;
     width: 100%
   }
   .userProfile-activityGraph h3 {
@@ -190,7 +196,9 @@
     margin-bottom: @spacing-rq;
   }
   #userProfile-activityTable td button {
-    padding: 0;
+    height: 5.5rem;
+    padding: 0 !important;
+    width: 100%;
   }
   #userProfile-activityTable td button.btn-primary {
     background-color: rgba(84, 102, 119, 0.65) !important;
@@ -206,36 +214,38 @@
     background-color: rgba(98, 200, 118, 0.65);
   }
   table.userProfile-activityGraph tr td {
-    padding: 0;
+    padding-bottom: 0.5rem;
+    padding-left: 0;
+    padding-right: 0;
   }
-  button.success.btn.btn-default, button.plain.btn.btn-default, button.primary.btn.btn-default, button.unsure.btn.btn-default {
+ .success.btn-default, .plain.btn-default, .primary.btn-default, .unsure.btn-default {
     border-radius: 1.071rem;
     margin-right: @spacing-half-base;
     border: solid 1px @gray;
     margin-bottom: @spacing-half-base;
   }
-  button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover, button.plain.btn.btn-default.active {
+  .plain.btn-default:focus, .plain.btn-default:hover, .plain.btn-default.active {
     background-color: rgba(84, 102, 119, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  button.primary.btn.btn-default:focus, button.primary.btn.btn-default:hover, button.primary.btn.btn-default.active {
+  .primary.btn-default:focus, .primary.btn-default:hover, .primary.btn-default.active {
     background-color: rgba(3, 166, 215, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  button.success.btn.btn-default:focus, button.success.btn.btn-default:hover, button.success.btn.btn-default.active {
+  .success.btn-default:focus, .success.btn-default:hover, .success.btn-default.active {
     background-color: rgba(98, 200, 118, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover, button.unsure.btn.btn-default.active {
+  .unsure.btn-default:focus, .unsure.btn-default:hover, .unsure.btn-default.active {
     background-color: rgba(233, 221, 0, 1);
     color: @color-dark;
     text-decoration: none;
@@ -291,7 +301,12 @@
   }
   .modal-content {
     max-width: inherit;
-  } // @screen-xs variable depreciated
+  }
+  .matrix-inner {
+    width: 100%;
+    margin-right: @spacing-base;
+  }
+  // @screen-xs variable depreciated
   @media (max-width: 29.375rem) {
     .matrix-table {
       display: block;
@@ -312,10 +327,6 @@
       display: -o-flex;
       flex-direction: row;
       -webkit-flex-direction: row;
-    }
-    .matrix-inner {
-      width: 100%;
-      margin-right: @spacing-base;
     }
     .matrixHeading {
       width: 100%;
@@ -366,4 +377,3 @@
     margin-top: @spacing-rh;
   }
 }
-

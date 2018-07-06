@@ -75,8 +75,9 @@ public class UploadTest extends ZanataTestCase {
                         .enterFilePath(cancelUploadFile.getAbsolutePath())
                         .cancelUpload();
         assertThat(versionDocumentsTab
-                .sourceDocumentsContains("cancelFileUpload.txt")).isFalse()
-                        .as("Document does not show in table");
+                .sourceDocumentsContains("cancelFileUpload.txt"))
+                .as("Document does not show in table")
+                .isFalse();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -85,8 +86,9 @@ public class UploadTest extends ZanataTestCase {
                 new ProjectWorkFlow().goToProjectByName("uploadtest")
                         .gotoVersion("txt-upload").gotoSettingsTab()
                         .gotoSettingsDocumentsTab().pressUploadFileButton();
-        assertThat(versionDocumentsTab.canSubmitDocument()).isFalse()
-                .as("The upload button is not available");
+        assertThat(versionDocumentsTab.canSubmitDocument())
+                .as("The upload button is not available")
+                .isFalse();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -103,8 +105,9 @@ public class UploadTest extends ZanataTestCase {
         VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
                 .gotoDocumentTab().expectSourceDocsContains(longFile.getName());
         assertThat(versionDocumentsPage
-                .sourceDocumentsContains(longFile.getName())).isTrue()
-                        .as("Document shows in table");
+                .sourceDocumentsContains(longFile.getName()))
+                .as("Document shows in table")
+                .isTrue();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -118,14 +121,16 @@ public class UploadTest extends ZanataTestCase {
                         .gotoSettingsDocumentsTab().pressUploadFileButton()
                         .enterFilePath(emptyFile.getAbsolutePath())
                         .submitUpload().clickUploadDone();
-        assertThat(emptyFile.exists()).isTrue()
-                .as("Data file emptyFile.txt still exists");
+        assertThat(emptyFile.exists())
+                .as("Data file emptyFile.txt still exists")
+                .isTrue();
         VersionDocumentsPage versionDocumentsPage =
                 versionDocumentsTab.gotoDocumentTab()
                         .expectSourceDocsContains(emptyFile.getName());
         assertThat(versionDocumentsPage
-                .sourceDocumentsContains(emptyFile.getName())).isTrue()
-                        .as("Document shows in table");
+                .sourceDocumentsContains(emptyFile.getName()))
+                .as("Document shows in table")
+                .isTrue();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -138,7 +143,7 @@ public class UploadTest extends ZanataTestCase {
                         .gotoSettingsDocumentsTab().pressUploadFileButton()
                         .enterFilePath(unsupportedFile.getAbsolutePath());
         assertThat(versionDocumentsTab.getUploadError())
-                .contains(VersionDocumentsTab.UNSUPPORTED_FILETYPE)
-                .as("Unsupported file type error is shown");
+                .as("Unsupported file type error is shown")
+                .contains(VersionDocumentsTab.UNSUPPORTED_FILETYPE);
     }
 }

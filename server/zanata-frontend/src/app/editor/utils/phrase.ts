@@ -29,9 +29,22 @@ export interface Phrase {
   lastModifiedTime?: string,
   selectedPluralIndex?: number,
   sources?: string[],
+  showValidationErrorModal?: boolean,
   translations?: string[],
   newTranslations?: string[],
   inProgressSave?: boolean,
   comments?: number | string,
   errors?: boolean,
+}
+
+// TODO: Determine why this differs from Phrase naming
+export interface SelectedPhrase {
+  msgctxt?: string,
+  resId: string,
+  sourceComment?: number | string,
+  sourceFlags?: string,
+  sourceReferences?: string,
+  lastModifiedBy?: string,
+  lastModifiedTime?: string,
+  revision?: number
 }

@@ -4,7 +4,9 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon, Modal } from '../../components'
 import { isEmpty } from 'lodash'
-import { Button, ButtonGroup, Row } from 'react-bootstrap'
+import { ButtonGroup, Row } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /**
  * Notification popup modal that overlays on the page.
@@ -79,9 +81,9 @@ class Notification extends Component {
           <span className='u-pullRight'>
             <Row>
               <ButtonGroup className='u-pullRight'>
-                <Button bsStyle='primary'
-                  id='btn-notification-close'
-                  type='button' onClick={this.clearMessage}>
+                <Button className='btn-primary'
+                  id='btn-notification-close' aria-label="button"
+                  onClick={this.clearMessage}>
                   Close
                 </Button>
               </ButtonGroup>

@@ -1,0 +1,186 @@
+@import "~antd/dist/antd.less";
+@import "./ant-theme-vars.less";
+
+// antd component overrides - tachyons not used because these apply globally to
+// the antd components
+
+.teaserHeader .ant-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.ant-input-search > .ant-input-suffix > .ant-input-search-button {
+  background-color: @info-color;
+  color: #fff;
+}
+
+button.ant-btn.btn-link {
+  border: 0;
+}
+
+.ant-btn .btn-sm {
+  padding: 0 15px !important;
+}
+
+.sortable-helper {
+  z-index: 10000 !important;
+}
+
+.transSwitch.ant-switch {
+ background-color: @unsure-color;
+}
+
+.transSwitch.ant-switch.ant-switch-checked {
+  background-color: @success-color !important;
+  font-size: inherit;
+}
+
+.transSwitch.ant-switch .ant-switch-inner {
+  font-size: 14px;
+}
+
+.ant-checkbox-wrapper {
+  color: @primary-color !important;
+  margin-bottom: 0!important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: @primary-color;
+}
+
+// needed for new-zanata overrides on button styling
+// without !important these styles are overrides by antd in /node_modules
+.ant-btn.ant-btn-primary {
+  background-color: @primary-color !important;
+  color: @normal-color !important;
+  border: @primary-color !important;
+}
+
+.ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
+  background-color: @info-color !important;
+  color: @normal-color !important;
+  border: @info-color !important;
+}
+
+.ant-btn {
+  color: @primary-color !important;
+  background-color: #fff !important;
+  border-color: @neutral-color !important;
+}
+
+.ant-btn:hover, .ant-btn:focus {
+  color: @info-color !important;
+  background-color: #fff !important;
+  border-color: @info-color !important;
+}
+
+.teaser-inner div a.text-muted-bold {
+  vertical-align: sub;
+}
+
+.ant-tag {
+  vertical-align: middle;
+}
+
+.ant-card {
+  color: @primary-color;
+}
+
+.ant-collapse-content > .ant-collapse-content-box {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header {
+  padding-right: 12px;
+}
+
+.ant-input-search {
+  height: 2rem;
+  line-height: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox, .checkbox svg {
+  vertical-align: sub;
+}
+
+.list-group-item {
+  position: relative;
+  display: block;
+  margin-bottom: 0;
+  padding: 0.62rem 1rem;
+  border: 1px solid @neutral-color;
+  background-color: @layout-body-background;
+}
+
+// Override new-zanata ul styles
+.ant-select-dropdown-menu {
+  margin: initial !important;
+  padding: initial !important;
+}
+
+// Override new-zanata modal namespace styles
+.ant-modal-close {
+  border: none !important;
+  background-color: initial !important;
+  padding: initial !important;
+}
+
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
+  vertical-align: inherit;
+  width: inherit;
+}
+
+.ant-form-inline .ant-form-item {
+  display: flex;
+}
+
+.ant-modal-title {
+  color: @info-color !important;
+}
+
+.ant-form-item-label label {
+  color: @primary-color;
+}
+
+input.react-autosuggest__input {
+  background-color: transparent;
+  border-bottom: solid 1px @neutral-color;
+}
+
+.ant-input.textInput, input.ant-input {
+  border: solid 1px @neutral-color;
+}
+
+.ant-input.textInput:focus, .ant-input.textInput:hover, input.ant-input:hover,
+input.ant-input:focus {
+  border: 2px solid @info-color;
+}
+
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
+  vertical-align: inherit;
+  width: inherit;
+}
+
+.ant-form-inline .ant-form-item {
+  display: flex;
+}
+
+.multi-rows-label .ant-form-item-label {
+  padding: 0.25rem 0 !important;
+  label {
+    white-space: normal;
+    margin-right: 0.5rem;
+    line-height: 12px;
+    &:after {
+      content: none !important;
+    }
+    &.ant-form-item-required:before {
+      position: absolute;
+      left: -7px;
+    }
+  }
+}

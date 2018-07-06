@@ -1,29 +1,76 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { setSidebarVisibility } from '../../actions'
+import { toggleGlossary, toggleActivity } from '../../actions/header-actions'
+import { getGlossaryVisible, getActivityVisible } from '../../reducers'
 import { postReviewComment } from '../../actions/review-trans-actions'
-import { Tabs, FormGroup, InputGroup, InputGroupAddon,
-  FormControl, Button, Tab } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 import { connect } from 'react-redux'
 import { FormattedMessage } from 'react-intl'
-import { isEmpty, isUndefined, orderBy } from 'lodash'
-import { FormattedDate, FormattedTime } from 'react-intl'
-import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
-import { ALL, COMMENTS, UPDATES } from '../../utils/activity-util'
+import { isUndefined } from 'lodash'
 import GlossaryTab from '../GlossaryTab'
 import ActivityTab from '../ActivityTab'
+import DetailsPane from './DetailsPane'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+import Tabs from 'antd/lib/tabs'
+import 'antd/lib/tabs/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
+// eslint-disable-next-line no-unused-vars
+import { ActivityFilter } from '../../utils/activity-util'
 
-/* Panel displaying info, glossary, activity, etc. */
+/* Tab keys for tracking active Tab */
+const activityTabKey = '1'
+const glossaryTabKey = '2'
+const { TextArea } = Input
+const TabPane = Tabs.TabPane
+
+const historyShape = PropTypes.shape({
+  contents: PropTypes.arrayOf(PropTypes.string),
+  modifiedBy: PropTypes.string,
+  modifiedDate: PropTypes.number,
+  optionalTag: PropTypes.string,
+  revisionComment: PropTypes.string,
+  status: PropTypes.string,
+  versionNum: PropTypes.string
+})
+
+const commentShape = PropTypes.shape({
+  comment: PropTypes.string,
+  commenterName: PropTypes.string,
+  creationDate: PropTypes.number,
+  id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
+})
+
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
+    activityVisible: PropTypes.bool.isRequired,
     /* close the sidebar */
     close: PropTypes.func.isRequired,
     glossaryCount: PropTypes.number.isRequired,
+    glossaryVisible: PropTypes.bool.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
     localeId: PropTypes.string.isRequired,
-    transUnitId: PropTypes.number.isRequired,
+    transUnitId: PropTypes.number,
     postReviewComment: PropTypes.func.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
+    toggleActivity: PropTypes.func.isRequired,
+    transHistory: PropTypes.shape({
+      historyItems: PropTypes.arrayOf(historyShape),
+      reviewComments: PropTypes.arrayOf(commentShape),
+      latestHistoryItem: historyShape
+    }),
+    notification: PropTypes.shape({
+      severity: PropTypes.string,
+      message: PropTypes.string,
+      description: PropTypes.any,
+      duration: PropTypes.number
+    }),
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
       resId: PropTypes.string.isRequired,
@@ -34,52 +81,47 @@ class TranslationInfoPanel extends React.Component {
       lastModifiedTime: PropTypes.instanceOf(Date),
       revision: PropTypes.number
     }),
-    historyItems: PropTypes.arrayOf(
-      PropTypes.shape({
-        contents: PropTypes.arrayOf(PropTypes.string),
-        modifiedBy: PropTypes.string,
-        modifiedDate: PropTypes.number,
-        optionalTag: PropTypes.string,
-        revisionComment: PropTypes.string,
-        status: PropTypes.string,
-        versionNum: PropTypes.string
-      })
-    ),
-    reviewComments: PropTypes.arrayOf(
-      PropTypes.shape({
-        comment: PropTypes.string,
-        commenterName: PropTypes.string,
-        creationDate: PropTypes.number,
-        id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
-      })
-    ),
-    latestHistoryItem: PropTypes.shape({
-      contents: PropTypes.arrayOf(PropTypes.string),
-      modifiedBy: PropTypes.string,
-      modifiedDate: PropTypes.number,
-      optionalTag: PropTypes.string,
-      revisionComment: PropTypes.string,
-      status: PropTypes.string,
-      versionNum: PropTypes.string
-    }),
     isRTL: PropTypes.bool.isRequired
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.handleSelectTab = this.handleSelectTab.bind(this)
     this.selectActivityTypeFilter =
       this.selectActivityTypeFilter.bind(this)
+
     this.state = {
-      key: 1,
-      selectedActivites: 'all'
+      key: activityTabKey,
+      /** @type {ActivityFilter} */
+      selectedActivites: ('all')
     }
   }
+  // @ts-ignore any
+  componentDidUpdate (prevProps) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      // @ts-ignore any
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: null
+      })
+    }
+  }
+  // @ts-ignore any
   handleSelectTab (key) {
+    if (key === activityTabKey) {
+      this.props.toggleActivity()
+    } else {
+      if (key === glossaryTabKey) this.props.toggleGlossary()
+    }
     this.setState({ key })
   }
+  /** @param activityFilterType {ActivityFilter} */
   selectActivityTypeFilter (activityFilterType) {
     this.setState(({ selectedActivites: activityFilterType }))
   }
+  // @ts-ignore any
   postComment = (postComment) => {
     const reviewData = {
       localeId: this.props.localeId,
@@ -91,181 +133,31 @@ class TranslationInfoPanel extends React.Component {
     }
     this.props.postReviewComment(reviewData)
   }
-  sidebarDetails = () => {
-    if (!this.props.hasSelectedPhrase) {
-      return <span>Select a phrase to see details.</span>
-    }
-    const {
-      msgctxt,
-      resId,
-      sourceComment,
-      sourceFlags,
-      sourceReferences,
-      lastModifiedBy,
-      lastModifiedTime
-    } = this.props.selectedPhrase
-    const directionClass = this.props.isRTL ? 'rtl' : 'ltr'
-    return (
-      <ul className={directionClass + ' SidebarEditor-details'}>
-        {this.detailItem(<FormattedMessage
-          id='TranslationInfoPanel.details.resourceid'
-          defaultMessage='Resource ID' />, resId)}
-        {this.detailItem(<FormattedMessage
-          id='TranslationInfoPanel.details.messagecontext'
-          defaultMessage='Message Context' />, msgctxt)}
-        {this.detailItem(<FormattedMessage
-          id='TranslationInfoPanel.details.reference'
-          defaultMessage='Reference' />, sourceReferences)}
-        {this.detailItem(<FormattedMessage
-          id='TranslationInfoPanel.details.flags'
-          defaultMessage='Flags' />, sourceFlags)}
-        {this.detailItem(<FormattedMessage
-          id='TranslationInfoPanel.details.sourcecomment'
-          defaultMessage='Source Comment' />, sourceComment)}
-        {this.detailItem(<FormattedMessage
-          id='TranslationInfoPanel.details.lastmodified'
-          defaultMessage='Last Modified' />,
-            this.lastModifiedDisplay(lastModifiedBy, lastModifiedTime))}
-      </ul>
-    )
-  }
-  detailItem = (label, value) => {
-    const valueDisplay = isEmpty(value)
-        ? <span className="SidebarEditor-details--nocontent">No content</span>
-        : <span className="SidebarEditor-details--content">{value}</span>
-    return (
-      <li>
-        <span>{label}</span> {valueDisplay}
-      </li>
-    )
-  }
-  lastModifiedDisplay = (lastModifiedBy, lastModifiedTime) => {
-    if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
-      return undefined
-    }
-    const modifiedByIcon = isUndefined(lastModifiedBy) ? undefined
-        : <Icon name="user" className="n1" />
-    const modifiedTimeIcon = isUndefined(lastModifiedTime) ? undefined
-        : <Icon name="clock" className="n1" />
-    const modifiedDate = isUndefined(lastModifiedTime) ? undefined
-        : <FormattedDate value={lastModifiedTime} format="medium" />
-    const modifiedTime = isUndefined(lastModifiedTime) ? undefined
-        : <FormattedTime value={lastModifiedTime} />
-    return (
-      <span>
-        {modifiedByIcon} {lastModifiedBy} {modifiedTimeIcon
-        } {modifiedDate} {modifiedTime}
-      </span>
-    )
-  }
   /* URL of the selected phrase, with copy button. */
   phraseLink = () => {
     return (
-      <FormGroup className="trans-link">
-        <InputGroup>
-          <InputGroupAddon>
+      <span className="trans-link">
+        <span>
+          <Input addonAfter={
             <Icon name="copy"
-              className="s1" />
-          </InputGroupAddon>
-          <FormControl type="text" />
-        </InputGroup>
-      </FormGroup>
-    )
-  }
-  // Format a reviewCommentsList from reviewComments
-  reviewCommentsList = () => {
-    return this.props.reviewComments.map((value) => {
-      const lastModified = new Date(value.creationDate)
-      return {
-        type: 'comment',
-        content: value.comment,
-        lastModifiedTime: lastModified,
-        user: {
-          name: value.commenterName,
-          username: value.username
-        }
-      }
-    })
-  }
-  // Format a historyItemsList from historyItems
-  historyItemsList = () => {
-    const { historyItems, latestHistoryItem } = this.props
-    const historyActivityItems = historyItems.map((historyItem) => {
-      const lastModified = new Date(historyItem.modifiedDate)
-      return {
-        type: 'revision',
-        content: historyItem.contents[0],
-        commentText: historyItem.revisionComment,
-        lastModifiedTime: lastModified,
-        status: transUnitStatusToPhraseStatus(historyItem.status),
-        user: {
-          name: historyItem.modifiedByPersonName,
-          username: historyItem.modifiedBy
-        }
-      }
-    })
-    const latestLastModified = new Date(latestHistoryItem.modifiedDate)
-    const latestHistoryActivityItem = {
-      type: 'revision',
-      content: latestHistoryItem.contents[0],
-      commentText: latestHistoryItem.revisionComment,
-      lastModifiedTime: latestLastModified,
-      status: transUnitStatusToPhraseStatus(latestHistoryItem.status),
-      user: {
-        name: latestHistoryItem.modifiedByPersonName,
-        username: latestHistoryItem.modifiedBy
-      }
-    }
-    return {...historyActivityItems, latestHistoryActivityItem}
-  }
-  /* Returns Activity Items list filtered by comments and updates */
-  filterActivityItems = (activityFilterType) => {
-    const { reviewComments, latestHistoryItem } = this.props
-    if (isEmpty(reviewComments) && isEmpty(latestHistoryItem)) {
-      return undefined
-    }
-    switch (activityFilterType) {
-      case ALL:
-        return orderBy({...this.reviewCommentsList(),
-          ...this.historyItemsList()}, ['lastModifiedTime'], ['desc'])
-      case COMMENTS:
-        return orderBy(this.reviewCommentsList(),
-          ['lastModifiedTime'], ['desc'])
-      case UPDATES:
-        return orderBy(this.historyItemsList(),
-          ['lastModifiedTime'], ['desc'])
-      default:
-        return undefined
-    }
-  }
-  render () {
-    const { glossaryCount } = this.props
-    const glossaryCountDisplay = glossaryCount > 0
-      // TODO kgough display as a badge instead of text in parens
-      ? <span className="badge">{this.props.glossaryCount}</span>
-      : undefined
-    const glossaryTitle = (
-      <span>
-        <Icon name="glossary" className="s1" parentClassName="gloss-tab-svg" />
-        <span className="hide-md">
-          <FormattedMessage id='TranslationInfoPanel.glossaryTitle'
-            description={'Title for the Glossary Panel'}
-            defaultMessage='Glossary' />
-        </span>{glossaryCountDisplay}
-      </span>
-    )
-    // Use this when activity tab is activated
-    const activityTitle = (
-      <span>
-        <Icon name="clock" className="s1 gloss-tab-svg" />
-        <span className="hide-md">
-          <FormattedMessage id='TranslationInfoPanel.activityTitle'
-            description={'Title for the Activity Panel'}
-            defaultMessage='Activity' />
+              className="s1" />}
+          />
+          <TextArea />
         </span>
       </span>
     )
-    const activityItems = this.filterActivityItems(this.state.selectedActivites)
+  }
+  render () {
+    const { activityVisible, glossaryVisible, glossaryCount } = this.props
+    const glossaryCountDisplay = glossaryCount > 0
+      ? <Tag color="#20718A">{this.props.glossaryCount}</Tag>
+      : undefined
+    /* Activity Panel is open as default case, but not always visible.
+     * eg: when entire info panel is hidden. */
+    const activePanelKey =
+      activityVisible ? activityTabKey
+      : glossaryVisible ? glossaryTabKey
+      : activityTabKey
     return (
       <div>
         <h1 className="SidebarEditor-heading">
@@ -275,47 +167,69 @@ class TranslationInfoPanel extends React.Component {
               description={'Title for the Details Panel'}
               defaultMessage='Details' />
           </span>
-          <span className="s1 u-pullRight">
-            <Button bsStyle="link" onClick={this.props.close}>
-              <Icon name="cross" />
+          <span className="u-pullRight s1">
+            <Button className="btn-link transparent" onClick={this.props.close}>
+              <Icon name='cross' />
             </Button>
           </span>
         </h1>
         <div className="SidebarEditor-wrapper">
-          {this.sidebarDetails()}
+          <DetailsPane
+            // @ts-ignore
+            hasSelectedPhrase={this.props.hasSelectedPhrase}
+            selectedPhrase={this.props.selectedPhrase}
+            isRTL={this.props.isRTL} />
         </div>
-        <Tabs activeKey={this.state.key}
-          onSelect={this.handleSelectTab}
-          id="SidebarEditor-tabsPane1">
-          <Tab eventKey={1} title={activityTitle}>
-            <ActivityTab
-              // @ts-ignore
-              activeKey={this.state.key}
-              activityItems={activityItems}
-              selectedActivites={this.state.selectedActivites}
-              selectActivityTypeFilter={this.selectActivityTypeFilter}
-              postComment={this.postComment} />
-          </Tab>
-          <Tab eventKey={2} title={glossaryTitle}>
-            <GlossaryTab
-              // @ts-ignore
-              activeKey={this.state.key} />
-          </Tab>
-        </Tabs>
+
+        <span id="SidebarEditor-tabsPane1">
+          <Tabs defaultActiveKey={activePanelKey}
+            onTabClick={this.handleSelectTab}>
+            <TabPane key={activityTabKey} tab={
+              <span>
+                <Icon name="clock" className="s1 gloss-tab-svg" />
+                <span className="hide-md">
+                  <FormattedMessage id='TranslationInfoPanel.activityTitle'
+                    description={'Title for the Activity Panel'}
+                    defaultMessage='Activity' />
+                </span>
+              </span>
+            }>
+              <ActivityTab
+                // @ts-ignore
+                activeKey={this.state.key}
+                transHistory={this.props.transHistory}
+                selectedActivites={this.state.selectedActivites}
+                selectActivityTypeFilter={this.selectActivityTypeFilter}
+                postComment={this.postComment} />
+            </TabPane>
+            <TabPane key={glossaryTabKey} tab={
+              <span><Icon name="glossary" className="s1 gloss-tab-svg" />
+                <span className="hide-md mr2">
+                  <FormattedMessage id='TranslationInfoPanel.glossaryTitle'
+                    description={'Title for the Glossary Panel'}
+                    defaultMessage='Glossary' />
+                </span>{glossaryCountDisplay}
+              </span>
+              }>
+              <GlossaryTab
+                // @ts-ignore
+                activeKey={this.state.key} />
+            </TabPane>
+          </Tabs>
+        </span>
       </div>
     )
   }
 }
+// @ts-ignore any
 function mapStateToProps (state) {
   const { glossary, phrases, context, activity } = state
-  const { detail, selectedPhraseId } = phrases
+  const { detail, selectedPhraseId, notification } = phrases
   const selectedPhrase = detail[selectedPhraseId]
   const { results, searchText } = glossary
   const glossaryResults = results.get(searchText)
   const glossaryCount = glossaryResults ? glossaryResults.length : 0
-  const historyItems = activity.transHistory.historyItems
-  const reviewComments = activity.transHistory.reviewComments
-  const latestHistoryItem = activity.transHistory.latest
+  const transHistory = activity.transHistory
   const transUnitId = state.phrases.selectedPhraseId
   const localeId = state.context.lang
   // Need to check whether phrase itself is undefined since the detail may not
@@ -323,12 +237,15 @@ function mapStateToProps (state) {
   const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
       !isUndefined(selectedPhrase)
   const isRTL = context.sourceLocale.isRTL
+  const glossaryVisible = getGlossaryVisible(state)
+  const activityVisible = getActivityVisible(state)
   const newProps = {
+    activityVisible,
+    glossaryVisible,
     glossaryCount,
     hasSelectedPhrase,
-    historyItems,
-    reviewComments,
-    latestHistoryItem,
+    notification,
+    transHistory,
     transUnitId,
     localeId,
     isRTL
@@ -339,12 +256,16 @@ function mapStateToProps (state) {
   return newProps
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
     // @ts-ignore
     close: () => dispatch(setSidebarVisibility(false)),
+    // @ts-ignore any
     postReviewComment: (reviewData) =>
-      dispatch(postReviewComment(dispatch, reviewData))
+      dispatch(postReviewComment(dispatch, reviewData)),
+    toggleActivity: () => dispatch(toggleActivity()),
+    toggleGlossary: () => dispatch(toggleGlossary())
   }
 }
 

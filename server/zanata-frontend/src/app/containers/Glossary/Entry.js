@@ -5,8 +5,12 @@ import * as PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
-import { EditableText, Icon, LoaderText } from '../../components'
-import { Button, Row, Table } from 'react-bootstrap'
+import { EditableText } from '../../components'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+
 /**
  * Component to display a GlossaryEntry
  */
@@ -89,12 +93,10 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <Button bsSize='small' bsStyle='primary'
-        disabled={isSaving}
+      <Button type='primary' className='btn-primary'
+        disabled={isSaving} aria-label='button' loading={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
-        <LoaderText loading={isSaving} loadingText='Updating'>
-          Update
-        </LoaderText>
+        Update
       </Button>
     )
 
@@ -127,7 +129,7 @@ class Entry extends Component {
     const cssClass = 'highlight editable' + (selected ? ' selected' : '')
 
     return (
-      <Table className='glossaryEntry'>
+      <table className='glossaryEntry'>
         <tbody>
           <tr className={cssClass}
             selected={selected}
@@ -146,7 +148,7 @@ class Entry extends Component {
             <td className='td-3 tight'>
               {secondColumnContent}
             </td>
-            <td className='hidesmall td-3'>
+            <td className='hidesmall td-3 tight'>
             {termsLoading
               ? loadingDiv
               : (<EditableText
@@ -162,17 +164,16 @@ class Entry extends Component {
               </EditableText>)
             }
             </td>
-            <td className='td-2'>
+            <td className='td-2 tight'>
               {termsLoading
                 ? loadingDiv
                 : (<Row className='entry-row'>
-                  <Button bsStyle="link"
-                    className="btn-link-end"
+                  <Button
+                    icon='info-circle-o'
+                    className='btn-link'
+                    aria-label='button'
                     disabled={isDeleting}
-                    onClick={() => this.setShowingEntryModal(true)}>
-                    <Icon name='info' className='s1'
-                      parentClassName='iconInfo-noMargin' />
-                  </Button>
+                    onClick={() => this.setShowingEntryModal(true)} />
                   <EntryModal entry={entry}
                     show={this.state.showEntryModal}
                     isSaving={isSaving}
@@ -191,7 +192,7 @@ class Entry extends Component {
                       <Row className='entry-row'>
                         {updateButton}
                         {displayUpdateButton && !isSaving ? (
-                          <Button bsStyle='link' bsSize='small'
+                          <Button className='btn-link' aria-label='button'
                             onClick={() => handleResetTerm(entry.id)}>
                             Cancel
                           </Button>
@@ -213,7 +214,7 @@ class Entry extends Component {
             </td>
           </tr>
         </tbody>
-      </Table>
+      </table>
     )
     /* eslint-enable react/jsx-no-bind */
   }

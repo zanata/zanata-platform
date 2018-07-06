@@ -1,6 +1,8 @@
 package org.zanata.search;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.hibernate.transform.ResultTransformer;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -23,8 +25,6 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -118,9 +118,11 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     }
 
     private HPerson makePerson(String username) {
+        HAccount hAccount = new HAccount();
+        hAccount.setUsername(username);
+        getEm().persist(hAccount);
         return EntityMakerBuilder.builder()
-                .addFieldOrPropertyMaker(HAccount.class, "username",
-                        FixedValueMaker.fix(username))
+                .reuseEntity(hAccount)
                 .includeOptionalOneToOne().build()
                 .makeAndPersist(getEm(), HPerson.class);
     }
@@ -385,12 +387,6 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     }
 
     private static List<String> transformToResIds(List<HTextFlow> textFlows) {
-        return Lists.transform(textFlows, new Function<HTextFlow, String>() {
-
-            @Override
-            public String apply(HTextFlow input) {
-                return input.getResId();
-            }
-        });
+        return textFlows.stream().map(HTextFlow::getResId).collect(Collectors.toList());
     }
 }

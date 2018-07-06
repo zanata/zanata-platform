@@ -81,11 +81,7 @@ public class ManageSearchPage extends BasePage {
         clickElement(selectAllButton);
         // It seems that if the Select All and Perform buttons are clicked too
         // quickly in succession, the operation will fail
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
+        waitForPageSilence();
         return new ManageSearchPage(getDriver());
     }
 

@@ -135,30 +135,18 @@ const Nav = ({
 
   return (
     <div className='bstrapReact'>
-      <nav
-        {...props}
-        id='nav'
-        name={username}
-        className='nav-bar'>
+      <nav {...props} id='nav' name={username} className='nav-bar'>
         {items.map((item, itemId) => {
           if (((item.auth === 'public') || (item.auth === auth) ||
             (item.auth === 'loggedin' && admin))) {
-            let link
-            if (isJsfPage) {
-              // jsf pages
-              link = links[item.link]
-                ? (links.context + links[item.link])
-                : (links.context + item.link)
-            } else {
-              // react pages, /app/index.xhtml
-              link = links[item.link]
-                  ? (links.context + links[item.link])
-                  : (links.context + item.link)
-            }
-
             const useHref = isJsfPage || !item.jsPage
-            let linkWithoutDswid = link.replace(dswid, '')
 
+            const link = links[item.link]
+                ? (!useHref ? links[item.link]
+                    : (links.context + links[item.link]))
+                : (!useHref ? item.link : (links.context + item.link))
+
+            let linkWithoutDswid = link.replace(dswid, '')
             /**
              * TODO: remove this check, need better handling of
              * selected page for side navigation

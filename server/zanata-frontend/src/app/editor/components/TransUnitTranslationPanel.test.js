@@ -1,3 +1,4 @@
+/* global jest */
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { TranslationItem } from './TransUnitTranslationPanel'
@@ -7,11 +8,64 @@ import SyntaxHighlighter, { registerLanguage }
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
+jest.mock('./Validation', () => 'div')
+
 registerLanguage('xml', xml)
 
 const permissions = {
   reviewer: true,
   translator: true
+}
+
+const validations =
+  [
+    {
+      id: 'HTML_XML',
+      label: 'HTML/XML tags',
+      active: true,
+      disabled: true
+    },
+    {
+      id: 'JAVA_VARIABLES',
+      label: 'Java variables',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'NEW_LINE',
+      label: 'Leading/trailing newline',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'PRINTF_XSI_EXTENSION',
+      label: 'Positional printf (XSI extension)',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'PRINTF_VARIABLES',
+      label: 'Printf variables',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'TAB',
+      label: 'Tab characters',
+      active: true,
+      disabled: false
+    },
+    {
+      id: 'XML_ENTITY',
+      label: 'XML entity reference',
+      active: true,
+      disabled: false
+    }
+  ]
+
+const phrase = {
+  id: '1',
+  sources: ['source text']
 }
 
 /* global describe expect it */
@@ -24,13 +78,15 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
-        phrase={{id: '1'}}
+        onValidationErrorChange={defaultFunc}
+        phrase={phrase}
         selected
         selectedPluralIndex={1}
         selectPhrasePluralIndex={defaultFunc}
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
+        validationOptions={validations}
         directionClass={''}
         syntaxOn
         permissions={permissions} />
@@ -60,6 +116,7 @@ describe('TransUnitTranslationPanel', () => {
           lineStyle={lineStyle}>
           {'Je ne parle pas français'}
         </SyntaxHighlighter>
+        <div></div>{/* Validation Mock */ }
       </div>
     )
     expect(actual).toEqual(expected)
@@ -73,13 +130,15 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
-        phrase={{id: '1'}}
+        onValidationErrorChange={defaultFunc}
+        phrase={phrase}
         selected={false}
         selectedPluralIndex={1}
         selectPhrasePluralIndex={defaultFunc}
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
+        validationOptions={validations}
         directionClass={''}
         syntaxOn
         permissions={permissions} />
@@ -108,13 +167,15 @@ describe('TransUnitTranslationPanel', () => {
         index={1}
         isPlural={false}
         onSelectionChange={defaultFunc}
-        phrase={{id: '1'}}
+        onValidationErrorChange={defaultFunc}
+        phrase={phrase}
         selected={false}
         selectedPluralIndex={1}
         selectPhrasePluralIndex={defaultFunc}
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
         translation={'Je ne parle pas français'}
+        validationOptions={validations}
         directionClass={''}
         syntaxOn
         permissions={permissions} />

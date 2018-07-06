@@ -1,0 +1,93 @@
+#!/bin/env bash
+
+# Copyright 2018, Red Hat, Inc. and individual contributors
+# as indicated by the @author tags. See the copyright.txt file in the
+# distribution for a full listing of individual contributors.
+#
+# This is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation; either version 2.1 of
+# the License, or (at your option) any later version.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this software; if not, write to the Free
+# Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+
+# Script name: jboss-cli-jjs
+#
+# This script runs Nashorn jjs within a JBoss Module environment, enables
+# the JBoss CLI API and enables logging for it. It passes all arguments
+# through to jjs - run with -help to see the available options.
+#
+# Environment:
+#
+# Required: JBOSS_HOME must point to the appserver to be configured (and
+# whose JBoss Modules implementation will be used).
+#
+# Optional: JAVA_HOME will be used if available, otherwise the script will
+# attempt to find it by executing jjs from the system path.
+#
+# Limitations:
+# Currently works with Java 8 only. Java 9+ support will require minor
+# changes after WFCORE-3686 and MODULES-271 are fixed in WildFly and JBoss
+# EAP.
+#
+# Author: Sean Flanigan <sflaniga@redhat.com>
+
+# treat errors as fatal; treat unset vars as errors
+set -eu
+
+: "${JBOSS_HOME:?Please set JBOSS_HOME}" # needed by JBoss CLI
+if [[ ! -d $JBOSS_HOME ]]; then
+    echo "Unable to find app server directory $JBOSS_HOME. Please ensure JBOSS_HOME points to JBoss EAP or WildFly"
+    exit 1
+fi
+
+if [[ -z "$JAVA_HOME" ]]; then
+    homeFinder=$(mktemp --tmpdir findjavahome.XXXXXXXX)
+    echo "java.lang.System.out.println(java.lang.System.getProperty('java.home'))" > "$homeFinder"
+    JAVA_HOME=$(jjs "$homeFinder")
+    export JAVA_HOME
+    rm "$homeFinder"
+fi
+
+declare nashornJar="$JAVA_HOME/lib/ext/nashorn.jar"
+if [[ ! -e $nashornJar ]]; then
+    nashornJar="$JAVA_HOME/jre/lib/ext/nashorn.jar"
+fi
+if [[ ! -e $nashornJar ]]; then
+    echo "Unable to find nashorn.jar. Please ensure JAVA_HOME points to a Java 8 installation"
+    exit 1
+fi
+readonly nashornJar
+
+readonly commandLine=(
+    "$JAVA_HOME/bin/java"
+    '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
+    '-jar' "$JBOSS_HOME/jboss-modules.jar"
+    '-modulepath' "$JBOSS_HOME/modules"
+
+    # TODO add sun.scripting to -dependencies and use -class instead of -classpath
+    # Depends on https://issues.jboss.org/browse/WFCORE-3686
+    # and https://issues.jboss.org/browse/MODULES-271 being fixed
+    # for WildFly and JBoss EAP.
+
+    # '-dependencies' 'org.jboss.as.cli,org.jboss.logmanager,sun.scripting'
+    # '-class'
+
+    '-dependencies' 'org.jboss.as.cli,org.jboss.logmanager'
+    '-classpath' $nashornJar
+
+    'jdk.nashorn.tools.Shell'
+    "$@"
+)
+
+# echo "${commandLine[@]}"
+exec ${commandLine[@]}

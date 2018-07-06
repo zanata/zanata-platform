@@ -8,8 +8,10 @@
 
 import reduxWatch from 'redux-watch'
 
+// @ts-ignore any
 const withLog = name => f => {
   if (process.env && (process.env.NODE_ENV === 'development')) {
+    // @ts-ignore any
     return (state, prevState) => {
       /* eslint-disable no-console */
       console.group('%c watcher: %s', 'font-weight: bold; color: #CC6600', name)
@@ -24,6 +26,7 @@ const withLog = name => f => {
   }
 }
 
+// @ts-ignore any
 const watch = (name) => (...watchArgs) => (callback) =>
   reduxWatch(...watchArgs)(withLog(name)(callback))
 

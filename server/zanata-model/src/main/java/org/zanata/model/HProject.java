@@ -25,7 +25,6 @@ import static org.zanata.security.EntityAction.INSERT;
 import static org.zanata.security.EntityAction.UPDATE;
 import static org.zanata.model.ProjectRole.Maintainer;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +47,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -72,6 +70,7 @@ import org.zanata.rest.dto.Project;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @see Project
@@ -85,6 +84,7 @@ import com.google.common.collect.Sets;
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Indexed
 @TypeDef(name = "projectRole", typeClass = ProjectRoleType.class)
+@GraphQLType(name = "Project")
 public class HProject extends SlugEntityBase
         implements Serializable, HasEntityStatus, HasUserFriendlyToString {
 
@@ -131,16 +131,15 @@ public class HProject extends SlugEntityBase
      *
      * To change maintainers, use other methods in this class.
      *
-     * @see {@link #addMaintainer(HPerson)}
-     * @see {@link #removeMaintainer(HPerson)}
+     * @see #addMaintainer(HPerson)
+     * @see #removeMaintainer(HPerson)
      */
     @Transient
     public ImmutableSet<HPerson> getMaintainers() {
-        Set<HProjectMember> maintainerMembers =
-                Sets.filter(members, HProjectMember.IS_MAINTAINER);
-        Collection<HPerson> maintainers = Collections2
-                .transform(maintainerMembers, HProjectMember.TO_PERSON);
-        return ImmutableSet.<HPerson> copyOf(maintainers);
+        return ImmutableSet.copyOf(members.stream()
+                .filter(pm -> pm.getRole() == Maintainer)
+                .map(HProjectMember::getPerson)
+                .iterator());
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",
@@ -389,6 +388,7 @@ public class HProject extends SlugEntityBase
         return this.projectIterations;
     }
 
+    @Override
     public EntityStatus getStatus() {
         return this.status;
     }

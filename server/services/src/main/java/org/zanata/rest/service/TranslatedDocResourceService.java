@@ -34,7 +34,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -43,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
@@ -124,14 +124,16 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
-            Set<String> extensions, boolean skeletons, String eTag) {
+            Set<String> extensions, boolean skeletons,
+            boolean markTranslatedAsApproved, String eTag) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
-        return getTranslationsWithDocId(locale, id, extensions, skeletons, eTag);
+        return getTranslationsWithDocId(locale, id, extensions, skeletons, markTranslatedAsApproved, eTag);
     }
 
     @Override
     public Response getTranslationsWithDocId(LocaleId locale, String docId,
-            Set<String> extensions, boolean createSkeletons, String eTag) {
+            Set<String> extensions, boolean createSkeletons,
+            boolean markTranslatedAsApproved, String eTag) {
         log.debug("start to get translation");
         if (StringUtils.isBlank(docId)) {
             // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
@@ -168,7 +170,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 textFlowTargetDAO.findTranslations(document, hLocale);
         boolean foundData = resourceUtils.transferToTranslationsResource(
                 translationResource, document, hLocale, extensions, hTargets,
-                Optional.<String> absent());
+                markTranslatedAsApproved);
         if (!foundData && !createSkeletons) {
             return Response.status(Status.NOT_FOUND).build();
         }

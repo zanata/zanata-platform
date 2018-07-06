@@ -8,6 +8,7 @@
     enabled="TRUE"
     passwordHash="Eyox7xbNQ09MkIfRyH+rjg=="
     username="admin"
+    erased="FALSE"
     />
   <HAccount id="2"
     versionNum="1"
@@ -17,6 +18,7 @@
     enabled="TRUE"
     passwordHash="/9Se/pfHeUH8FJ4asBD6jQ=="
     username="demo"
+    erased="FALSE"
     />
   <HAccount id="3"
     versionNum="1"
@@ -26,6 +28,7 @@
     enabled="TRUE"
     passwordHash="pQRgEKG97HuyCfeoOR69Sg=="
     username="bob"
+    erased="FALSE"
     />
 
   <HAccount id="4"
@@ -36,6 +39,7 @@
       enabled="FALSE"
       passwordHash="pQRgEKG97HuyCfeoOR69Sg=="
       username="disabled"
+    erased="FALSE"
   />
 
   <HAccountRole id="1"
@@ -75,6 +79,7 @@
     email="root@localhost"
     name="Administrator"
     accountId="1"
+    erased="FALSE"
     />
   <HPerson id="2"
     versionNum="1"
@@ -83,6 +88,7 @@
     email="user1@localhost"
     name="Sample User"
     accountId="2"
+    erased="FALSE"
     />
   <HPerson id="3"
     versionNum="1"
@@ -91,6 +97,7 @@
     email="user2@localhost"
     name="Bob Translator"
     accountId="3"
+    erased="FALSE"
     />
 
   <HPerson id="4"
@@ -100,6 +107,7 @@
       email="user4@localhost"
       name="Disabled Translator"
       accountId="4"
+    erased="FALSE"
   />
 
   <!-- de-DE -->

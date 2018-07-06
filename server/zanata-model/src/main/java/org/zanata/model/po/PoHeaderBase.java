@@ -33,6 +33,7 @@ import org.zanata.model.ModelEntityBase;
  * @see org.zanata.rest.dto.extensions.gettext.PoTargetHeader
  */
 @MappedSuperclass
+//@GraphQLInterface(name = "PoHeaderBase")
 public abstract class PoHeaderBase extends ModelEntityBase {
 
     private static final long serialVersionUID = 4675225923343857779L;

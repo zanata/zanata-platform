@@ -23,9 +23,11 @@ import {
   PHRASE_DETAIL_FAILURE
 } from '../actions/phrases-action-types'
 
+// @ts-ignore any
 export const watchVisiblePhrasesInStore = (store) => {
   const watcher = watch('phrase-detail > watchVisiblePhrasesInStore')(
     () => getPhraseDetailFetchData(store.getState()))
+  // @ts-ignore any
   store.subscribe(watcher(({ phrases, locale, fetching }) => {
     // Only want one detail request at a time.
     // Watcher triggers again when this flips to false.
@@ -33,6 +35,7 @@ export const watchVisiblePhrasesInStore = (store) => {
       return
     }
 
+    // @ts-ignore any
     const ids = phrases.map(phrase => phrase.id)
     if (locale && !isEmpty(ids)) {
       // TODO debounce to handle rapid page changes etc?
@@ -41,6 +44,7 @@ export const watchVisiblePhrasesInStore = (store) => {
   }))
 }
 
+// @ts-ignore any
 function fetchPhraseDetail (locale, phraseIds) {
   const phraseDetailUrl =
     `${apiUrl}/source+trans/${locale.id}?ids=${phraseIds.join(',')}`
@@ -51,6 +55,7 @@ function fetchPhraseDetail (locale, phraseIds) {
         PHRASE_DETAIL_REQUEST,
         {
           type: PHRASE_DETAIL_SUCCESS,
+          // @ts-ignore
           payload: (_action, _state, res) => getJSON(res)
             .then(details => transUnitDetailToPhraseDetail(details, locale))
         },
@@ -64,6 +69,7 @@ function fetchPhraseDetail (locale, phraseIds) {
  * Convert the TransUnit response objects to the Phrase structure that
  * is needed for the component tree.
  */
+// @ts-ignore any
 function transUnitDetailToPhraseDetail (transUnitDetail, locale) {
   const localeId = locale.id
   const nplurals = locale.nplurals || 1
@@ -103,7 +109,8 @@ function transUnitDetailToPhraseDetail (transUnitDetail, locale) {
       wordCount: parseInt(wordCount, 10),
       lastModifiedBy: trans && trans.translator && trans.translator.name,
       lastModifiedTime: trans && trans.lastModifiedTime &&
-        new Date(trans.lastModifiedTime)
+        new Date(trans.lastModifiedTime),
+      errors: false
     }
   })
 }
@@ -113,6 +120,7 @@ function transUnitDetailToPhraseDetail (transUnitDetail, locale) {
  *
  * This will always return an Array<String>, but the array may be empty.
  */
+// @ts-ignore any
 function extractTranslations (trans) {
   if (!trans) {
     return []

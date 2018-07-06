@@ -7,9 +7,9 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.google.common.cache.CacheLoader;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -25,6 +25,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
@@ -66,7 +67,7 @@ import javax.persistence.EntityManager;
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({ TranslationStateCacheImpl.class,
         TextFlowSearchServiceImpl.class, ValidationServiceImpl.class,
-        CurrentUserImpl.class })
+        CurrentUserImpl.class, LocaleDAO.class })
 public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(GetTransUnitListHandlerTest.class);
@@ -309,8 +310,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     private static List<Integer> getIntIds(List<TransUnit> transUnits) {
-        return Lists.newArrayList(Collections2.transform(transUnits,
-                from -> (int) from.getId().getId()));
+        return transUnits.stream().map(
+                it -> (int) it.getId().getId()).collect(Collectors.toList());
     }
 
 }

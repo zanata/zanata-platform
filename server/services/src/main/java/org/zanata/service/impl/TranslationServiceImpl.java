@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
@@ -179,12 +180,15 @@ public class TranslationServiceImpl implements TranslationService {
         List<TextFlowTargetStateChange> targetStates = Lists.newArrayList();
         Map<ContentState, Long> contentStateDeltas = Maps.newHashMap();
         for (TransUnitUpdateRequest request : translationRequests) {
+            ContentState newContentState = request.getNewContentState();
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class,
                     request.getTransUnitId().getValue());
             TranslationResultImpl result = new TranslationResultImpl();
+            result.newContentState = newContentState;
+            result.similarityPercent = request.getSimilarityPercent();
             if (runValidation) {
                 String validationMessage = validateTranslations(
-                        request.getNewContentState(), projectIteration,
+                        newContentState, projectIteration,
                         request.getTransUnitId().toString(),
                         hTextFlow.getContents(), request.getNewContents());
                 if (!StringUtils.isEmpty(validationMessage)) {
@@ -215,7 +219,7 @@ public class TranslationServiceImpl implements TranslationService {
                     ContentState currentState = hTextFlowTarget.getState();
                     result.targetChanged =
                             translate(hTextFlowTarget, request.getNewContents(),
-                                    request.getNewContentState(), nPlurals,
+                                    newContentState, nPlurals,
                                     new TranslationDetails(request));
                     // fire event after flush
                     if (result.targetChanged
@@ -265,15 +269,9 @@ public class TranslationServiceImpl implements TranslationService {
     private void validateReviewPermissionIfApplicable(
             List<TransUnitUpdateRequest> translationRequests,
             HProjectIteration projectIteration, HLocale hLocale) {
-        Optional<TransUnitUpdateRequest> hasReviewRequest = Iterables.tryFind(
-                translationRequests, new Predicate<TransUnitUpdateRequest>() {
-
-                    @Override
-                    public boolean apply(TransUnitUpdateRequest input) {
-                        return isReviewState(input.getNewContentState());
-                    }
-                });
-        if (hasReviewRequest.isPresent()) {
+        boolean hasReviewRequest = translationRequests.stream()
+                .anyMatch(it -> isReviewState(it.getNewContentState()));
+        if (hasReviewRequest) {
             identity.checkPermission("translation-review",
                     projectIteration.getProject(), hLocale);
         }
@@ -694,15 +692,11 @@ public class TranslationServiceImpl implements TranslationService {
         // so that it can lazily load associated objects
         HProjectIteration iteration =
                 projectIterationDAO.findById(projectIterationId);
+        List<String> resIds = batch.stream()
+                .map(TextFlowTarget::getResId)
+                .collect(Collectors.toList());
         Map<String, HTextFlow> resIdToTextFlowMap =
-                textFlowDAO.getByDocumentAndResIds(document, Lists.transform(
-                        batch, new Function<TextFlowTarget, String>() {
-
-                            @Override
-                            public String apply(TextFlowTarget input) {
-                                return input.getResId();
-                            }
-                        }));
+                textFlowDAO.getByDocumentAndResIds(document, resIds);
         final int numPlurals = resourceUtils.getNumPlurals(document, locale);
         List<TextFlowTargetStateChange> targetStates = Lists.newArrayList();
         Map<ContentState, Long> contentStateDeltas = Maps.newHashMap();
@@ -829,7 +823,12 @@ public class TranslationServiceImpl implements TranslationService {
         private boolean isVersionNumConflict = false;
         private int baseVersion;
         private ContentState baseContentState;
+        private ContentState newContentState;
         private String errorMessage;
+        private double similarityPercent;
+
+        TranslationResultImpl() {
+        }
 
         @Override
         public boolean isTranslationSuccessful() {
@@ -862,9 +861,21 @@ public class TranslationServiceImpl implements TranslationService {
         }
 
         @Override
+        public ContentState getNewContentState() {
+            return newContentState;
+        }
+
+        @Override
         public String getErrorMessage() {
             return errorMessage;
         }
+
+        @Override
+        public double getSimilarityPercent() {
+            return similarityPercent;
+        }
+
+
     }
 
     @Override

@@ -5,9 +5,20 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {Button, Panel, Row, Col, Accordion} from 'react-bootstrap'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 import {
-  Icon, Modal, LoaderText, SelectableDropdown, Link} from '../../components'
+  Icon, LoaderText, Link} from '../../components'
 import {ProjectVersionHorizontal} from './project-version-displays'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
@@ -32,11 +43,10 @@ import {
 import TMMergeProjectSources from './TMMergeProjectSources'
 import TMMergeImportedTM from './TMMergeImportedTM'
 
-const percentValueToDisplay = v => `${v}%`
-const localeToDisplay = l => l.displayName
 const DO_NOT_RENDER = undefined
 const docLink =
   'http://docs.zanata.org/en/release/user-guide/versions/version-tm-merge/'
+const Panel = Collapse.Panel
 
 /*
  * Component to display TM merge options
@@ -57,92 +67,103 @@ const MergeOptions = (
     onPercentSelection,
     onLanguageSelection,
     onProjectSearchChange,
-    flushProjectSearch,
     onVersionCheckboxChange,
     onAllVersionCheckboxChange,
     onFromAllProjectsChange,
     onDragMoveEnd,
     removeProjectVersion
   }) => {
-  const localesSelection = fetchingLocale
-    ? DO_NOT_RENDER
-    : (
-    <span>
-      <SelectableDropdown
-        id="languageDropdown" className='versionMergeDropdown'
-        onSelectDropdownItem={onLanguageSelection}
-        selectedValue={mergeOptions.selectedLanguage}
-        valueToDisplay={localeToDisplay}
-        values={locales} />
-      <LoaderText loading={fetchingLocale}
-        loadingText={'Fetching Locales'} />
-    </span>
+    //  We set these fields to undefined when closing the modal
+    //  Ensure they exist before attempting to render
+  const localesSelection =
+    locales.length > 0 &&
+    mergeOptions.selectedLanguage &&
+    !fetchingLocale
+    ? (
+      <span>
+        <Select
+          value={mergeOptions.selectedLanguage.localeId}
+          style={{ width: '15rem' }}
+          onChange={onLanguageSelection}>
+          {locales.map((locale) => {
+            return (
+              <Select.Option value={locale.localeId} >
+                {locale.displayName}
+              </Select.Option>
+            )
+          })}
+        </Select>
+      </span>
     )
+    : <LoaderText loading={fetchingLocale}
+      loadingText={'Fetching Locales'} />
   return (
-    <div>
-      <p className="intro">
-        Copy existing <strong>translations</strong> from similar documents
-        in other projects and versions into this project version.
-        <Link useHref link={docLink} target="_blank">
-          <span title='help'>
-            <Icon name='help' className='s0' parentClassName='iconHelp' />
-            &nbsp;Need help?
-          </span>
-        </Link>
-      </p>
-      <Accordion>
-        <Panel header={
-          <span>
-            Matching phrases are found in the selected projects and
-            imported TM, filtered using the active
-            conditions, then the best matching translation is copied to
-            the target project-version.&nbsp;[more..]
-          </span>
-          } eventKey="1">
-          <p><img src="https://i.imgur.com/ezA992G.png"
-            alt="Version TM Merge workflow" /></p>
-        </Panel>
-      </Accordion>
-      <Col xs={12} className='versionMergeContainer'>
-        <Panel>
-          <div className='versionMergeTarget'>
-            <div className='VersionMergeTitle'>
-              <span>To</span>
-              <span className="panel-name">Target</span>
-            </div>
-            <ul>
-              <li className='list-group-item to' title='target project version'>
-                <ProjectVersionHorizontal projectSlug={projectSlug}
-                  versionSlug={versionSlug} />
-                <span className='item' id="languageDropdown">
-                  <Icon name="language" className="s1"
-                    parentClassName="iconTMX" />
-                  <span className="languageDropdown-field">
-                    {localesSelection}
-                  </span>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </Panel>
+    <Row>
+      <Col className='mb4'>
+        <p className='intro mb3'>
+          Copy existing <strong>translations</strong> from similar documents
+          in other projects and versions into this project version.
+          <Link useHref link={docLink} target='_blank'>
+            <span title='help'>
+              <Icon name='help' className='s0' parentClassName='iconHelp' />
+              &nbsp;Need help?
+            </span>
+          </Link>
+        </p>
+        <Collapse>
+          <Panel header={
+            <span>
+              Matching phrases are found in the selected projects and
+              imported TM, filtered using the active
+              conditions, then the best matching translation is copied to
+              the target project-version.
+            </span>
+            } eventKey='1'>
+            <p><img src='https://i.imgur.com/ezA992G.png'
+              alt='Version TM Merge workflow' /></p>
+          </Panel>
+        </Collapse>
       </Col>
-      <Col xs={12} className='versionMergeRow'>
-        <p className="lead">For every potential translation:</p>
-        <div className="VersionMergeTitle u-textNewBlue">
-          If text is less than
-          <SelectableDropdown title={mergeOptions.matchPercentage + '%'}
-            id="percentDropdown" className='versionMergeDropdown'
-            onSelectDropdownItem={onPercentSelection}
-            selectedValue={mergeOptions.matchPercentage}
-            valueToDisplay={percentValueToDisplay}
-            values={[80, 90, 100]} /> similar, don't use it.
+      <Col className='mt2'>
+        <div className='versionMergeTarget mb4'>
+          <div className='VersionMergeTitle'>
+            <span className='f4'>To</span>&nbsp;
+            <span className='f4 b'>Target</span>
+          </div>
+          <ul className='mt1'>
+            <li className='list-group-item to' title='target project version'>
+              <ProjectVersionHorizontal projectSlug={projectSlug}
+                versionSlug={versionSlug} />
+              <span className='item' id='languageDropdown'>
+                <Icon name='language' className='s1 v-mid mr1'
+                  parentClassName='iconTMX' />
+                <span className='languageDropdown-field'>
+                  {localesSelection}
+                </span>
+              </span>
+            </li>
+          </ul>
         </div>
       </Col>
-      <Col xs={12} className='versionMergeContainer'>
+      <Col className='mb4'>
+        <p className='b f4'>For every potential translation:</p>
+        <div className='di u-textNewBlue'>
+          If text is less than <Select
+            value={mergeOptions.matchPercentage}
+            style={{ width: '5rem' }}
+            onChange={onPercentSelection}>
+            <Select.Option value={75}>75%</Select.Option>
+            <Select.Option value={80}>80%</Select.Option>
+            <Select.Option value={90}>90%</Select.Option>
+            <Select.Option value={100}>100%</Select.Option>
+          </Select> similar, don't use it.
+        </div>
+      </Col>
+      <Col>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
-          flushProjectSearch, onAllVersionCheckboxChange,
-          onVersionCheckboxChange, onDragMoveEnd, removeProjectVersion}}
+          onAllVersionCheckboxChange, onVersionCheckboxChange, onDragMoveEnd,
+          removeProjectVersion}}
           thisProjectSlug={projectSlug}
           {...mergeOptions}
           {...{onDifferentDocIdChange, onDifferentContextChange,
@@ -151,7 +172,7 @@ const MergeOptions = (
       </Col>
       <TMMergeImportedTM fromImportedTM={mergeOptions.fromImportedTM}
         onImportedTMChange={onImportedTMChange} />
-    </div>
+    </Row>
   )
 }
 MergeOptions.propTypes = {
@@ -173,7 +194,6 @@ MergeOptions.propTypes = {
   onPercentSelection: PropTypes.func.isRequired,
   onLanguageSelection: PropTypes.func.isRequired,
   onProjectSearchChange: PropTypes.func.isRequired,
-  flushProjectSearch: PropTypes.func.isRequired,
   onVersionCheckboxChange: PropTypes.func.isRequired,
   onAllVersionCheckboxChange: PropTypes.func.isRequired,
   onDragMoveEnd: PropTypes.func.isRequired,
@@ -289,8 +309,11 @@ class TMMergeModal extends Component {
     })
   }
   onLanguageSelection = (language) => {
-    this.setState({
-      selectedLanguage: language
+    this.setState((prevState, props) => {
+      return {
+        selectedLanguage: this.props.locales.find(
+          locale => locale.localeId === language)
+      }
     })
   }
   onProjectSearchChange = (textEntered) => {
@@ -299,11 +322,7 @@ class TMMergeModal extends Component {
       projectSearchTerm: textEntered
     })
   }
-  flushProjectSearch = (event) => {
-    if (event.key === 'Enter') {
-      this.throttleHandleSearch.flush()
-    }
-  }
+
   // Sorts the selectedVersion list after a reorder of the Draggable List
   onDragMoveEnd = ({oldIndex, newIndex}) => {
     this.setState((prevState, props) => ({
@@ -411,10 +430,10 @@ class TMMergeModal extends Component {
       fetchingLocale,
       processStatus
     } = this.props
-    const modalBody = processStatus
+    const modalBodyInner = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
-        processStatus={processStatus} buttonLabel="Cancel TM Merge"
+        processStatus={processStatus} buttonLabel='Cancel TM Merge'
         queryProgress={this.queryTMMergeProgress} />
       )
       : locales.length === 0
@@ -436,11 +455,15 @@ class TMMergeModal extends Component {
           onVersionCheckboxChange={this.onVersionCheckboxChange}
           onLanguageSelection={this.onLanguageSelection}
           onProjectSearchChange={this.onProjectSearchChange}
-          flushProjectSearch={this.flushProjectSearch}
           onDragMoveEnd={this.onDragMoveEnd}
           removeProjectVersion={this.removeProjectVersion}
         />
         )
+    const modalBody =
+      <div>
+        {modalBodyInner}
+        <p>Note: Zanata will send you a TM Merge Report by email when processing is complete.</p>
+      </div>
     const hasTMSource = this.state.fromAllProjects ||
       this.state.fromImportedTM || this.state.selectedVersions.length > 0
     const modalFooter = processStatus
@@ -448,11 +471,12 @@ class TMMergeModal extends Component {
     : (
       <span>
         <Row>
-          <Button bsStyle='link' className='link-danger'
+          <Button className='btn-link link-danger'
             onClick={toggleTMMergeModal}>
             Close
           </Button>
-          <Button bsStyle='primary' onClick={this.submitForm}
+          <Button type='primary' className='btn-primary'
+            onClick={this.submitForm}
             disabled={(triggered || !hasTMSource)}>
             Merge translations
           </Button>
@@ -460,15 +484,18 @@ class TMMergeModal extends Component {
       </span>
     )
     return (
-      <Modal id="tmMergeModal" show={showTMMergeModal}
-        onHide={toggleTMMergeModal} keyboard backdrop>
-        <Modal.Header>
-          <Modal.Title>Version TM Merge</Modal.Title>
-          <p className="u-textDanger modalText-danger">
+      <Modal
+        title='Version TM Merge'
+        maskClosable={false}
+        visible={showTMMergeModal}
+        onCancel={toggleTMMergeModal}
+        footer={modalFooter}
+        width={'48rem'}>
+        <span>
+          <p className='u-textDanger modalText-danger'>
             {notification && notification.message}</p>
-        </Modal.Header>
-        <Modal.Body>{modalBody}</Modal.Body>
-        <Modal.Footer>{modalFooter}</Modal.Footer>
+          {modalBody}
+        </span>
       </Modal>
     )
   }

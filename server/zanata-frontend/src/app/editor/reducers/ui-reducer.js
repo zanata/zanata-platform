@@ -10,6 +10,7 @@ import {
 import {
   CHANGE_UI_LOCALE,
   TOGGLE_GLOSSARY,
+  TOGGLE_ACTIVITY,
   TOGGLE_INFO_PANEL,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
@@ -24,6 +25,9 @@ import update from 'immutability-helper'
 import { DEFAULT_LOCALE } from '../../config'
 
 export const GLOSSARY_TAB = 'GLOSSARY_TAB'
+export const ACTIVITY_TAB = 'ACTIVITY_TAB'
+
+// @ts-ignore any
 export const identity = (key/*: any*/) => {
   // TODO pahuang implement gettextCatalog.getString
   // console.log('gettextCatalog.getString')
@@ -58,7 +62,7 @@ const defaultState /*: State*/ = {
     },
     sidebar: {
       visible: true,
-      selectedTab: GLOSSARY_TAB
+      selectedTab: ACTIVITY_TAB
     },
     suggestions: {
       heightPercent: 0.3
@@ -77,23 +81,32 @@ const defaultState /*: State*/ = {
 
 /* selectors */
 export const getNavHeaderVisible =
+  // @ts-ignore any
   (state/*: State*/) => state.panels.navHeader.visible
 // always show sidebar when settings is on
+// @ts-ignore any
 export const getSidebarVisible = (state/*: State*/) =>
   state.panels.sidebar.visible || state.showSettings
+// @ts-ignore any
 export const getSidebarTab = (state/*: State*/) =>
   state.panels.sidebar.selectedTab
+// @ts-ignore any
 export const getShowSettings = (state/*: State*/) => state.showSettings
 export const getGlossaryVisible = createSelector(getSidebarVisible,
   getShowSettings, getSidebarTab,
     (sidebar, settings, tab) => sidebar && !settings && tab === GLOSSARY_TAB)
+export const getActivityVisible = createSelector(getSidebarVisible,
+  getShowSettings, getSidebarTab,
+    (sidebar, settings, tab) => sidebar && !settings && tab === ACTIVITY_TAB)
 // info panel is always-on in the non-settings sidebar
 export const getInfoPanelVisible = createSelector(getSidebarVisible,
   getShowSettings, (sidebar, settings) => sidebar && !settings)
 export const getKeyShortcutsVisible =
+  // @ts-ignore any
   (state/*: State*/) => state.panels.keyShortcuts.visible
 
 /* instruct immutability-helper to toggle a boolean value */
+// @ts-ignore any
 const $toggle = {$apply: bool => !bool}
 
 export default handleActions({
@@ -105,8 +118,22 @@ export default handleActions({
   [TOGGLE_GLOSSARY]: state => update(state, {
     panels: {
       sidebar: {
-        visible: {$set: !getGlossaryVisible(state)},
-        selectedTab: {$set: GLOSSARY_TAB}
+        visible: {$set: true},
+        selectedTab: {$set: (
+          getSidebarTab(state) === GLOSSARY_TAB ? ACTIVITY_TAB : GLOSSARY_TAB)
+        }
+      }
+    },
+    showSettings: {$set: false}
+  }),
+
+  [TOGGLE_ACTIVITY]: state => update(state, {
+    panels: {
+      sidebar: {
+        visible: {$set: true},
+        selectedTab: {$set: (
+          getSidebarTab(state) === GLOSSARY_TAB ? ACTIVITY_TAB : GLOSSARY_TAB)
+        }
       }
     },
     showSettings: {$set: false}

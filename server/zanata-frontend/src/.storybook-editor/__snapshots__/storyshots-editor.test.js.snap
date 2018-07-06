@@ -43,36 +43,41 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     </span>
   </p>
   <div
-    className="well-approved well"
+    className="ant-card well-approved"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -142,36 +147,41 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     </span>
   </p>
   <div
-    className="well"
+    className="ant-card"
   >
-    What in the world does this mean?
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      What in the world does this mean?
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -248,36 +258,41 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     </span>
   </p>
   <div
-    className="well"
+    className="ant-card well-fuzzy"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -356,16 +371,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -375,42 +433,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -489,16 +514,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -508,42 +576,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -622,16 +657,59 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
         className="comment"
       >
         <div
-          className="well well-sm"
+          className="ant-card ant-card-bordered"
+        >
+          <div
+            className="ant-card-body"
+            style={undefined}
+          >
+            <span
+              className=""
+            >
+              <svg
+                className="s0"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  }
+                }
+                style={
+                  Object {
+                    "fill": "currentColor",
+                  }
+                }
+              />
+            </span>
+            You spelt this wrong.
+          </div>
+        </div>
+      </span>
+    </span>
+  </p>
+  <div
+    className="ant-card well-rejected"
+  >
+    <div
+      className="ant-card-body"
+      style={undefined}
+    >
+      নাম
+      <span
+        className="u-pullRight"
+      >
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
           <span
             className=""
           >
             <svg
-              className="s0"
+              className="s1"
               dangerouslySetInnerHTML={
                 Object {
-                  "__html": "<use xlink:href=\\"#Icon-comment\\" />",
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
                 }
               }
               style={
@@ -641,42 +719,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
               }
             />
           </span>
-          You spelt this wrong.
-        </div>
+        </button>
       </span>
-    </span>
-  </p>
-  <div
-    className="well-rejected well"
-  >
-    নাম
-    <span
-      className="u-pullRight"
-    >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
-      >
-        <span
-          className=""
-        >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
-              }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
-              }
-            }
-          />
-        </span>
-      </button>
-    </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -753,36 +798,41 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     </span>
   </p>
   <div
-    className="well-translated well"
+    className="ant-card well-translated"
   >
-    নাম
-    <span
-      className="u-pullRight"
+    <div
+      className="ant-card-body"
+      style={undefined}
     >
-      <button
-        className="Link Link--neutral"
-        onClick={[Function]}
-        title="Copy"
+      নাম
+      <span
+        className="u-pullRight"
       >
-        <span
-          className=""
+        <button
+          className="Link Link--neutral"
+          onClick={[Function]}
+          title="Copy"
         >
-          <svg
-            className="s1"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "<use xlink:href=\\"#Icon-copy\\" />",
+          <span
+            className=""
+          >
+            <svg
+              className="s1"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
+                }
               }
-            }
-            style={
-              Object {
-                "fill": "currentColor",
+              style={
+                Object {
+                  "fill": "currentColor",
+                }
               }
-            }
-          />
-        </span>
-      </button>
-    </span>
+            />
+          </span>
+        </button>
+      </span>
+    </div>
   </div>
   <span
     className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
@@ -818,14 +868,13 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
 
 exports[`Editor Storyshots ActivitySelectList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary mr2 mb2 is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -846,12 +895,11 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary mr2 mb2"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -872,12 +920,11 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary mr2 mb2"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -898,7 +945,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
@@ -5587,53 +5634,45 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
 
 exports[`Editor Storyshots CommentBox default 1`] = `
 <div
-  className="TransUnit-commentBox"
+  className="TransUnit-commentBox mb4"
 >
-  <div
-    className="form-group"
-  >
-    <label
-      className="control-label"
-      htmlFor="formControlsTextarea"
+  <span>
+    <span
+      className=""
     >
-      <span
-        className=""
-      >
-        <svg
-          className="s0"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "<use xlink:href=\\"#Icon-comment\\" />",
-            }
+      <svg
+        className="s0"
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "<use xlink:href=\\"#Icon-comment\\" />",
           }
-          style={
-            Object {
-              "fill": "currentColor",
-            }
+        }
+        style={
+          Object {
+            "fill": "currentColor",
           }
-        />
-      </span>
-       Post a comment
-    </label>
-    <br />
-    <textarea
-      className="form-control"
-      id="formControlsTextarea"
-      maxLength={undefined}
-      onChange={[Function]}
-      placeholder="..."
-      type={undefined}
-      value=""
-    />
-  </div>
-  <button
-    className="EditorButton Button--small u-rounded Button--primary u-pullRight btn btn-default"
+        }
+      />
+    </span>
+     Post a comment
+  </span>
+  <br />
+  <textarea
+    className="ant-input"
+    maxLength={undefined}
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="..."
+    style={Object {}}
+    value=""
+  />
+  <Button
+    className="EditorButton Button--small u-rounded Button--primary u-pullRight mt2"
     disabled={true}
     onClick={[Function]}
-    type="button"
   >
     Post comment
-  </button>
+  </Button>
 </div>
 `;
 
@@ -5684,18 +5723,14 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
     TransUnit items
   </h1>
   <img
-    className="img-responsive"
     src="https://i.imgur.com/yQWlJaH.png"
   />
   <h2>
     Concurrent user notice
   </h2>
-  <button
-    className="EditorButton Button--link Button--small Button--concurrent btn btn-default"
-    disabled={false}
+  <Button
+    className="EditorButton Button--link Button--small Button--concurrent"
     onClick={[Function]}
-    title="Click should trigger onClick action"
-    type="button"
   >
     <span
       className=""
@@ -5715,19 +5750,16 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
       />
     </span>
      username
-  </button>
+  </Button>
   <h2>
     Resolve merge conflict button
   </h2>
-  <button
-    className="EditorButton Button--secondary u-rounded btn btn-default"
-    disabled={false}
+  <Button
+    className="EditorButton Button--secondary u-rounded"
     onClick={[Function]}
-    title="Click should trigger onClick action"
-    type="button"
   >
     Resolve conflict
-  </button>
+  </Button>
 </span>
 `;
 
@@ -6012,9 +6044,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
-<table
-  className="table"
->
+<table>
   <thead>
     <tr>
       <th>
@@ -6037,15 +6067,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6059,21 +6090,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6089,48 +6121,35 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
+        />
       </td>
     </tr>
     <tr>
@@ -6138,15 +6157,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6160,21 +6180,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Hospital
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6190,48 +6211,35 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
+        />
       </td>
     </tr>
     <tr>
@@ -6239,15 +6247,16 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6261,21 +6270,22 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               Doctor
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className="u-textMuted"
@@ -6291,48 +6301,35 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
               -none-
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="No translation to copy."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={true}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
+        />
       </td>
     </tr>
   </tbody>
@@ -6340,9 +6337,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
-<table
-  className="table"
->
+<table>
   <thead>
     <tr>
       <th>
@@ -6365,15 +6360,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6387,21 +6383,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6417,48 +6414,35 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Krankenwagen
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
+        />
       </td>
     </tr>
     <tr>
@@ -6466,15 +6450,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6488,21 +6473,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Hospital
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6518,48 +6504,35 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Krankenhaus
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
+        />
       </td>
     </tr>
     <tr>
@@ -6567,15 +6540,16 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6589,21 +6563,22 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Doctor
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6619,48 +6594,35 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
               Arzt
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
+        />
       </td>
     </tr>
   </tbody>
@@ -6668,24 +6630,23 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
 `;
 
 exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
-<table
-  className="table"
->
+<table>
   <tbody>
     <tr>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span>
             <span
@@ -6699,21 +6660,22 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
               Ambulance
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         className="GlossaryText StringLong"
         data-filetype="text"
       >
-        <button
-          className="btn btn-link"
-          disabled={false}
-          onBlur={[Function]}
-          onClick={null}
-          onFocus={[Function]}
-          onMouseOut={[Function]}
-          onMouseOver={[Function]}
-          type="button"
+        <Button
+          className="btn-link"
+          onBlur={undefined}
+          onClick={undefined}
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
         >
           <span
             className=""
@@ -6729,48 +6691,35 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
               Krankenwagen
             </span>
           </span>
-        </button>
+        </Button>
       </td>
       <td
         title="Insert translated term at the cursor position."
       >
-        <button
-          className="EditorButton Button--small u-rounded Button--primary btn btn-default"
+        <Button
+          className="EditorButton Button--small u-rounded Button--primary"
           disabled={false}
           onClick={[Function]}
-          type="button"
+          type="primary"
         >
           Copy
-        </button>
+        </Button>
       </td>
       <td
         className="info-icon"
       >
-        <button
-          className="Button--link s1"
-          disabled={false}
+        <Button
+          className="Button--link s1 v-btm"
+          icon="info-circle-o"
+          onBlur={undefined}
           onClick={[Function]}
-          title="Details"
-        >
-          <span
-            className=""
-            title="Details"
-          >
-            <svg
-              className="s1"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
-        </button>
+          onContextMenu={undefined}
+          onFocus={undefined}
+          onMouseDown={undefined}
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+          onTouchStart={undefined}
+        />
       </td>
     </tr>
   </tbody>
@@ -6827,128 +6776,231 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
   />
   <div
     className="static-modal"
-  />
+  >
+    <Modal
+      footer={null}
+      id="GlossaryTermModal"
+      onCancel={[Function]}
+      title="Glossary Details"
+      visible={true}
+      width="90%"
+    >
+      <div
+        className="ant-row mb4"
+        style={undefined}
+      >
+        <div
+          className="ant-col-12"
+        >
+          <h3>
+            Source Term : 
+            en-US
+          </h3>
+          <span
+            className="modal-term"
+          >
+            bat
+          </span>
+        </div>
+        <div
+          className="ant-col-12"
+        >
+          <h3
+            className="txt-info"
+          >
+            Translation : 
+            de
+          </h3>
+          <span
+            className="modal-term"
+          >
+            schlagen
+          </span>
+        </div>
+      </div>
+      <div
+        className="ant-row"
+        style={undefined}
+      >
+        <div
+          className="ant-col-24 mb2"
+        >
+          <table
+            className="undefined GlossaryDetails-table"
+          >
+            <thead>
+              <tr>
+                <th>
+                  Description
+                </th>
+                <th>
+                  Part of speech
+                </th>
+                <th>
+                  Target comment
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  className=" u-textCenter"
+                  colSpan="3"
+                >
+                  <span
+                    className="loaderText"
+                  >
+                    <span>
+                      Searching...
+                      <span
+                        className="loader"
+                      >
+                        <span>
+                          <div
+                            className=""
+                            dangerouslySetInnerHTML={
+                              Object {
+                                "__html": "<svg class=\\"icon-blank\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 32 32\\"></svg>
+",
+                              }
+                            }
+                            style={
+                              Object {
+                                "fill": "#546677",
+                                "height": 64,
+                                "width": 64,
+                              }
+                            }
+                          />
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className=" u-textCenter"
+                  colSpan="3"
+                >
+                  <span
+                    className="loaderText"
+                  >
+                    <span>
+                      Searching...
+                      <span
+                        className="loader"
+                      >
+                        <span>
+                          <div
+                            className=""
+                            dangerouslySetInnerHTML={
+                              Object {
+                                "__html": "<svg class=\\"icon-blank\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 32 32\\"></svg>
+",
+                              }
+                            }
+                            style={
+                              Object {
+                                "fill": "#546677",
+                                "height": 64,
+                                "width": 64,
+                              }
+                            }
+                          />
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <span
+        className="u-pullRight u-textMeta"
+      />
+    </Modal>
+  </div>
 </div>
 `;
 
-exports[`Editor Storyshots GlossaryTermModal with 1 detail item 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
+exports[`Editor Storyshots IconButton markup (disabled) 1`] = `
+<Button
+  className="drink-me"
+  disabled={true}
+  onBlur={undefined}
+  onClick={[Function]}
+  onContextMenu={undefined}
+  onFocus={undefined}
+  onMouseDown={undefined}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  onTouchStart={undefined}
+>
+  <span
+    className=""
+  >
+    <svg
+      className="s1"
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-mail\\" />",
+        }
       }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
+      style={
+        Object {
+          "fill": "currentColor",
+        }
       }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-<p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-<p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-<p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-<p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <div
-    className="static-modal"
-  />
-</div>
+    />
+  </span>
+</Button>
 `;
 
-exports[`Editor Storyshots GlossaryTermModal with 3 detail items 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
+exports[`Editor Storyshots IconButton markup 1`] = `
+<Button
+  className="push-me"
+  disabled={undefined}
+  onBlur={undefined}
+  onClick={[Function]}
+  onContextMenu={undefined}
+  onFocus={undefined}
+  onMouseDown={undefined}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  onTouchStart={undefined}
+>
+  <span
+    className=""
+  >
+    <svg
+      className="s1"
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<use xlink:href=\\"#Icon-mail\\" />",
+        }
       }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
+      style={
+        Object {
+          "fill": "currentColor",
+        }
       }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
-  <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-<p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-<p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-<p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-<p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <div
-    className="static-modal"
-  />
-</div>
+    />
+  </span>
+</Button>
 `;
 
 exports[`Editor Storyshots LanguageSelectList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--primary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--primary is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -6969,12 +7021,11 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     Current
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--primary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--primary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -6995,12 +7046,11 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--primary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--primary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7021,7 +7071,7 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     </span>
      
     Source
-  </button>
+  </Button>
 </div>
 `;
 
@@ -7182,119 +7232,416 @@ exports[`Editor Storyshots ProgressBar Small 1`] = `
 `;
 
 exports[`Editor Storyshots RejectTranslationModal Criteria chosen 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
+<Modal
+  footer={
+    Array [
+      <Button
+        onClick={[Function]}
+      >
+        Cancel
+      </Button>,
+      <Button
+        disabled={true}
+        onClick={[Function]}
+        type="danger"
+      >
+        Reject translation
+      </Button>,
+    ]
+  }
+  id="RejectTranslationModal"
+  onCancel={[Function]}
+  onOk={[Function]}
+  title="Reject Translation"
+  visible={true}
+  width="90%"
+>
   <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
+    className="ant-row"
+    style={undefined}
+  >
+    <div
+      className="ant-col-21"
+    >
+      <span
+        id="CriteriaTitle"
+      >
+        Criteria
+      </span>
+      <div
+        className="ant-select ant-select-enabled"
+        onBlur={[Function]}
+        onClick={[Function]}
+        onContextMenu={undefined}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseEnter={undefined}
+        onMouseLeave={undefined}
+        onTouchStart={[Function]}
+        style={
+          Object {
+            "width": "95%",
+          }
+        }
+      >
+        <div
+          aria-autocomplete="list"
+          aria-expanded={false}
+          aria-haspopup="true"
+          className="ant-select-selection
+            ant-select-selection--single"
+          onKeyDown={[Function]}
+          role="combobox"
+          tabIndex={0}
+        >
+          <div
+            className="ant-select-selection__rendered"
+          >
+            <div
+              className="ant-select-selection-selected-value"
+              style={
+                Object {
+                  "display": "block",
+                  "opacity": 1,
+                }
+              }
+              title=""
+            >
+              
+            </div>
+          </div>
+          <span
+            className="ant-select-arrow"
+            onClick={[Function]}
+            style={
+              Object {
+                "WebkitUserSelect": "none",
+                "userSelect": "none",
+              }
+            }
+            unselectable="unselectable"
+          >
+            <b />
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="ant-col-3"
+    >
+      <span
+        className="PriorityDropdown"
+      >
+        <span
+          className="u-textWarning"
+        >
+          <svg
+            className="s2"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+        <span
+          id="PriorityTitle"
+        >
+          Priority
+        </span>
+        <div
+          className="ant-select ant-select-enabled"
+          onBlur={[Function]}
+          onClick={[Function]}
+          onContextMenu={undefined}
+          onFocus={[Function]}
+          onMouseDown={[Function]}
+          onMouseEnter={undefined}
+          onMouseLeave={undefined}
+          onTouchStart={[Function]}
+          style={
+            Object {
+              "width": "auto",
+            }
+          }
+        >
+          <div
+            aria-autocomplete="list"
+            aria-expanded={false}
+            aria-haspopup="true"
+            className="ant-select-selection
+            ant-select-selection--single"
+            onKeyDown={[Function]}
+            role="combobox"
+            tabIndex={0}
+          >
+            <div
+              className="ant-select-selection__rendered"
+            >
+              <div
+                className="ant-select-selection-selected-value"
+                style={
+                  Object {
+                    "display": "block",
+                    "opacity": 1,
+                  }
+                }
+                title="Minor"
+              >
+                Minor
+              </div>
+            </div>
+            <span
+              className="ant-select-arrow"
+              onClick={[Function]}
+              style={
+                Object {
+                  "WebkitUserSelect": "none",
+                  "userSelect": "none",
+                }
+              }
+              unselectable="unselectable"
+            >
+              <b />
+            </span>
+          </div>
+        </div>
+      </span>
+    </div>
+  </div>
   <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-<p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-<p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-<p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-<p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <div
-    className="static-modal"
-  />
-</div>
+    className="EditorRejection-input"
+  >
+    <textarea
+      className="EditorInputGroup-input is-focused InputGroup--outlined
+           Commenting"
+      cols="50"
+      maxLength={500}
+      onChange={[Function]}
+      placeholder="You must provide a comment for why this translation has been rejected"
+      rows="10"
+      type="comment"
+    />
+    <p>
+      500
+    </p>
+  </div>
+</Modal>
 `;
 
 exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
-<div>
-  <h1>
-    Lorem Ipsum
-  </h1>
+<Modal
+  footer={
+    Array [
+      <Button
+        onClick={[Function]}
+      >
+        Cancel
+      </Button>,
+      <Button
+        disabled={true}
+        onClick={[Function]}
+        type="danger"
+      >
+        Reject translation
+      </Button>,
+    ]
+  }
+  id="RejectTranslationModal"
+  onCancel={[Function]}
+  onOk={[Function]}
+  title="Reject Translation"
+  visible={true}
+  width="90%"
+>
   <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <h2>
-    Dolor Sit Amet
-  </h2>
+    className="ant-row"
+    style={undefined}
+  >
+    <div
+      className="ant-col-21"
+    >
+      <span
+        id="CriteriaTitle"
+      >
+        Criteria
+      </span>
+      <div
+        className="ant-select ant-select-enabled"
+        onBlur={[Function]}
+        onClick={[Function]}
+        onContextMenu={undefined}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        onMouseEnter={undefined}
+        onMouseLeave={undefined}
+        onTouchStart={[Function]}
+        style={
+          Object {
+            "width": "95%",
+          }
+        }
+      >
+        <div
+          aria-autocomplete="list"
+          aria-expanded={false}
+          aria-haspopup="true"
+          className="ant-select-selection
+            ant-select-selection--single"
+          onKeyDown={[Function]}
+          role="combobox"
+          tabIndex={0}
+        >
+          <div
+            className="ant-select-selection__rendered"
+          >
+            <div
+              className="ant-select-selection-selected-value"
+              style={
+                Object {
+                  "display": "block",
+                  "opacity": 1,
+                }
+              }
+              title=""
+            >
+              
+            </div>
+          </div>
+          <span
+            className="ant-select-arrow"
+            onClick={[Function]}
+            style={
+              Object {
+                "WebkitUserSelect": "none",
+                "userSelect": "none",
+              }
+            }
+            unselectable="unselectable"
+          >
+            <b />
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="ant-col-3"
+    >
+      <span
+        className="PriorityDropdown"
+      >
+        <span
+          className="u-textWarning"
+        >
+          <svg
+            className="s2"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "<use xlink:href=\\"#Icon-warning\\" />",
+              }
+            }
+            style={
+              Object {
+                "fill": "currentColor",
+              }
+            }
+          />
+        </span>
+        <span
+          id="PriorityTitle"
+        >
+          Priority
+        </span>
+        <div
+          className="ant-select ant-select-enabled"
+          onBlur={[Function]}
+          onClick={[Function]}
+          onContextMenu={undefined}
+          onFocus={[Function]}
+          onMouseDown={[Function]}
+          onMouseEnter={undefined}
+          onMouseLeave={undefined}
+          onTouchStart={[Function]}
+          style={
+            Object {
+              "width": "auto",
+            }
+          }
+        >
+          <div
+            aria-autocomplete="list"
+            aria-expanded={false}
+            aria-haspopup="true"
+            className="ant-select-selection
+            ant-select-selection--single"
+            onKeyDown={[Function]}
+            role="combobox"
+            tabIndex={0}
+          >
+            <div
+              className="ant-select-selection__rendered"
+            >
+              <div
+                className="ant-select-selection-selected-value"
+                style={
+                  Object {
+                    "display": "block",
+                    "opacity": 1,
+                  }
+                }
+                title="Minor"
+              >
+                Minor
+              </div>
+            </div>
+            <span
+              className="ant-select-arrow"
+              onClick={[Function]}
+              style={
+                Object {
+                  "WebkitUserSelect": "none",
+                  "userSelect": "none",
+                }
+              }
+              unselectable="unselectable"
+            >
+              <b />
+            </span>
+          </div>
+        </div>
+      </span>
+    </div>
+  </div>
   <div
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
-<p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
-<p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
-<p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
-<p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-      }
-    }
-  />
-  <ul
-    dangerouslySetInnerHTML={
-      Object {
-        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
-<li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
-<li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
-<li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
-<li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-      }
-    }
-  />
-  <div
-    className="static-modal"
-  />
-</div>
+    className="EditorRejection-input"
+  >
+    <textarea
+      className="EditorInputGroup-input is-focused InputGroup--outlined
+           Commenting"
+      cols="50"
+      maxLength={500}
+      onChange={[Function]}
+      placeholder="You must provide a comment for why this translation has been rejected"
+      rows="10"
+      type="comment"
+    />
+    <p>
+      500
+    </p>
+  </div>
+</Modal>
 `;
 
 exports[`Editor Storyshots SelectButton active 1`] = `
-<button
-  className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-  disabled={false}
+<Button
+  className="Button Button--small u-rounded Button--secondary is-active"
   onClick={[Function]}
-  type="button"
+  size="small"
 >
   <span
     className=""
@@ -7315,15 +7662,14 @@ exports[`Editor Storyshots SelectButton active 1`] = `
   </span>
    
   All
-</button>
+</Button>
 `;
 
 exports[`Editor Storyshots SelectButton default 1`] = `
-<button
-  className="Button Button--small u-rounded Button--secondary btn btn-default"
-  disabled={false}
+<Button
+  className="Button Button--small u-rounded Button--secondary"
   onClick={[Function]}
-  type="button"
+  size="small"
 >
   <span
     className=""
@@ -7344,19 +7690,18 @@ exports[`Editor Storyshots SelectButton default 1`] = `
   </span>
    
   All
-</button>
+</Button>
 `;
 
 exports[`Editor Storyshots SelectButtonList default 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7377,12 +7722,11 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7403,12 +7747,11 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7429,20 +7772,19 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
 exports[`Editor Storyshots SelectButtonList first button active 1`] = `
 <div
-  className="btn-toolbar"
-  role="toolbar"
+  className="ant-row"
+  style={undefined}
 >
-  <button
-    className="Button Button--small u-rounded Button--secondary is-active btn btn-default"
-    disabled={false}
+  <Button
+    className="Button Button--small u-rounded Button--secondary is-active"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7463,12 +7805,11 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     All
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7489,12 +7830,11 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     Comments
-  </button>
-  <button
-    className="Button Button--small u-rounded Button--secondary btn btn-default"
-    disabled={false}
+  </Button>
+  <Button
+    className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
-    type="button"
+    size="small"
   >
     <span
       className=""
@@ -7515,7 +7855,7 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     </span>
      
     Updates
-  </button>
+  </Button>
 </div>
 `;
 
@@ -7553,5 +7893,333 @@ exports[`Editor Storyshots TextDiff default 1`] = `
   <span>
     .
   </span>
+</div>
+`;
+
+exports[`Editor Storyshots Validation All Validators 1`] = `
+<div>
+  <h2>
+    Validation Messages for HtmlXmlTagValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="<group><users><user>1</user></users></group>"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="<group><users><user>1</user></users><foo></group>"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for JavaVariablesValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable {0}"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for NewLineLeadTrailValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="
+Testing string with leading new line"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Different string with the newline removed"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for PrintfVariablesValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable %1v"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for PrintXSIExtensionValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="%s: Read error at byte %s, while reading %lu byte"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="%1$s：Read error while reading %3$lu bytes，at %2$s"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for TabValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="with two		tabs"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="with one	tab"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Validation Messages for XMLEnitityValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Source string"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Target string: bla bla &test"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
+    <div
+      className="ant-collapse"
+      style={undefined}
+    >
+      <div
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
+        style={undefined}
+      >
+        <div
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
+        >
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;

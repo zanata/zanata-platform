@@ -2,58 +2,76 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { injectIntl, intlShape } from 'react-intl'
 import Textarea from 'react-textarea-autosize'
 import TransUnitTranslationHeader from './TransUnitTranslationHeader'
 import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { LoaderText } from '../../components'
 import { pick } from 'lodash'
-import { phraseTextSelectionRange } from '../actions/phrases-actions'
-import { getSyntaxHighlighting } from '../reducers'
+import {
+  phraseTextSelectionRange, validationError
+} from '../actions/phrases-actions'
+import {
+  getSyntaxHighlighting,
+  getValidateHtmlXml,
+  getValidateNewLine,
+  getValidateTab,
+  getValidateJavaVariables,
+  getValidateXmlEntity,
+  getValidatePrintfVariables,
+  getValidatePrintfXsi
+} from '../reducers'
 import SyntaxHighlighter, { registerLanguage }
   from 'react-syntax-highlighter/light'
+import Validation, { getValidationMessages } from './Validation/index.tsx'
 import xml from 'react-syntax-highlighter/languages/hljs/xml'
 import { atelierLakesideLight } from 'react-syntax-highlighter/styles/hljs'
 
 registerLanguage('xml', xml)
+
+const DO_NOT_RENDER = undefined
 
 /**
  * Panel to display and edit translations of a phrase.
  */
 class TransUnitTranslationPanel extends React.Component {
   static propTypes = {
+    cancelEdit: PropTypes.func.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
+    intl: intlShape.isRequired,
+    isRTL: PropTypes.bool.isRequired,
+    onSelectionChange: PropTypes.func.isRequired,
+    onValidationErrorChange: PropTypes.func.isRequired,
     // the key of the currently open dropdown (may be undefined if none is open)
     openDropdown: PropTypes.any,
-    onSelectionChange: PropTypes.func.isRequired,
+    permissions: PropTypes.shape({
+      reviewer: PropTypes.bool.isRequired,
+      translator: PropTypes.bool.isRequired
+    }).isRequired,
+    // FIXME use PropTypes.shape and include all used properties
+    phrase: PropTypes.object.isRequired,
+    saveAsMode: PropTypes.bool.isRequired,
     // the key for the save dropdown for this translation panel. Can be compared
     // with openDropdown to see whether this dropdown is open.
     saveDropdownKey: PropTypes.any.isRequired,
-    selected: PropTypes.bool.isRequired,
-    // FIXME use PropTypes.shape and include all used properties
-    phrase: PropTypes.object.isRequired,
     savePhraseWithStatus: PropTypes.func.isRequired,
-    cancelEdit: PropTypes.func.isRequired,
-    undoEdit: PropTypes.func.isRequired,
-    toggleDropdown: PropTypes.func.isRequired,
+    selected: PropTypes.bool.isRequired,
+    selectPhrasePluralIndex: PropTypes.func.isRequired,
+    showSuggestions: PropTypes.bool.isRequired,
+    suggestionCount: PropTypes.number.isRequired,
+    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
+    syntaxOn: PropTypes.bool.isRequired,
     textChanged: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
+    toggleSuggestionPanel: PropTypes.func.isRequired,
     translationLocale: PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
     }).isRequired,
-    saveAsMode: PropTypes.bool.isRequired,
-    selectPhrasePluralIndex: PropTypes.func.isRequired,
-    suggestionCount: PropTypes.number.isRequired,
-    showSuggestions: PropTypes.bool.isRequired,
-    toggleGlossary: PropTypes.func.isRequired,
-    toggleSuggestionPanel: PropTypes.func.isRequired,
-    suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
-    isRTL: PropTypes.bool.isRequired,
-    syntaxOn: PropTypes.bool.isRequired,
-    permissions: PropTypes.shape({
-      reviewer: PropTypes.bool.isRequired,
-      translator: PropTypes.bool.isRequired
-    }).isRequired
+    undoEdit: PropTypes.func.isRequired,
+    validationOptions: PropTypes.any
   }
 
   componentWillMount () {
@@ -118,6 +136,67 @@ class TransUnitTranslationPanel extends React.Component {
     const isPlural = phrase.plural
     const directionClass = isRTL ? 'rtl' : 'ltr'
 
+    const {
+      openDropdown,
+      onValidationErrorChange,
+      intl,
+      saveAsMode,
+      saveDropdownKey,
+      textChanged,
+      permissions,
+      validationOptions } = this.props
+    const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
+
+    // TODO use dedicated phrase.isLoading variable when available
+    const isLoading = !phrase.newTranslations
+    const selectedPluralIndex = phrase.selectedPluralIndex || 0
+
+    let translations
+    let validationMsgs
+    if (isLoading) {
+      translations = <span className="u-textMeta">
+        <LoaderText loading />
+      </span>
+    } else {
+      const newTranslations = phrase.newTranslations
+      ? phrase.newTranslations
+      : ['Loading...']
+
+      translations = newTranslations.map(
+        (translation, index) => {
+          const validationProps = {
+            locale: intl.locale,
+            source: phrase.sources[0],
+            target: translation,
+            validationOptions
+          }
+          validationMsgs = getValidationMessages(validationProps)
+          const hasValidationErrors =
+            validationMsgs && validationMsgs.errorCount > 0
+          return (
+            <TranslationItem key={index}
+              dropdownIsOpen={dropdownIsOpen}
+              index={index}
+              isPlural={isPlural}
+              phrase={phrase}
+              onSelectionChange={onSelectionChange}
+              onValidationErrorChange={onValidationErrorChange}
+              selected={selected}
+              selectedPluralIndex={selectedPluralIndex}
+              selectPhrasePluralIndex={selectPhrasePluralIndex}
+              setTextArea={this.setTextArea}
+              textChanged={textChanged}
+              translation={translation}
+              directionClass={directionClass}
+              syntaxOn={syntaxOn}
+              validationOptions={validationOptions}
+              validationMessages={validationMsgs}
+              permissions={permissions}
+              hasValidationErrors={hasValidationErrors} />
+          )
+        })
+    }
+
     if (selected) {
       const headerProps = pick(this.props, [
         'cancelEdit',
@@ -127,7 +206,7 @@ class TransUnitTranslationPanel extends React.Component {
       ])
       header = <TransUnitTranslationHeader {...headerProps} />
 
-      const footerProps = pick(this.props, [
+      const footerProps = {...pick(this.props, [
         'glossaryCount',
         'glossaryVisible',
         'openDropdown',
@@ -143,53 +222,8 @@ class TransUnitTranslationPanel extends React.Component {
         'toggleSuggestionPanel',
         'showRejectModal',
         'permissions'
-      ])
+      ]), validationMessages: validationMsgs}
       footer = <TransUnitTranslationFooter {...footerProps} />
-    }
-
-    const {
-      openDropdown,
-      saveAsMode,
-      saveDropdownKey,
-      textChanged,
-      permissions } = this.props
-    const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
-
-    // TODO use dedicated phrase.isLoading variable when available
-    const isLoading = !phrase.newTranslations
-    const selectedPluralIndex = phrase.selectedPluralIndex || 0
-
-    let translations
-
-    if (isLoading) {
-      translations = <span className="u-textMeta">
-        <LoaderText loading />
-      </span>
-    } else {
-      const newTranslations = phrase.newTranslations
-      ? phrase.newTranslations
-      : ['Loading...']
-
-      translations = newTranslations.map(
-        (translation, index) => {
-          return (
-            <TranslationItem key={index}
-              dropdownIsOpen={dropdownIsOpen}
-              index={index}
-              isPlural={isPlural}
-              phrase={phrase}
-              onSelectionChange={onSelectionChange}
-              selected={selected}
-              selectedPluralIndex={selectedPluralIndex}
-              selectPhrasePluralIndex={selectPhrasePluralIndex}
-              setTextArea={this.setTextArea}
-              textChanged={textChanged}
-              translation={translation}
-              directionClass={directionClass}
-              syntaxOn={syntaxOn}
-              permissions={permissions} />
-          )
-        })
     }
 
     return (
@@ -206,10 +240,13 @@ export class TranslationItem extends React.Component {
   static propTypes = {
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
+    hasValidationErrors: PropTypes.bool,
     isPlural: PropTypes.bool.isRequired,
     onSelectionChange: PropTypes.func.isRequired,
+    onValidationErrorChange: PropTypes.func.isRequired,
     phrase: PropTypes.shape({
-      id: PropTypes.any.isRequired
+      id: PropTypes.any.isRequired,
+      sources: PropTypes.any.isRequired
     }).isRequired,
     selected: PropTypes.bool.isRequired,
     selectedPluralIndex: PropTypes.number.isRequired,
@@ -220,14 +257,21 @@ export class TranslationItem extends React.Component {
     setTextArea: PropTypes.func.isRequired,
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string,
+    validationOptions: PropTypes.any.isRequired,
     directionClass: PropTypes.string,
     syntaxOn: PropTypes.bool.isRequired,
     permissions: PropTypes.shape({
       reviewer: PropTypes.bool.isRequired,
       translator: PropTypes.bool.isRequired
-    }).isRequired
+    }).isRequired,
+    validationMessages: PropTypes.any
   }
-
+  componentDidUpdate (prevProps) {
+    const { phrase, hasValidationErrors, onValidationErrorChange } = this.props
+    if (phrase.errors !== hasValidationErrors) {
+      onValidationErrorChange(phrase.id, hasValidationErrors)
+    }
+  }
   setTextArea = (ref) => {
     this.props.setTextArea(this.props.index, ref)
   }
@@ -252,7 +296,8 @@ export class TranslationItem extends React.Component {
       selectedPluralIndex,
       translation,
       directionClass,
-      permissions
+      permissions,
+      validationMessages
     } = this.props
 
     // TODO make this translatable
@@ -285,7 +330,7 @@ export class TranslationItem extends React.Component {
         lineStyle={syntaxStyle}>
         {translation}
       </SyntaxHighlighter>
-      : ''
+      : DO_NOT_RENDER
     const cantEditTranslation = !permissions.translator || dropdownIsOpen
     return (
       <div className="TransUnit-item" key={index}>
@@ -293,7 +338,7 @@ export class TranslationItem extends React.Component {
         {/* TODO check that this does not trim strings */}
         {/* TODO translate "Enter a translation..." */}
         <Textarea
-          ref={this.setTextArea}
+          inputRef={this.setTextArea}
           className={directionClass + ' TransUnit-text'}
           disabled={cantEditTranslation}
           rows={1}
@@ -303,6 +348,7 @@ export class TranslationItem extends React.Component {
           onChange={this._onChange}
           onSelect={onSelectionChange} />
         {syntaxHighlighter}
+        {selected && <Validation {...validationMessages} />}
       </div>
     )
   }
@@ -313,6 +359,50 @@ function mapStateToProps (state) {
   const targetLocaleDetails = ui.uiLocales[context.lang]
   return {
     syntaxOn: getSyntaxHighlighting(state),
+    validationOptions: [
+      {
+        id: 'HTML_XML',
+        label: 'HTML/XML tags',
+        active: getValidateHtmlXml(state) === 'Warning',
+        disabled: getValidateHtmlXml(state) === 'Error'
+      },
+      {
+        id: 'NEW_LINE',
+        label: 'Leading/trailing newline',
+        active: getValidateNewLine(state) === 'Warning',
+        disabled: getValidateNewLine(state) === 'Error'
+      },
+      {
+        id: 'TAB',
+        label: 'Tab characters',
+        active: getValidateTab(state) === 'Warning',
+        disabled: getValidateTab(state) === 'Error'
+      },
+      {
+        id: 'JAVA_VARIABLES',
+        label: 'Java variables',
+        active: getValidateJavaVariables(state) === 'Warning',
+        disabled: getValidateJavaVariables(state) === 'Error'
+      },
+      {
+        id: 'XML_ENTITY',
+        label: 'XML entity reference',
+        active: getValidateXmlEntity(state) === 'Warning',
+        disabled: getValidateXmlEntity(state) === 'Error'
+      },
+      {
+        id: 'PRINTF_VARIABLES',
+        label: 'Printf variables',
+        active: getValidatePrintfVariables(state) === 'Warning',
+        disabled: getValidatePrintfVariables(state) === 'Error'
+      },
+      {
+        id: 'PRINTF_XSI_EXTENSION',
+        label: 'Positional printf (XSI extension)',
+        active: getValidatePrintfXsi(state) === 'Warning',
+        disabled: getValidatePrintfXsi(state) === 'Error'
+      }
+    ],
     isRTL: targetLocaleDetails ? targetLocaleDetails.isRTL || false
         : false,
     permissions: headerData.permissions
@@ -325,12 +415,20 @@ function mapDispatchToProps (dispatch, _ownProps) {
     onSelectionChange: (event) => {
       const { selectionStart, selectionEnd } = event.target
       event.stopPropagation()
-      // This does seem to fire when selected phrase changes, so it is fine
-      // to just transmit the range without info about which row it is for.
-      dispatch(phraseTextSelectionRange(selectionStart, selectionEnd))
+      // Do not update with empty ranges
+      if (selectionStart !== selectionEnd) {
+        dispatch(phraseTextSelectionRange(selectionStart, selectionEnd))
+      }
+    },
+    onValidationErrorChange: (phraseId, hasValidationErrors) => {
+      dispatch(validationError(phraseId, hasValidationErrors))
     }
   }
 }
 
+TransUnitTranslationPanel.contextTypes = {
+  intl: PropTypes.object
+}
+
 export default connect(
-    mapStateToProps, mapDispatchToProps)(TransUnitTranslationPanel)
+    mapStateToProps, mapDispatchToProps)(injectIntl(TransUnitTranslationPanel))

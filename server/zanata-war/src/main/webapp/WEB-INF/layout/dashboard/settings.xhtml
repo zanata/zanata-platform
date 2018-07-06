@@ -191,6 +191,13 @@
             </ul>
           </h:form>
           <hr/>
+          <p>
+            <a href="${request.contextPath}/rest/export/userData"
+              class="button button--primary"
+              id="exportUserData" target="_blank">
+              #{msgs['jsf.dashboard.settings.downloadProfile.message']}
+            </a>
+          </p>
           <h:form>
             <p>
               <h:link styleClass="button button--warning" outcome="/profile/merge_account.xhtml">
@@ -305,7 +312,7 @@
               </p>
             </ui:fragment>
           </div>
-          <a href="#" class="button"
+          <a href="#" class="button" id="generate-key-button"
             data-toggle="modal" data-target="#generateAPIKeyModal">
             #{msgs['jsf.dashboard.settings.generateNewApiKey.label']}
           </a>

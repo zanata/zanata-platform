@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
+import java.util.stream.Collectors;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
@@ -38,8 +38,8 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.VersionGroupDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
@@ -57,10 +57,11 @@ import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.zanata.util.UrlUtil;
+
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -97,6 +98,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     private GroupLocaleAutocomplete localeAutocomplete;
     @Inject
     private UrlUtil urlUtil;
+    @Inject
+    private VersionGroupDAO versionGroupDAO;
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
 
@@ -110,7 +113,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
                 @Override
                 protected boolean include(HPerson elem, String filter) {
-                    return StringUtils.containsIgnoreCase(elem.getName(),
+                    return containsIgnoreCase(elem.getName(),
                             filter);
                 }
             };
@@ -201,8 +204,14 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     }
 
     @Transactional
-    public void setStatus(char initial) {
-        getInstance().setStatus(EntityStatus.valueOf(initial));
+    public void deleteSelf() {
+        identity.checkPermission(getInstance(), "update");
+        String slug = getInstance().getSlug();
+        versionGroupDAO.makeTransient(getInstance());
+        versionGroupDAO.flush();
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                msgs.format("jsf.group.notification.deleted", slug));
+        urlUtil.redirectToInternal(urlUtil.dashboardUrl());
     }
 
     @Transactional
@@ -361,18 +370,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         public List<HProjectIteration> suggest() {
             List<HProjectIteration> versionList = versionGroupServiceImpl
                     .searchLikeSlugOrProjectSlug(getQuery());
-            Collection<HProjectIteration> filtered = Collections2
-                    .filter(versionList, new Predicate<HProjectIteration>() {
-
-                        @Override
-                        public boolean
-                                apply(@Nullable HProjectIteration input) {
-                            return input != null && !input.getGroups()
-                                    .contains(getInstance()) &&
-                                    identity.hasPermission(input, "read");
-                        }
-                    });
-            return Lists.newArrayList(filtered);
+            return versionList.stream()
+                    .filter(it -> it != null && !it.getGroups()
+                            .contains(getInstance()) &&
+                            identity.hasPermission(it, "read"))
+                    .collect(Collectors.toList());
         }
 
         @Override
@@ -417,23 +419,28 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
         @Override
         public List<HLocale> suggest() {
-            List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
-            Collection<HLocale> filtered =
-                    Collections2.filter(localeList, new Predicate<HLocale>() {
+            String query = getQuery();
+            HIterationGroup group = getInstance();
+            return localeServiceImpl
+                    .getSupportedLocales()
+                    .stream()
+                    .filter(locale ->
+                            !group.getActiveLocales().contains(locale)
+                                    && (matchByLocaleCode(query, locale)
+                                    || matchByDisplayName(query, locale)))
+                    .collect(Collectors.toList());
+        }
 
-                        @Override
-                        public boolean apply(HLocale input) {
-                            return !getInstance().getActiveLocales()
-                                    .contains(input)
-                                    && (StringUtils.startsWithIgnoreCase(
-                                            input.getLocaleId().getId(),
-                                            getQuery())
-                                            || StringUtils.containsIgnoreCase(
-                                                    input.retrieveDisplayName(),
-                                                    getQuery()));
-                        }
-                    });
-            return Lists.newArrayList(filtered);
+        private boolean matchByDisplayName(String query, HLocale locale) {
+            return containsIgnoreCase(
+                    locale.retrieveDisplayName(),
+                    query);
+        }
+
+        private boolean matchByLocaleCode(String query, HLocale locale) {
+            return startsWithIgnoreCase(
+                    locale.getLocaleId().getId(),
+                    query);
         }
 
         /**

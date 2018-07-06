@@ -3,12 +3,13 @@ package org.zanata.client;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.kohsuke.args4j.Option;
@@ -17,16 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.BasicOptions;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.common.io.Files;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Patrick Huang <a
@@ -42,13 +39,9 @@ public class BashCompletionGenerator {
     private List<Option> genericOptions;
 
     // by using TreeMap/TreeSet, we get consistent ordering in the generated files
-    private Map<String, List<Option>> commandOptions = Maps.newTreeMap();
-    private Set<Option> allOptions = Sets.newTreeSet(new Comparator<Option>() {
-        @Override
-        public int compare(Option o1, Option o2) {
-            return o1.name().compareTo(o2.name());
-        }
-    });
+    private Map<String, List<Option>> commandOptions = new TreeMap<>();
+    private Set<Option> allOptions = new TreeSet<>(
+            Comparator.comparing(Option::name));
     private String commandName;
     private String commandDescription;
 
@@ -113,7 +106,7 @@ public class BashCompletionGenerator {
         // String genericOptions = optionsToString(generator.genericOptions);
 
         // TODO write to a PrintStream instead of an ArrayList
-        List<String> lines = Lists.newArrayList();
+        List<String> lines = new ArrayList<>();
 
         List<String> license = Files.readLines(headerFile, Charsets.UTF_8);
         for (String line : license) {
@@ -198,26 +191,15 @@ public class BashCompletionGenerator {
         FileUtils.writeStringToFile(to, fileContents, Charsets.UTF_8);
     }
 
-    private static String optionsToString(Iterable<Option> options) {
-        return joiner.join(Iterables.transform(options, OptionToName.FUNCTION));
+    private static String optionsToString(List<Option> options) {
+        return joiner.join(options.stream().map(Option::name).iterator());
     }
 
     private Iterable<Option> findByMetaVar(final String expectedMetaVar) {
-        return Iterables.filter(allOptions, new Predicate<Option>() {
-            @Override
-            public boolean apply(Option input) {
-                // THIS IS NOT QUITE RELIABLE. but hey :)
-                return input.metaVar().toLowerCase().contains(expectedMetaVar);
-            }
-        });
+        return allOptions.stream().filter(input -> {
+            // THIS IS NOT QUITE RELIABLE. but hey :)
+            return input.metaVar().toLowerCase().contains(expectedMetaVar);
+        }).collect(toList());
     }
 
-    static enum OptionToName implements Function<Option, String> {
-        FUNCTION;
-
-        @Override
-        public String apply(@Nonnull Option input) {
-            return input.name();
-        }
-    }
 }

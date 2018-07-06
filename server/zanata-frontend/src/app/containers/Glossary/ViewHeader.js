@@ -5,13 +5,11 @@ import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {debounce, isEmpty} from 'lodash'
 import {
-  Icon,
   TextInput,
   Link,
   Select
 } from '../../components'
 import Header from './Header'
-import {Button, Row} from 'react-bootstrap'
 import {
   glossaryChangeLocale,
   glossaryFilterTextChanged,
@@ -27,6 +25,12 @@ import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
 import {getProjectUrl} from '../../utils/UrlHelper'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 
 /**
  * Header for glossary page
@@ -39,11 +43,11 @@ class ViewHeader extends Component {
     termCount: PropTypes.number.isRequired,
     statsLoading: PropTypes.bool,
     transLocales: PropTypes.arrayOf(
-      PropTypes.shape({
-        count: PropTypes.number.isRequired,
-        label: PropTypes.string.isRequired,
-        value: PropTypes.string.isRequired
-      })
+        PropTypes.shape({
+          count: PropTypes.number.isRequired,
+          label: PropTypes.string.isRequired,
+          value: PropTypes.string.isRequired
+        })
     ).isRequired,
     filterText: PropTypes.string,
     selectedTransLocale: PropTypes.string,
@@ -71,10 +75,10 @@ class ViewHeader extends Component {
   currentLocaleCount = () => {
     if (this.props.filterText && this.props.results) {
       return this.props.results
-        .filter(result => result.glossaryTerms.length >= 2).length
+          .filter(result => result.glossaryTerms.length >= 2).length
     } else {
       const selectedTransLocaleObj = this.props.transLocales
-        .find((locale) => locale.value === this.props.selectedTransLocale)
+          .find((locale) => locale.value === this.props.selectedTransLocale)
       return selectedTransLocaleObj ? selectedTransLocaleObj.count : 0
     }
   }
@@ -126,25 +130,25 @@ class ViewHeader extends Component {
     const isEmptyTerms = termCount <= 0
     const currentLocaleCount = this.currentLocaleCount()
     const isReadOnly = !(permission.canAddNewEntry ||
-    permission.canUpdateEntry || permission.canDeleteEntry)
+        permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon name='locked' className='s1' parentClassName='iconLocked' />
+        <Icon type='lock' className='s1 iconLocked' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
-    const projectUrl = project && getProjectUrl(project)
+    const projectUrl = project && getProjectUrl(project.id)
 
     const projectLink = project && (
       <div className='projectLink'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon name='project' className='s1' parentClassName='iconProject' />
+            <Icon type='folder-open' className='iconProject' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
       </div>
-      )
+    )
 
     /* eslint-disable max-len, react/jsx-no-bind, no-return-assign */
     return (
@@ -160,60 +164,58 @@ class ViewHeader extends Component {
               accessibilityLabel='Search Terms'
               defaultValue={filterText}
               onChange={handleFilterFieldUpdate} />
-            <Button bsStyle='link'
-              title='Cancel search'
+            <Button className='btn-link iconCross-glossary' aria-label='button'
+              icon='close' title='Cancel search'
               disabled={isEmpty(filterText)}
-              onClick={this.handleClearSearch}>
-              <Icon name='cross' className='s1'
-                parentClassName='iconCross-glossary' />
-            </Button>
+              onClick={this.handleClearSearch} />
             <div className='glossaryButtons'>
-                  {permission.canAddNewEntry && (
-                    <div className='glossaryBtn topBtn'>
-                      <Button bsStyle='link' type='button'
-                        onClick={() => handleImportFileDisplay(true)}>
-                        <Row>
-                          <Icon name='import' className='s1'
-                            parentClassName='iconImport' />
-                          <span className='hidden-lesm'>Import</span>
-                        </Row>
-                      </Button>
-                      <ImportModal />
-                    </div>)}
+              {permission.canAddNewEntry && (
+                <div className='glossaryBtn topBtn'>
+                  <Button className='btn-link' type='button'
+                    aria-label='button'
+                    onClick={() => handleImportFileDisplay(true)}>
+                    <Row>
+                      <Icon type='upload' className='s1 iconImport' />
+                      <span className='hidden-lesm'>Import</span>
+                    </Row>
+                  </Button>
+                  <ImportModal />
+                </div>)}
 
-                  {permission.canDownload && !isEmptyTerms && (
-                    <div className='glossaryBtn topBtn'>
-                      <Button bsStyle='link' type='button'
-                        onClick={() => handleExportFileDisplay(true)}>
-                        <Row>
-                          <Icon name='export' className='s1'
-                            parentClassName='iconExport' />
-                          <span className='hidden-lesm'>Export</span>
-                        </Row>
-                      </Button>
-                      <ExportModal />
-                    </div>)}
+              {permission.canDownload && !isEmptyTerms && (
+                <div className='glossaryBtn topBtn'>
+                  <Button className='btn-link' type='button'
+                    aria-label='button'
+                    onClick={() => handleExportFileDisplay(true)}>
+                    <Row>
+                      <Icon type='export' className='s1 iconExport' />
+                      <span className='hidden-lesm'>Export</span>
+                    </Row>
+                  </Button>
+                  <ExportModal />
+                </div>)}
 
-                  {permission.canAddNewEntry && (
-                    <div className='glossaryBtn topBtn'>
-                      <Button bsStyle='link' onClick={() =>
+              {permission.canAddNewEntry && (
+                <div className='glossaryBtn topBtn'>
+                  <Button className='btn-link' aria-label='button'
+                    onClick={() =>
                         handleNewEntryDisplay(true)}>
-                        <Row>
-                          <Icon name='plus' className='s1' parentClassName='iconPlus2' />
-                          <span className='hidden-lesm'>New</span>
-                        </Row>
-                      </Button>
-                      <NewEntryModal />
-                    </div>)}
+                    <Row>
+                      <Icon type='plus' className='s1 iconPlus2' />
+                      <span className='hidden-lesm'>New</span>
+                    </Row>
+                  </Button>
+                  <NewEntryModal />
+                </div>)}
 
-                  {showDeleteAll && (
-                    <div className='glossaryBtn topBtn'>
-                      <DeleteAllEntriesModal show={deleteAll.show}
-                        isDeleting={deleteAll.isDeleting}
-                        handleDeleteAllEntriesDisplay={
-                          handleDeleteAllEntriesDisplay}
-                        handleDeleteAllEntries={handleDeleteAllEntries} />
-                    </div>)}
+              {showDeleteAll && (
+                <div className='glossaryBtn topBtn'>
+                  <DeleteAllEntriesModal show={deleteAll.show}
+                    isDeleting={deleteAll.isDeleting}
+                    handleDeleteAllEntriesDisplay={
+                      handleDeleteAllEntriesDisplay}
+                    handleDeleteAllEntries={handleDeleteAllEntries} />
+                </div>)}
             </div>
           </div>
         )}>
@@ -223,15 +225,14 @@ class ViewHeader extends Component {
               <tr className='tr-flex1'>
                 <td className='td-3'
                   onClick={() => handleSortColumn('src_content')}>
-                  <Button bsStyle='link' type='button'>
+                  <Button className='btn-link' aria-label='button'>
                     <Row>
                       {'src_content' in sort
-                        ? (sort.src_content === true)
-                          ? <Icon name='chevron-down' className='s1' />
-                          : <Icon name='chevron-up' className='s1' />
-                        : ''}
-                      <Icon name='glossary' className='s1'
-                        parentClassName='iconGlossary-neutral' />
+                          ? (sort.src_content === true)
+                              ? <Icon name='chevron-down' className='s1' />
+                              : <Icon name='chevron-up' className='s1' />
+                          : ''}
+                      <Icon type='book' className='s1 iconGlossary-neutral' />
                       <span>
                       English (United States)
                       </span>
@@ -239,12 +240,11 @@ class ViewHeader extends Component {
                     </Row>
                   </Button>
                 </td>
-                <td
-                  className='languageSelect td-3'>
+                <td className='languageSelect td-3'>
                   <Select
                     name='language-selection'
                     placeholder={statsLoading
-                      ? 'Loading…' : 'Select a language…'}
+                        ? 'Loading…' : 'Select a language…'}
                     className='inputFlex'
                     isLoading={statsLoading}
                     value={selectedTransLocale}
@@ -255,26 +255,24 @@ class ViewHeader extends Component {
                   />
                   {selectedTransLocale &&
                   (<span className='hidden-xs'>
-                    <Row>
-                      <Icon name='translate' className='s1' parentClassName='iconTranslate-neutral' />
-                      <span className='u-textNeutral'>
+                    <Icon type='global' className='s1 iconTranslate-neutral' />
+                    <span className='u-textNeutral'>
                       {currentLocaleCount}
-                      </span>
-                    </Row>
+                    </span>
                   </span>
                   )}
                 </td>
                 <td className='hidesmall td-1'
                   onClick={() => handleSortColumn('part_of_speech')}>
-                  <Button bsStyle='link' type='button'>
+                  <Button className='btn-link' aria-label='button'>
                     <Row>
                       {'part_of_speech' in sort
-                        ? (sort.part_of_speech === true)
-                          ? <Icon name='chevron-down'
-                            className='s1' parentClassName='iconChevron' />
-                          : <Icon name='chevron-up'
-                            className='s1' parentClassName='iconChevron' />
-                        : ''}
+                          ? (sort.part_of_speech === true)
+                              ? <Icon type='down'
+                                className='s1 iconChevron' />
+                              : <Icon type='up'
+                                className='s1 iconChevron' />
+                          : ''}
                       <span className='u-marginL--rq'>
                       Part of Speech
                       </span>
@@ -287,7 +285,7 @@ class ViewHeader extends Component {
           </table>
         </div>
       </Header>
-    /* eslint-enable max-len, react/jsx-no-bind, no-return-assign */
+      /* eslint-enable max-len, react/jsx-no-bind, no-return-assign */
     )
   }
 }
@@ -320,13 +318,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   const updateFilter = debounce((val) =>
-    dispatch(glossaryFilterTextChanged(val)), 200)
+      dispatch(glossaryFilterTextChanged(val)), 200)
 
   return {
     handleTranslationLocaleChange: (selectedLocale) =>
-      dispatch(
-        glossaryChangeLocale(selectedLocale ? selectedLocale.value : '')
-      ),
+        dispatch(
+            glossaryChangeLocale(selectedLocale ? selectedLocale.value : '')
+        ),
     handleFilterFieldUpdate: (event) => {
       updateFilter(event.target.value || '')
     },
@@ -335,13 +333,13 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleSortColumn: (col) => dispatch(glossarySortColumn(col)),
     handleImportFileDisplay: (display) =>
-      dispatch(glossaryToggleImportFileDisplay(display)),
+        dispatch(glossaryToggleImportFileDisplay(display)),
     handleExportFileDisplay: (display) =>
-      dispatch(glossaryToggleExportFileDisplay(display)),
+        dispatch(glossaryToggleExportFileDisplay(display)),
     handleNewEntryDisplay: (display) =>
-      dispatch(glossaryToggleNewEntryModal(display)),
+        dispatch(glossaryToggleNewEntryModal(display)),
     handleDeleteAllEntriesDisplay: (display) =>
-      dispatch(glossaryToggleDeleteAllEntriesModal(display)),
+        dispatch(glossaryToggleDeleteAllEntriesModal(display)),
     handleDeleteAllEntries: () => dispatch(glossaryDeleteAll())
   }
 }

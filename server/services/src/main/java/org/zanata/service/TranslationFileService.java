@@ -21,6 +21,7 @@
 package org.zanata.service;
 
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.common.DocumentType;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
@@ -31,7 +32,6 @@ import com.google.common.base.Optional;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Set;
 
 /**
@@ -114,51 +114,34 @@ public interface TranslationFileService extends Serializable {
     /**
      * Extracts the translatable strings from a document file to a usable form.
      *
-     * @param documentFile
-     *            location of the document to parse
      * @param path
      *            to use within the Zanata project-iteration
      * @param fileName
      *            to use within the Zanata project-iteration
-     * @param params
-     *            adapter-specific parameter string. See documentation for
-     *            individual adapters.
      * @return a usable representation of the document
      * @throws ZanataServiceException
      *             if there is no adapter available for the document format, or
      *             there is an error during parsing
      */
-    Resource parseAdapterDocumentFile(URI documentFile, String path,
-            String fileName, Optional<String> params, Optional<String> documentType)
+    Resource parseAdapterDocumentFile(String path,
+            String fileName, ParserOptions options, Optional<String> documentType)
             throws ZanataServiceException;
 
     /**
      * Extract the translatable strings from a new version of an existing
      * document file to a usable form.
      *
-     * @param documentFile
-     *            location of the document to parse
      * @param docId
      *            the id of an existing document
-     * @param uploadFileName
-     *            name of the new file being parsed, used only to identify
-     *            format
-     * @param params
-     *            adapter-specific parameter string. See documentation for
-     *            individual adapters.
      * @return a usable representation of the document
      * @throws ZanataServiceException
      */
-    Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId,
-            String uploadFileName, Optional<String> params, Optional<String> documentType)
+    Resource parseUpdatedAdapterDocumentFile(String docId, String fileName,
+            ParserOptions options, Optional<String> documentType)
             throws ZanataServiceException;
 
     /**
      * Check whether a handler for the given document type is available.
-     *
-     * @param fileNameOrExtension
-     *            full filename with extension, or just extension
-     * @return
      */
     boolean hasAdapterFor(DocumentType type);
 

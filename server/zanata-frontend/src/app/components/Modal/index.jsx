@@ -36,10 +36,10 @@ const Modal = ({
   return (
     <OverlayModal
       {...props}
-      onKeyDown={keyboard && handleKeyDown}
+      onKeyDown={handleKeyDown}
       containerClassName='has-modal'
       className='modal bstrapReact'
-      onClick={backdrop && handleClickOutside}
+      onClick={handleClickOutside}
     >
       <div className='container'>
         <div className='modal-content' tabIndex="0">

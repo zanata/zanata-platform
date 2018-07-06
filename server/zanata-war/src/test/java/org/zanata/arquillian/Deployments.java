@@ -39,8 +39,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.COMPILE;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
@@ -54,9 +52,7 @@ import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.TEST;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class Deployments {
-    private static final Logger log =
-            LoggerFactory.getLogger(Deployments.class);
-    public static final String DEPLOYMENT_NAME = "zanata-tests";
+    private static final String DEPLOYMENT_NAME = "zanata-tests";
 
     static {
         // Tell DeltaSpike to give more warning messages
@@ -70,7 +66,7 @@ public class Deployments {
 
         // Uncomment this if you want to export a .war (to actually see
         // what is being deployed):
-//        archive.as(ZipExporter.class).exportTo(
+//        archive.as(org.jboss.shrinkwrap.api.exporter.ZipExporter.class).exportTo(
 //                new File("/tmp/zanata-arquillian.war"), true);
 
         // OR uncomment this if you want an exploded war directory:
@@ -86,8 +82,8 @@ public class Deployments {
         ArrayList<ArchivePath> paths =
                 new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);
-        log.info("Deployment contents:");
-        paths.forEach(it -> log.info("  " + it.get()));
+        System.out.println("Deployment contents:");
+        paths.forEach(it -> System.out.println("  " + it.get()));
     }
 
     static File[] runtimeAndTestDependenciesFromPom() {
@@ -103,7 +99,11 @@ public class Deployments {
                                 false,
                                 // JavaMelody's ServletFilter/Listener
                                 // interferes with test deployments.
-                                "net.bull.javamelody:javamelody-core"
+                                "net.bull.javamelody:javamelody-core",
+                                // jar from Maven repo
+                                "org.zanata:gwt-editor",
+                                // classes from Maven reactor
+                                "org.zanata:gwt-editor:jar:classes:?"
                                 // We shouldn't need apicompat interfaces in
                                 // the server, but we will also need to
                                 // exclude the tests which refer to them.

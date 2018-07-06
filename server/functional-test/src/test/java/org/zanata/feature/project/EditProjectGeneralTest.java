@@ -46,8 +46,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .as("Admin is logged in")
+                .isEqualTo("admin");
     }
 
 
@@ -68,23 +68,23 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .enterSearch("about fedora");
 
         assertThat(explorePage.getProjectSearchResults())
-            .doesNotContain("about fedora")
-                .as("The project is not displayed");
+                .as("The project is not displayed")
+                .doesNotContain("about fedora");
     }
 
     @Trace(summary = "The administrator can set a read-only project " +
             "to writable")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToWritable() throws Exception {
-        assertThat(new ProjectWorkFlow()
+        new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .lockProject()
                 .gotoExplore()
                 .enterSearch("about fedora")
-                .expectProjectListContains("about fedora"))
-                .as("The project is locked");
+                .expectProjectListContains("about fedora");
+        // TODO check whether "about fedora" in the list has a lock icon (locked project)
 
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
@@ -98,8 +98,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .expectProjectListContains("about fedora");
 
         assertThat(explorePage.getProjectSearchResults())
-                .contains("about fedora")
-                .as("The project is now displayed");
+                .as("The project is now displayed")
+                .contains("about fedora");
     }
 
     @Trace(summary = "The administrator can change a project's name")
@@ -116,8 +116,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .searchAndGotoProjectByName(replacementText);
 
         assertThat(projectVersionsPage.getProjectName())
-                .isEqualTo(replacementText)
-                .as("The project name has changed");
+                .as("The project name has changed")
+                .isEqualTo(replacementText);
     }
 
     @Trace(summary = "The administrator can change a project's description")
@@ -128,8 +128,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .goToProjectByName("about fedora");
 
         assertThat(projectVersionsPage.getContentAreaParagraphs())
-                .doesNotContain(replacementText)
-                .as("The description is default");
+                .as("The description is default")
+                .doesNotContain(replacementText);
 
         ProjectGeneralTab projectGeneralTab = projectVersionsPage
                 .gotoSettingsTab()
@@ -138,8 +138,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .updateProject();
 
         assertThat(projectGeneralTab.getContentAreaParagraphs())
-                .contains(replacementText)
-                .as("The text has changed");
+                .as("The text has changed")
+                .contains(replacementText);
     }
 
     @Trace(summary = "The administrator can change a project's type")
@@ -158,8 +158,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoSettingsGeneral();
 
         assertThat(projectGeneralTab.getSelectedProjectType())
-                .isEqualTo("Properties")
-                .as("The project type is correct");
+                .as("The project type is correct")
+                .isEqualTo("Properties");
     }
 
     @Trace(summary = "The administrator can change a project's source urls")
@@ -176,12 +176,12 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .searchAndGotoProjectByName("about fedora");
 
         assertThat(projectVersionsPage.getHomepage())
-                .isEqualTo("http://www.example.com")
-                .as("The homepage is correct");
+                .as("The homepage is correct")
+                .isEqualTo("http://www.example.com");
 
         assertThat(projectVersionsPage.getGitUrl())
-                .isEqualTo("http://git.example.com")
-                .as("The git url is correct");
+                .as("The git url is correct")
+                .isEqualTo("http://git.example.com");
     }
 
     @Trace(summary = "Project slug can be changed and page will redirect to new URL after the change")
@@ -201,8 +201,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoSettingsGeneral();
 
         assertThat(projectGeneralTab.getProjectId())
-                .isEqualTo("fedora-reborn")
-                .as("The project slug is correct");
+                .as("The project slug is correct")
+                .isEqualTo("fedora-reborn");
         // FIXME wait for async indexing to finish to avoid interfering with other tests
 
         // TODO test that search results work for new slug

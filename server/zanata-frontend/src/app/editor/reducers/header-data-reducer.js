@@ -50,12 +50,14 @@ const defaultState = {
   }
 }
 
+// @ts-ignore any
 const gravatarUrl = (hash, size) => {
   return `https://www.gravatar.com/avatar/${hash}?d=mm&r=g&s=${size}`
 }
 
 const headerDataReducer = handleActions({
   [HEADER_DATA_FETCHED]: (state, { payload: {
+    // @ts-ignore
     documents, locales, versionSlug, projectInfo, myInfo } }) => {
     const projectSlug = projectInfo.id
     return update(state, {

@@ -55,7 +55,7 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 
-[{*.js,*.jsx}]
+[{*.js,*.jsx,*.tsx}]
 indent_style = space
 indent_size = 2
 continuation_indent_size = 4

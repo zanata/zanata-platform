@@ -127,7 +127,8 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         HGlossaryTerm srcGlossaryTerm1 = getEm().find(HGlossaryTerm.class, 42L);
         // hibernate search result - project
         HGlossaryTerm srcGlossaryTerm2 = getEm().find(HGlossaryTerm.class, 46L);
-        Object[] projMatches = new Object[] { 1.1F, srcGlossaryTerm2 };
+        Object[] projMatches = new Object[] { 1.1F, srcGlossaryTerm2, HGlossaryTerm.class,
+                srcGlossaryTerm2.getId() };
         List<Object[]> projResults = Lists.newArrayList();
         projResults.add(projMatches);
         String projQualifiedName = ProjectService.getGlossaryQualifiedName(
@@ -135,7 +136,8 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         doReturn(projResults).when(glossaryDAO).getSearchResult("fedora",
                 HasSearchType.SearchType.FUZZY, LocaleId.EN_US, 20,
                 projQualifiedName);
-        Object[] matches = new Object[] { 1.0F, srcGlossaryTerm1 };
+        Object[] matches = new Object[] { 1.0F, srcGlossaryTerm1, HGlossaryTerm.class,
+                srcGlossaryTerm1.getId() };
         List<Object[]> results = Lists.newArrayList();
         results.add(matches);
         doReturn(results).when(glossaryDAO).getSearchResult("fedora",
@@ -179,12 +181,13 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         // Results
         List<Object[]> globalResults = Lists.newArrayList();
         HGlossaryTerm srcGlossaryTerm1 = getEm().find(HGlossaryTerm.class, 42L);
-        globalResults.add(new Object[] { 1.0F, srcGlossaryTerm1 });
+        globalResults.add(new Object[] { 1.0F, srcGlossaryTerm1, HGlossaryTerm.class, srcGlossaryTerm1.getId() });
         // Add invalid
-        globalResults.add(new Object[] { 1.2F, null });
+        globalResults.add(new Object[] { 1.2F, null, HGlossaryTerm.class, -1 });
         List<Object[]> projectResults = Lists.newArrayList();
         HGlossaryTerm srcGlossaryTerm2 = getEm().find(HGlossaryTerm.class, 46L);
-        projectResults.add(new Object[] { 1.1F, srcGlossaryTerm2 });
+        projectResults.add(new Object[] { 1.1F, srcGlossaryTerm2, HGlossaryTerm.class,
+                srcGlossaryTerm2.getId() });
 
         doReturn(projectResults).when(glossaryDAO).getSearchResult("fedora",
                 HasSearchType.SearchType.FUZZY, LocaleId.EN_US, 20,

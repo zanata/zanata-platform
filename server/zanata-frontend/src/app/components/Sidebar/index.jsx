@@ -1,13 +1,16 @@
 import React from 'react'
 import { Component } from 'react'
-import { Button, DropdownButton, MenuItem, ProgressBar,
+import { DropdownButton, MenuItem, ProgressBar,
   Nav, NavItem, Well } from 'react-bootstrap'
 import { Icon } from '../../components'
+import Button from 'antd/lib/button'
+
 /**
  * Root component for Sidebar
  */
 class Sidebar extends Component {
 
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = {
@@ -18,7 +21,9 @@ class Sidebar extends Component {
   }
 
   toggleDisplay () {
+    // @ts-ignore any
     this.setState(prevState => ({display: !prevState.display}))
+    // @ts-ignore any
     this.setState(prevState => ({arrow: !prevState.arrow}))
   }
   /* eslint-disable react/jsx-no-bind, no-return-assign */

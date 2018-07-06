@@ -22,9 +22,13 @@ package org.zanata.page.administration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
+
+import javax.lang.model.element.Element;
+import java.util.Optional;
 
 /**
  * @author Patrick Huang
@@ -34,27 +38,20 @@ public class ServerConfigurationPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ServerConfigurationPage.class);
 
-    private By urlField = By.id("serverConfigForm:url:input:url");
-    public static final By registerUrlField =
-            By.id("serverConfigForm:register:input:registerUrl");
-    private By adminEmailField =
-            By.id("serverConfigForm:adminEmail:input:adminEml");
-    public static final By fromEmailField =
-            By.id("serverConfigForm:fromEmail:input:fromEml");
-    private By enableLogCheck = By.id("serverConfigForm:enableLogCheck");
-    private By logLevelSelect = By.id("serverConfigForm:logEmailLvl");
-    private By emailDestinationField =
-            By.id("serverConfigForm:logDestEmail:input:logDestEml");
-    private By helpUrlField = By.id("serverConfigForm:helpUrl:input:helpInput");
-    private By termsUrlField =
-            By.id("serverConfigForm:termsOfUseUrl:input:termsOfUseUrlEml");
-    private By piwikUrl = By.id("serverConfigForm:piwikUrl:input:piwikUrlEml");
-    private By piwikId = By.id("serverConfigForm:piwikIdSiteEml");
-    private By maxConcurrentField = By.id(
-            "serverConfigForm:maxConcurrentPerApiKey:input:maxConcurrentPerApiKeyEml");
-    private By maxActiveField = By.id(
-            "serverConfigForm:maxActiveRequestsPerApiKey:input:maxActiveRequestsPerApiKeyEml");
-    private By saveButton = By.id("serverConfigForm:save");
+    private By urlField = By.id("host.url");
+    public static final By registerUrlField = By.id("register.url");
+    private By adminEmailField = By.id("email.admin.addr");
+    public static final By fromEmailField = By.id("email.from.addr");
+    private By enableLogCheck = By.id("log.email.active");
+    private By logLevelSelect = By.id("log.email.level");
+    private By emailDestinationField = By.id("log.destination.email");
+    private By helpUrlField = By.id("help.url");
+    private By termsUrlField = By.id("terms.conditions.url");
+    private By piwikUrl = By.id("piwik.url");
+    private By piwikId = By.id("piwik.idSite");
+    private By maxConcurrentField = By.id("max.concurrent.req.per.apikey");
+    private By maxActiveField = By.id("max.active.req.per.apikey");
+    private By saveButton = By.xpath("//button[contains(.,'Save')]");
 
     public ServerConfigurationPage(WebDriver driver) {
         super(driver);
@@ -71,11 +68,10 @@ public class ServerConfigurationPage extends BasePage {
      * Wait until the field contains the expected text
      * @param by locator of field
      * @param expectedValue text to compare actual value to
-     * @return new ServerConfigurationPage
      */
-    public boolean expectFieldValue(final By by, final String expectedValue) {
+    public void expectFieldValue(final By by, final String expectedValue) {
         log.info("Wait for field {} value {}", by.toString(), expectedValue);
-        return waitForAMoment().withMessage("text present: " + by.toString())
+        waitForAMoment().withMessage("text present: " + by.toString())
                 .until(ExpectedConditions.textToBePresentInElementValue(
                         existingElement(by), expectedValue));
     }
@@ -152,7 +148,7 @@ public class ServerConfigurationPage extends BasePage {
      */
     public ServerConfigurationPage clickLoggingEnabledCheckbox() {
         log.info("Click enable logging checkbox");
-        clickElement(enableLogCheck);
+        getDriver().findElement(enableLogCheck).click();
         return new ServerConfigurationPage(getDriver());
     }
 
@@ -163,7 +159,17 @@ public class ServerConfigurationPage extends BasePage {
      */
     public ServerConfigurationPage selectLoggingLevel(String logLevel) {
         log.info("Select logging level {}", logLevel);
-        new Select(readyElement(logLevelSelect)).selectByVisibleText(logLevel);
+
+        getDriver().findElement(logLevelSelect).click();
+        Optional<WebElement> option = getDriver()
+                .findElements(By.className("ant-select-dropdown-menu-item"))
+                .stream().filter(e -> e.getText().equals(logLevel)).findFirst();
+
+        if (option.isPresent()) {
+            option.get().click();
+        } else {
+            log.info("Cannot find option with log level {}", logLevel);
+        }
         return new ServerConfigurationPage(getDriver());
     }
 
@@ -173,8 +179,8 @@ public class ServerConfigurationPage extends BasePage {
      */
     public String selectedLoggingLevel() {
         log.info("Query selected logging level");
-        return new Select(readyElement(logLevelSelect)).getFirstSelectedOption()
-                .getText();
+        return readyElement(logLevelSelect).findElement(
+                By.className("ant-select-selection-selected-value")).getText();
     }
 
     /**
@@ -283,9 +289,9 @@ public class ServerConfigurationPage extends BasePage {
      * Press the Save button
      * @return new AdministrationPage
      */
-    public AdministrationPage save() {
+    public ServerConfigurationPage save() {
         log.info("Click Save");
         clickElement(saveButton);
-        return new AdministrationPage(getDriver());
+        return new ServerConfigurationPage(getDriver());
     }
 }

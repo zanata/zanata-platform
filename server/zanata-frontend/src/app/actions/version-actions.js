@@ -37,8 +37,8 @@ export const toggleTMMergeModal =
 /**
  * Fetch project version specific locales from database
  *
- * @param project projectSlug
- * @param version versionSlug
+ * @param project {string}
+ * @param version {string}
  * */
 export const fetchVersionLocales = (project, version) => {
   const endpoint = `${apiUrl}/project/${project}/version/${version}/locales`
@@ -56,8 +56,8 @@ export const fetchVersionLocales = (project, version) => {
 /**
  * Fetch projects to merge from database
  *
- * @param projectSearchTerm to filter results
- * */
+ * @param projectSearchTerm {string} to filter results
+ */
 export const fetchProjectPage = (projectSearchTerm) => {
   // used for success/failure to ensure the most recent results are used
   const timestamp = Date.now()
@@ -78,7 +78,9 @@ export const fetchProjectPage = (projectSearchTerm) => {
     {
       type: PROJECT_PAGE_SUCCESS,
       meta: {timestamp},
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore null
         return getJSON(res).then((json) => json.results)
       }
     },
@@ -93,6 +95,7 @@ export const fetchProjectPage = (projectSearchTerm) => {
 }
 
 // convert project version to string representation
+// @ts-ignore any
 const toProjectVersionString = (projectVersion) => {
   return `${projectVersion.projectSlug}/${projectVersion.version.id}`
 }
@@ -121,10 +124,12 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const types = [VERSION_TM_MERGE_REQUEST,
     {
       type: VERSION_TM_MERGE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && ~contentType.indexOf('json')) {
           // Just making sure res.json() does not raise an error
+          // @ts-ignore any
           return res.json().then((json) => {
             const cancelUrl = replace(json.url,
                 '/rest/process/', '/rest/process/cancel/')
@@ -163,6 +168,9 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   }
 }
 
+/**
+ * @param {string} url
+ */
 export function queryTMMergeProgress (url) {
   /** @type {APITypes} */
   const types = [QUERY_TM_MERGE_PROGRESS_REQUEST,
@@ -173,6 +181,9 @@ export function queryTMMergeProgress (url) {
   }
 }
 
+/**
+ * @param {string} url
+ */
 export function cancelTMMergeRequest (url) {
   /** @type {APITypes} */
   const types = [

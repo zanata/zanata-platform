@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
 import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.LocaleId;
@@ -49,8 +50,6 @@ import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -86,7 +85,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
     public void testTSWithPlurals() {
         Resource resource = parseTestFile("test-ts-plurals.ts");
         assertThat(resource.getTextFlows()).hasSize(1);
-        assertThat(resource.getTextFlows().get(0).isPlural());
+        assertThat(resource.getTextFlows().get(0).isPlural()).isTrue();
         assertThat(resource.getTextFlows().get(0).getContents().size()).isEqualTo(2);
     }
 
@@ -157,7 +156,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                 new LocaleId("dv-LL"));
         TranslationsResource translationsResource =
                 getAdapter().parseTranslationFile(rawDocument,
-                        Optional.absent());
+                        "");
 
         assertThat(translationsResource.getTextFlowTargets().size()).isEqualTo(2);
         assertThat(translationsResource.getTextFlowTargets().get(0).getContents())
@@ -168,6 +167,15 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
 
     @Test
     public void testTranslatedTSDocument() throws Exception {
+        testTranslatedTSDocument(false);
+    }
+
+    @Test
+    public void testTranslatedTSDocumentApprovedOnly() {
+        testTranslatedTSDocument(true);
+    }
+
+    private void testTranslatedTSDocument(boolean approvedOnly) {
         Resource resource = parseTestFile("test-ts-untranslated.ts");
         Map<String, TextFlowTarget> translations = new HashMap<>();
         addTranslation(translations, resource.getTextFlows().get(0).getId(),
@@ -176,8 +184,9 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
         addTranslation(translations, resource.getTextFlows().get(1).getId(),
                 "Tba’dé metalkcta",
                 ContentState.Translated);
+        // TODO test NeedReview as well (should be omitted or marked as unfinished)
         File originalFile = getTestFile("test-ts-untranslated.ts");
-        LocaleId localeId = new LocaleId("en");
+        LocaleId localeId = new LocaleId("sv");
         OutputStream outputStream = new ByteArrayOutputStream();
         try (
                 TsFilter tsFilter = new TsFilter();
@@ -186,19 +195,29 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
             writer.setOutput(outputStream);
             getAdapter()
                     .generateTranslatedFile(originalFile.toURI(), translations,
-                            localeId, writer, Optional.absent());
+                            localeId, writer, "", approvedOnly);
         }
+        // the second translation (Translated) should only have type=unfinished if approvedOnly is set
+        String maybeTypeUnfinished = approvedOnly ? "type=\"unfinished\" " : "";
         assertThat(outputStream.toString()).isEqualTo(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE TS []>\n" +
-                "<TS version=\"2.1\" sourcelanguage=\"en\" language=\"sv\">\n" +
-                "<message>\n" +
-                "    <source>First source</source>\n" +
-                "<translation type=\"unfinished\" variants=\"no\">Foun’dé metalkcta</translation>\n" +
-                "  </message><message>\n" +
-                "      <source>Second source</source>\n" +
-                "<translation type=\"unfinished\" variants=\"no\">Tba’dé metalkcta</translation>\n" +
-                "    </message>\n" +
-                "</TS>\n");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE TS []>\n" +
+                        // TODO ZNTA-2634 language should be sv
+                        "<TS version=\"2.1\" language=\"en_US\">\n" +
+                        "<context>\n" +
+                        "  <name>testContext1</name>\n" +
+                        "  <message>\n" +
+                        "    <source>First source</source>\n" +
+                        "<translation variants=\"no\">Foun’dé metalkcta</translation>\n" +
+                        "  </message>\n" +
+                        "</context>\n" +
+                        "<context>\n" +
+                        "  <name>testContext2</name>\n" +
+                        "  <message>\n" +
+                        "    <source>Second source</source>\n" +
+                        "<translation " + maybeTypeUnfinished + "variants=\"no\">Tba’dé metalkcta</translation>\n" +
+                        "  </message>\n" +
+                        "</context>\n" +
+                        "</TS>\n");
     }
 
     @Test
@@ -217,7 +236,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                 new LocaleId("ru"));
         exception.expect(FileFormatAdapterException.class);
         exception.expectMessage("Unable to parse translation file");
-        getAdapter().parseTranslationFile(rawDocument, Optional.absent());
+        getAdapter().parseTranslationFile(rawDocument, "");
     }
 
     @Test
@@ -231,7 +250,7 @@ public class TSAdapterTest extends AbstractAdapterTest<TSAdapter> {
                     getTestFile("test-ts-nonexistent.ts").toURI(),
                     new HashMap<>(),
                     new LocaleId("en"),
-                    filterWriter, Optional.absent());
+                    filterWriter, "", false);
         }
     }
 

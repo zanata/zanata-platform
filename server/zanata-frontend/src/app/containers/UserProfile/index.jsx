@@ -12,9 +12,11 @@ import {
   selectDayChanged
 } from '../../actions/profile-actions'
 import RecentContributions from './RecentContributions'
-import { Notification, Icon, LoaderText } from '../../components'
+import { Icon, LoaderText } from '../../components'
 import { getLanguageUrl } from '../../utils/UrlHelper'
 import { isLoggedIn } from '../../config'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
 
 /**
  * Root component for user profile page
@@ -44,10 +46,20 @@ class UserProfile extends Component {
     this.props.handleInitLoad(username)
   }
 
+  componentDidUpdate (prevProps) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: null
+      })
+    }
+  }
+
   render () {
     const {
       user,
-      notification,
       loading,
       matrixForAllDays,
       wordCountsForSelectedDayFilteredByContentState,
@@ -102,13 +114,16 @@ class UserProfile extends Component {
                 {username}
               </li>
               {email &&
-              (<span className='userProfile-email'>{email}</span>)}
+              (<li className='u-flexCenter' id='profileEmail'>
+                <Icon name='mail' className='s0' title='Email' />
+                {email}
+              </li>)}
               {languageTeams &&
-              (<li id='profileLanguages'>
+              (<ul id='profileLanguages'>
                 <Icon name='language' className='s0' title='Spoken languages'
                   parentClassName='iconLanguage u-pullLeft' />
-                {languageTeams}
-              </li>)}
+                <li>{languageTeams}</li>
+              </ul>)}
               {roles && isLoggedIn &&
               (<li className='u-flexCenter' id='profileRoles' title='Roles'>
                 <Icon name='users' className='s0' />
@@ -135,13 +150,6 @@ class UserProfile extends Component {
     }
     return (
       <div>
-        {notification &&
-          (<Notification
-            severity={notification.severity}
-            message={notification.message}
-            details={notification.details}
-            show={!!notification} />
-        )}
         <Helmet title='User Profile' />
         <div className='wideView' id='profile' >
           {content}
