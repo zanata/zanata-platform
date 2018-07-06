@@ -1,4 +1,4 @@
-@import "../../styles/variables.less";
+@import "../../styles/ant-theme-vars.less";
 
 .triCheckbox {
   -webkit-appearance: none;
@@ -16,8 +16,8 @@
 }
 
 .triCheckbox:checked {
-  background-color: @color-light;
-  border: 1px solid @color-muted;
+  background-color: @info-color;
+  border: 1px solid @muted-color;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
   color: #fff;
 }
@@ -34,8 +34,8 @@
 }
 
 .triCheckbox:indeterminate {
-  background-color: @color-light;
-  border: 1px solid @color-muted;
+  background-color: @info-color;
+  border: 1px solid @muted-color;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
   color: #fff;
 }
