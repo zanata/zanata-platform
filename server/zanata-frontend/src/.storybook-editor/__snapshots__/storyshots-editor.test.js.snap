@@ -5676,69 +5676,6 @@ exports[`Editor Storyshots CommentBox default 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots Concurrent editing modal 1`] = `undefined`;
-
-exports[`Editor Storyshots Concurrent editing notification 1`] = `
-<div
-  className="ant-alert ant-alert-danger ant-alert-no-icon"
-  data-show={true}
-  style={undefined}
->
-  <span
-    className="ant-alert-message"
-  />
-  <span
-    className="ant-alert-description"
-  />
-</div>
-`;
-
-exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
-<span>
-  <h1>
-    TransUnit items
-  </h1>
-  <img
-    src="https://i.imgur.com/yQWlJaH.png"
-  />
-  <h2>
-    Concurrent user notice
-  </h2>
-  <Button
-    className="EditorButton Button--link Button--small Button--concurrent"
-    onClick={[Function]}
-  >
-    <span
-      className=""
-    >
-      <svg
-        className="n1"
-        dangerouslySetInnerHTML={
-          Object {
-            "__html": "<use xlink:href=\\"#Icon-user\\" />",
-          }
-        }
-        style={
-          Object {
-            "fill": "currentColor",
-          }
-        }
-      />
-    </span>
-     username
-  </Button>
-  <h2>
-    Resolve merge conflict button
-  </h2>
-  <Button
-    className="EditorButton Button--secondary u-rounded"
-    onClick={[Function]}
-  >
-    Resolve conflict
-  </Button>
-</span>
-`;
-
 exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
 <span
   className={undefined}

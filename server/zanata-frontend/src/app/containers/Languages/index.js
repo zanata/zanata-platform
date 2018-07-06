@@ -132,7 +132,7 @@ class Languages extends Component {
 
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
-      <div className='languages'>
+      <div className='languages wideView'>
         <Layout>
           <Helmet title='Languages' />
           <div id='languages-form'>
