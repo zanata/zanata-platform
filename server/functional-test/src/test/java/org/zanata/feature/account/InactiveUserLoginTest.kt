@@ -20,37 +20,34 @@
  */
 package org.zanata.feature.account
 
-import org.junit.Rule
-import org.junit.Test
-import org.junit.experimental.categories.Category
+
+import org.junit.jupiter.api.Test
 import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.InactiveAccountPage
 import org.zanata.page.account.SignInPage
 import org.zanata.page.utility.HomePage
 import org.zanata.util.EmailQuery
-import org.zanata.util.HasEmailRule
 import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 import org.zanata.workflow.RegisterWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.zanata.util.EmailQuery.LinkType.ACTIVATE
 
 /**
  * @author Carlos Munoz [camunoz@redhat.com](mailto:camunoz@redhat.com)
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class InactiveUserLoginTest : ZanataTestCase() {
 
-    @get:Rule
-    val hasEmailRule = HasEmailRule()
-
     @Trace(summary = "The user needs to verify their account before they may log in")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun verifyAccount() {
+    @Test
+    @DisplayName("Verify account before login")
+    fun `Verify account before login`() {
         val username = "tester1"
         val password = "tester1"
         RegisterWorkFlow().registerInternal(username,
@@ -60,14 +57,14 @@ class InactiveUserLoginTest : ZanataTestCase() {
                 .signInInactive(username, password)
 
         assertThat(inactiveAccountPage.title)
-                .`as`("The account is inactive")
+                .describedAs("The account is inactive")
                 .isEqualTo(InactiveAccountPage.ACCOUNT_UNACTIVATED)
 
-        val messages = hasEmailRule.messages
-        assertThat(messages).`as`("one email message").hasSize(1)
+        val messages = hasEmailExtension.messages
+        assertThat(messages).describedAs("one email message").hasSize(1)
         val message = messages[0]
         assertThat(EmailQuery.hasLink(message, ACTIVATE))
-                .`as`("The email contains the activation link")
+                .describedAs("The email contains the activation link")
                 .isTrue()
         val activationLink = EmailQuery.getLink(message, ACTIVATE)
         BasicWorkFlow().goToUrl(activationLink, SignInPage::class.java)
@@ -80,15 +77,15 @@ class InactiveUserLoginTest : ZanataTestCase() {
         assertThat(LoginWorkFlow()
                 .signIn(username, password)
                 .loggedInAs())
-                .`as`("User has verified email address and logged in")
+                .describedAs("User has verified email address and logged in")
                 .isEqualTo(username)
     }
 
     @Trace(summary = "The user can resend the account activation email",
             testCaseIds = [5697])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun resendActivationEmail() {
+    @Test
+    @DisplayName("Resend activation email")
+    fun `Resend activation email`() {
         val usernamePassword = "tester2"
         RegisterWorkFlow().registerInternal(usernamePassword,
                 usernamePassword, usernamePassword,
@@ -98,15 +95,15 @@ class InactiveUserLoginTest : ZanataTestCase() {
                 .clickResendActivationEmail()
 
         assertThat(homePage.expectNotification(HomePage.SIGNUP_SUCCESS_MESSAGE))
-                .`as`("The message sent notification is displayed")
+                .describedAs("The message sent notification is displayed")
                 .isTrue()
-        assertThat(hasEmailRule.messages.size)
-                .`as`("A second email was sent")
+        assertThat(hasEmailExtension.messages.size)
+                .describedAs("A second email was sent")
                 .isEqualTo(2)
 
-        val message = hasEmailRule.messages[1]
+        val message = hasEmailExtension.messages[1]
         assertThat(EmailQuery.hasLink(message, ACTIVATE))
-                .`as`("The second email contains the activation link")
+                .describedAs("The second email contains the activation link")
                 .isTrue()
 
         BasicWorkFlow().goToUrl(EmailQuery.getLink(message, ACTIVATE),
@@ -120,14 +117,15 @@ class InactiveUserLoginTest : ZanataTestCase() {
         assertThat(LoginWorkFlow()
                 .signIn(usernamePassword, usernamePassword)
                 .loggedInAs())
-                .`as`("The user has validated their account and logged in")
+                .describedAs("The user has validated their account and logged in")
                 .isEqualTo(usernamePassword)
     }
 
-    @Trace(summary = "The user can update the account activation email address", testCaseIds = intArrayOf(5696))
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun updateActivationEmail() {
+    @Trace(summary = "The user can update the account activation email address",
+            testCaseIds = intArrayOf(5696))
+    @Test
+    @DisplayName("Update email address for activation")
+    fun `Update email address for activation`() {
         val usernamePassword = "tester3"
         RegisterWorkFlow().registerInternal(usernamePassword,
                 usernamePassword, usernamePassword,
@@ -136,7 +134,7 @@ class InactiveUserLoginTest : ZanataTestCase() {
                 .signInInactive(usernamePassword, usernamePassword)
 
         assertThat(inactiveAccountPage.title)
-                .`as`("The account is inactive")
+                .describedAs("The account is inactive")
                 .isEqualTo(InactiveAccountPage.ACCOUNT_UNACTIVATED)
 
         val homePage = inactiveAccountPage
@@ -144,18 +142,18 @@ class InactiveUserLoginTest : ZanataTestCase() {
                 .clickUpdateEmail()
 
         assertThat(homePage.expectNotification(HomePage.EMAILCHANGED_MESSAGE))
-                .`as`("The email changed notification is displayed")
+                .describedAs("The email changed notification is displayed")
                 .isTrue()
-        assertThat(hasEmailRule.messages.size)
-                .`as`("A second email was sent")
+        assertThat(hasEmailExtension.messages.size)
+                .describedAs("A second email was sent")
                 .isEqualTo(2)
 
-        val message = hasEmailRule.messages[1]
+        val message = hasEmailExtension.messages[1]
         assertThat(message.envelopeReceiver)
-                .`as`("The new email address is used")
+                .describedAs("The new email address is used")
                 .isEqualTo("newtester@example.com")
         assertThat(EmailQuery.hasLink(message, ACTIVATE))
-                .`as`("The second email contains the activation link")
+                .describedAs("The second email contains the activation link")
                 .isTrue()
         BasicWorkFlow().goToUrl(
                 EmailQuery.getLink(message, ACTIVATE), SignInPage::class.java)
@@ -167,7 +165,7 @@ class InactiveUserLoginTest : ZanataTestCase() {
          */
         assertThat(LoginWorkFlow()
                 .signIn(usernamePassword, usernamePassword).loggedInAs())
-                .`as`("User has verified new email address and logged in")
+                .describedAs("User has verified new email address and logged in")
                 .isEqualTo(usernamePassword)
     }
 }

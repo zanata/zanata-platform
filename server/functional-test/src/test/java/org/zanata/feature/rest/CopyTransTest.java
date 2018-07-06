@@ -20,8 +20,8 @@
  */
 package org.zanata.feature.rest;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -38,8 +38,10 @@ public class CopyTransTest {
     private boolean COPYTRANS = true;
 
     @Test
-    @Ignore("see https://github.com/zanata/zanata-server/pull/571#issuecomment-55547577 this test can be used to reproduce that issue.")
-    // see org.zanata.rest.service.ResourceUtils.transferFromTextFlows()
+    @Disabled(
+            "see https://github.com/zanata/zanata-server/pull/571#issuecomment-55547577 " +
+            "this test can be used to reproduce that issue." +
+            "See org.zanata.rest.service.ResourceUtils.transferFromTextFlows()")
     public void testPushTranslationAndCopyTrans() {
         ZanataRestCaller restCaller =
                 new ZanataRestCaller();
@@ -76,10 +78,10 @@ public class CopyTransTest {
     }
 
     @Test
-    @Ignore("see https://github.com/zanata/zanata-server/pull/571#issuecomment-56011217 this test can be used to reproduce that issue.")
-    // see org.zanata.dao.TextFlowDAO.getByDocumentAndResIds
-    public
-            void testPushTranslationRepeatedly() {
+    @Disabled("see https://github.com/zanata/zanata-server/pull/571#issuecomment-56011217 " +
+            "this test can be used to reproduce that issue." +
+            "See org.zanata.dao.TextFlowDAO.getByDocumentAndResIds")
+    public void testPushTranslationRepeatedly() {
         ZanataRestCaller restCaller =
                 new ZanataRestCaller();
         String projectSlug = "push-test";
@@ -118,10 +120,12 @@ public class CopyTransTest {
 
         // push updated source (same resId different content)
         restCaller.asyncPushSource(projectSlug, iterationSlug, updatedSource, false);
-        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId, updatedTransResource, "auto", false);
+        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId,
+                updatedTransResource, "auto", false);
 
         // push again
         restCaller.asyncPushSource(projectSlug, iterationSlug, updatedSource, false);
-        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId, updatedTransResource, "auto", false);
+        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId,
+                updatedTransResource, "auto", false);
     }
 }

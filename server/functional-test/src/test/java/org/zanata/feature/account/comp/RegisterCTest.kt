@@ -20,41 +20,39 @@
  */
 package org.zanata.feature.account.comp
 
-import org.junit.Before
-import org.junit.Test
-import org.junit.experimental.categories.Category
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.RegisterPage
 import org.zanata.page.utility.HomePage
 import org.zanata.workflow.BasicWorkFlow
 import java.util.Random
 import org.assertj.core.api.Assertions.assertThat
+import org.zanata.feature.testharness.ComprehensiveTest
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(TestPlan.ComprehensiveTest::class)
+@ComprehensiveTest
 class RegisterCTest : ZanataTestCase() {
-    private var homePage: HomePage? = null
+    private lateinit var homePage: HomePage
 
-    @Before
+    @BeforeEach
     fun before() {
         homePage = BasicWorkFlow().goToHome()
     }
 
     @Trace(summary = "The user must enter all necessary fields to register",
             testPlanIds = [5681], testCaseIds = [5689, 5690, 5691, 5692])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
+    @Test
     fun requiredFields() {
         val fields = HashMap<String, String>()
         fields["name"] = ""
         fields["username"] = ""
         fields["email"] = ""
         fields["password"] = ""
-        val registerPage = homePage!!
+        val registerPage = homePage
                 .goToRegistration()
                 .setFields(fields)
                 .registerFailure()
@@ -69,9 +67,9 @@ class RegisterCTest : ZanataTestCase() {
 
     @Trace(summary = "The user can navigate to Login from Sign up, or to " +
             "Sign up from Login", testCaseIds = [-1])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun signUpToLoginAndBack() {
-        val registerPage = homePage!!
+        val registerPage = homePage
                 .clickSignInLink()
                 .goToRegister()
 
@@ -86,9 +84,9 @@ class RegisterCTest : ZanataTestCase() {
 
     @Trace(summary = "The user can show or hide the registration password content",
             testCaseIds = [-1])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun togglePasswordVisible() {
-        var registerPage = homePage!!
+        var registerPage = homePage
                 .goToRegistration()
                 .enterPassword("mypassword")
 
@@ -114,12 +112,12 @@ class RegisterCTest : ZanataTestCase() {
 
     @Trace(summary = "The user must provide a password to register via " +
             "internal authentication", testCaseIds = [5692])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun passwordLengthValidation() {
         val longPass = makeString(1030)
         assertThat(longPass.length).isGreaterThan(1024)
 
-        var registerPage = homePage!!
+        var registerPage = homePage
                 .goToRegistration()
                 .enterName("jimmy")
                 .enterEmail("jimmy@jim.net")
@@ -140,12 +138,12 @@ class RegisterCTest : ZanataTestCase() {
 
     @Trace(summary = "The user must provide a name to register",
             testPlanIds = [5681], testCaseIds = [5689])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun userMustSpecifyAValidName() {
         val longName = makeString(81)
         assertThat(longName.length).isGreaterThan(80)
 
-        var registerPage = homePage!!
+        var registerPage = homePage
                 .goToRegistration()
                 .enterName("A")
                 .enterUserName("usermustspecifyaname")
@@ -166,9 +164,9 @@ class RegisterCTest : ZanataTestCase() {
 
     @Trace(summary = "The user must provide a username to register",
             testPlanIds = [5681], testCaseIds = [5690])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun userMustSpecifyAUsername() {
-        val registerPage = homePage!!
+        val registerPage = homePage
                 .goToRegistration()
                 .enterName("usernamespecified")
                 .enterEmail("userMustSpecifyAUsername@test.com")
@@ -181,7 +179,7 @@ class RegisterCTest : ZanataTestCase() {
     }
 
     @Trace(summary = "A username cannot be all underscores (RHBZ-981498)")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun bug981498_underscoreRules() {
         val fields = HashMap<String, String>()
         fields["name"] = "test"
@@ -189,7 +187,7 @@ class RegisterCTest : ZanataTestCase() {
         fields["email"] = "bug981498test@example.com"
         // Username is all underscores
         fields["username"] = "______"
-        val registerPage = homePage!!
+        val registerPage = homePage
                 .goToRegistration()
                 .setFields(fields)
         registerPage.defocus()
