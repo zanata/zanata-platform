@@ -64,7 +64,7 @@ h4 {
 .containerSidebar tr {
   border-bottom: solid 1px;
   border-color: rgb(237, 242, 248);
-  height: 3rem;
+  height: @spacing-xl;
 }
 .containerSidebar tr.highlight {
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
@@ -99,7 +99,7 @@ h4 {
 
 input, .textInput {
   line-height: 2rem !important;
-  padding-left: 0.375rem;
+  padding-left: @spacing-sm;
   border-radius: 4px;
 }
 .teaserHeader .ant-layout {
@@ -261,8 +261,8 @@ table {
 .ant-input-search {
   height: 2rem;
   line-height: 2rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: @spacing-base;
+  margin-bottom: @spacing-base;
 }
 
 .checkbox, .checkbox svg {
@@ -273,7 +273,7 @@ table {
   position: relative;
   display: block;
   margin-bottom: 0;
-  padding: 0.62rem 1rem;
+  padding: 0.62rem @spacing-base;
   border: 1px solid @neutral-color;
   background-color: @layout-body-background;
 }
@@ -337,7 +337,7 @@ textarea:focus {
 
 .btn-xs {
   font-size: 0.857rem;
-  line-height: 1rem;
+  line-height: @spacing-base;
   padding: 0.31rem 0.62rem;
   border-radius: 3px;
 }
@@ -346,12 +346,12 @@ textarea:focus {
   font-weight: 700;
   line-height: 1;
   top: 0;
-  right: 1rem;
+  right: @spacing-base;
   position: absolute;
   border: none !important;
   color: #f00;
   z-index: 1;
-  padding: @spacing-rq !important;
+  padding: @spacing-sm !important;
   outline: none;
   box-shadow: none;
 }
@@ -369,8 +369,8 @@ textarea:focus {
 
 .icon {
   display: inline-block;
-  width: 1rem;
-  height: 1rem;
+  width: @spacing-base;
+  height: @spacing-base;
   stroke-width: 0;
   stroke: currentColor;
   fill: currentColor;
@@ -493,7 +493,7 @@ span.svg {
 }
 .flexTab {
   overflow: hidden;
-  padding: 1rem;
+  padding: @spacing-base;
 }
 .flexChart-container {
   display: flex;
@@ -539,9 +539,9 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   border: solid 2px transparent;
   cursor: text;
   height: auto;
-  padding: 0.375rem 0.75rem;
+  padding: @spacing-sm @spacing-md;
   width: 100%;
-  margin-left: 0.75rem;
+  margin-left: @spacing-md;
   vertical-align: middle;
 }
 
@@ -560,14 +560,14 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   color: @muted-color;
 }
 .editable.row {
-  padding: 0.75rem;
+  padding: @spacing-md;
 }
 .select {
   background-color: transparent;
 }
 .Select-option {
   line-height: 2rem;
-  padding: 0.75rem;
+  padding: @spacing-md;
 }
 [class*=LineClamp] {
   text-overflow: ellipsis;
@@ -580,10 +580,10 @@ input.textInput::placeholder, textarea.textInput::placeholder {
 }
 .table {
   max-width: 100%;
-  margin-bottom: 1.5rem;
+  margin-bottom: @spacing-lg;
 }
 .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-  line-height: 1rem;
+  line-height: @spacing-base;
   padding: 0.5rem;
   border-top: 1px solid @neutral-color;
 }
@@ -592,7 +592,7 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   border-bottom: 2px solid @neutral-color;
 }
 .toolbar {
-  padding-top: 1.5rem;
+  padding-top: @spacing-lg;
   flex-direction: row;
   display: inline-flex;
   flex-wrap: wrap;
@@ -610,8 +610,8 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   border-color: #9cbeca #bdd4dc #cedfe5;
 }
 .Select-menu-outer {
-  border-bottom-right-radius: 0.375rem;
-  border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: @spacing-sm;
+  border-bottom-left-radius: @spacing-sm;
   background-color: #fff;
   border: 1px solid #bdd4dc;
   border-top-color: #deeaee;
@@ -634,8 +634,8 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   border-color: #9cbeca #bdd4dc #cedfe5;
 }
 .Select-menu-outer {
-  border-bottom-right-radius: 0.375rem;
-  border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: @spacing-sm;
+  border-bottom-left-radius: @spacing-sm;
   background-color: #fff;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   margin-top: -1px;
@@ -661,13 +661,13 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   color: #8799ad;
   cursor: pointer;
   display: block;
-  padding: 0.375rem 0.75rem;
-  line-height: 1rem;
+  padding: @spacing-sm @spacing-md;
+  line-height: @spacing-base;
 }
 .Select-control {
   background-color: #fff;
-  border-radius: 0.375rem;
-  border: 0.125rem solid #bdd4dc;
+  border-radius: @spacing-sm;
+  border: 0.@spacing-lg solid #bdd4dc;
   color: #54667a;
   cursor: default;
   display: table;
@@ -683,8 +683,8 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   bottom: 0;
   color: #bdd4dc;
   left: 0;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  padding-left: @spacing-md;
+  padding-right: @spacing-md;
   position: absolute;
   right: 0;
   top: 0;
@@ -695,8 +695,8 @@ input.textInput::placeholder, textarea.textInput::placeholder {
 }
 .Select-input {
   height: 2rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  padding-left: @spacing-md;
+  padding-right: @spacing-md;
   vertical-align: middle;
 }
 .Select-input input {
@@ -715,19 +715,19 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   text-align: center;
   vertical-align: middle;
   width: 1.5625rem;
-  padding-right: 0.3125rem;
+  padding-right: 0.3@spacing-lg;
 }
 .Select-arrow-zone:focus {
   outline: 0;
 }
 .Select-option:last-child {
-  border-bottom-right-radius: 0.375rem;
-  border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: @spacing-sm;
+  border-bottom-left-radius: @spacing-sm;
 }
 .Select-arrow {
   border-color: #bdd4dc transparent transparent;
   border-style: solid;
-  border-width: 0.3125rem 0.3125rem 0.15625rem;
+  border-width: 0.3@spacing-lg 0.3@spacing-lg 0.15625rem;
   display: inline-block;
   height: 0;
   width: 0;
@@ -791,7 +791,7 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   cursor: default;
 }
 .nav-link.search {
-  margin-top: 0.75rem;
+  margin-top: @spacing-md;
 }
 .navBar-navLogo {
   display: none;
@@ -881,7 +881,7 @@ input.textInput::placeholder, textarea.textInput::placeholder {
   }
 
   .wideView {
-    padding-left: 1.5rem;
+    padding-left: @spacing-lg;
   }
 
   main {
@@ -893,7 +893,7 @@ input.textInput::placeholder, textarea.textInput::placeholder {
     width: 85%;
     margin-bottom: 0;
     background-color: #fff;
-    padding-bottom: 3rem;
+    padding-bottom: @spacing-xl;
     }
 
   #root {
