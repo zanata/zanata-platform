@@ -119,6 +119,7 @@ export const tmxInitialLoad = (project, version) => {
 
 // @ts-ignore any
 export const exportTMX = (localeId, project, version) => {
+  // getState() returns TopLevelState (state.ts)
   // @ts-ignore any
   return (dispatch, getState) => {
     const type = getState().tmx.tmxExport.type

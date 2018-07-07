@@ -15,8 +15,9 @@ import {
   APITypes
 } from './common-actions'
 import { apiUrl } from '../config'
+import { GlossaryFileTypes } from '../reducers/state.js';
 
-export const FILE_TYPES = ['csv', 'po']
+export const FILE_TYPES = GlossaryFileTypes
 export const PAGE_SIZE_SELECTION = [20, 50, 100, 300, 500]
 // 500 by default
 export const PAGE_SIZE_DEFAULT = last(PAGE_SIZE_SELECTION)

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { handleActions } from 'redux-actions'
 import { keyBy } from 'lodash'
 import {
@@ -33,6 +32,7 @@ const ERROR_MSG = 'We were unable load languages from server. ' +
 const CREATE_LANGUAGE_ERROR_MSG = 'We were unable add new language. ' +
   'Please refresh this page and try again.'
 
+// @ts-ignore
 export default handleActions({
   [TOGGLE_NEW_LANGUAGE_DISPLAY]: (state, action) => {
     return {
@@ -43,13 +43,13 @@ export default handleActions({
       }
     }
   },
-  [CLEAR_MESSAGE]: (state, action) => {
+  [CLEAR_MESSAGE]: (state, _action) => {
     return {
       ...state,
       notification: undefined
     }
   },
-  [LOAD_USER_REQUEST]: (state, action) => {
+  [LOAD_USER_REQUEST]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -74,6 +74,7 @@ export default handleActions({
       }
     } else {
       const languageTeams =
+        // @ts-ignore
         keyBy(action.payload.languageTeams, function (localeId) {
           return localeId
         })
@@ -86,7 +87,7 @@ export default handleActions({
       }
     }
   },
-  [LOAD_USER_FAILURE]: (state, action) => {
+  [LOAD_USER_FAILURE]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -100,7 +101,7 @@ export default handleActions({
       }
     }
   },
-  [LANGUAGE_PERMISSION_REQUEST]: (state, action) => {
+  [LANGUAGE_PERMISSION_REQUEST]: (state, _action) => {
     return {
       ...state,
       loading: true
@@ -124,14 +125,16 @@ export default handleActions({
       return {
         ...state,
         permission: {
+          // @ts-ignore
           canDeleteLocale: action.payload.canDeleteLocale,
+          // @ts-ignore
           canAddLocale: action.payload.canAddLocale
         },
         loading: false
       }
     }
   },
-  [LANGUAGE_PERMISSION_FAILURE]: (state, action) => {
+  [LANGUAGE_PERMISSION_FAILURE]: (state, _action) => {
     return {
       ...state,
       loading: false,
@@ -145,7 +148,7 @@ export default handleActions({
       }
     }
   },
-  [LOAD_LANGUAGES_REQUEST]: (state, action) => {
+  [LOAD_LANGUAGES_REQUEST]: (state, _action) => {
     return {
       ...state,
       loading: true
@@ -169,7 +172,7 @@ export default handleActions({
       }
     }
   },
-  [LOAD_LANGUAGES_FAILURE]: (state, action) => {
+  [LOAD_LANGUAGES_FAILURE]: (state, _action) => {
     return {
       ...state,
       loading: false,
@@ -179,19 +182,19 @@ export default handleActions({
       }
     }
   },
-  [LANGUAGE_DELETE_REQUEST]: (state, action) => {
+  [LANGUAGE_DELETE_REQUEST]: (state, _action) => {
     return {
       ...state,
       deleting: true
     }
   },
-  [LANGUAGE_DELETE_SUCCESS]: (state, action) => {
+  [LANGUAGE_DELETE_SUCCESS]: (state, _action) => {
     return {
       ...state,
       deleting: false
     }
   },
-  [LANGUAGE_DELETE_FAILURE]: (state, action) => {
+  [LANGUAGE_DELETE_FAILURE]: (state, _action) => {
     return {
       ...state,
       deleting: false,
@@ -202,7 +205,7 @@ export default handleActions({
       }
     }
   },
-  [LOAD_LANGUAGES_SUGGESTION_REQUEST]: (state, action) => {
+  [LOAD_LANGUAGES_SUGGESTION_REQUEST]: (state, _action) => {
     return {
       ...state,
       searchResults: []
@@ -228,7 +231,7 @@ export default handleActions({
       }
     }
   },
-  [LOAD_LANGUAGES_SUGGESTION_FAILURE]: (state, action) => {
+  [LOAD_LANGUAGES_SUGGESTION_FAILURE]: (state, _action) => {
     return {
       ...state,
       newLanguage: {
@@ -241,7 +244,7 @@ export default handleActions({
       }
     }
   },
-  [CREATE_LANGUAGE_REQUEST]: (state, action) => {
+  [CREATE_LANGUAGE_REQUEST]: (state, _action) => {
     return {
       ...state,
       newLanguage: {
@@ -276,13 +279,14 @@ export default handleActions({
         },
         notification: {
           severity: SEVERITY.INFO,
+          // @ts-ignore
           message: 'Language ' + action.payload.displayName +
             ' has been created.'
         }
       }
     }
   },
-  [CREATE_LANGUAGE_FAILURE]: (state, action) => {
+  [CREATE_LANGUAGE_FAILURE]: (state, _action) => {
     return {
       ...state,
       newLanguage: {
@@ -298,7 +302,8 @@ export default handleActions({
     }
   }
 },
-  {
+  /** @type {import('./state').LanguagesState} */
+  ({
     user: {},
     loading: true,
     locales: {
@@ -314,5 +319,6 @@ export default handleActions({
       canDeleteLocale: false,
       canAddLocale: false
     },
-    deleting: false
-  })
+    deleting: false,
+    notification: undefined,
+  }))
