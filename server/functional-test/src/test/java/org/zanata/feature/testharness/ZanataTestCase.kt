@@ -20,40 +20,36 @@
  */
 package org.zanata.feature.testharness
 
-import org.apache.log4j.LogManager
-import org.apache.log4j.Logger
-import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
-
 import org.joda.time.DateTime
 import org.joda.time.Duration
-import org.joda.time.format.PeriodFormatter
 import org.joda.time.format.PeriodFormatterBuilder
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.RegisterExtension
-import org.junit.jupiter.api.extension.TestInstancePostProcessor
-import org.junit.rules.RuleChain
-import org.openqa.selenium.WebDriver
 import org.zanata.page.WebDriverFactory
-import org.zanata.util.*
-
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport
+import org.zanata.util.AllowAnonymousExtension
+import org.zanata.util.LoggingExtension
+import org.zanata.util.HasEmailExtension
+import org.zanata.util.EnsureLogoutExtension
+import org.zanata.util.SampleDataExtension
+import org.zanata.util.ZanataRestCaller
 
 /**
  * Global application of rules to Zanata functional tests
  *
- * @author Damian Jansen
- * [djansen@redhat.com](mailto:djansen@redhat.com)
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@EnableRuleMigrationSupport
-@ExtendWith(AllowAnonymousExtension::class, LoggingExtension::class, SampleDataExtension::class, EnsureLogoutExtension::class)
+@ExtendWith(LoggingExtension::class,
+        SampleDataExtension::class,
+        AllowAnonymousExtension::class,
+        EnsureLogoutExtension::class)
 @DisplayName("Zanata Functional Test")
 open class ZanataTestCase {
 
-    var testFunctionStart: DateTime
+    private var testFunctionStart = DateTime()
     var zanataRestCaller = ZanataRestCaller()
 
     private val testDescription: String
@@ -108,9 +104,6 @@ open class ZanataTestCase {
 
         @RegisterExtension
         var hasEmailExtension = HasEmailExtension()
-
-        val MAX_SHORT_TEST_DURATION = 180000
-        val SHORT_TEST: java.time.Duration = java.time.Duration.ofMillis(MAX_SHORT_TEST_DURATION.toLong())
-        private var mainWindowHandle: String? = null
+        private lateinit var mainWindowHandle: String
     }
 }

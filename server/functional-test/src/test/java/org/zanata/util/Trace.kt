@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,15 +18,17 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.endtoend;
+package org.zanata.feature
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import kotlin.annotation.Retention
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        AdminEndToEndTest.class,
-        UserEndToEndTest.class
-})
-public class EndToEndTestSuite {
-}
+/**
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
+ */
+@Retention
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE,
+        AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER,
+        AnnotationTarget.PROPERTY_SETTER)
+annotation class Trace(val summary: String = "Summary undefined",
+                       val testPlanIds: IntArray = [],
+                       val testCaseIds: IntArray = [])
