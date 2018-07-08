@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2018, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -24,17 +24,20 @@ import org.junit.jupiter.api.Tag
 import kotlin.annotation.Retention
 
 /**
- * Interface for the execution of the Unstable Test category.
+ * Interface for the execution of the Basic Acceptance Tests (BAT) category.
  *
- * Tests in this category may encounter execution problems, for various
- * reasons such as:<br></br>
- * - Relying on external interfaces (e.g. Google, Fedora, OpenShift)
- * - Timeout/performance problems
+ * Tests in this category exercise features only so far as to demonstrate
+ * that the feature works, and perhaps have a single handled negative case.
+ * BAT suites should not exceed an agreed interval, e.g. approximately
+ * 10 minutes, in order to maintain a positive GitHub workflow.
+ * Tests in this category provide a "review readiness" status for Github
+ * Pull Requests, and must pass for said request to be accepted and merged.
  *
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE,
+        AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER,
+        AnnotationTarget.PROPERTY_SETTER)
 @Retention
-@Tag("UnstableTest")
-@Suppress("unused")
-annotation class UnstableTest
+@Tag("BasicAcceptancetest")
+annotation class BasicAcceptanceTest

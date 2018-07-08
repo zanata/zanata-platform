@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2018, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,21 +18,21 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature;
+package org.zanata.util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
-/**
- * @author Damian Jansen
- *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface Trace {
-    String summary() default "Summary undefined";
-    int[] testPlanIds() default {};
-    int[] testCaseIds() default {};
+public class LoggingExtension implements TestInstancePostProcessor {
+
+    @Override
+    public void postProcessTestInstance(Object testInstance,
+                                        ExtensionContext context) throws Exception {
+        Logger logger = LogManager.getLogger(testInstance.getClass());
+//        testInstance.getClass()
+//                .getMethod("setLogger", Logger.class)
+//                .invoke(testInstance, logger);
+    }
 }
