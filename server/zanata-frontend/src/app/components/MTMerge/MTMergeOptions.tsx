@@ -64,35 +64,34 @@ export class MTMergeOptions extends Component<Props> {
           <Icon type="global" />
           {this.props.allowMultiple ? "Languages" : "Language"}
         </h3>
-        {this.props.allowMultiple ?
-          <div>
-          {/*this is the "check all" checkbox*/}
-          <div style={{borderBottom: '1px solid #E9E9E9'}}>
-            <Checkbox
-              checked={allChecked}
-              indeterminate={someChecked}
-              onChange={this.onCheckAllChange}
+        {this.props.allowMultiple
+          ? <div>
+            {/*this is the "check all" checkbox*/}
+            <div style={{borderBottom: '1px solid #E9E9E9'}}>
+              <Checkbox
+                checked={allChecked}
+                indeterminate={someChecked}
+                onChange={this.onCheckAllChange}
+              >
+                All languages
+              </Checkbox>
+            </div>
+            <br />
+            <CheckboxGroup
+              onChange={this.onCheckboxGroupChange} value={this.props.checkedLocales}
             >
-              All languages
-            </Checkbox>
+            {this.props.availableLocales.map(loc =>
+              <Checkbox key={loc.localeId} value={loc.localeId}>
+                {loc.displayName}
+              </Checkbox>)}
+            </CheckboxGroup>
           </div>
-          <br />
-          <CheckboxGroup
-            onChange={this.onCheckboxGroupChange} value={this.props.checkedLocales}
-          >
-          {this.props.availableLocales.map(loc =>
-            <Checkbox key={loc.localeId} value={loc.localeId}>
-              {loc.displayName}
-            </Checkbox>)}
-          </CheckboxGroup>
-        </div>
-        :
-        <Radio.Group onChange={this.onRadioGroupChange}>
-          {this.props.availableLocales.map(loc =>
-            <Radio key={loc.localeId} value={loc.localeId} checked={this.props.checkedLocales.includes(loc.localeId)}>
-              {loc.displayName}
-            </Radio>)}
-        </Radio.Group>
+          : <Radio.Group onChange={this.onRadioGroupChange}>
+            {this.props.availableLocales.map(loc =>
+              <Radio key={loc.localeId} value={loc.localeId} checked={this.props.checkedLocales.includes(loc.localeId)}>
+                {loc.displayName}
+              </Radio>)}
+          </Radio.Group>
         }
 
         {/* Other options */}
