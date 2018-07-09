@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const join = require('path').join
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-// const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const tsImportPluginFactory = require('ts-import-plugin')
@@ -135,8 +135,19 @@ module.exports = function (isEditor) {
         chunkFilename: '[id].[hash].css'
       }),
       new webpack.HashedModuleIdsPlugin(),
-      // Workaround to switch old loaders to minimize mode
-      // new webpack.LoaderOptionsPlugin({ minimize: true }),
+      new CopyWebpackPlugin([
+        {
+          from: join(__dirname, 'messages/*.json'),
+          to: 'messages',
+          toType: 'dir',
+          flatten: true,
+          // @ts-ignore any
+          transform(content, path) {
+            // Minimize the JSON files
+            return JSON.stringify(JSON.parse(content))
+          }
+        }
+      ]),
       new OptimizeCSSAssetsPlugin({
         cssProcessor: require('cssnano'),
         cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
