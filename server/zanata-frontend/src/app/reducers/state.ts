@@ -1,8 +1,8 @@
 import { Locale, ProcessStatus, ProjectSearchResult, LocaleId } from '../utils/prop-types-util'
 import { DeepReadonly } from '../utils/DeepReadonly'
 import { RouterState} from 'react-router-redux'
-import { tuple } from '../utils/tuple';
-import { TMX_ALL, TMX_PROJECT, TMX_VERSION } from '../actions/tmx-actions';
+import { tuple } from '../utils/tuple'
+import { TMX_ALL, TMX_PROJECT, TMX_VERSION } from '../actions/tmx-actions'
 
 /* tslint:disable interface-over-type-literal */
 
