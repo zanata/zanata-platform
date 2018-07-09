@@ -96,7 +96,7 @@ class NavHeader extends React.Component {
         <div className="u-posAbsoluteLeft">
           <Row className={directionClass}>
             <ProjectVersionLink {...ctx.projectVersion} />
-            <div className="u-inlineBlock u-sMH-1-4 u-textInvert txt-muted u-sm-hidden">
+            <div className="u-inlineBlock u-sMH-1-4 u-textInvert u-textMuted u-sm-hidden">
               <Icon name="chevron-right" className="s1" />
             </div>
             <span className="Editor-docsDropdown">

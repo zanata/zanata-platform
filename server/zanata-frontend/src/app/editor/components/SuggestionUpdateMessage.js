@@ -46,7 +46,7 @@ class SuggestionUpdateMessage extends React.Component {
 
   render () {
     return (
-      <span className="txt-neutral">
+      <span className="u-textNeutral">
         <Icon name="history" className="s0" />
         <span className="u-sML-1-4">{this.message()}</span>
       </span>
