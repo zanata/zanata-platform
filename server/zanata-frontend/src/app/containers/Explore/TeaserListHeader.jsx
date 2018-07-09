@@ -33,7 +33,7 @@ const TeaserListHeader = ({
 
   /* eslint-disable react/jsx-no-bind */
   return (
-    <div className='teaserHeader'>
+    <div className='teaserHeader txt-muted'>
       <Layout>
         {headerIcon}
         <h2 className='txt-primary ttu'>
