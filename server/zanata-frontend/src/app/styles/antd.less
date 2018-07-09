@@ -1,4 +1,3 @@
-@import "ant-theme-vars.less";
 /*
 antd component overrides
 tachyons not used because these apply globally to the antd components
@@ -88,6 +87,18 @@ tachyons not used because these apply globally to the antd components
   display: flex;
   flex-direction: row;
   align-items: baseline;
+}
+
+.ant-layout {
+  background: #fff;
+}
+
+.ant-pagination-item a {
+  color: @primary-color;
+}
+
+.ant-pagination-item-active a {
+  color: @info-color;
 }
 
 .scrollView {
