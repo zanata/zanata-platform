@@ -24,3 +24,18 @@
 @heading-color: @primary-color;
 @card-head-background: @neutral-color;
 @card-head-color: @primary-color;
+
+
+@screen-sm: 48rem; //768
+@screen-sm-min: @screen-sm;
+
+@screen-md: 62rem; //992
+@screen-md-min: @screen-md;
+
+@screen-lg: 75rem; //1200
+@screen-lg-min: @screen-lg;
+
+// So media queries don't overlap when required, provide a maximum
+@screen-xs-max: (@screen-sm-min - 1);
+@screen-sm-max: (@screen-md-min - 1);
+@screen-md-max: (@screen-lg-min - 1);

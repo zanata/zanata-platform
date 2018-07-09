@@ -50,8 +50,8 @@ class TMMergeImportedTM extends Component {
             <Switch defaultChecked
               onChange={this.toggleChange} />
           </span>
-          <span className="ml2 f4">From </span>
-          <span className="b f4">TM Source</span>
+          <span className="ml2 f4 v-mid">From </span>
+          <span className="b f4 v-mid">TM Source</span>
         </div>
         <div>
           No project, document or context for TMX<br />

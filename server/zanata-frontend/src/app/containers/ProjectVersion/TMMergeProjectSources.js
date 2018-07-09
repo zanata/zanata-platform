@@ -140,12 +140,12 @@ class TMMergeProjectSources extends Component {
           <Col span={24} className='v-mid'>
             <Switch defaultChecked
               onChange={this.toggleChange} />
-            <span className='f4 ml2'>From </span>
-            <span className='f4 b mr2'>Project Source</span>
+            <span className='f4 ml2 v-mid'>From </span>
+            <span className='f4 b mr2 v-mid'>Project Source</span>
             <Tooltip placement='right'
               title={fromProjectSourceTooltip}>
               <a className='btn-link pa0' aria-label='button'>
-                <Icon name='info' className='s0' />
+                <Icon name='info' className='s0 v-mid' />
               </a>
             </Tooltip>
           </Col>

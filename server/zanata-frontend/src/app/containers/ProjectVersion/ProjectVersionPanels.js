@@ -170,7 +170,7 @@ class VersionMenuCheckbox extends Component {
         <span>
           <TriCheckbox onChange={this.onVersionCheckboxChange}
             checked={checked} /> <Icon name='version' title='source version'
-              className='s0' parentClassName='iconTMX' /> {version.id} <LockIcon
+              className='s0' /> {version.id} <LockIcon
                 status={version.status} />
         </span>
       </div>
