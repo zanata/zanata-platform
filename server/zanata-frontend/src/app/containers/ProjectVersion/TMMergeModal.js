@@ -105,7 +105,7 @@ const MergeOptions = (
           in other projects and versions into this project version.
           <Link useHref link={docLink} target='_blank'>
             <span title='help'>
-              <Icon name='help' className='s0' parentClassName='iconHelp' />
+              <Icon name='help' className='s0' />
               &nbsp;Need help?
             </span>
           </Link>

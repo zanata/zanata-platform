@@ -91,13 +91,11 @@ class EntryModal extends Component {
           <span>
             Glossary Term {transSelected
               ? (<span>
-                <Icon name='language' className='s1'
-                  parentClassName='iconLanguage-neutral' />
+                <Icon name='language' className='s1' />
                 <span className='txt-muted'>{selectedTransLocale}</span>
               </span>)
               : (<span>
-                <Icon name='translate' className='s1'
-                  parentClassName='iconTranslate-neutral' />
+                <Icon name='translate' className='s1' />
                 <span className='u-textMuted'>{entry.termsCount}</span>
               </span>)}
           </span>

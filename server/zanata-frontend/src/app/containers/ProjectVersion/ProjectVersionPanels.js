@@ -137,8 +137,7 @@ class SelectAllVersionsCheckbox extends Component {
             onChange={this.onAllVersionCheckboxChange}
             checked={allVersionsChecked}
             indeterminate={someVersionsChecked} /> <Icon name='project'
-              title='source project' className='s0'
-              parentClassName='iconTMX' /> {project.title} <LockIcon
+              title='source project' className='s0' /> {project.title} <LockIcon
                 status={project.status} />
         </span>
       </div>

@@ -120,8 +120,7 @@ class UserProfile extends Component {
               </li>)}
               {languageTeams &&
               (<ul id='profileLanguages'>
-                <Icon name='language' className='s0' title='Spoken languages'
-                  parentClassName='iconLanguage u-pullLeft' />
+                <Icon name='language' className='s0 fl' title='Spoken languages' />
                 <li>{languageTeams}</li>
               </ul>)}
               {roles && isLoggedIn &&

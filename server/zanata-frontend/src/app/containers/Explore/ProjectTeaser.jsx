@@ -50,7 +50,6 @@ const ProjectTeaser = ({
           <Link link={link} useHref className={className} title={tooltip}>
             {status !== statusIcons.ACTIVE &&
             (<Icon name={statusIcons[details.status]} className='s1'
-              parentClassName='iconsStatus'
             />)}
             {details.title}
           </Link>
