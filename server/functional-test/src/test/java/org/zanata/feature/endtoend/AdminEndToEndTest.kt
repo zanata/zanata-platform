@@ -106,7 +106,7 @@ class AdminEndToEndTest : ZanataTestCase() {
         assertThat(manageUserPage.userList)
                 .describedAs("Manage users page contains new user")
                 .contains(USERNAME)
-        val messages = ZanataTestCase.hasEmailExtension.messages
+        val messages = hasEmailExtension.messages
         assertThat(messages).describedAs("one message").hasSize(1)
         val email = messages[0]
         assertThat(email.envelopeReceiver)
@@ -135,7 +135,7 @@ class AdminEndToEndTest : ZanataTestCase() {
                 .inputMessage(inputMessage)
                 .send(MorePage::class.java)
                 .logout()
-        val email = ZanataTestCase.hasEmailExtension.messages[1]
+        val email = hasEmailExtension.messages[1]
         assertThat(email.envelopeReceiver)
                 .describedAs("There is an email to the administrator")
                 .contains(ADMINEMAIL)

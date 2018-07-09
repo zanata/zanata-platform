@@ -23,7 +23,7 @@ package org.zanata.feature.misc
 import com.google.common.collect.ImmutableList
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder
 import org.junit.jupiter.api.Test
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.util.Constants

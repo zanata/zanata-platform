@@ -20,9 +20,7 @@
  */
 package org.zanata.util
 
-import org.junit.jupiter.api.extension.AfterEachCallback
-import org.junit.jupiter.api.extension.BeforeEachCallback
-import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.*
 import org.zanata.page.utility.HomePage
 import org.zanata.workflow.BasicWorkFlow
 
@@ -33,12 +31,15 @@ import org.zanata.workflow.BasicWorkFlow
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-class EnsureLogoutExtension : BeforeEachCallback, AfterEachCallback {
-    override fun beforeEach(context: ExtensionContext) {
+class EnsureLogoutExtension : BeforeTestExecutionCallback, AfterTestExecutionCallback {
+
+    override fun beforeTestExecution(context: ExtensionContext) {
+        println("LOG OUT IF LOGGED IN\n\n")
+
         logoutIfLoggedIn()
     }
 
-    override fun afterEach(context: ExtensionContext) {
+    override fun afterTestExecution(context: ExtensionContext) {
         logoutIfLoggedIn()
     }
 

@@ -21,7 +21,7 @@
 package org.zanata.feature.project
 
 import org.junit.jupiter.api.Test
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.workflow.LoginWorkFlow
 

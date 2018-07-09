@@ -24,7 +24,7 @@ import com.google.common.io.Files
 import org.fedorahosted.openprops.Properties
 import org.junit.Before
 import org.junit.jupiter.api.Test
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.webtrans.EditorPage
@@ -37,7 +37,6 @@ import org.zanata.workflow.LoginWorkFlow
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
-import java.io.IOException
 
 import org.assertj.core.api.Assertions.assertThat
 import org.zanata.util.MavenHome.mvn

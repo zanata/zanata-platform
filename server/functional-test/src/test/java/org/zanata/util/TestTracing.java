@@ -29,7 +29,6 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
-import org.zanata.feature.Trace;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;

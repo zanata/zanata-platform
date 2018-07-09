@@ -23,7 +23,7 @@ package org.zanata.feature.language.comp
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.ComprehensiveTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.util.HasEmailExtension

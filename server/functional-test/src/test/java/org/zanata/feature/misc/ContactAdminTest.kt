@@ -21,7 +21,7 @@
 package org.zanata.feature.misc
 
 import org.junit.jupiter.api.Test
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.more.MorePage
@@ -79,7 +79,7 @@ class ContactAdminTest : ZanataTestCase() {
                 .describedAs("An email sent notification shows")
                 .isTrue()
 
-        val messages = ZanataTestCase.hasEmailExtension.messages
+        val messages = hasEmailExtension.messages
 
         assertThat(messages)
                 .describedAs("One email was sent")
