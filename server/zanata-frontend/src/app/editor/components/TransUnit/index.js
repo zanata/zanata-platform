@@ -62,7 +62,6 @@ class TransUnit extends React.Component {
       description: PropTypes.string.isRequired,
       priority: PropTypes.oneOf([MINOR, MAJOR, CRITICAL]).isRequired
     })),
-    toggleConcurrentModal: PropTypes.func.isRequired,
     toggleRejectModal: PropTypes.func.isRequired,
     projectSlug: PropTypes.string.isRequired,
     versionSlug: PropTypes.string.isRequired
@@ -131,7 +130,6 @@ class TransUnit extends React.Component {
           <TransUnitSourcePanel {...phraseSourcePanelProps} />
           <TransUnitTranslationPanel {...phraseTranslationPanelProps}
             saveDropdownKey={this.props.phrase.id}
-            toggleConcurrentModal={this.props.toggleConcurrentModal}
             showRejectModal={this.props.toggleRejectModal} />
         </div>
       </div>

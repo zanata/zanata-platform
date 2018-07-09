@@ -9,7 +9,6 @@ const messages = Messages[locale]
 
 const PrintfXSIExtensionValidator =
   new PrintfXSIExtensionValidation(locale, messages)
-
 // @ts-ignore any
 const noErrors = []
 

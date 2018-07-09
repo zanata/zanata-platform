@@ -80,7 +80,6 @@ class MainContent extends React.Component {
             index={phrase.id}
             phrase={phrase}
             criteria={this.props.criteriaList}
-            toggleConcurrentModal={this.props.toggleConcurrentModal}
             toggleRejectModal={this.props.toggleReviewModal}
             translationLocale={this.props.translationLocale}
             projectSlug={this.props.projectSlug}

@@ -11,6 +11,7 @@ import {
   SELECT_PHRASE_SPECIFIC_PLURAL,
   PHRASE_TEXT_SELECTION_RANGE,
   TRANSLATION_TEXT_INPUT_CHANGED,
+  TOGGLE_SAVE_WITH_ERROR_MODAL,
   QUEUE_SAVE,
   SAVE_INITIATED,
   PENDING_SAVE_INITIATED,
@@ -19,7 +20,8 @@ import {
   SAVE_CONFLICT,
   SAVE_CONFLICT_RESOLVED_LATEST,
   SAVE_CONFLICT_RESOLVED_ORIGINAL,
-  TOGGLE_CONCURRENT_MODAL
+  TOGGLE_CONCURRENT_MODAL,
+  VALIDATION_ERRORS
 } from './phrases-action-types'
 import {
   defaultSaveStatus,
@@ -59,12 +61,21 @@ export const cancelEdit = createAction(CANCEL_EDIT)
 export const undoEdit = createAction(UNDO_EDIT)
 
 /**
+ * Open a modal to confirm saving a translation with validation errors.
+ */
+export const toggleSaveErrorModal = createAction(TOGGLE_SAVE_WITH_ERROR_MODAL,
+  (phraseId, showValidationErrorModal) => ({
+    phraseId,
+    showValidationErrorModal
+  }))
+
+/**
  * Set the selected phrase to the given ID.
  * Only one phrase is selected at a time.
  */
 export function selectPhrase (phraseId, localeId, projectSlug, versionSlug,
-    activityVisible) {
-  return (dispatch) => {
+  activityVisible) {
+  return (dispatch, getState) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(createAction(SELECT_PHRASE)(phraseId))
     if (activityVisible) {
@@ -83,8 +94,8 @@ const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
  * and gains it back again (unless it gains focus from a different plural form
  * being specifically targeted).
  */
-export function selectPhrasePluralIndex (
-  phraseId, index, localeId, projectSlug, versionSlug, activityVisible) {
+export function selectPhrasePluralIndex (phraseId, index, localeId, projectSlug,
+  versionSlug, activityVisible) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(selectPhraseSpecificPlural(phraseId, index))
@@ -166,6 +177,12 @@ const saveConflictResolvedOriginal =
     phraseId,
     saveInfo,
     revision
+  }))
+
+export const validationError = createAction(VALIDATION_ERRORS,
+  (phraseId, hasValidationError) => ({
+    phraseId,
+    hasValidationError
   }))
 
 export const toggleConcurrentModal = createAction(TOGGLE_CONCURRENT_MODAL)
