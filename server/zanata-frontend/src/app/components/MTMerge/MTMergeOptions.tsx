@@ -1,22 +1,21 @@
 import React, { Component } from 'react'
-import 'antd/lib/modal/style/css'
 import Alert from 'antd/lib/alert'
 import 'antd/lib/alert/style/css'
-import Icon from 'antd/lib/icon'
-import 'antd/lib/icon/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 import Checkbox from 'antd/lib/checkbox'
 import 'antd/lib/checkbox/style/css'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { Radio } from 'antd'
+import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
+import Radio from 'antd/lib/radio'
 import 'antd/lib/radio/style/css'
 import Switch from 'antd/lib/switch'
 import 'antd/lib/switch/style/css'
-import Card from 'antd/lib/card'
-import 'antd/lib/card/style/css'
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { CheckboxValueType } from 'antd/lib/checkbox/Group'
+import { RadioChangeEvent } from 'antd/lib/radio'
 import { LocaleId, Locale } from '../../utils/prop-types-util'
-import { STATUS_NEEDS_WORK, STATUS_TRANSLATED } from '../../editor/utils/phrase';
-import { RadioChangeEvent } from 'antd/lib/radio';
+import { STATUS_NEEDS_WORK, STATUS_TRANSLATED } from '../../editor/utils/phrase'
 
 const CheckboxGroup = Checkbox.Group
 
@@ -54,11 +53,9 @@ export class MTMergeOptions extends Component<Props> {
     const someChecked = ![0, this.props.availableLocales.length].includes(this.props.checkedLocales.length)
 
     return (
-      // TODO use a Fragment
-      <div>
+      <React.Fragment>
         <Alert message="Have you run TM Merge first?" type="warning"
           showIcon/>
-
         {/* Select Languages */}
         <h3 className="txt-info mt4">
           <Icon type="global" />
@@ -117,7 +114,7 @@ export class MTMergeOptions extends Component<Props> {
           </Card>
         </div>
         }
-      </div>
+      </React.Fragment>
     )
   }
 

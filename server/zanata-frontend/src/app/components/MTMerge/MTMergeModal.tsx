@@ -2,7 +2,8 @@ import React from 'react'
 import { Component } from 'react'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
-import { Button } from 'antd'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import { LocaleId, Locale } from '../../utils/prop-types-util'
 import { STATUS_NEEDS_WORK } from '../../editor/utils/phrase';
 import { MTMergeOptions, MTTranslationStatus } from './MTMergeOptions';
@@ -91,8 +92,8 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
         //   onCancelOperation={this.cancelTMMerge}
         //   processStatus={processStatus} buttonLabel='Cancel TM Merge'
         //   queryProgress={this.queryTMMergeProgress}
-        // />
-        "TODO CancellableProgressBar"
+        // /> */}
+          "TODO CancellableProgressBar"
         )
         : availableLocales.length === 0 ?
         <p>This version has no enabled languages. You must enable at least one
