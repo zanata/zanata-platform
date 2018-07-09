@@ -191,12 +191,12 @@ const glossary = handleActions({
         }
       }
     } else {
-      let importFile = state.importFile
-      // @ts-ignore FIXME this looks like a state bug. immutability-helper?
-      importFile.status = 0
       return {
         ...state,
-        importFile: importFile
+        importFile: {
+          ...state.importFile,
+          status: 0,
+        }
       }
     }
   },
