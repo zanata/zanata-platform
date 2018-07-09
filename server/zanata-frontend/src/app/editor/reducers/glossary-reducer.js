@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Reducer for glossary search in the editor.
  */
@@ -17,6 +16,7 @@ import {
   SHOW_GLOSSARY_DETAILS
 } from '../actions/glossary-action-types'
 
+/** @type {import('./state').EditorGlossaryState} */
 const defaultState = {
   searchText: '',
   searching: false,
@@ -33,20 +33,23 @@ const defaultState = {
     fetching: false,
     /* detail keyed by id in results[x].sourceIdList */
     byId: {}
-  }
+  },
 }
 
 const glossary = handleActions({
   [GLOSSARY_DETAILS_REQUEST]: state =>
     update(state, { details: { fetching: {$set: true} } }),
 
+  // @ts-ignore meta
   [GLOSSARY_DETAILS_SUCCESS]: (state, { payload, meta: {sourceIdList} }) =>
     update(state, { details: {
       fetching: {$set: false},
       // shallow merge so that incoming detail will completely replace
       // old detail with the same id.
+      // @ts-ignore ArrayLike?
       byId: {$merge: chain(payload)
         // response items match source id at the same index
+        // @ts-ignore any
         .zipWith(sourceIdList, (detail, sourceId) => ({
           ...detail,
           sourceId
@@ -65,16 +68,18 @@ const glossary = handleActions({
 
   [GLOSSARY_TERMS_REQUEST]: state => update(state, {searching: {$set: true}}),
 
+  // @ts-ignore meta
   [GLOSSARY_TERMS_FAILURE]: (state, { meta: {timestamp} }) =>
     timestamp > state.resultsTimestamp
       ? update(state, {
         searching: {$set: false},
-        results: {$set: []},
+        results: {$set: new Map()},
         resultsTimestamp: {$set: timestamp}
       })
       : state,
 
   [GLOSSARY_TERMS_SUCCESS]:
+    // @ts-ignore meta
     (state, {payload, meta: {searchText, timestamp}}) => {
       if (timestamp <= state.resultsTimestamp) {
         return state

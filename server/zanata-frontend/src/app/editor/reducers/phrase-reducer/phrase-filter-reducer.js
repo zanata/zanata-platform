@@ -8,6 +8,7 @@ import {
   UPDATE_PHRASE_FILTER
 } from '../../actions/phrases-action-types'
 
+/** @type {import('../state').PhraseFilterState} */
 export const defaultState = {
   showAdvanced: false,
   advanced: {
@@ -28,6 +29,7 @@ export const phraseFilterReducer = handleActions({
     update(state, {showAdvanced: {$set: !state.showAdvanced}}),
 
   [UPDATE_PHRASE_FILTER]: (state, { payload }) =>
+    // @ts-ignore ??
     update(state, { advanced: {$merge: payload} })
 }, defaultState)
 
