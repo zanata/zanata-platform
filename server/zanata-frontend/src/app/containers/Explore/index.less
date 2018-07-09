@@ -1,4 +1,4 @@
-@import "../../styles/variables.less";
+@import "../../styles/antdvars.less";
 
 #explore {
   .containerContentView {
@@ -12,10 +12,10 @@
     align-items: center;
     -webkit-align-items: center;
     /* Safari 7.0+ */
-    color: @color-dark;
+    color: @primary-color;
     position: relative;
     width: 80%;
-    padding-top: @spacing-xlarge;
+    padding-top: @spacing-xl;
     margin-bottom: @spacing-base;
     margin-left: auto;
     margin-right: auto;
@@ -26,8 +26,8 @@
   }
   .searchView .textInput {
     background-color: "";
-    border: @color-neutral solid 2px;
-    border-radius: @border-radius-text-input;
+    border: @neutral-color solid 2px;
+    border-radius: @spacing-sm;
     font-family: inherit;
     font-weight: inherit;
     color: inherit;
@@ -39,20 +39,14 @@
     margin-left: -1.75rem;
     padding-left: 2rem !important;
   }
-  .searchView .listInline {
-    vertical-align: text-bottom;
-  }
   .teaserList {
     margin-bottom: 2.25rem;
-  }
-  .teaserList .listTheme {
-    margin-top: @spacing-base-and-a-half;
   }
   .teaserView {
     align-items: center;
     -webkit-align-items: center;
     /* Safari 7.0+ */
-    margin-bottom: @spacing-rh;
+    margin-bottom: @spacing-md;
   }
   .teaserHeader {
     align-items: baseline;
@@ -81,8 +75,8 @@
     vertical-align: sub;
   }
   .teaserHeader-inner {
-    margin-left: @spacing-rh;
-    color: @color-light;
+    margin-left: @spacing-md;
+    color: @info-color;
     display: flex;
     align-items: left;
     flex-direction: row;
@@ -91,7 +85,7 @@
     align-items: center;
     -webkit-align-items: center;
     /* Safari 7.0+ */
-    margin-bottom: @spacing-rq;
+    margin-bottom: @spacing-md;
     margin-right: 1.75rem;
   }
   .languageTeamTeaser-members {
@@ -100,15 +94,11 @@
     /* Safari 7.0+ */
     margin-left: auto;
     float: right;
-    padding-right: @spacing-xlarge;
-    color: @color-muted;
-  }
-  .languageTeamTeaser-members .iconUsers-muted {
-    padding-right: @spacing-rq;
-    vertical-align: sub;
+    padding-right: @spacing-xl;
+    color: @muted-color;
   }
   .teaserHeader-pagination {
-   margin-top: @spacing-rh;
+   margin-top: @spacing-md;
   }
   .teaserHeader-pagination button:first-of-type {
     margin-top: 0.2rem;
@@ -118,9 +108,6 @@
     -webkit-align-items: center;
     /* Safari 7.0+ */
     font-size: 0.833rem;
-  }
-  .searchView svg {
-    vertical-align: sub;
   }
   #explore h1 {
     font-size: 1.2rem !important;

@@ -146,7 +146,7 @@ class Explore extends Component {
         <div className='mb5'>
           <h1 className='dn'>Search</h1>
           <div className='searchView'>
-            <Icon type='search' className='s0' />
+            <Icon type='search' className='s0 v-mid />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
