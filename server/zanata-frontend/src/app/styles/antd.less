@@ -1,9 +1,5 @@
-/*
-antd component overrides
-tachyons not used because these apply globally to the antd components
-*/
-
-/* LAYOUT */
+@import "~antd/dist/antd.less";
+@import "./testvars.less";
 
 .container {
   margin-right: auto;
@@ -116,8 +112,6 @@ tachyons not used because these apply globally to the antd components
   padding-right: @spacing-base;
 }
 
-/* Flex */
-
 .u-flexColumn {
   flex-direction: column;
   -webkit-flex-direction: column;
@@ -198,8 +192,6 @@ tachyons not used because these apply globally to the antd components
   -webkit-flex-grow: 1;
 }
 
-/* HEADINGS */
-
 h1 {
   color: @processing-color;
   letter-spacing: -0.05rem;
@@ -223,28 +215,20 @@ h4 {
   margin-top: 0;
 }
 
-/* TEXT */
-
 .teaser-inner div a.text-muted-bold {
   vertical-align: sub;
 }
-
-/* PAGINATION */
 
 .ant-pagination *,
 .ant-pagination-disabled * {
   border: none !important;
 }
 
-/* LINKS */
-
 // cookie consent link styling
 .cc-link {
   color: @info-color !important;
   font-weight: 600;
 }
-
-/* BUTTONS */
 
 .ant-btn {
   color: @primary-color;
@@ -340,8 +324,6 @@ button.ant-btn.btn-link:focus {
   background-color: #fff;
 }
 
-/* INPUTS AND DROPDOWNS */
-
 .ant-select-selection:hover {
   border: solid 2px @info-color;
 }
@@ -388,8 +370,6 @@ textarea:focus {
   border: 2px solid @info-color !important;
 }
 
-/* Text inputs */
-
 input.textInput {
   border-radius: 4px;
 }
@@ -424,8 +404,6 @@ textarea.textInput::placeholder {
   margin-left: @spacing-md;
   vertical-align: middle;
 }
-
-/* Editable text fields */
 
 .editable {
   border-radius: 4px;
@@ -639,8 +617,6 @@ textarea.textInput::placeholder {
   line-height: 2rem;
 }
 
-/* ICONS AND IMAGES */
-
 img.avatar-round {
   margin-right: @spacing-md;
   border-radius: 500px;
@@ -754,8 +730,6 @@ span.svg {
   height: 6.192rem;
 }
 
-/* TAGS */
-
 .ant-tag:hover {
   opacity: 1;
 }
@@ -768,8 +742,6 @@ span.svg {
 .ant-tag-has-color {
   background-color: @info-color;
 }
-
-/* TABLES */
 
 table {
   width: 100% !important;
@@ -796,8 +768,6 @@ table {
   vertical-align: bottom;
   border-bottom: 2px solid @neutral-color;
 }
-
-/* TOGGLES AND CHECKBOXES */
 
 .sortable-helper {
   z-index: 10000 !important;
@@ -826,8 +796,6 @@ table {
   vertical-align: sub;
 }
 
-/* ACCORDION AND CARDS*/
-
 .ant-card {
   color: @primary-color;
 }
@@ -845,8 +813,6 @@ table {
   padding-right: 12px;
 }
 
-/* LISTS AND LIST GROUPS */
-
 .list-group-item {
   position: relative;
   display: block;
@@ -855,8 +821,6 @@ table {
   border: 1px solid @neutral-color;
   background-color: @layout-body-background;
 }
-
-/* MODALS */
 
 .ant-modal {
   color: @primary-color;
@@ -873,8 +837,6 @@ table {
 .ant-modal-title {
   color: @info-color !important;
 }
-
-/* FORMS */
 
 .ant-form-inline .ant-form-item>.ant-form-item-control-wrapper {
   vertical-align: inherit;
@@ -913,8 +875,6 @@ table {
     }
   }
 }
-
-/* NAV */
 
 .nav-bar {
   background-color: @highlight-color;
@@ -974,8 +934,6 @@ table {
 .navBar-navLogo {
   display: none;
 }
-
-/* MEDIA QUERIES */
 
 @media (max-width: 575.98px) {
   .view {
