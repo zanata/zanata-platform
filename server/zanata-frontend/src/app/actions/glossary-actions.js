@@ -15,7 +15,7 @@ import {
   APITypes
 } from './common-actions'
 import { apiUrl } from '../config'
-import { GlossaryFileTypes } from '../reducers/state.js';
+import { GlossaryFileTypes } from '../reducers/state'
 
 export const FILE_TYPES = GlossaryFileTypes
 export const PAGE_SIZE_SELECTION = [20, 50, 100, 300, 500]
