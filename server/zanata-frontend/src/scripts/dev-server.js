@@ -11,7 +11,7 @@ const fs = require('fs-extra')
 const c = require('cli-color')
 const WebpackDevServer = require('webpack-dev-server')
 const webpack = require('webpack')
-const createConfig = require('../webpack.config.js')
+const createConfig = require('../webpack.dev.js')
 const devServerConfig = require('./dev-server.config.js')
 
 const isEditor = process.argv.indexOf('--editor') !== -1

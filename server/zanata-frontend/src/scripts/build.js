@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const c = require('cli-color')
 const webpack = require('webpack')
-const createConfig = require('../webpack.config.js')
+const createConfig = require('../webpack.prod.js')
 
 // execute icon scripts to generate required files
 require('./createIconsComponent')
