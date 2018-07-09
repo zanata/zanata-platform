@@ -23,7 +23,7 @@ package org.zanata.feature.document
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.zanata.common.ProjectType
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab

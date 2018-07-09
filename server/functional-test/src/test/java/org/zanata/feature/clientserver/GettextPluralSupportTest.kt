@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test
 import org.xml.sax.InputSource
 import org.zanata.adapter.po.PoReader2
 import org.zanata.common.LocaleId
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.webtrans.EditorPage

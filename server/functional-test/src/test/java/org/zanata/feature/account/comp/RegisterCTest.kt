@@ -22,7 +22,7 @@ package org.zanata.feature.account.comp
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.RegisterPage
 import org.zanata.page.utility.HomePage

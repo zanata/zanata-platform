@@ -23,7 +23,6 @@ package org.zanata.util;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.zanata.feature.Trace;
 import com.google.common.primitives.Ints;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;

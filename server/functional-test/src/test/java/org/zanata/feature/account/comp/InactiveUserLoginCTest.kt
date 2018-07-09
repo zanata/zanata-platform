@@ -23,7 +23,7 @@ package org.zanata.feature.account.comp
 import org.assertj.core.api.Assertions.assertThat
 
 import org.junit.jupiter.api.Test
-import org.zanata.feature.Trace
+import org.zanata.util.Trace
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.feature.testharness.DetailedTest
 import org.zanata.workflow.LoginWorkFlow
