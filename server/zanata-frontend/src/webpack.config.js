@@ -165,21 +165,7 @@ module.exports = function (env, isEditor, devServerPort) {
           test: /\.(j|t)sx?$/,
           exclude: /node_modules/,
           include: join(__dirname, 'app'),
-          loader: 'awesome-typescript-loader',
-          // load antd through modular import plugin
-          options: {
-            /** @type {any} */
-            getCustomTransformers: () => ({
-              before: [ tsImportPluginFactory({
-                libraryName: 'antd',
-                libraryDirectory: 'es',
-                style: true
-              }) ]
-            }),
-            compilerOptions: {
-              module: 'es2015'
-            }
-          }
+          loader: 'awesome-typescript-loader'
         },
 
         /* TODO:
