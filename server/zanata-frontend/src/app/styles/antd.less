@@ -227,6 +227,11 @@ h4 {
   font-weight: 600;
 }
 
+a {
+  color: @info-color !important;
+}
+
+
 .ant-btn {
   color: @primary-color;
   background-color: #fff;
@@ -234,7 +239,8 @@ h4 {
 }
 
 a.btn-link,
-button.ant-btn.btn-link {
+button.ant-btn.btn-link,
+a.ant-breadcrumb-link {
   border: 0;
   color: @highlight-color;
   background: transparent !important;
@@ -802,6 +808,14 @@ table {
 }
 
 .ant-card {
+  color: @primary-color;
+}
+
+.ant-card-head {
+  background-color: @neutral-color;
+}
+
+.ant-card-head-title {
   color: @primary-color;
 }
 

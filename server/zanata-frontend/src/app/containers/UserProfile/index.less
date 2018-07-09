@@ -64,6 +64,7 @@
   }
   #profileLanguages {
     display: inline-flex;
+    align-items: baseline;
   }
   #profileLanguages a {
     display: block;
@@ -100,12 +101,20 @@
     padding-left: 0;
     overflow: hidden;
   }
+  ul.largeFontList li {
+    padding-bottom: @spacing-sm;
+  }
   span.userProfile-email {
     margin-left: @spacing-sm;
     color: @muted-color;
   }
-  ul.largeFontList li.u-flexCenter svg {
+  ul.largeFontList li.u-flexCenter svg, ul#profileLanguages svg {
     margin-right: @spacing-sm;
+    vertical-align: sub;
+    color: @muted-color;
+  }
+  ul#profileLanguages svg {
+    vertical-align: sub;
   }
   #userProfile-matrix tbody tr td:not(:first-child), #userProfile-matrix tr th:not(:first-child) {
     text-align: center;
@@ -184,9 +193,11 @@
     margin-bottom: @spacing-sm;
   }
   #userProfile-activityTable td button {
-    height: 5.5rem;
+    height: 4rem;
     padding: 0 !important;
-    width: 100%;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
   }
   #userProfile-activityTable td button.btn-primary {
     background-color: rgba(84, 102, 119, 0.65) !important;
@@ -272,7 +283,7 @@
     background-color: rgba(98, 200, 118, 0.85);
   }
   #userProfile-activityTable .btn-clear {
-    margin-top: 0.5rem;
+    margin-top: @spacing-base;
     padding: 0;
     margin-left: @spacing-base;
   }
