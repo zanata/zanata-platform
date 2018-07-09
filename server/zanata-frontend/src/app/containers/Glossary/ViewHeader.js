@@ -262,7 +262,7 @@ class ViewHeader extends Component {
                   </span>
                   )}
                 </td>
-                <td className='hidesmall td-1'
+                <td className='td-1'
                   onClick={() => handleSortColumn('part_of_speech')}>
                   <Button className='btn-link' aria-label='button'>
                     <Row className='ml4'>

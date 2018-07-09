@@ -1,5 +1,9 @@
 @import "./antdvars.less";
 
+* {
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .container {
   margin-right: auto;
   margin-left: auto;
@@ -70,7 +74,6 @@
 .wideView {
   align-items: center;
   -webkit-align-items: center;
-  /* Safari 7.0+ */
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   width: 99%;
@@ -99,7 +102,6 @@
 .scrollView {
   align-items: center;
   -webkit-align-items: center;
-  /* Safari 7.0+ */
   overflow: hidden;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -151,14 +153,12 @@
   -webkit-flex-direction: row;
   align-items: stretch;
   -webkit-align-items: stretch;
-  /* Safari 7.0+ */
 }
 
 .u-flexCenter {
   display: flex;
   align-items: center;
   -webkit-align-items: center;
-  /* Safari 7.0+ */
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -180,7 +180,6 @@
   -webkit-flex-direction: column;
   align-items: center;
   -webkit-align-items: center;
-  /* Safari 7.0+ */
   justify-items: center;
   margin-bottom: @spacing-base-and-a-half;
   min-height: 6rem;
@@ -223,7 +222,6 @@ h4 {
   border: none !important;
 }
 
-// cookie consent link styling
 .cc-link {
   color: @info-color !important;
   font-weight: 600;
@@ -254,8 +252,6 @@ button.ant-btn.btn-link:focus {
   padding: 0 15px !important;
 }
 
-// needed for new-zanata overrides on button styling
-// without !important these styles are overrides by antd in /node_modules
 .ant-btn.ant-btn-primary {
   background-color: @primary-color !important;
   color: @normal-color !important;
@@ -305,7 +301,7 @@ button.ant-btn.btn-link:focus {
   border: none !important;
   color: #f00;
   z-index: 1;
-  padding: @spacing-rq !important;
+  padding: @spacing-md !important;
   outline: none;
   box-shadow: none;
 }
@@ -385,7 +381,6 @@ textarea.textInput::placeholder {
 .textState.textInput {
   align-items: center;
   -webkit-align-items: center;
-  /* Safari 7.0+ */
   background-color: #fff;
   height: auto;
   width: 100%;
@@ -394,7 +389,6 @@ textarea.textInput::placeholder {
 .textState.text {
   align-items: center;
   -webkit-align-items: center;
-  /* Safari 7.0+ */
   border: solid 2px transparent;
   cursor: text;
   height: auto;
@@ -772,6 +766,18 @@ table {
   z-index: 10000 !important;
 }
 
+.ant-switch-checked  {
+  background-color: @info-color;
+}
+
+.ant-radio-inner {
+  border-color: @info-color;
+}
+
+.ant-radio-inner:after {
+  background: @info-color;
+}
+
 .transSwitch.ant-switch {
   background-color: @unsure-color;
 }
@@ -825,7 +831,6 @@ table {
   color: @primary-color;
 }
 
-// Override new-zanata modal namespace styles
 .ant-modal-close {
   border: none !important;
   background-color: initial !important;
@@ -894,8 +899,6 @@ table {
 }
 
 .nav-link {
-  /* remove relative font scaling for nav so it
-   is consistent across all of frontend */
   font-size: 11px !important;
   color: rgb(237, 242, 248) !important;
   flex-direction: column;
@@ -932,6 +935,79 @@ table {
 
 .navBar-navLogo {
   display: none;
+}
+
+
+.txt-primary {
+  color: @primary-color;
+}
+
+.txt-warn {
+  color: @warning-color;
+}
+
+.txt-newblue {
+  color: @processing-color;
+}
+
+.txt-error {
+  color: @error-color;
+}
+
+.txt-success {
+  color: @success-color;
+}
+
+.txt-info {
+  color: @info-color;
+}
+
+.txt-muted {
+  color: @muted-color;
+}
+
+.txt-neutral {
+  color: @neutral-color;
+}
+
+.txt-white {
+  color: #fff;
+}
+
+.bg-primary {
+  background-color: @primary-color;
+}
+
+.bg-warn {
+  background-color: @warning-color;
+}
+
+.bg-unsure {
+  background-color: @unsure-color;
+}
+
+.bg-error {
+  background-color: @error-color;
+}
+
+.bg-success {
+  background-color: @success-color;
+}
+
+.bg-info {
+  background-color: @info-color;
+}
+
+.bg-muted {
+  background-color: @muted-color;
+}
+
+.bg-neutral {
+  background-color: @neutral-color;
+}
+
+.d-inh {
+  display: inherit;
 }
 
 @media (max-width: 575.98px) {
