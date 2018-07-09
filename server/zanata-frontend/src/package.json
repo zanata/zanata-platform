@@ -141,7 +141,7 @@
     "tslint": "^5.9.1",
     "tslint-loader": "^3.5.3",
     "typescript": "2.9.1",
-    "webpack": "4.15.0",
+    "webpack": "4.15.1",
     "webpack-dev-server": "2.11.0",
     "webpack-manifest-plugin": "2.0.0",
     "webpack-merge": "4.1.1"
@@ -174,7 +174,7 @@
     "jest": "^23.2.0",
     "less-vars-to-js": "^1.2.1",
     "lodash": "4.17.4",
-    "mini-css-extract-plugin": "0.4.1",
+    "mini-css-extract-plugin": "^0.4.1",
     "moment": "^2.20.1",
     "moment-range": "^3.1.1",
     "normalize.css": "3.0.1",

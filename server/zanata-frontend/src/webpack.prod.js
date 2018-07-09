@@ -1,6 +1,7 @@
-// const webpack = require('webpack')
+const webpack = require('webpack')
 const join = require('path').join
-// const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+// const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const tsImportPluginFactory = require('ts-import-plugin')
@@ -35,8 +36,8 @@ module.exports = function (isEditor) {
 
     output: {
       path: join(__dirname, distDir),
-      filename: '[name].js',
-      chunkFilename: '[name].js'
+      filename: '[name].[chunkhash:8].cache.js',
+      chunkFilename: '[name].[chunkhash:8].cache.js'
     },
     module: {
       rules: [
@@ -124,11 +125,22 @@ module.exports = function (isEditor) {
     },
 
     plugins: [
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production')
+      }),
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
         // both options are optional
         filename: '[name].[hash].css',
         chunkFilename: '[id].[hash].css'
+      }),
+      new webpack.HashedModuleIdsPlugin(),
+      // Workaround to switch old loaders to minimize mode
+      // new webpack.LoaderOptionsPlugin({ minimize: true }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessor: require('cssnano'),
+        cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
+        canPrint: true
       }),
       new ManifestPlugin()
     ],
@@ -139,7 +151,8 @@ module.exports = function (isEditor) {
       minimize: true,
       // namedModules: true, // NamedModulesPlugin()
       splitChunks: { // CommonsChunkPlugin()
-        name: 'runtime'
+        name: 'runtime',
+        chunks: 'all'
       },
       noEmitOnErrors: true // NoEmitOnErrorsPlugin
       // concatenateModules: true // ModuleConcatenationPlugin
