@@ -48,11 +48,11 @@ const ConcurrentModal: React.SFC<ConcurrentModalProps> = (props) => {
         <Alert message={`${lastModifiedByUsername} has saved a new version while you
             were editing. Please resolve conflicts.`} type='error' />
         <Card>
-          <p className='u-sizeHeight-1_1-2'>
+          <div className='u-sizeHeight-1_1-2'>
             <strong>{lastModifiedByUsername}</strong> created a <span
               className='u-textSuccess'>Translated</span> revision <Tag
                 color='blue'>latest</Tag>
-          </p>
+          </div>
           <span className='revisionBox'>
             <Textarea
               className='form-control'
@@ -70,9 +70,9 @@ const ConcurrentModal: React.SFC<ConcurrentModalProps> = (props) => {
           </span>
         </Card>
         <Card>
-          <p className='u-sizeHeight-1_1-2'><strong>You</strong> created
+          <div className='u-sizeHeight-1_1-2'><strong>You</strong> created
             an <span className='u-textHighlight'>Unsaved</span> revision.
-          </p>
+          </div>
           <span className='revisionBox'>
             <Textarea
               className='form-control'
