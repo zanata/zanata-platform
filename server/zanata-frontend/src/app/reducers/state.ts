@@ -24,6 +24,7 @@ export type RootState = DeepReadonly<{
 export type ProjectVersionState = DeepReadonly<{
   MTMerge: {
     showMTMerge: boolean
+    triggered: boolean
     processStatus?: ProcessStatus
     queryStatus?: string
   }

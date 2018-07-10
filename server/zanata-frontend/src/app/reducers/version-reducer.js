@@ -9,6 +9,9 @@ import {
   PROJECT_PAGE_REQUEST,
   PROJECT_PAGE_SUCCESS,
   PROJECT_PAGE_FAILURE,
+  VERSION_MT_MERGE_REQUEST,
+  VERSION_MT_MERGE_SUCCESS,
+  VERSION_MT_MERGE_FAILURE,
   VERSION_TM_MERGE_REQUEST,
   VERSION_TM_MERGE_SUCCESS,
   VERSION_TM_MERGE_FAILURE,
@@ -27,6 +30,7 @@ export const defaultState = {
   // See mapReduxStateToProps in MTMergeContainer.ts
   MTMerge: {
     showMTMerge: false,
+    triggered: false,
     processStatus: undefined,
     queryStatus: undefined,
   },
@@ -63,8 +67,10 @@ const version = handleActions({
     return action.error ? update(state, {
       fetchingLocale: { $set: false },
       notification: { $set: {
+        severity: 'error',
         message: 'We were unable load locale information. ' +
-        'Please refresh this page and try again.'
+        'Please refresh this page and try again.',
+        duration: null
       }}
     }) : update(state, {
       fetchingLocale: { $set: true },
@@ -82,8 +88,10 @@ const version = handleActions({
     return update(state, {
       fetchingLocale: { $set: false },
       notification: { $set: {
+        severity: 'error',
         message: 'We were unable load locale information. ' +
-        'Please refresh this page and try again.'
+        'Please refresh this page and try again.',
+        duration: null
       }}
     })
   },
@@ -91,8 +99,10 @@ const version = handleActions({
     return action.error ? update(state, {
       fetchingProject: { $set: false },
       notification: { $set: {
+        severity: 'error',
         message: 'We were unable load project information. ' +
-        'Please refresh this page and try again.'
+        'Please refresh this page and try again.',
+        duration: null
       }}
     }) : update(state, {
       fetchingProject: { $set: true },
@@ -117,8 +127,10 @@ const version = handleActions({
     return update(state, {
       fetchingProject: { $set: false },
       notification: { $set: {
+        severity: 'error',
         message: 'We were unable load project information. ' +
-        'Please refresh this page and try again.'
+        'Please refresh this page and try again.',
+        duration: null
       }}
     })
   },
@@ -139,13 +151,45 @@ const version = handleActions({
     // @ts-ignore
     const response = action && action.payload ? action.payload.response
       : undefined
-    const msg = defaultMsg +
-      (response && response.error ? ' (' + response.error + ')' : '')
+    const msg = (response && response.error ? ' (' + response.error + ')' : '')
     return update(state, {
       TMMerge: { triggered: { $set: false } },
       notification: { $set: {
-        message: msg
+        severity: 'error',
+        message: defaultMsg,
+        description: msg,
+        duration: null
       } }
+    })
+  },
+  [VERSION_MT_MERGE_REQUEST]: (state, _action) => {
+    return update(state, {
+      MTMerge: { triggered: { $set: true } },
+      notification: { $set: undefined }
+    })
+  },
+  [VERSION_MT_MERGE_SUCCESS]: (state, action) => {
+    return update(state, {
+      MTMerge:
+        { processStatus: { $set: action.payload }, triggered: { $set: false } }
+    })
+  },
+  [VERSION_MT_MERGE_FAILURE]: (state, action) => {
+    const defaultMsg = 'We were unable perform the operation. Please try again.'
+    // @ts-ignore
+    const response = action && action.payload ? action.payload.response
+      : undefined
+    const msg = (response && response.error ? ' (' + response.error + ')' : '')
+    return update(state, {
+      MTMerge: { triggered: { $set: false } },
+      notification: {
+        $set: {
+          severity: 'error',
+          message: defaultMsg,
+          description: msg,
+          duration: null
+        }
+      }
     })
   },
   // [QUERY_MT_MERGE_PROGRESS_SUCCESS]: (state, action) => {

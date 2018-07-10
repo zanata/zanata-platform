@@ -21,6 +21,9 @@ import {
   PROJECT_PAGE_REQUEST,
   PROJECT_PAGE_SUCCESS,
   PROJECT_PAGE_FAILURE,
+  VERSION_MT_MERGE_REQUEST,
+  VERSION_MT_MERGE_SUCCESS,
+  VERSION_MT_MERGE_FAILURE,
   VERSION_TM_MERGE_REQUEST,
   VERSION_TM_MERGE_SUCCESS,
   VERSION_TM_MERGE_FAILURE,
@@ -125,16 +128,37 @@ const toProjectVersionString = (projectVersion) => {
 }
 
 /**
- * @param {string} _projectSlug target project slug
- * @param {string} _versionSlug target version slug
- * @param {MTMergeAPIOptions} _mergeOptions
+ * @param {string} projectSlug target project slug
+ * @param {string} versionSlug target version slug
+ * @param {MTMergeAPIOptions} mergeOptions
  * @returns {APIAction} redux api action object FIXME
  */
-export function mergeVersionFromMT (_projectSlug, _versionSlug, _mergeOptions) {
-  // FIXME build API request for MT (see also mergeVersionFromTM)
+export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
+  const endpoint = `${apiUrl}/tm/project/${projectSlug}/version/${versionSlug}`
   // console.error(_projectSlug, _versionSlug, _mergeOptions)
-  // @ts-ignore
-  return null
+  /** @type {APITypes} */
+  const types = [VERSION_MT_MERGE_REQUEST,
+    {
+      type: VERSION_MT_MERGE_SUCCESS,
+      // @ts-ignore any
+      payload: (_action, _state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && ~contentType.indexOf('json')) {
+          // Just making sure res.json() does not raise an error
+          // @ts-ignore any
+          return res.json().then((json) => {
+            // console.error(json)
+            return json
+          })
+        }
+      }
+    }, VERSION_MT_MERGE_FAILURE]
+  const apiRequest = buildAPIRequest(
+    endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(mergeOptions)
+  )
+  return {
+    [CALL_API]: apiRequest
+  }
 }
 
 /**

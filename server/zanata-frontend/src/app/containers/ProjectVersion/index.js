@@ -2,6 +2,7 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import Notification from 'antd/lib/notification'
 import MTMerge from './MTMergeContainer'
 import TMMergeModal from './TMMergeModal'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
@@ -13,7 +14,6 @@ import {
 import {
   showExportTMXModal
 } from '../../actions/tmx-actions'
-// import { LocaleType } from '../../utils/prop-types-util'
 import { fetchVersionLocales } from '../../actions/version-actions'
 
 /**
@@ -21,35 +21,38 @@ import { fetchVersionLocales } from '../../actions/version-actions'
  */
 class ProjectVersion extends Component {
   static propTypes = {
-    // availableLocales: PropTypes.arrayOf(LocaleType),
     toggleTMMergeModal: PropTypes.func.isRequired,
     toggleTMXExportModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
       project: PropTypes.string.isRequired,
       version: PropTypes.string.isRequired
-    })
+    }),
+    notification: PropTypes.node
   }
 
-  // componentDidMount () {
-  //   this.props.fetchVersionLocales(
-  //     this.props.projectSlug, this.props.versionSlug)
-  // }
+  // @ts-ignore any
+  componentDidUpdate (prevProps, prevState) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      // @ts-ignore any
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: notification.duration
+      })
+    }
+  }
 
   render () {
     const { params } = this.props
     return (
       <div className='wideView' id='sidebarVersion'>
         <div className='u-centerBlock'>
-          {
-            // TODO not really used. It probably doesn't make sense to have
-            // this (and the fetch above) if 'locales' is part of
-            // ProjectVersionState
-            // this.props.availableLocales &&
-            <MTMerge
-              allowMultiple={false}
-              projectSlug={params.project}
-              versionSlug={params.version}
-            />}
+          <MTMerge
+            allowMultiple={false}
+            projectSlug={params.project}
+            versionSlug={params.version}
+          />
           <TMMergeModal
             // @ts-ignore
             projectSlug={params.project}
@@ -83,9 +86,8 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 // @ts-ignore any
-// const mapStateToProps = (state) => ({
-//   availableLocales: state.locales
-// })
-const mapStateToProps = undefined
+const mapStateToProps = (state) => {
+  return { notification: state.projectVersion.notification }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectVersion)
