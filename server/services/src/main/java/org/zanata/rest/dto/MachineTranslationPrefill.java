@@ -30,16 +30,18 @@ import org.zanata.common.LocaleId;
 public class MachineTranslationPrefill {
     private final LocaleId toLocale;
     private final ContentState saveState;
+    private final boolean overwriteFuzzy;
 
     public MachineTranslationPrefill(LocaleId toLocale,
-            ContentState saveState) {
+            ContentState saveState, boolean overwriteFuzzy) {
         this.toLocale = toLocale;
         this.saveState = saveState;
+        this.overwriteFuzzy = overwriteFuzzy;
     }
 
     @SuppressWarnings("unused")
     MachineTranslationPrefill() {
-        this(null, null);
+        this(null, null, false);
     }
 
     public LocaleId getToLocale() {
@@ -48,5 +50,9 @@ public class MachineTranslationPrefill {
 
     public ContentState getSaveState() {
         return saveState;
+    }
+
+    public boolean getOverwriteFuzzy() {
+        return overwriteFuzzy;
     }
 }

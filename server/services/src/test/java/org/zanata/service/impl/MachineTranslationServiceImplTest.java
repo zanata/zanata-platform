@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.zanata.test.EntityTestData.makeTextFlowTarget;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -56,6 +57,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.MachineTranslationPrefill;
 import org.zanata.rest.service.MachineTranslationsManager;
 import org.zanata.service.LocaleService;
@@ -72,6 +74,9 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.RequestPattern;
+import com.github.tomakehurst.wiremock.verification.FindRequestsResult;
+import com.github.tomakehurst.wiremock.verification.VerificationResult;
 import com.google.common.base.Joiner;
 
 @RunWith(CdiUnitRunner.class)
@@ -84,11 +89,11 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
     private static final int NUM_OF_TEXTFLOWS = 110;
 
     // TODO use http://wiremock.org/docs/junit-rule/
-    private WireMockServer wireMockServer;
+    private WireMockServer mockMTServer;
     @Produces
     @MTServiceURL
     URI mtServiceURL() {
-        return URI.create("http://localhost:" + wireMockServer.port());
+        return URI.create("http://localhost:" + mockMTServer.port());
     }
     @Produces
     @MTServiceUser
@@ -150,6 +155,12 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        mockMTServer =
+                new WireMockServer(wireMockConfig().dynamicPort());
+        mockMTServer.start();
+        WireMock.configureFor("localhost", mockMTServer.port());
+
         sourceLocale = new HLocale(LocaleId.EN_US);
         getEm().persist(sourceLocale);
         targetLocale = new HLocale(LocaleId.DE);
@@ -159,15 +170,12 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
                         new ProjectIterationId("project",
                                 "master",
                                 ProjectType.Gettext)));
-        wireMockServer =
-                new WireMockServer(wireMockConfig().dynamicPort());
-        wireMockServer.start();
-        WireMock.configureFor("localhost", wireMockServer.port());
     }
 
     @After
     public void tearDown() {
-        wireMockServer.stop();
+        mockMTServer.stop();
+        mockMTServer.resetAll();
     }
 
     @Test
@@ -179,11 +187,15 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
         Future<Void> future =
                 service.prefillProjectVersionWithMachineTranslation(version.getId(),
                         new MachineTranslationPrefill(LocaleId.DE,
-                                ContentState.NeedReview),
+                                ContentState.NeedReview, false),
                         taskHandle);
         // not running via AsyncMethodInterceptor, so we don't need to wait
         future.get(0, SECONDS);
         assertThat(future.isDone()).isTrue();
+
+        VerificationResult mtRequests =
+                mockMTServer.countRequestsMatching(RequestPattern.everything());
+        assertThat(mtRequests.getCount()).isEqualTo(0);
     }
 
     private HProjectIteration makeProjectVersion(String projectSlug, String versionSlug) {
@@ -201,19 +213,55 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
 
     @Test
     @InRequestScope
-    public void canGetTranslationFromMTSingular()
+    public void canGetTranslationFromMTPluralSaveAsFuzzyNoOverwrite()
             throws Exception {
-        canGetTranslationFromMT(false);
+        canGetTranslationFromMT(true, ContentState.NeedReview, false);
     }
 
     @Test
     @InRequestScope
-    public void canGetTranslationFromMTPlural()
+    public void canGetTranslationFromMTPluralSaveAsFuzzyOverwriteFuzzy()
             throws Exception {
-        canGetTranslationFromMT(true);
+        canGetTranslationFromMT(true, ContentState.NeedReview, true);
     }
 
-    private void canGetTranslationFromMT(boolean plurals)
+    @Test
+    @InRequestScope
+    public void canGetTranslationFromMTPluralSaveAsTranslatedNoOverwrite()
+            throws Exception {
+        canGetTranslationFromMT(true, ContentState.Translated, false);
+    }
+
+    @Test
+    @InRequestScope
+    public void canGetTranslationFromMTSingularSaveAsFuzzyNoOverwrite()
+            throws Exception {
+        canGetTranslationFromMT(false, ContentState.NeedReview, false);
+    }
+
+    @Test
+    @InRequestScope
+    public void canGetTranslationFromMTSingularSaveAsFuzzyOverwriteFuzzy()
+            throws Exception {
+        canGetTranslationFromMT(false, ContentState.NeedReview, true);
+    }
+
+    @Test
+    @InRequestScope
+    public void canGetTranslationFromMTSingularSaveAsTranslatedNoOverwrite()
+            throws Exception {
+        canGetTranslationFromMT(false, ContentState.Translated, false);
+    }
+
+    @Test
+    @InRequestScope
+    public void canGetTranslationFromMTSingularSaveAsTranslatedOverwriteFuzzy()
+            throws Exception {
+        canGetTranslationFromMT(false, ContentState.Translated, true);
+    }
+
+    private void canGetTranslationFromMT(
+            boolean plurals, ContentState saveAsState, boolean overwriteFuzzy)
             throws Exception {
         HProjectIteration version = makeProjectVersion("project", "master");
         // given 3 docs in the version
@@ -229,12 +277,20 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
                 List<String> contents = plurals ?
                         asList("contentSingular" + j, "contentPlural" + j) :
                         singletonList("content" + j);
-                HTextFlow textFlow = new HTextFlow();
-                textFlow.setDocument(doc);
-                textFlow.setResId("resId" + j);
+                HTextFlow textFlow = new HTextFlow(doc, "resId" + j);
                 textFlow.setContents(contents);
                 doc.getTextFlows().add(textFlow);
                 getEm().persist(textFlow);
+                if (j % 2 == 0) {
+                    // every second text flow has a pre-existing fuzzy translation
+                    HTextFlowTarget target =
+                            makeTextFlowTarget(textFlow, targetLocale,
+                                    ContentState.NeedReview);
+                    target.setContents("oldFuzzyTranslation" + j);
+                    Long targetLocaleNum = targetLocale.getId();
+                    getEm().persist(target);
+                    textFlow.getTargets().put(targetLocaleNum, target);
+                }
             }
         }
 
@@ -249,16 +305,40 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
         Future<Void> future =
                 service.prefillProjectVersionWithMachineTranslation(version.getId(),
                         new MachineTranslationPrefill(LocaleId.DE,
-                                ContentState.Translated), taskHandle);
+                                saveAsState, overwriteFuzzy), taskHandle);
 
-        future.get(5, SECONDS);
+        // not running via AsyncMethodInterceptor, so we don't need to wait
+        future.get(0, SECONDS);
 
         // we have 3 docs and each has 110 text flows
         // we translate 100 per batch, thus 2 batches per doc
         // and the total number of batches is 6
-        int expectedBatches = 6;
-        int expectedTranslations = NUM_OF_TEXTFLOWS * numOfDocs;
-        ContentState expectedState = plurals ? ContentState.NeedReview : ContentState.Translated;
+        int expectedBatches;
+        int expectedTranslations;
+
+        if (overwriteFuzzy) {
+            // we expect all text flows to receive new translations, even
+            // those which had a pre-existing fuzzy translation
+            expectedBatches = 6;
+            expectedTranslations = NUM_OF_TEXTFLOWS * numOfDocs;
+        } else {
+            // every second text flow has a pre-existing fuzzy translation,
+            // so we only expect half as many new translations
+            expectedBatches = 3;
+            expectedTranslations = (NUM_OF_TEXTFLOWS * numOfDocs) / 2;
+        }
+
+//        FindRequestsResult mtRequests =
+//                mockMTServer.findRequestsMatching(RequestPattern.everything());
+//        System.out.println(mtRequests.getRequests());
+
+        VerificationResult mtRequestCounter =
+                mockMTServer.countRequestsMatching(RequestPattern.everything());
+
+        assertThat(mtRequestCounter.getCount()).isEqualTo(numOfDocs);
+
+        ContentState expectedState = plurals ? ContentState.NeedReview :
+                saveAsState;
         verify(translationService, times(expectedBatches))
                 .translate(Mockito.eq(targetLocale.getLocaleId()),
                         transUnitUpdateRequestCaptor.capture());

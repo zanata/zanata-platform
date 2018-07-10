@@ -186,7 +186,7 @@ public class MachineTranslationServiceImpl implements
     @Async
     @Override
     public Future<Void> prefillProjectVersionWithMachineTranslation(
-            long versionId, MachineTranslationPrefill prefillRequest,
+            long versionId, MachineTranslationPrefill options,
             @Nonnull MachineTranslationPrefillTaskHandle taskHandle) {
         // need to reload all entities
         HProjectIteration version = entityManager.find(HProjectIteration.class, versionId);
@@ -196,7 +196,7 @@ public class MachineTranslationServiceImpl implements
             return AsyncTaskResult.completed();
         }
         taskHandle.setMaxProgress(documents.size());
-        HLocale targetLocale = localeService.getByLocaleId(prefillRequest.getToLocale());
+        HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
 
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
@@ -215,7 +215,7 @@ public class MachineTranslationServiceImpl implements
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
             addMachineTranslationsToDoc(doc, targetLocale, projectSlug,
-                    versionSlug, prefillRequest.getSaveState());
+                    versionSlug, options.getSaveState(), options.getOverwriteFuzzy());
             taskHandle.increaseProgress(1);
         }
         // Clear the cache again to force recalculation (just in case of
@@ -230,12 +230,12 @@ public class MachineTranslationServiceImpl implements
 
     private void addMachineTranslationsToDoc(HDocument doc,
             HLocale targetLocale, String projectSlug,
-            String versionSlug, ContentState saveState) {
+            String versionSlug, ContentState saveState, boolean overwriteFuzzy) {
         DocumentId documentId = new DocumentId(doc.getId(),
                 doc.getDocId());
         List<HTextFlow> textFlowsToTranslate =
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
-                        documentId);
+                        documentId, overwriteFuzzy);
 
         MTDocument mtDocument = textFlowsToMTDoc
                 .fromTextFlows(projectSlug, versionSlug,
@@ -248,14 +248,15 @@ public class MachineTranslationServiceImpl implements
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
-            HLocale targetLocale, DocumentId documentId) {
-        // right now we only target untranslated. We might target more in the future
-        return textFlowDAO
-                .getAllTextFlowByDocumentIdWithConstraints(
-                        documentId, targetLocale,
-                        FilterConstraints.builder()
-                                .keepNone().includeNew()
-                                .build());
+            HLocale targetLocale, DocumentId documentId, boolean overwriteFuzzy) {
+        FilterConstraints.Builder constraints = FilterConstraints.builder()
+                .keepNone()
+                .includeNew();
+        if (overwriteFuzzy) {
+            constraints.includeFuzzy();
+        }
+        return textFlowDAO.getAllTextFlowByDocumentIdWithConstraints(
+                documentId, targetLocale, constraints.build());
     }
 
     private void translateInBatch(List<HTextFlow> textFlows,
@@ -305,7 +306,8 @@ public class MachineTranslationServiceImpl implements
             // Note that org.zanata.service.impl.TranslationServiceImpl.saveBatch
             // will skip the save for any TFT where validation fails.
             // TODO it would generally be better to save as Fuzzy, unless there
-            // is an existing translation which passes validation.
+            // is an existing translation (which passes validation) with state
+            // Translated or better.
             TypeString matchingTranslationFromMT = transContentBatch.get(i);
 
             HTextFlowTarget maybeTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, targetLocale);
