@@ -19,9 +19,16 @@ const postCssLoader = {
   }
 }
 
+/** @typedef
+    {import('webpack').Configuration & {
+      devServer?: import('webpack-dev-server').Configuration
+    }} WebpackConfig
+ */
+
 /**
  * @param {boolean=} isEditor
  * @param {number=} devServerPort
+ * @returns {WebpackConfig}
  */
 module.exports = function (isEditor, devServerPort) {
   const distDir = isEditor ? 'dist.editor' : 'dist'
