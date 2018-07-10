@@ -8,7 +8,7 @@
     "rules": {
         "align": false,
         "arrow-parens": false,
-        // with our without semicolons is accepted for now
+        // with or without semicolons is accepted for now
         "semicolon": false,
         "max-classes-per-file": false,
         // public/private/protected are not available in JS, so for

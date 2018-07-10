@@ -1,7 +1,7 @@
 import { extendMoment, MomentRangeExtends } from 'moment-range'
 import { isEmpty, findKey } from 'lodash'
 import { Moment } from 'moment'
-import { tuple } from './tuple';
+import { tuple } from './tuple'
 
 // 'require' seems to be the only solution (until we upgrade moment&range)
 // Note that these have been tried and don't work:

@@ -12,9 +12,9 @@ import {
 } from '../../actions/version-actions'
 import { connect } from 'react-redux'
 import { Locale } from '../../utils/prop-types-util';
-import { TopLevelState } from '../../reducers/state';
+import { RootState } from '../../reducers/state';
 
-const mapReduxStateToProps = (state: TopLevelState): MTMergeModalStateProps => {
+const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
   const {
     projectVersion: {
       locales,

@@ -56,3 +56,5 @@ export default interface ValidationMessages {
     xmlEntityValidatorDesc: string
     invalidXMLEntity: string
 }
+
+export type ValidationMessageId = keyof ValidationMessages

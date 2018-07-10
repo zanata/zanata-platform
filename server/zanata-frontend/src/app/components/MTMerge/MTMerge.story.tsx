@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import {MTMergeOptions} from './MTMergeOptions'
+import { MTMergeOptions } from './MTMergeOptions'
 import { Locale, LocaleId } from '../../utils/prop-types-util'
 import { MTMergeModal } from './MTMergeModal'
 import { STATUS_NEEDS_WORK } from '../../editor/utils/phrase'

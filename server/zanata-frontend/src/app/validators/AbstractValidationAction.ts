@@ -1,6 +1,6 @@
 import ValidationAction, { State } from './ValidationAction'
 import ValidationDisplayRules from './ValidationDisplayRules'
-import ValidationMessages from './ValidationMessages'
+import ValidationMessages, { ValidationMessageId } from './ValidationMessages'
 
 /**
  *
@@ -22,7 +22,7 @@ import ValidationMessages from './ValidationMessages'
  */
 abstract class AbstractValidationAction implements ValidationAction {
   public readonly locale: string
-  public abstract readonly id: string
+  public abstract readonly id: ValidationMessageId
   public abstract readonly label: string
   public abstract readonly description: string
   public abstract readonly sourceExample: string

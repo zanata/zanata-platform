@@ -50,7 +50,7 @@ class TransUnitTranslationHeader extends React.Component {
             icon="rollback"
             className={this.buttonClass}
             onClick={this.props.undoEdit} />
-        </Tooltip>Tooltip>
+        </Tooltip>
       </li>
     )
   }

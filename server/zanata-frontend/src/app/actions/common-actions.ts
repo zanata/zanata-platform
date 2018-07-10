@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 import { auth } from '../config'
-import { HTTPVerb } from 'redux-api-middleware';
+import { HTTPVerb } from 'redux-api-middleware'
 
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE'
 export const clearMessage = createAction(CLEAR_MESSAGE)
