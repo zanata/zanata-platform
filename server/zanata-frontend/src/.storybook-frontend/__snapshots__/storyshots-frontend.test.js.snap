@@ -13896,8 +13896,8 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
   <span
     className="loaderText"
   >
-    <p
-      className="tc f5 b"
+    <span
+      className="f5 b"
     >
       Updating
       <span
@@ -13922,7 +13922,7 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
           />
         </span>
       </span>
-    </p>
+    </span>
   </span>
 </span>
 `;
