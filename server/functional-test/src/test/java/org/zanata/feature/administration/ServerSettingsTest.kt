@@ -129,11 +129,15 @@ class ServerSettingsTest : ZanataTestCase() {
 
     @Test
     fun unsetTermsOfUseURL() {
-        val registerPage = LoginWorkFlow().signIn("admin", "admin")
+        val registerPage = LoginWorkFlow()
+                .signIn("admin", "admin")
                 .goToAdministration()
                 .goToServerConfigPage()
                 .inputTermsOfUseURL("http://www.test.com")
                 .save()
+                .goToHomePage()
+                .goToAdministration()
+                .goToServerConfigPage()
                 .inputTermsOfUseURL("")
                 .save()
                 .logout()

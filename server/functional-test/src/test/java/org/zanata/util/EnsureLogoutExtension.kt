@@ -31,11 +31,9 @@ import org.zanata.workflow.BasicWorkFlow
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-class EnsureLogoutExtension : BeforeTestExecutionCallback, AfterTestExecutionCallback {
+class EnsureLogoutExtension : BeforeEachCallback, AfterTestExecutionCallback {
 
-    override fun beforeTestExecution(context: ExtensionContext) {
-        println("LOG OUT IF LOGGED IN\n\n")
-
+    override fun beforeEach(context: ExtensionContext) {
         logoutIfLoggedIn()
     }
 

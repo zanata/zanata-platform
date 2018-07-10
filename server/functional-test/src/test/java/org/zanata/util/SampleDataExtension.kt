@@ -20,7 +20,7 @@
  */
 package org.zanata.util
 
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback
+import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.zanata.util.SampleDataResourceClient.deleteExceptEssentialData
 import org.zanata.util.SampleDataResourceClient.makeSampleLanguages
@@ -37,9 +37,9 @@ import org.zanata.util.SampleDataResourceClient.userJoinsLanguageTeam
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-class SampleDataExtension : BeforeTestExecutionCallback {
+class SampleDataExtension : BeforeEachCallback {
 
-    override fun beforeTestExecution(context: ExtensionContext) {
+    override fun beforeEach(context: ExtensionContext?) {
         deleteExceptEssentialData()
         makeSampleUsers()
         makeSampleLanguages()

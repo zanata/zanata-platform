@@ -48,9 +48,8 @@ class LanguageCTest : ZanataTestCase() {
     }
 
     @Trace(summary = "Translator can search for language",
-            testPlanIds = intArrayOf(5681), testCaseIds = intArrayOf(5786))
+            testPlanIds = [5681], testCaseIds = [5786])
     @Test
-    @Throws(Exception::class)
     fun searchLanguage() {
         val language = "fr"
         val languagesPage = BasicWorkFlow()
