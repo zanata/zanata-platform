@@ -42,7 +42,7 @@ const CategoryMatrixTable = ({
   })
 
   return (
-    <div>
+    <>
       <h3 className='zeta txt--uppercase txt--understated'>
         {categoryName}
       </h3>
@@ -51,7 +51,7 @@ const CategoryMatrixTable = ({
         {rows}
         </tbody>
       </table>
-    </div>
+    </>
   )
 }
 

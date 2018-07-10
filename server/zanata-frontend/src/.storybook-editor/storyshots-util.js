@@ -13,11 +13,11 @@ export function snapshotWithoutDecorators ({ story, context }) {
   // @ts-ignore
   const tree = renderer.create(storyElement, {}).toJSON()
 
-  // strip off the padding div and the <Icons />
-  // tree structure is: <div><Icons />{story()}</div>
-  const storyJSON = tree.children[1]
+  // // strip off the padding div and the <Icons />
+  // // tree structure is: <div><Icons />{story()}</div>
+  // const storyJSON = tree.children[1]
 
-  expect(storyJSON).toMatchSnapshot()
+  expect(tree).toMatchSnapshot()
 }
 
 /*

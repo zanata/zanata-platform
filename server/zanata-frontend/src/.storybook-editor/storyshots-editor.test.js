@@ -7,6 +7,9 @@ import {
 jest.mock('antd/lib/button', () => 'Button')
 jest.mock('antd/lib/modal', () => 'Modal')
 
+jest.mock('../app/components/Icon', () => 'Icon')
+jest.mock('../app/components/Icons', () => 'Icons')
+
 initStoryshots({
   suite: 'Editor Storyshots',
   configPath: '.storybook-editor',

@@ -93,7 +93,7 @@ class TriCheckboxGroup extends Component {
       )
     })
     return (
-      <div>
+      <>
         <h3>Checkbox group with tri-state control</h3>
         <ListGroup>
           <ListGroupItem>
@@ -106,7 +106,7 @@ class TriCheckboxGroup extends Component {
           </ListGroupItem>
           {optionGroup}
         </ListGroup>
-      </div>
+      </>
     )
   }
 }

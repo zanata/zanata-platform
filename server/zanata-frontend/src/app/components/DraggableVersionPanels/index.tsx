@@ -76,7 +76,7 @@ class Items extends Component<ItemsProps, {}> {
         key={value.projectSlug + ":" + value.version.id} index={index}
         value={value} removeVersion={removeVersion} />))
     return (
-      <div>
+      <>
         <Layout className="d-inh">
         Adjust priority of selected versions
         <br />
@@ -90,7 +90,7 @@ class Items extends Component<ItemsProps, {}> {
         </Tooltip>
         {sortableItems}
         </Layout>
-      </div>
+      </>
     )
   }
 }

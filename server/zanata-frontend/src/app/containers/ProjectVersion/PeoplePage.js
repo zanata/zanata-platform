@@ -15,13 +15,13 @@ class PeoplePage extends Component {
       /* eslint-disable max-len */
         <div className='flexTab wideView'>
           <h2>People</h2>
-          <div>
+          <>
             <Button bsStyle='primary' id='btn-people-add-new'>
               <Icon name='plus' className='n1' parentClassName='plusicon'
                   title='plus'/>&nbsp;
               Add someone
             </Button>
-          </div>
+          </>
           <div className='toolbar'>
             <FormGroup className='searchBox'>
               <InputGroup>

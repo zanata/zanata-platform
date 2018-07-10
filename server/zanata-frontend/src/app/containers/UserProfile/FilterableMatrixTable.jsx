@@ -42,7 +42,7 @@ const FilterableMatrixTable = ({
     ])
     : <div className='u-textMuted'>No contributions</div>
   return (
-    <div>
+    <>
       <div className='u-flexRow'>
         <ContentStateFilter selectedContentState={selectedContentState}
           handleFilterChanged={handleFilterChanged} />
@@ -63,7 +63,7 @@ const FilterableMatrixTable = ({
           {categoryTables}
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

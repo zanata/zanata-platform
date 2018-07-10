@@ -6,7 +6,7 @@ import {DropdownButton, MenuItem, Table, Label, Well} from 'react-bootstrap'
 
 storiesOf('Dropdown', module)
     .add('default', () => (
-        <div>
+        <>
           <h2><img src="https://i.imgur.com/v4qLk4p.png" width="42px" />Dropdown</h2>
           <Well bsSize="large">Use dropdowns where radio buttons
             would not make sense due to too many options (a
@@ -246,5 +246,5 @@ storiesOf('Dropdown', module)
             </tr>
             </tbody>
           </Table>
-        </div>
+        </>
     ))

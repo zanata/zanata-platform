@@ -53,7 +53,7 @@ class TMMergeImportedTM extends Component {
           <span className="ml2 f4">From </span>
           <span className="b f4">TM Source</span>
         </div>
-        <div>
+        <>
           No project, document or context for TMX<br />
           <Row className='mt3 mb3'>
             <Col span={12}>
@@ -77,7 +77,7 @@ class TMMergeImportedTM extends Component {
               </Radio>
             </Col>
           </Row>
-        </div>
+        </>
       </span>
     )
   }

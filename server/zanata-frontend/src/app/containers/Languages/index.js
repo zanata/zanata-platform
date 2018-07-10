@@ -137,16 +137,16 @@ class Languages extends Component {
                 }
               </h1>
               {permission.canAddLocale &&
-                <div>
+                <>
                   <Button type="primary" icon="plus"
                     id="btn-language-add-new"
                     aria-label="button"
                     onClick={handleOnDisplayNewLanguage}>
                   Add new language</Button>
                   <NewLanguageModal />
-                </div>
+                </>
               }
-              <div>
+              <>
                 {loading
                   ? <div className='containerContentView'>
                     <span className='listInline'>
@@ -225,7 +225,7 @@ class Languages extends Component {
                         </tbody>
                       </table>
                     </div>}
-              </div>
+              </>
             </div>
           </div>
         </Layout>
