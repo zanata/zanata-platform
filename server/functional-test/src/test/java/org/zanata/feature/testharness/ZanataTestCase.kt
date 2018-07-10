@@ -26,8 +26,8 @@ import org.junit.jupiter.api.DisplayName
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.PeriodFormatterBuilder
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.zanata.page.WebDriverFactory
 import org.zanata.util.AllowAnonymousExtension
@@ -43,11 +43,16 @@ import org.zanata.util.ZanataRestCaller
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @ExtendWith(LoggingExtension::class,
-        SampleDataExtension::class,
         AllowAnonymousExtension::class,
-        EnsureLogoutExtension::class)
+        EnsureLogoutExtension::class,
+        SampleDataExtension::class)
 @DisplayName("Zanata Functional Test")
 open class ZanataTestCase {
+
+    // Alternative method
+    // @JvmField
+    // @RegisterExtension
+    // val sampleDataExtension = SampleDataExtension()
 
     private var testFunctionStart = DateTime()
     var zanataRestCaller = ZanataRestCaller()

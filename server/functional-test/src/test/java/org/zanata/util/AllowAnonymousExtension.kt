@@ -18,33 +18,30 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.util
 
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
-import static org.zanata.util.SampleDataResourceClient.allowAnonymousUser;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback
+import org.junit.jupiter.api.extension.BeforeTestExecutionCallback
+import org.zanata.util.SampleDataResourceClient.allowAnonymousUser
+import org.junit.jupiter.api.extension.ExtensionContext
 
 /**
  * This will allow anonymous user to access Zanata read only resources.
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-public class AllowAnonymousExtension implements BeforeTestExecutionCallback,
-        AfterTestExecutionCallback {
+class AllowAnonymousExtension : BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
 
-    @Override
-    public void beforeTestExecution(ExtensionContext context) {
-        allowAnonymousUser(true);
+    override fun beforeTestExecution(context: ExtensionContext) {
+        SampleDataResourceClient.allowAnonymousUser(true)
     }
 
-    @Override
-    public void afterTestExecution(ExtensionContext context) {
+    override fun afterTestExecution(context: ExtensionContext) {
         try {
-            allowAnonymousUser(false);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            SampleDataResourceClient.allowAnonymousUser(false)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
         }
+
     }
 }
