@@ -130,7 +130,7 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
       saveAs: this.state.saveAs,
       overwriteFuzzy: this.state.overwriteFuzzy
     }
-    this.props.onSubmit('projectSlug', 'projectVersion', opts)
+    this.props.onSubmit(this.props.projectSlug, this.props.versionSlug, opts)
   }
 
   private handleCancel = (_: any) => {

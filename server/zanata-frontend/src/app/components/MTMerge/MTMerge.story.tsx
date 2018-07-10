@@ -62,20 +62,20 @@ const testLocales: Locale[] = [
 ]
 
 storiesOf('MTMerge', module)
-  .add('multiple', () => (
-    <MTMergeOptions
-      allowMultiple={true}
-      availableLocales={testLocales}
-      checkedLocales={[]}
-      saveAs={STATUS_NEEDS_WORK}
-      overwriteFuzzy={false}
-      projectSlug='myProject'
-      versionSlug='myVersion'
-      onLocaleChange={action('onLocaleChange')}
-      onOverwriteFuzzyChange={action('onOverwriteFuzzyChange')}
-      onSaveAsChange={action('onSaveAsChange')}
-    />
-  ))
+  // .add('multiple', () => (
+  //   <MTMergeOptions
+  //     allowMultiple={true}
+  //     availableLocales={testLocales}
+  //     checkedLocales={[]}
+  //     saveAs={STATUS_NEEDS_WORK}
+  //     overwriteFuzzy={false}
+  //     projectSlug='myProject'
+  //     versionSlug='myVersion'
+  //     onLocaleChange={action('onLocaleChange')}
+  //     onOverwriteFuzzyChange={action('onOverwriteFuzzyChange')}
+  //     onSaveAsChange={action('onSaveAsChange')}
+  //   />
+  // ))
   .add('single', () => (
     <MTMergeOptions
       allowMultiple={false}
