@@ -112,7 +112,7 @@ class GlossaryTab extends React.Component {
 
     const directionClass = isRTLSource ? 'rtl' : 'ltr'
     return (
-      <div>
+      <>
         <div className="SidebarEditor-wrapper" id="tab1">
           <GlossarySearchInput
             text={searchText}
@@ -121,7 +121,7 @@ class GlossaryTab extends React.Component {
         </div>
         {this.renderResultsPanel()}
         {glossaryModal}
-      </div>
+      </>
     )
   }
 }

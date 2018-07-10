@@ -83,7 +83,7 @@ const XMLtarget = 'Target string: bla bla &test'
  */
 storiesOf('Validation', module)
   .add('All Validators', () => (
-    <div>
+    <>
       <h2>Validation Messages for HtmlXmlTagValidation</h2>
       <p>source: <input value={HXTSource} /> </p>
       <p>target: <input value={HXTTarget} /> </p>
@@ -133,5 +133,5 @@ storiesOf('Validation', module)
         source={XMLsource}
         target={XMLtarget}
         validationOptions={validations} />
-    </div>
+    </>
   ))

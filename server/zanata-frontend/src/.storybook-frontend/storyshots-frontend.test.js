@@ -4,7 +4,11 @@ import {
   snapshotWithoutDecorators
 } from '../.storybook-editor/storyshots-util'
 
-jest.mock('antd/lib/button', () => 'Button')
+jest.mock('antd/lib/button', () => 'mock-button')
+jest.mock('antd/lib/modal', () => 'mock-modal')
+
+jest.mock('../app/components/Icon', () => 'mock-icon')
+jest.mock('../app/components/Icons', () => 'mock-icons')
 
 initStoryshots({
   suite: 'Frontend Storyshots',

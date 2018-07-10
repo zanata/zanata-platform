@@ -8,12 +8,12 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="RevisionBox"
   >
     <p>
-      <Icon
+      <mock-icon
         className="s0"
         name="refresh"
       />
@@ -53,7 +53,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
             onClick={[Function]}
             title="Copy"
           >
-            <Icon
+            <mock-icon
               className="s1"
               name="project"
             />
@@ -64,7 +64,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     <span
       className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
@@ -89,12 +89,12 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="RevisionBox"
   >
     <p>
-      <Icon
+      <mock-icon
         className="s0"
         name="comment"
       />
@@ -127,7 +127,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
             onClick={[Function]}
             title="Copy"
           >
-            <Icon
+            <mock-icon
               className="s1"
               name="project"
             />
@@ -138,7 +138,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     <span
       className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
@@ -163,12 +163,12 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="RevisionBox"
   >
     <p>
-      <Icon
+      <mock-icon
         className="s0"
         name="refresh"
       />
@@ -208,7 +208,7 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
             onClick={[Function]}
             title="Copy"
           >
-            <Icon
+            <mock-icon
               className="s1"
               name="project"
             />
@@ -219,7 +219,7 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     <span
       className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
@@ -244,12 +244,12 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="RevisionBox"
   >
     <p>
-      <Icon
+      <mock-icon
         className="s0"
         name="refresh"
       />
@@ -282,7 +282,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
               className="ant-card-body"
               style={undefined}
             >
-              <Icon
+              <mock-icon
                 className="s0"
                 name="comment"
               />
@@ -308,7 +308,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
             onClick={[Function]}
             title="Copy"
           >
-            <Icon
+            <mock-icon
               className="s1"
               name="project"
             />
@@ -319,7 +319,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     <span
       className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
@@ -344,12 +344,12 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="RevisionBox"
   >
     <p>
-      <Icon
+      <mock-icon
         className="s0"
         name="refresh"
       />
@@ -382,7 +382,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
               className="ant-card-body"
               style={undefined}
             >
-              <Icon
+              <mock-icon
                 className="s0"
                 name="comment"
               />
@@ -408,7 +408,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
             onClick={[Function]}
             title="Copy"
           >
-            <Icon
+            <mock-icon
               className="s1"
               name="project"
             />
@@ -419,7 +419,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     <span
       className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
@@ -444,12 +444,12 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="RevisionBox"
   >
     <p>
-      <Icon
+      <mock-icon
         className="s0"
         name="refresh"
       />
@@ -482,7 +482,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
               className="ant-card-body"
               style={undefined}
             >
-              <Icon
+              <mock-icon
                 className="s0"
                 name="comment"
               />
@@ -508,7 +508,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
             onClick={[Function]}
             title="Copy"
           >
-            <Icon
+            <mock-icon
               className="s1"
               name="project"
             />
@@ -519,7 +519,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     <span
       className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
@@ -544,12 +544,12 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="RevisionBox"
   >
     <p>
-      <Icon
+      <mock-icon
         className="s0"
         name="refresh"
       />
@@ -589,7 +589,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
             onClick={[Function]}
             title="Copy"
           >
-            <Icon
+            <mock-icon
               className="s1"
               name="project"
             />
@@ -600,7 +600,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     <span
       className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
@@ -625,47 +625,47 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="ant-row"
     style={undefined}
   >
-    <Button
+    <mock-button
       className="Button Button--small u-rounded Button--secondary mr2 mb2 is-active"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
        
       All
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--secondary mr2 mb2"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="comment"
       />
        
       Comments
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--secondary mr2 mb2"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="refresh"
       />
        
       Updates
-    </Button>
+    </mock-button>
   </div>
 </div>
 `;
@@ -678,7 +678,7 @@ exports[`Editor Storyshots Button BUTTON BUILDER 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     data-radium={true}
     style={
@@ -1485,7 +1485,7 @@ exports[`Editor Storyshots Button colour styles 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     data-radium={true}
     style={
@@ -3024,7 +3024,7 @@ exports[`Editor Storyshots Button plain (disabled) 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     data-radium={true}
     style={
@@ -3875,7 +3875,7 @@ exports[`Editor Storyshots Button plain 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     data-radium={true}
     style={
@@ -4627,7 +4627,7 @@ exports[`Editor Storyshots Button rounded and styled 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     data-radium={true}
     style={
@@ -5406,12 +5406,12 @@ exports[`Editor Storyshots CommentBox default 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="TransUnit-commentBox mb4"
   >
     <span>
-      <Icon
+      <mock-icon
         className="s0"
         name="comment"
       />
@@ -5427,13 +5427,13 @@ exports[`Editor Storyshots CommentBox default 1`] = `
       style={Object {}}
       value=""
     />
-    <Button
+    <mock-button
       className="EditorButton Button--small u-rounded Button--primary u-pullRight mt2"
       disabled={true}
       onClick={[Function]}
     >
       Post comment
-    </Button>
+    </mock-button>
   </div>
 </div>
 `;
@@ -5446,7 +5446,7 @@ exports[`Editor Storyshots Concurrent editing modal 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
 </div>
 `;
 
@@ -5458,12 +5458,12 @@ exports[`Editor Storyshots Concurrent editing notification 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="alert alert-danger"
     role="alert"
   >
-    <Icon
+    <mock-icon
       className="s2"
       name="warning"
     />
@@ -5493,7 +5493,7 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <span>
     <h1>
       TransUnit items
@@ -5504,25 +5504,25 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
     <h2>
       Concurrent user notice
     </h2>
-    <Button
+    <mock-button
       className="EditorButton Button--link Button--small Button--concurrent"
       onClick={[Function]}
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="user"
       />
        username
-    </Button>
+    </mock-button>
     <h2>
       Resolve merge conflict button
     </h2>
-    <Button
+    <mock-button
       className="EditorButton Button--secondary u-rounded"
       onClick={[Function]}
     >
       Resolve conflict
-    </Button>
+    </mock-button>
   </span>
 </div>
 `;
@@ -5535,11 +5535,11 @@ exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <span
     className={undefined}
   >
-    <Icon
+    <mock-icon
       className="n1"
       name="clock"
     />
@@ -5563,13 +5563,13 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <ul>
     <li>
       <span
         className={undefined}
       >
-        <Icon
+        <mock-icon
           className="n1"
           name="clock"
         />
@@ -5587,7 +5587,7 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
       <span
         className="u-textMicro"
       >
-        <Icon
+        <mock-icon
           className="n1"
           name="clock"
         />
@@ -5605,7 +5605,7 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
       <span
         className="u-textMuted u-textMini"
       >
-        <Icon
+        <mock-icon
           className="n1"
           name="clock"
         />
@@ -5625,7 +5625,7 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
       <span
         className="u-bgHigher u-sP-1-4"
       >
-        <Icon
+        <mock-icon
           className="n1"
           name="clock"
         />
@@ -5645,7 +5645,7 @@ exports[`Editor Storyshots DateAndTimeDisplay styling examples 1`] = `
       <span
         className="u-bgHigher u-sP-1-2 u-textMuted"
       >
-        <Icon
+        <mock-icon
           className="n1"
           name="clock"
         />
@@ -5671,7 +5671,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="InlineSearch"
   >
@@ -5682,7 +5682,7 @@ exports[`Editor Storyshots GlossarySearchInput empty 1`] = `
         className="EditorInputGroup-addon"
         onClick={[Function]}
       >
-        <Icon
+        <mock-icon
           className="n1"
           name="search"
           title="Search glossary"
@@ -5709,7 +5709,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="InlineSearch"
   >
@@ -5720,7 +5720,7 @@ exports[`Editor Storyshots GlossarySearchInput with text 1`] = `
         className="EditorInputGroup-addon"
         onClick={[Function]}
       >
-        <Icon
+        <mock-icon
           className="n1"
           name="search"
           title="Search glossary"
@@ -5747,7 +5747,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <table>
     <thead>
       <tr>
@@ -5771,7 +5771,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -5794,13 +5794,13 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
                 Ambulance
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -5825,24 +5825,24 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
                 -none-
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           title="No translation to copy."
         >
-          <Button
+          <mock-button
             className="EditorButton Button--small u-rounded Button--primary"
             disabled={true}
             onClick={[Function]}
             type="primary"
           >
             Copy
-          </Button>
+          </mock-button>
         </td>
         <td
           className="info-icon"
         >
-          <Button
+          <mock-button
             className="Button--link s1 v-btm"
             icon="info-circle-o"
             onBlur={undefined}
@@ -5861,7 +5861,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -5884,13 +5884,13 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
                 Hospital
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -5915,24 +5915,24 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
                 -none-
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           title="No translation to copy."
         >
-          <Button
+          <mock-button
             className="EditorButton Button--small u-rounded Button--primary"
             disabled={true}
             onClick={[Function]}
             type="primary"
           >
             Copy
-          </Button>
+          </mock-button>
         </td>
         <td
           className="info-icon"
         >
-          <Button
+          <mock-button
             className="Button--link s1 v-btm"
             icon="info-circle-o"
             onBlur={undefined}
@@ -5951,7 +5951,7 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -5974,13 +5974,13 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
                 Doctor
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6005,24 +6005,24 @@ exports[`Editor Storyshots GlossaryTerm Without translations 1`] = `
                 -none-
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           title="No translation to copy."
         >
-          <Button
+          <mock-button
             className="EditorButton Button--small u-rounded Button--primary"
             disabled={true}
             onClick={[Function]}
             type="primary"
           >
             Copy
-          </Button>
+          </mock-button>
         </td>
         <td
           className="info-icon"
         >
-          <Button
+          <mock-button
             className="Button--link s1 v-btm"
             icon="info-circle-o"
             onBlur={undefined}
@@ -6049,7 +6049,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <table>
     <thead>
       <tr>
@@ -6073,7 +6073,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6096,13 +6096,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
                 Ambulance
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6127,24 +6127,24 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
                 Krankenwagen
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           title="Insert translated term at the cursor position."
         >
-          <Button
+          <mock-button
             className="EditorButton Button--small u-rounded Button--primary"
             disabled={false}
             onClick={[Function]}
             type="primary"
           >
             Copy
-          </Button>
+          </mock-button>
         </td>
         <td
           className="info-icon"
         >
-          <Button
+          <mock-button
             className="Button--link s1 v-btm"
             icon="info-circle-o"
             onBlur={undefined}
@@ -6163,7 +6163,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6186,13 +6186,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
                 Hospital
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6217,24 +6217,24 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
                 Krankenhaus
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           title="Insert translated term at the cursor position."
         >
-          <Button
+          <mock-button
             className="EditorButton Button--small u-rounded Button--primary"
             disabled={false}
             onClick={[Function]}
             type="primary"
           >
             Copy
-          </Button>
+          </mock-button>
         </td>
         <td
           className="info-icon"
         >
-          <Button
+          <mock-button
             className="Button--link s1 v-btm"
             icon="info-circle-o"
             onBlur={undefined}
@@ -6253,7 +6253,7 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6276,13 +6276,13 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
                 Doctor
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6307,24 +6307,24 @@ exports[`Editor Storyshots GlossaryTerm in a table 1`] = `
                 Arzt
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           title="Insert translated term at the cursor position."
         >
-          <Button
+          <mock-button
             className="EditorButton Button--small u-rounded Button--primary"
             disabled={false}
             onClick={[Function]}
             type="primary"
           >
             Copy
-          </Button>
+          </mock-button>
         </td>
         <td
           className="info-icon"
         >
-          <Button
+          <mock-button
             className="Button--link s1 v-btm"
             icon="info-circle-o"
             onBlur={undefined}
@@ -6351,7 +6351,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <table>
     <tbody>
       <tr>
@@ -6359,7 +6359,7 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6382,13 +6382,13 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
                 Ambulance
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           className="GlossaryText StringLong"
           data-filetype="text"
         >
-          <Button
+          <mock-button
             className="btn-link"
             onBlur={undefined}
             onClick={undefined}
@@ -6413,24 +6413,24 @@ exports[`Editor Storyshots GlossaryTerm simple term on its own 1`] = `
                 Krankenwagen
               </span>
             </span>
-          </Button>
+          </mock-button>
         </td>
         <td
           title="Insert translated term at the cursor position."
         >
-          <Button
+          <mock-button
             className="EditorButton Button--small u-rounded Button--primary"
             disabled={false}
             onClick={[Function]}
             type="primary"
           >
             Copy
-          </Button>
+          </mock-button>
         </td>
         <td
           className="info-icon"
         >
-          <Button
+          <mock-button
             className="Button--link s1 v-btm"
             icon="info-circle-o"
             onBlur={undefined}
@@ -6457,203 +6457,201 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
     }
   }
 >
-  <Icons />
-  <div>
-    <h1>
-      Lorem Ipsum
-    </h1>
-    <div
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
-        }
+  <mock-icons />
+  <h1>
+    Lorem Ipsum
+  </h1>
+  <div
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>",
       }
-    />
-    <ul
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
+    }
+  />
+  <ul
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
 <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
 <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
 <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
 <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-        }
       }
-    />
-    <h2>
-      Dolor Sit Amet
-    </h2>
-    <div
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
+    }
+  />
+  <h2>
+    Dolor Sit Amet
+  </h2>
+  <div
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<p>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</p>
 <p>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</p>
 <p>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</p>
 <p>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</p>
 <p>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</p>",
-        }
       }
-    />
-    <ul
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
+    }
+  />
+  <ul
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<li>Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.</li>
 <li>Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.</li>
 <li>Est velit labore esse esse cupidatat. Velit id elit consequat minim. Mollit enim excepteur ea laboris adipisicing aliqua proident occaecat do do adipisicing adipisicing ut fugiat. Consequat pariatur ullamco aute sunt esse. Irure excepteur eu non eiusmod. Commodo commodo et ad ipsum elit esse pariatur sit adipisicing sunt excepteur enim.</li>
 <li>Incididunt duis commodo mollit esse veniam non exercitation dolore occaecat ea nostrud laboris. Adipisicing occaecat fugiat fugiat irure fugiat in magna non consectetur proident fugiat. Commodo magna et aliqua elit sint cupidatat. Sint aute ullamco enim cillum anim ex. Est eiusmod commodo occaecat consequat laboris est do duis. Enim incididunt non culpa velit quis aute in elit magna ullamco in consequat ex proident.</li>
 <li>Dolore incididunt mollit fugiat pariatur cupidatat ipsum laborum cillum. Commodo consequat velit cupidatat duis ex nisi non aliquip ad ea pariatur do culpa. Eiusmod proident adipisicing tempor tempor qui pariatur voluptate dolor do ea commodo. Veniam voluptate cupidatat ex nisi do ullamco in quis elit.</li>",
-        }
       }
-    />
-    <div
-      className="static-modal"
+    }
+  />
+  <div
+    className="static-modal"
+  >
+    <mock-modal
+      footer={null}
+      id="GlossaryTermModal"
+      onCancel={[Function]}
+      title="Glossary Details"
+      visible={true}
+      width="90%"
     >
-      <Modal
-        footer={null}
-        id="GlossaryTermModal"
-        onCancel={[Function]}
-        title="Glossary Details"
-        visible={true}
-        width="90%"
+      <div
+        className="ant-row mb4"
+        style={undefined}
       >
         <div
-          className="ant-row mb4"
-          style={undefined}
+          className="ant-col-12"
         >
-          <div
-            className="ant-col-12"
+          <h3>
+            Source Term : 
+            en-US
+          </h3>
+          <span
+            className="modal-term"
           >
-            <h3>
-              Source Term : 
-              en-US
-            </h3>
-            <span
-              className="modal-term"
-            >
-              bat
-            </span>
-          </div>
-          <div
-            className="ant-col-12"
-          >
-            <h3
-              className="txt-info"
-            >
-              Translation : 
-              de
-            </h3>
-            <span
-              className="modal-term"
-            >
-              schlagen
-            </span>
-          </div>
+            bat
+          </span>
         </div>
         <div
-          className="ant-row"
-          style={undefined}
+          className="ant-col-12"
         >
-          <div
-            className="ant-col-24 mb2"
+          <h3
+            className="txt-info"
           >
-            <table
-              className="undefined GlossaryDetails-table"
-            >
-              <thead>
-                <tr>
-                  <th>
-                    Description
-                  </th>
-                  <th>
-                    Part of speech
-                  </th>
-                  <th>
-                    Target comment
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td
-                    className=" u-textCenter"
-                    colSpan="3"
-                  >
-                    <span
-                      className="loaderText"
-                    >
-                      <span>
-                        Searching...
-                        <span
-                          className="loader"
-                        >
-                          <span>
-                            <div
-                              className=""
-                              dangerouslySetInnerHTML={
-                                Object {
-                                  "__html": "<svg class=\\"icon-blank\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 32 32\\"></svg>
-",
-                                }
-                              }
-                              style={
-                                Object {
-                                  "fill": "#546677",
-                                  "height": 64,
-                                  "width": 64,
-                                }
-                              }
-                            />
-                          </span>
-                        </span>
-                      </span>
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    className=" u-textCenter"
-                    colSpan="3"
-                  >
-                    <span
-                      className="loaderText"
-                    >
-                      <span>
-                        Searching...
-                        <span
-                          className="loader"
-                        >
-                          <span>
-                            <div
-                              className=""
-                              dangerouslySetInnerHTML={
-                                Object {
-                                  "__html": "<svg class=\\"icon-blank\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 32 32\\"></svg>
-",
-                                }
-                              }
-                              style={
-                                Object {
-                                  "fill": "#546677",
-                                  "height": 64,
-                                  "width": 64,
-                                }
-                              }
-                            />
-                          </span>
-                        </span>
-                      </span>
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            Translation : 
+            de
+          </h3>
+          <span
+            className="modal-term"
+          >
+            schlagen
+          </span>
         </div>
-        <span
-          className="u-pullRight u-textMeta"
-        />
-      </Modal>
-    </div>
+      </div>
+      <div
+        className="ant-row"
+        style={undefined}
+      >
+        <div
+          className="ant-col-24 mb2"
+        >
+          <table
+            className="undefined GlossaryDetails-table"
+          >
+            <thead>
+              <tr>
+                <th>
+                  Description
+                </th>
+                <th>
+                  Part of speech
+                </th>
+                <th>
+                  Target comment
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  className=" u-textCenter"
+                  colSpan="3"
+                >
+                  <span
+                    className="loaderText"
+                  >
+                    <span>
+                      Searching...
+                      <span
+                        className="loader"
+                      >
+                        <span>
+                          <div
+                            className=""
+                            dangerouslySetInnerHTML={
+                              Object {
+                                "__html": "<svg class=\\"icon-blank\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 32 32\\"></svg>
+",
+                              }
+                            }
+                            style={
+                              Object {
+                                "fill": "#546677",
+                                "height": 64,
+                                "width": 64,
+                              }
+                            }
+                          />
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className=" u-textCenter"
+                  colSpan="3"
+                >
+                  <span
+                    className="loaderText"
+                  >
+                    <span>
+                      Searching...
+                      <span
+                        className="loader"
+                      >
+                        <span>
+                          <div
+                            className=""
+                            dangerouslySetInnerHTML={
+                              Object {
+                                "__html": "<svg class=\\"icon-blank\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 32 32\\"></svg>
+",
+                              }
+                            }
+                            style={
+                              Object {
+                                "fill": "#546677",
+                                "height": 64,
+                                "width": 64,
+                              }
+                            }
+                          />
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <span
+        className="u-pullRight u-textMeta"
+      />
+    </mock-modal>
   </div>
 </div>
 `;
@@ -6666,8 +6664,8 @@ exports[`Editor Storyshots IconButton markup (disabled) 1`] = `
     }
   }
 >
-  <Icons />
-  <Button
+  <mock-icons />
+  <mock-button
     className="drink-me"
     disabled={true}
     onBlur={undefined}
@@ -6679,11 +6677,11 @@ exports[`Editor Storyshots IconButton markup (disabled) 1`] = `
     onMouseLeave={[Function]}
     onTouchStart={undefined}
   >
-    <Icon
+    <mock-icon
       className="s1"
       name="mail"
     />
-  </Button>
+  </mock-button>
 </div>
 `;
 
@@ -6695,8 +6693,8 @@ exports[`Editor Storyshots IconButton markup 1`] = `
     }
   }
 >
-  <Icons />
-  <Button
+  <mock-icons />
+  <mock-button
     className="push-me"
     disabled={undefined}
     onBlur={undefined}
@@ -6708,11 +6706,11 @@ exports[`Editor Storyshots IconButton markup 1`] = `
     onMouseLeave={[Function]}
     onTouchStart={undefined}
   >
-    <Icon
+    <mock-icon
       className="s1"
       name="mail"
     />
-  </Button>
+  </mock-button>
 </div>
 `;
 
@@ -6724,47 +6722,47 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="ant-row"
     style={undefined}
   >
-    <Button
+    <mock-button
       className="Button Button--small u-rounded Button--primary is-active"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="language"
       />
        
       Current
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--primary"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="language"
       />
        
       All
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--primary"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="language"
       />
        
       Source
-    </Button>
+    </mock-button>
   </div>
 </div>
 `;
@@ -6777,7 +6775,7 @@ exports[`Editor Storyshots ProgressBar Large 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="Progressbar Progressbar--lg"
   >
@@ -6838,7 +6836,7 @@ exports[`Editor Storyshots ProgressBar Medium (default) 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="Progressbar"
   >
@@ -6899,7 +6897,7 @@ exports[`Editor Storyshots ProgressBar Small 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="Progressbar Progressbar--sm"
   >
@@ -6960,22 +6958,22 @@ exports[`Editor Storyshots RejectTranslationModal Criteria chosen 1`] = `
     }
   }
 >
-  <Icons />
-  <Modal
+  <mock-icons />
+  <mock-modal
     footer={
       Array [
-        <Button
+        <mock-button
           onClick={[Function]}
         >
           Cancel
-        </Button>,
-        <Button
+        </mock-button>,
+        <mock-button
           disabled={true}
           onClick={[Function]}
           type="danger"
         >
           Reject translation
-        </Button>,
+        </mock-button>,
       ]
     }
     id="RejectTranslationModal"
@@ -7061,7 +7059,7 @@ exports[`Editor Storyshots RejectTranslationModal Criteria chosen 1`] = `
         <span
           className="PriorityDropdown"
         >
-          <Icon
+          <mock-icon
             className="s2"
             name="warning"
             parentClassName="u-textWarning"
@@ -7148,7 +7146,7 @@ exports[`Editor Storyshots RejectTranslationModal Criteria chosen 1`] = `
         500
       </p>
     </div>
-  </Modal>
+  </mock-modal>
 </div>
 `;
 
@@ -7160,22 +7158,22 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
     }
   }
 >
-  <Icons />
-  <Modal
+  <mock-icons />
+  <mock-modal
     footer={
       Array [
-        <Button
+        <mock-button
           onClick={[Function]}
         >
           Cancel
-        </Button>,
-        <Button
+        </mock-button>,
+        <mock-button
           disabled={true}
           onClick={[Function]}
           type="danger"
         >
           Reject translation
-        </Button>,
+        </mock-button>,
       ]
     }
     id="RejectTranslationModal"
@@ -7261,7 +7259,7 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
         <span
           className="PriorityDropdown"
         >
-          <Icon
+          <mock-icon
             className="s2"
             name="warning"
             parentClassName="u-textWarning"
@@ -7348,7 +7346,7 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
         500
       </p>
     </div>
-  </Modal>
+  </mock-modal>
 </div>
 `;
 
@@ -7360,19 +7358,19 @@ exports[`Editor Storyshots SelectButton active 1`] = `
     }
   }
 >
-  <Icons />
-  <Button
+  <mock-icons />
+  <mock-button
     className="Button Button--small u-rounded Button--secondary is-active"
     onClick={[Function]}
     size="small"
   >
-    <Icon
+    <mock-icon
       className="n1"
       name="clock"
     />
      
     All
-  </Button>
+  </mock-button>
 </div>
 `;
 
@@ -7384,19 +7382,19 @@ exports[`Editor Storyshots SelectButton default 1`] = `
     }
   }
 >
-  <Icons />
-  <Button
+  <mock-icons />
+  <mock-button
     className="Button Button--small u-rounded Button--secondary"
     onClick={[Function]}
     size="small"
   >
-    <Icon
+    <mock-icon
       className="n1"
       name="clock"
     />
      
     All
-  </Button>
+  </mock-button>
 </div>
 `;
 
@@ -7408,47 +7406,47 @@ exports[`Editor Storyshots SelectButtonList default 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="ant-row"
     style={undefined}
   >
-    <Button
+    <mock-button
       className="Button Button--small u-rounded Button--secondary"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
        
       All
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--secondary"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="comment"
       />
        
       Comments
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--secondary"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="refresh"
       />
        
       Updates
-    </Button>
+    </mock-button>
   </div>
 </div>
 `;
@@ -7461,47 +7459,47 @@ exports[`Editor Storyshots SelectButtonList first button active 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="ant-row"
     style={undefined}
   >
-    <Button
+    <mock-button
       className="Button Button--small u-rounded Button--secondary is-active"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="clock"
       />
        
       All
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--secondary"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="comment"
       />
        
       Comments
-    </Button>
-    <Button
+    </mock-button>
+    <mock-button
       className="Button Button--small u-rounded Button--secondary"
       onClick={[Function]}
       size="small"
     >
-      <Icon
+      <mock-icon
         className="n1"
         name="refresh"
       />
        
       Updates
-    </Button>
+    </mock-button>
   </div>
 </div>
 `;
@@ -7514,7 +7512,7 @@ exports[`Editor Storyshots TextDiff default 1`] = `
     }
   }
 >
-  <Icons />
+  <mock-icons />
   <div
     className="Difference"
   >
@@ -7560,328 +7558,326 @@ exports[`Editor Storyshots Validation All Validators 1`] = `
     }
   }
 >
-  <Icons />
-  <div>
-    <h2>
-      Validation Messages for HtmlXmlTagValidation
-    </h2>
-    <p>
-      source: 
-      <input
-        value="<group><users><user>1</user></users></group>"
-      />
-       
-    </p>
-    <p>
-      target: 
-      <input
-        value="<group><users><user>1</user></users><foo></group>"
-      />
-       
-    </p>
+  <mock-icons />
+  <h2>
+    Validation Messages for HtmlXmlTagValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="<group><users><user>1</user></users></group>"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="<group><users><user>1</user></users><foo></group>"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
     <div
-      className="TextflowValidation"
+      className="ant-collapse"
+      style={undefined}
     >
       <div
-        className="ant-collapse"
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
         style={undefined}
       >
         <div
-          className="ant-collapse-item"
-          id={undefined}
-          role="tablist"
-          style={undefined}
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
         >
-          <div
-            aria-expanded={false}
-            className="ant-collapse-header"
-            onClick={[Function]}
-            role="tab"
-          >
-            <i
-              className="arrow"
-            />
-            <span>
-               
-            </span>
-          </div>
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
         </div>
       </div>
     </div>
-    <h2>
-      Validation Messages for JavaVariablesValidation
-    </h2>
-    <p>
-      source: 
-      <input
-        value="Testing string with variable {0}"
-      />
-       
-    </p>
-    <p>
-      target: 
-      <input
-        value="Testing string with no variables"
-      />
-       
-    </p>
+  </div>
+  <h2>
+    Validation Messages for JavaVariablesValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable {0}"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
     <div
-      className="TextflowValidation"
+      className="ant-collapse"
+      style={undefined}
     >
       <div
-        className="ant-collapse"
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
         style={undefined}
       >
         <div
-          className="ant-collapse-item"
-          id={undefined}
-          role="tablist"
-          style={undefined}
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
         >
-          <div
-            aria-expanded={false}
-            className="ant-collapse-header"
-            onClick={[Function]}
-            role="tab"
-          >
-            <i
-              className="arrow"
-            />
-            <span>
-               
-            </span>
-          </div>
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
         </div>
       </div>
     </div>
-    <h2>
-      Validation Messages for NewLineLeadTrailValidation
-    </h2>
-    <p>
-      source: 
-      <input
-        value="
+  </div>
+  <h2>
+    Validation Messages for NewLineLeadTrailValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="
 Testing string with leading new line"
-      />
-       
-    </p>
-    <p>
-      target: 
-      <input
-        value="Different string with the newline removed"
-      />
-       
-    </p>
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Different string with the newline removed"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
     <div
-      className="TextflowValidation"
+      className="ant-collapse"
+      style={undefined}
     >
       <div
-        className="ant-collapse"
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
         style={undefined}
       >
         <div
-          className="ant-collapse-item"
-          id={undefined}
-          role="tablist"
-          style={undefined}
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
         >
-          <div
-            aria-expanded={false}
-            className="ant-collapse-header"
-            onClick={[Function]}
-            role="tab"
-          >
-            <i
-              className="arrow"
-            />
-            <span>
-               
-            </span>
-          </div>
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
         </div>
       </div>
     </div>
-    <h2>
-      Validation Messages for PrintfVariablesValidation
-    </h2>
-    <p>
-      source: 
-      <input
-        value="Testing string with variable %1v"
-      />
-       
-    </p>
-    <p>
-      target: 
-      <input
-        value="Testing string with no variables"
-      />
-       
-    </p>
+  </div>
+  <h2>
+    Validation Messages for PrintfVariablesValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Testing string with variable %1v"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Testing string with no variables"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
     <div
-      className="TextflowValidation"
+      className="ant-collapse"
+      style={undefined}
     >
       <div
-        className="ant-collapse"
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
         style={undefined}
       >
         <div
-          className="ant-collapse-item"
-          id={undefined}
-          role="tablist"
-          style={undefined}
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
         >
-          <div
-            aria-expanded={false}
-            className="ant-collapse-header"
-            onClick={[Function]}
-            role="tab"
-          >
-            <i
-              className="arrow"
-            />
-            <span>
-               
-            </span>
-          </div>
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
         </div>
       </div>
     </div>
-    <h2>
-      Validation Messages for PrintXSIExtensionValidation
-    </h2>
-    <p>
-      source: 
-      <input
-        value="%s: Read error at byte %s, while reading %lu byte"
-      />
-       
-    </p>
-    <p>
-      target: 
-      <input
-        value="%1$s：Read error while reading %3$lu bytes，at %2$s"
-      />
-       
-    </p>
+  </div>
+  <h2>
+    Validation Messages for PrintXSIExtensionValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="%s: Read error at byte %s, while reading %lu byte"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="%1$s：Read error while reading %3$lu bytes，at %2$s"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
     <div
-      className="TextflowValidation"
+      className="ant-collapse"
+      style={undefined}
     >
       <div
-        className="ant-collapse"
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
         style={undefined}
       >
         <div
-          className="ant-collapse-item"
-          id={undefined}
-          role="tablist"
-          style={undefined}
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
         >
-          <div
-            aria-expanded={false}
-            className="ant-collapse-header"
-            onClick={[Function]}
-            role="tab"
-          >
-            <i
-              className="arrow"
-            />
-            <span>
-               
-            </span>
-          </div>
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
         </div>
       </div>
     </div>
-    <h2>
-      Validation Messages for TabValidation
-    </h2>
-    <p>
-      source: 
-      <input
-        value="with two		tabs"
-      />
-       
-    </p>
-    <p>
-      target: 
-      <input
-        value="with one	tab"
-      />
-       
-    </p>
+  </div>
+  <h2>
+    Validation Messages for TabValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="with two		tabs"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="with one	tab"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
     <div
-      className="TextflowValidation"
+      className="ant-collapse"
+      style={undefined}
     >
       <div
-        className="ant-collapse"
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
         style={undefined}
       >
         <div
-          className="ant-collapse-item"
-          id={undefined}
-          role="tablist"
-          style={undefined}
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
         >
-          <div
-            aria-expanded={false}
-            className="ant-collapse-header"
-            onClick={[Function]}
-            role="tab"
-          >
-            <i
-              className="arrow"
-            />
-            <span>
-               
-            </span>
-          </div>
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
         </div>
       </div>
     </div>
-    <h2>
-      Validation Messages for XMLEnitityValidation
-    </h2>
-    <p>
-      source: 
-      <input
-        value="Source string"
-      />
-       
-    </p>
-    <p>
-      target: 
-      <input
-        value="Target string: bla bla &test"
-      />
-       
-    </p>
+  </div>
+  <h2>
+    Validation Messages for XMLEnitityValidation
+  </h2>
+  <p>
+    source: 
+    <input
+      value="Source string"
+    />
+     
+  </p>
+  <p>
+    target: 
+    <input
+      value="Target string: bla bla &test"
+    />
+     
+  </p>
+  <div
+    className="TextflowValidation"
+  >
     <div
-      className="TextflowValidation"
+      className="ant-collapse"
+      style={undefined}
     >
       <div
-        className="ant-collapse"
+        className="ant-collapse-item"
+        id={undefined}
+        role="tablist"
         style={undefined}
       >
         <div
-          className="ant-collapse-item"
-          id={undefined}
-          role="tablist"
-          style={undefined}
+          aria-expanded={false}
+          className="ant-collapse-header"
+          onClick={[Function]}
+          role="tab"
         >
-          <div
-            aria-expanded={false}
-            className="ant-collapse-header"
-            onClick={[Function]}
-            role="tab"
-          >
-            <i
-              className="arrow"
-            />
-            <span>
-               
-            </span>
-          </div>
+          <i
+            className="arrow"
+          />
+          <span>
+             
+          </span>
         </div>
       </div>
     </div>

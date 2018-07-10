@@ -123,7 +123,7 @@ class TransUnit extends React.Component {
       'undoEdit'
     ])
     return (
-      <div>
+      <>
         <div className={className}
           onClick={this.selectPhrase}>
           <TransUnitStatus phrase={this.props.phrase} />
@@ -132,7 +132,7 @@ class TransUnit extends React.Component {
             saveDropdownKey={this.props.phrase.id}
             showRejectModal={this.props.toggleRejectModal} />
         </div>
-      </div>
+      </>
     )
   }
 }

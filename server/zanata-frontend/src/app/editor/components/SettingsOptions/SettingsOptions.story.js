@@ -199,7 +199,7 @@ storiesOf('SettingsOptions', module)
       updateSetting={action('updateSetting')} />
   ))
   .add('EDITOR OPTIONS', () => (
-    <div>
+    <>
       <h2 className='SettingsHeading'>Editor options</h2>
       <SettingsOptions
         settings={settings}
@@ -208,13 +208,13 @@ storiesOf('SettingsOptions', module)
       <SettingsOptions
         settings={defaults}
         updateSetting={action('updateSetting')} />
-    </div>
+    </>
   ))
   .add('VALIDATION SETTINGS', () => (
-    <div>
+    <>
       <h3 className='SettingsHeading'>Validation settings</h3>
       <SettingsOptions
         settings={validations}
         updateSetting={action('updateSetting')} />
-    </div>
+    </>
   ))
