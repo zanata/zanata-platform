@@ -1,9 +1,9 @@
 import {
-  MTMergeModal, MTMergeModalParams, MTMergeModalStateProps, MTMergeModalDispatchProps, MTTranslationStatus
+  MTMergeModal, MTMergeModalParams, MTMergeModalStateProps, MTMergeModalDispatchProps
 } from '../../components/MTMerge/MTMergeModal';
 import {
   toggleMTMergeModal,
-  // mergeVersionFromMT,
+  mergeVersionFromMT,
   // Note: trying the existing TM process functions for now
   // queryTMMergeProgress as queryMTMergeProgress,
   // cancelTMMergeRequest as cancelMTMergeRequest,
@@ -11,7 +11,7 @@ import {
   // MTMergeOptions
 } from '../../actions/version-actions'
 import { connect } from 'react-redux'
-import { LocaleId, Locale } from '../../utils/prop-types-util';
+import { Locale } from '../../utils/prop-types-util';
 import { TopLevelState } from '../../reducers/state';
 
 const mapReduxStateToProps = (state: TopLevelState): MTMergeModalStateProps => {
@@ -56,9 +56,8 @@ const mapDispatchToProps = (dispatch: any): MTMergeModalDispatchProps => {
     onCancel: () => {
       dispatch(toggleMTMergeModal())
     },
-    onSubmit: (_selectedLocales: LocaleId[], _saveAs: MTTranslationStatus, _overwriteFuzzy: boolean) => {
-      // TODO
-      // dispatch(mergeVersionFromMT(projectSlug, versionSlug, mtMergeOptions))
+    onSubmit: (projectSlug, versionSlug, mtMergeOptions) => {
+      dispatch(mergeVersionFromMT(projectSlug, versionSlug, mtMergeOptions))
     }
   }
 }

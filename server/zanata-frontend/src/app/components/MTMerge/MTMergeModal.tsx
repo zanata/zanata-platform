@@ -12,6 +12,12 @@ import { getVersionLanguageSettingsUrl } from '../../utils/UrlHelper';
 
 export type MTTranslationStatus = MTTranslationStatus
 
+export interface MTMergeAPIOptions {
+  selectedLocales: LocaleId[]
+  saveAs?: MTTranslationStatus
+  overwriteFuzzy?: boolean
+}
+
 // Redux state, ie connect's TStateProps
 export type MTMergeModalStateProps = Readonly<{
   showMTMerge: boolean
@@ -20,7 +26,7 @@ export type MTMergeModalStateProps = Readonly<{
 
 // Redux dispatch, ie connect's TDispatchProps
 export type MTMergeModalDispatchProps = Readonly<{
-  onSubmit: (selectedLocales: LocaleId[], saveAs: MTTranslationStatus, overwriteFuzzy: boolean) => void
+  onSubmit: (projectSlug: string, projectVersion: string, mtMergeOptions: MTMergeAPIOptions) => void
   onCancel: () => void
 }>
 
@@ -72,7 +78,7 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
     // cf. render() in TMMergeModal.js
     return (
       <Modal
-        title="MT Batch Merge"
+        title="Machine Translation Batch Merge"
         visible={showMTMerge}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
@@ -92,7 +98,7 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
         //   onCancelOperation={this.cancelTMMerge}
         //   processStatus={processStatus} buttonLabel='Cancel TM Merge'
         //   queryProgress={this.queryTMMergeProgress}
-        // /> */}
+        // /> }
           "TODO CancellableProgressBar"
         )
         : availableLocales.length === 0 ?
@@ -119,7 +125,12 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
   }
 
   private handleOk = (_: React.MouseEvent<any>) => {
-    this.props.onSubmit(this.state.checkedLocales, this.state.saveAs, this.state.overwriteFuzzy)
+    const opts: MTMergeAPIOptions =  {
+      selectedLocales: this.state.checkedLocales,
+      saveAs: this.state.saveAs,
+      overwriteFuzzy: this.state.overwriteFuzzy
+    }
+    this.props.onSubmit('projectSlug', 'projectVersion', opts)
   }
 
   private handleCancel = (_: any) => {

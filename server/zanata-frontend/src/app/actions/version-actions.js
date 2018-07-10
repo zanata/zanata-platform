@@ -35,6 +35,8 @@ import {
 } from './version-action-types'
 
 /**
+ * @typedef {import('../components/MTMerge/MTMergeModal').MTMergeAPIOptions}
+            MTMergeAPIOptions
  * @typedef {import('../components/MTMerge/MTMergeOptions').MTTranslationStatus}
             MTTranslationStatus
  * @typedef {import('../utils/prop-types-util').LocaleId} LocaleId
@@ -123,21 +125,14 @@ const toProjectVersionString = (projectVersion) => {
 }
 
 /**
- * @typedef {{
-     selectedLocale: {localeId: LocaleId}
-     saveAs: MTTranslationStatus
-     _overwriteFuzzy: boolean
-   }} MTMergeOptions
- */
-
-/**
  * @param {string} _projectSlug target project slug
  * @param {string} _versionSlug target version slug
- * @param {MTMergeOptions} _mergeOptions
+ * @param {MTMergeAPIOptions} _mergeOptions
  * @returns {APIAction} redux api action object FIXME
  */
 export function mergeVersionFromMT (_projectSlug, _versionSlug, _mergeOptions) {
   // FIXME build API request for MT (see also mergeVersionFromTM)
+  // console.error(_projectSlug, _versionSlug, _mergeOptions)
   // @ts-ignore
   return null
 }
