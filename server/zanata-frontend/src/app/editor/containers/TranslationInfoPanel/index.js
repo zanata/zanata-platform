@@ -159,7 +159,7 @@ class TranslationInfoPanel extends React.Component {
       : glossaryVisible ? glossaryTabKey
       : activityTabKey
     return (
-      <>
+      <React.Fragment>
         <h1 className="SidebarEditor-heading">
           <Icon name="info" className="s1" parentClassName='details-svg' />
           <span className="hide-md">
@@ -217,7 +217,7 @@ class TranslationInfoPanel extends React.Component {
             </TabPane>
           </Tabs>
         </span>
-      </>
+      </React.Fragment>
     )
   }
 }

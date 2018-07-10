@@ -52,10 +52,10 @@ const links = {
 const activePath = window.location.pathname.replace(/\/$/, '')
 
 render(
-  <>
+  <React.Fragment>
     <Icons />
     <Nav active={activePath} isJsfPage links={links} />
-  </>
+  </React.Fragment>
   ,
   document.getElementById('root')
 )

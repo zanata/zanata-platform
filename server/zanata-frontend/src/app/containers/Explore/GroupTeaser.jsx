@@ -34,12 +34,12 @@ const GroupTeaser = ({
         TODO: Statistics Donut here
       </View> */}
       <div className='teaser-inner'>
-        <>
+        <React.Fragment>
           <Link link={link} useHref className='text-bold'>
             {details.title}
           </Link>
           {description}
-        </>
+        </React.Fragment>
         {metaData}
       </div>
     </div>

@@ -93,18 +93,18 @@ const CalendarMonthMatrix = ({
   return (
     <div id='userProfile-activityTable'>
       <div className='userProfile-activityTable-inner'>
-        <>
+        <React.Fragment>
           <h3 className='u-textUppercaseBold'>
             {header}
           </h3>
-        </>
+        </React.Fragment>
         {selectedDay &&
-        (<>
+        (<React.Fragment>
           <Button className='btn-link btn-clear' aria-label='button'
             onClick={() => handleSelectedDayChanged(null)}>
             Clear selection
           </Button>
-        </>)}
+        </React.Fragment>)}
       </div>
       <table className={calClass}>
         <thead>

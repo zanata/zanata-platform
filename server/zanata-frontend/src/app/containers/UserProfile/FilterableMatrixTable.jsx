@@ -42,7 +42,7 @@ const FilterableMatrixTable = ({
     ])
     : <div className='u-textMuted'>No contributions</div>
   return (
-    <>
+    <React.Fragment>
       <div className='u-flexRow'>
         <ContentStateFilter selectedContentState={selectedContentState}
           handleFilterChanged={handleFilterChanged} />
@@ -63,7 +63,7 @@ const FilterableMatrixTable = ({
           {categoryTables}
         </div>
       </div>
-    </>
+    </React.Fragment>
   )
 }
 

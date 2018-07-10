@@ -114,11 +114,11 @@ class TMMergeProjectSources extends Component {
             <span>
               Select source project versions to merge
             </span>
-            <>
+            <React.Fragment>
               <LoaderText loading={fetchingProject}
                 loadingText={'Fetching Projects'} />
               <span className='u-textMuted'>{noResults}</span>
-            </>
+            </React.Fragment>
             <ProjectVersionPanels projectVersions={projectVersions}
               selectedVersions={mergeOptions.selectedVersions}
               onVersionCheckboxChange={onVersionCheckboxChange}

@@ -137,16 +137,16 @@ class Languages extends Component {
                 }
               </h1>
               {permission.canAddLocale &&
-                <>
+                <React.Fragment>
                   <Button type="primary" icon="plus"
                     id="btn-language-add-new"
                     aria-label="button"
                     onClick={handleOnDisplayNewLanguage}>
                   Add new language</Button>
                   <NewLanguageModal />
-                </>
+                </React.Fragment>
               }
-              <>
+              <React.Fragment>
                 {loading
                   ? <div className='containerContentView'>
                     <span className='listInline'>
@@ -225,7 +225,7 @@ class Languages extends Component {
                         </tbody>
                       </table>
                     </div>}
-              </>
+              </React.Fragment>
             </div>
           </div>
         </Layout>

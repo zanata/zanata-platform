@@ -33,7 +33,7 @@ class TriCheckbox extends Component {
 
   render () {
     return (
-      <>
+      <React.Fragment>
         <RealTriCheckbox
           className={this.props.className}
           checked={this.state.checked}
@@ -41,7 +41,7 @@ class TriCheckbox extends Component {
           onChange={this.checkboxChanged}
           useDefaultStyle={this.state.useDefaultStyle}
         />
-      </>
+      </React.Fragment>
     )
   }
 }
@@ -71,7 +71,7 @@ class WithButton extends Component {
 
   render () {
     return (
-      <>
+      <React.Fragment>
         <RealTriCheckbox
           checked={this.state.checked}
           indeterminate={this.state.indeterminate}
@@ -79,14 +79,14 @@ class WithButton extends Component {
           useDefaultStyle={false}
         />
         <button onClick={this.makeIndeterminate}>Make intermediate</button>
-      </>
+      </React.Fragment>
     )
   }
 }
 
 storiesOf('TriCheckbox', module)
   .add('default', () => (
-    <>
+    <React.Fragment>
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> TriCheckbox</h2>
@@ -97,10 +97,10 @@ storiesOf('TriCheckbox', module)
         indeterminate={false}
         onChange={action('onChange')}
         />
-    </>
+    </React.Fragment>
   ))
   .add('truth table', () => (
-    <>
+    <React.Fragment>
       <h2>Truth Table</h2>
       <Table striped bordered condensed hover><tbody>
         <tr>
@@ -162,7 +162,7 @@ storiesOf('TriCheckbox', module)
           </td>
         </tr>
       </tbody></Table>
-    </>
+    </React.Fragment>
   ))
   .add('checkbox group', () => (
     <TriCheckboxGroup
@@ -175,7 +175,7 @@ storiesOf('TriCheckbox', module)
       onClick={action('onClick')} />
   ))
   .add('with custom styles', () => (
-    <>
+    <React.Fragment>
       <h2>Passing custom styles through props</h2>
       <Col xs={4}>
         <h3>unstyled</h3>
@@ -237,5 +237,5 @@ storiesOf('TriCheckbox', module)
           onChange={action('onChange')}
         />
       </Col>
-    </>
+    </React.Fragment>
   ))

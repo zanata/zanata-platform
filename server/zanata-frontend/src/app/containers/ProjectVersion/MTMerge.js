@@ -52,7 +52,7 @@ class MTMerge extends Component {
   }
   render() {
     return (
-        <>
+        <React.Fragment>
           <Button type="primary" className='btn-primary' onClick={this.showModal}>Open MTMerge modal</Button>
           <Modal
               title="MT Batch Merge"
@@ -84,7 +84,7 @@ class MTMerge extends Component {
               </Card>
             </div>
           </Modal>
-        </>
+        </React.Fragment>
     );
   }
   // @ts-ignore any

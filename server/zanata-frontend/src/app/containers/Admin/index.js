@@ -49,7 +49,7 @@ class Admin extends Component {
 
   render () {
     return (
-      <>
+      <React.Fragment>
         <Helmet title='Administration' />
         <div className='page wideView' id='admin'>
           <div className='u-centerBlock'>
@@ -159,7 +159,7 @@ class Admin extends Component {
             <TMXExportModal />
           </div>
         </div>
-      </>
+      </React.Fragment>
     )
   }
 }

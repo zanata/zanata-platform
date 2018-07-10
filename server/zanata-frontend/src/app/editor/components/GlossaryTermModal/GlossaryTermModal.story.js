@@ -10,7 +10,7 @@ const defaultClick = () => {}
 */
 storiesOf('GlossaryTermModal', module)
   .addDecorator((story) => (
-    <>
+    <React.Fragment>
       <h1>Lorem Ipsum</h1>
       <Lorem count={1} />
       <Lorem mode="list" />
@@ -20,7 +20,7 @@ storiesOf('GlossaryTermModal', module)
       <div className="static-modal">
         {story()}
       </div>
-    </>
+    </React.Fragment>
   ))
   .add('with 1 detail item (no test)', () => (
     <GlossaryTermModal

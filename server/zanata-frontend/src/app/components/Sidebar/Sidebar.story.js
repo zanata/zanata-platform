@@ -14,7 +14,7 @@ const linkname = 'Our awesome webpage'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
-        <>
+        <React.Fragment>
           <Sidebar />
           <div className='flexTab'>
             <p>This sidebar example has the active tag applied to both the People
@@ -24,35 +24,35 @@ storiesOf('Sidebar', module)
               <a href='https://react-bootstrap.github.io/components.html#navs'>
                 react bootstrap components</a>.</p>
           </div>
-      </>
+      </React.Fragment>
     ))
     .add('AboutPage', () => (
-        <>
+        <React.Fragment>
           <Sidebar />
           <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
-        </>
+        </React.Fragment>
     ))
     .add('PeoplePage', () => (
-        <>
+        <React.Fragment>
           <Sidebar />
           <PeoplePage />
-        </>
+        </React.Fragment>
     ))
     .add('GroupsPage', () => (
-        <>
+        <React.Fragment>
           <Sidebar />
           <GroupsPage />
-        </>
+        </React.Fragment>
     ))
     .add('LanguagesPage', () => (
-        <>
+        <React.Fragment>
           <Sidebar />
           <LanguagesPage />
-        </>
+        </React.Fragment>
     ))
     .add('DocumentsPage', () => (
-        <>
+        <React.Fragment>
           <Sidebar />
           <DocumentsPage />
-        </>
+        </React.Fragment>
     ))

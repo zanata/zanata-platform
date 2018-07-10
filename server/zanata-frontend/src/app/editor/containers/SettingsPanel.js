@@ -104,7 +104,7 @@ export const SettingsPanel = ({
     ]}
     updateSetting={updateValidationSetting} />
   return (
-    <>
+    <React.Fragment>
       <h1 className="SidebarEditor-heading">
         <Icon className="s1" name="settings" /> Settings
         <span className="s1 u-pullRight">
@@ -114,7 +114,7 @@ export const SettingsPanel = ({
         </span>
       </h1>
       <div className={directionClass + ' SidebarEditor-wrapper'}>
-        <>
+        <React.Fragment>
           <h2 className='SettingsHeading'>Editor options</h2>
           <SettingsOptions
             settings={[
@@ -132,9 +132,9 @@ export const SettingsPanel = ({
             updateSetting={updateSetting} />
           {validationOptionsHeader}
           {validationOptions}
-        </>
+        </React.Fragment>
       </div>
-    </>
+    </React.Fragment>
   )
 }
 

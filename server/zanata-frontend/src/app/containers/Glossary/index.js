@@ -218,7 +218,7 @@ class Glossary extends Component {
     }
 
     return (
-      <>
+      <React.Fragment>
         <Helmet title={headerTitle} />
         <div className='wideView' id='glossary'>
           <Layout>
@@ -291,7 +291,7 @@ class Glossary extends Component {
             </div>
           </Layout>
         </div>
-      </>
+      </React.Fragment>
     )
     /* eslint-enable react/jsx-no-bind */
   }
