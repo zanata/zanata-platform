@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 const join = require('path').join
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -118,18 +119,24 @@ module.exports = function (isEditor) {
             return JSON.stringify(JSON.parse(content))
           }
         }
-      ]),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessor: require('cssnano'),
-        cssProcessorOptions: {
-          safe: true, discardComments: { removeAll: true }
-        },
-        canPrint: true
-      })
+      ])
     ],
 
     optimization: {
-      minimize: true,
+      minimizer: [
+        new UglifyJsPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: true
+        }),
+        new OptimizeCSSAssetsPlugin({
+          cssProcessor: require('cssnano'),
+          cssProcessorOptions: {
+            safe: true, discardComments: { removeAll: true }
+          },
+          canPrint: true
+        })
+      ],
       // namedModules: true, // NamedModulesPlugin()
       splitChunks: { // CommonsChunkPlugin()
         name: 'runtime',
