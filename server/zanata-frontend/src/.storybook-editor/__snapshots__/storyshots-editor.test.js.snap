@@ -6763,8 +6763,8 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                   <span
                     className="loaderText"
                   >
-                    <p
-                      className="tc f5 b"
+                    <span
+                      className="f5 b"
                     >
                       Searching...
                       <span
@@ -6789,7 +6789,7 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                           />
                         </span>
                       </span>
-                    </p>
+                    </span>
                   </span>
                 </td>
               </tr>
@@ -6801,8 +6801,8 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                   <span
                     className="loaderText"
                   >
-                    <p
-                      className="tc f5 b"
+                    <span
+                      className="f5 b"
                     >
                       Searching...
                       <span
@@ -6827,7 +6827,7 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                           />
                         </span>
                       </span>
-                    </p>
+                    </span>
                   </span>
                 </td>
               </tr>
