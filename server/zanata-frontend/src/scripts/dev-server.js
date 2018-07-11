@@ -19,7 +19,7 @@ const port = isEditor ? 8001 : 8000
 const devRoot = `http://localhost:${port}`
 const zanataRoot = 'http://localhost:8080'
 
-const webpackConfig = createConfig({ buildtype: 'dev' }, isEditor, port)
+const webpackConfig = createConfig(isEditor, port)
 
 fs.ensureDir('dist')
   .then(() => {

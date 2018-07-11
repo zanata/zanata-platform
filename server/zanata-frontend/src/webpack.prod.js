@@ -1,10 +1,10 @@
 const webpack = require('webpack')
+const merge = require('webpack-merge')
+const common = require('./webpack.common.js')
 const join = require('path').join
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const ManifestPlugin = require('webpack-manifest-plugin')
-const tsImportPluginFactory = require('ts-import-plugin')
 
 const postCssLoader = {
   loader: 'postcss-loader',
@@ -31,7 +31,7 @@ const postCssLoader = {
  */
 module.exports = function (isEditor) {
   const distDir = isEditor ? 'dist.editor' : 'dist'
-  return {
+  return merge(common, {
     // Built in Webpack mode definition
     mode: 'production',
 
@@ -46,6 +46,7 @@ module.exports = function (isEditor) {
       filename: '[name].[chunkhash:8].cache.js',
       chunkFilename: '[name].[chunkhash:8].cache.js'
     },
+
     module: {
       rules: [
         /* Checks for errors in syntax, and for problematic and inconsistent
@@ -58,8 +59,8 @@ module.exports = function (isEditor) {
           enforce: 'pre',
           loader: 'eslint-loader',
           options: {
-            failOnWarning: false,
-            failOnError: false
+            failOnWarning: true,
+            failOnError: true
           }
         },
 
@@ -73,30 +74,8 @@ module.exports = function (isEditor) {
           enforce: 'pre',
           loader: 'tslint-loader',
           options: {
-            failOnHint: false,
+            failOnHint: true,
             formatter: 'verbose'
-          }
-        },
-        /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
-          */
-        {
-          test: /\.(j|t)sx?$/,
-          exclude: /node_modules/,
-          include: join(__dirname, 'app'),
-          loader: 'awesome-typescript-loader',
-          // load antd through modular import plugin
-          options: {
-            transpileOnly: true,
-            getCustomTransformers: () => ({
-              before: [tsImportPluginFactory({
-                libraryName: 'antd',
-                libraryDirectory: 'es',
-                style: 'css'
-              })]
-            }),
-            compilerOptions: {
-              module: 'es2015'
-            }
           }
         },
 
@@ -111,21 +90,6 @@ module.exports = function (isEditor) {
             MiniCssExtractPlugin.loader,
             'css-loader',
             postCssLoader
-          ]
-        },
-
-        /* Bundles less files into the same bundle as the other css.
-          */
-        {
-          test: /\.less$/,
-          use: [
-            {
-              loader: 'css-loader'
-            }, {
-              loader: 'less-loader', options: {
-                javascriptEnabled: true
-              }
-            }
           ]
         }
       ]
@@ -149,7 +113,7 @@ module.exports = function (isEditor) {
           toType: 'dir',
           flatten: true,
           // @ts-ignore any
-          transform(content, path) {
+          transform (content, path) {
             // Minimize the JSON files
             return JSON.stringify(JSON.parse(content))
           }
@@ -157,13 +121,12 @@ module.exports = function (isEditor) {
       ]),
       new OptimizeCSSAssetsPlugin({
         cssProcessor: require('cssnano'),
-        cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
+        cssProcessorOptions: {
+          safe: true, discardComments: { removeAll: true }
+        },
         canPrint: true
-      }),
-      new ManifestPlugin()
+      })
     ],
-    // Suppress warnings about assets and entrypoint size
-    performance: { hints: false },
 
     optimization: {
       minimize: true,
@@ -176,19 +139,9 @@ module.exports = function (isEditor) {
       // concatenateModules: true // ModuleConcatenationPlugin
     },
 
-    resolve: {
-      /* Subdirectories to check while searching up tree for module
-        * Default is ['', '.js'] */
-      extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx']
-    },
-
-    node: {
-      __dirname: true
-    },
-
     /* fail on first error */
-    bail: false,
+    bail: true,
 
-    devtool: 'eval-source-map'
-  }
+    devtool: 'source-map'
+  })
 }

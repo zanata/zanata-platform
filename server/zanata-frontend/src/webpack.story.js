@@ -1,6 +1,6 @@
-const join = require('path').join
-const ManifestPlugin = require('webpack-manifest-plugin')
-const tsImportPluginFactory = require('ts-import-plugin')
+const webpack = require('webpack')
+const merge = require('webpack-merge')
+const common = require('./webpack.common.js')
 
 const postCssLoader = {
   loader: 'postcss-loader',
@@ -24,32 +24,9 @@ const postCssLoader = {
 /**
  * @returns {WebpackConfig}
  */
-module.exports = {
+module.exports = merge(common, {
   module: {
     rules: [
-      /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
-        */
-      {
-        test: /\.(j|t)sx?$/,
-        exclude: /node_modules/,
-        include: join(__dirname, 'app'),
-        loader: 'awesome-typescript-loader',
-        // load antd through modular import plugin
-        options: {
-          transpileOnly: true,
-          getCustomTransformers: () => ({
-            before: [tsImportPluginFactory({
-              libraryName: 'antd',
-              libraryDirectory: 'es',
-              style: 'css'
-            })]
-          }),
-          compilerOptions: {
-            module: 'es2015'
-          }
-        }
-      },
-
       /* Bundles all the css and allows use of various niceties, including
         * imports, variables, calculations, and non-prefixed codes.
         * The draft and prod options were removed as they were causing
@@ -62,28 +39,14 @@ module.exports = {
           'css-loader',
           postCssLoader
         ]
-      },
-
-      /* Bundles less files into the same bundle as the other css.
-        */
-      {
-        test: /\.less$/,
-        use: [
-          {
-            loader: 'style-loader'
-          }, {
-            loader: 'css-loader'
-          }, {
-            loader: 'less-loader', options: {
-              javascriptEnabled: true
-            }
-          }
-        ]
       }
     ]
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development')
+    }),
     // This makes it easier to see if watch has picked up changes yet.
     // https://github.com/webpack/webpack/issues/1499#issuecomment-155064216
     // There's probably a config option for this (stats?) but I can't find it.
@@ -99,22 +62,8 @@ module.exports = {
           console.log('Begin compile at ' + new Date())
           callback()
         })
-    },
-    new ManifestPlugin()
+    }
   ],
-  // Suppress warnings about assets and entrypoint size
-  performance: { hints: false },
-
-  resolve: {
-    /* Subdirectories to check while searching up tree for module
-      * Default is ['', '.js'] */
-    extensions: ['.js', '.jsx', '.json', '.css', '.less', '.ts', '.tsx']
-  },
-
-  node: {
-    __dirname: true
-  },
-
   /* Caching for incremental builds, only needed for dev mode */
   cache: true,
 
@@ -122,4 +71,4 @@ module.exports = {
   bail: false,
 
   devtool: 'eval-source-map'
-}
+})
