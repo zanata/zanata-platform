@@ -13,6 +13,7 @@ import update from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
 import { dashboardUrl, projectPageUrl } from '../api'
 
+/** @type {import('./state').HeaderDataState} */
 const defaultState = {
   user: {
     name: '',
@@ -47,7 +48,8 @@ const defaultState = {
   permissions: {
     reviewer: false,
     translator: false
-  }
+  },
+  localeMessages: undefined
 }
 
 // @ts-ignore any

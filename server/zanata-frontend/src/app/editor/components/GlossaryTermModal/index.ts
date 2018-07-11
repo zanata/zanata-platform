@@ -1,10 +1,10 @@
-// @ts-nocheck
 import { connect } from 'react-redux'
 import GlossaryTermModal from './component'
 import { map } from 'lodash'
 import { showGlossaryDetails } from '../../actions/glossary-actions'
+import { EditorState } from '../../reducers/state'
 
-function mapStateToProps (state) {
+function mapStateToProps (state: EditorState) {
   const { context, glossary, headerData } = state
   const { details, results, searchText } = glossary
   const { byId, resultIndex, show } = details
@@ -13,6 +13,7 @@ function mapStateToProps (state) {
   // undefined items are kept, that just indicates the detail has not been
   // returned from the API yet.
   const detailItems = term && term.sourceIdList
+    // @ts-ignore
     ? map(term.sourceIdList, id => byId[id]) : []
 
   return {
@@ -24,8 +25,10 @@ function mapStateToProps (state) {
   }
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
+    // @ts-ignore
     close: () => dispatch(showGlossaryDetails(false))
   }
 }
