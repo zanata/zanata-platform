@@ -3,8 +3,9 @@ import { handleActions } from 'redux-actions'
 import {
   OPEN_DROPDOWN, CLOSE_DROPDOWN, TOGGLE_DROPDOWN
 } from '../actions/action-types'
+import { DropdownState } from './state';
 
-const defaultState = {
+const defaultState: DropdownState = {
   openDropdownKey: undefined,
   docsKey: 'Documents Dropdown',
   localeKey: 'Locales Dropdown',
