@@ -109,7 +109,8 @@ function transUnitDetailToPhraseDetail (transUnitDetail, locale) {
       wordCount: parseInt(wordCount, 10),
       lastModifiedBy: trans && trans.translator && trans.translator.name,
       lastModifiedTime: trans && trans.lastModifiedTime &&
-        new Date(trans.lastModifiedTime)
+        new Date(trans.lastModifiedTime),
+      errors: false
     }
   })
 }

@@ -13,8 +13,9 @@ export default handleActions({
   }
 },
 // default state
-  {
+  /** @type {import('./state').CommonState} */
+  ({
     locales: [],
     loading: false,
     selectedLocale: DEFAULT_LOCALE.localeId
-  })
+  }))

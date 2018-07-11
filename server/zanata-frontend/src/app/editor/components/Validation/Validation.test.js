@@ -2,7 +2,7 @@
 /* global describe expect it */
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
-import Validation from '.'
+import Validation, { getValidationMessages } from '.'
 import { IntlProvider } from 'react-intl'
 
 const validations =
@@ -65,13 +65,17 @@ const bothTarget = `with one\ttab and <user>1</user><foo>`
 
 describe('Validation', () => {
   it('markup with errors', () => {
+    const validationProps = {
+      locale: 'en',
+      source: HXTSource,
+      target: HXTTarget,
+      validationOptions: validations
+    }
+
+    const validationMessages = getValidationMessages(validationProps)
     const actual = ReactDOMServer.renderToStaticMarkup(
       <IntlProvider locale={'en'}>
-        <Validation
-          source={HXTSource}
-          target={HXTTarget}
-          validationOptions={validations}
-        />
+        <Validation {...validationMessages} />
       </IntlProvider>)
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className='TextflowValidation'>
@@ -79,7 +83,7 @@ describe('Validation', () => {
           <div className='ant-collapse-item' role='tablist'>
             <div className='ant-collapse-header' role='tab' aria-expanded='false'>
               <i className='arrow'></i>
-              <span> <option>Errors: 1</option>
+              <span> <span>Errors: 1</span>
               </span>
             </div>
           </div>
@@ -89,13 +93,16 @@ describe('Validation', () => {
     expect(actual).toEqual(expected)
   })
   it('markup with warnings', () => {
+    const validationProps = {
+      locale: 'en',
+      source: tabSource,
+      target: tabTarget,
+      validationOptions: validations
+    }
+    const validationMessages = getValidationMessages(validationProps)
     const actual = ReactDOMServer.renderToStaticMarkup(
       <IntlProvider locale={'en'}>
-        <Validation
-          source={tabSource}
-          target={tabTarget}
-          validationOptions={validations}
-        />
+        <Validation {...validationMessages} />
       </IntlProvider>)
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className='TextflowValidation'>
@@ -103,7 +110,7 @@ describe('Validation', () => {
           <div className='ant-collapse-item' role='tablist'>
             <div className='ant-collapse-header' role='tab' aria-expanded='false'>
               <i className='arrow'></i>
-              <span><option>Warnings: 1</option> </span>
+              <span><span>Warnings: 1</span> </span>
             </div>
           </div>
         </div>
@@ -112,13 +119,16 @@ describe('Validation', () => {
     expect(actual).toEqual(expected)
   })
   it('markup with warnings and errors', () => {
+    const validationProps = {
+      locale: 'en',
+      source: bothSource,
+      target: bothTarget,
+      validationOptions: validations
+    }
+    const validationMessages = getValidationMessages(validationProps)
     const actual = ReactDOMServer.renderToStaticMarkup(
       <IntlProvider locale={'en'}>
-        <Validation
-          source={bothSource}
-          target={bothTarget}
-          validationOptions={validations}
-        />
+        <Validation {...validationMessages} />
       </IntlProvider>)
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className='TextflowValidation'>
@@ -126,7 +136,7 @@ describe('Validation', () => {
           <div className='ant-collapse-item' role='tablist'>
             <div className='ant-collapse-header' role='tab' aria-expanded='false'>
               <i className='arrow'></i>
-              <span><option>Warnings: 1</option> <option>Errors: 1</option>
+              <span><span>Warnings: 1</span> <span>Errors: 1</span>
               </span>
             </div>
           </div>
@@ -136,13 +146,16 @@ describe('Validation', () => {
     expect(actual).toEqual(expected)
   })
   it('markup no warnings or errors', () => {
+    const validationProps = {
+      locale: 'en',
+      source: '',
+      target: '',
+      validationOptions: validations
+    }
+    const validationMessages = getValidationMessages(validationProps)
     const actual = ReactDOMServer.renderToStaticMarkup(
       <IntlProvider locale={'en'}>
-        <Validation
-          source={''}
-          target={''}
-          validationOptions={validations}
-        />
+        <Validation {...validationMessages} />
       </IntlProvider>)
     const expected = ''
     expect(actual).toEqual(expected)

@@ -2,10 +2,8 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import SelectButtonList from '../../components/SelectButtonList'
 import {
-  filterButtons, filterActivityTypes
+  filterButtons, filterActivityPropType as idType
 } from '../../utils/activity-util'
-
-const idType = PropTypes.oneOf(filterActivityTypes)
 
 class ActivitySelectList extends React.Component {
   static propTypes = {

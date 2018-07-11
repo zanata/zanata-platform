@@ -7067,9 +7067,6 @@ exports[`Editor Storyshots Validation All Validators 1`] = `
           />
           <span>
              
-            <option>
-              Errors: 1
-            </option>
           </span>
         </div>
       </div>
@@ -7115,9 +7112,6 @@ exports[`Editor Storyshots Validation All Validators 1`] = `
             className="arrow"
           />
           <span>
-            <option>
-              Warnings: 1
-            </option>
              
           </span>
         </div>
@@ -7165,9 +7159,6 @@ Testing string with leading new line"
             className="arrow"
           />
           <span>
-            <option>
-              Warnings: 1
-            </option>
              
           </span>
         </div>
@@ -7214,9 +7205,6 @@ Testing string with leading new line"
             className="arrow"
           />
           <span>
-            <option>
-              Warnings: 2
-            </option>
              
           </span>
         </div>
@@ -7263,9 +7251,6 @@ Testing string with leading new line"
             className="arrow"
           />
           <span>
-            <option>
-              Warnings: 2
-            </option>
              
           </span>
         </div>
@@ -7312,9 +7297,6 @@ Testing string with leading new line"
             className="arrow"
           />
           <span>
-            <option>
-              Warnings: 1
-            </option>
              
           </span>
         </div>
@@ -7361,9 +7343,6 @@ Testing string with leading new line"
             className="arrow"
           />
           <span>
-            <option>
-              Warnings: 1
-            </option>
              
           </span>
         </div>

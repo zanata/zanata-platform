@@ -37,7 +37,7 @@ import MessageFormat from 'intl-messageformat'
   * @see http://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html
   */
 class JavaVariablesValidation extends AbstractValidationAction {
-  public readonly  id = 'JAVA_VARIABLES'
+  public readonly id = 'JAVA_VARIABLES'
   public readonly description: string
   public readonly label: string
 
@@ -252,14 +252,14 @@ class JavaVariablesValidation extends AbstractValidationAction {
  * Holds information about java variables, quoting etc. for a string.
  */
 class StringInfo {
-  public quotedChars: number = 0;
-  public singleApostrophes = 0;
+  public quotedChars: number = 0
+  public singleApostrophes = 0
 
   public vars: string[] = []
   public quotedVars: string[] = []
 
-  public varCounts: Map<string, number> = new Map();
-  public quotedVarCounts: Map<string, number> = new Map();
+  public varCounts: Map<string, number> = new Map()
+  public quotedVarCounts: Map<string, number> = new Map()
 }
 
 export default JavaVariablesValidation
