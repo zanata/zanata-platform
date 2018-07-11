@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -63,6 +64,7 @@ import org.zanata.util.HttpUtil;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Path("mt")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class MachineTranslationResource {
 
@@ -95,7 +97,7 @@ public class MachineTranslationResource {
     }
 
     @SuppressWarnings("unused")
-    MachineTranslationResource() {
+    public MachineTranslationResource() {
     }
 
     @Path("project/{projectSlug}/version/{versionSlug}")
