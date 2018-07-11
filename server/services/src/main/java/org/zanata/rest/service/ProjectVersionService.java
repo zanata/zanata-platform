@@ -431,7 +431,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         AsyncTaskHandle<Void> handle = transMemoryMergeManager
                 .start(version.getId(), mergeRequest);
 
-        String url = uri.getBaseUri() + "process/key/" + handle.getKeyId();
+        String url = uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId();
         ProcessStatus processStatus = AsyncProcessService
                 .handleToProcessStatus(handle,
                         HttpUtil.stripProtocol(url));

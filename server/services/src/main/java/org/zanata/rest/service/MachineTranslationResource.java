@@ -163,7 +163,7 @@ public class MachineTranslationResource {
                 .prefillVersionWithMachineTranslations(projectSlug, versionSlug,
                         version, prefillRequest);
 
-        String url = uri.getBaseUri() + "process/key/" + handle.getKeyId();
+        String url = uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId();
         ProcessStatus processStatus = AsyncProcessService
                 .handleToProcessStatus(handle,
                         HttpUtil.stripProtocol(url));
