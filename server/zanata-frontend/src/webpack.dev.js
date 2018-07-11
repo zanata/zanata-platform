@@ -1,3 +1,7 @@
+/**
+ * Webpack Development / Watch tasks build configuration.
+ * Merged with webpack.common.js
+ */
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
@@ -86,8 +90,6 @@ module.exports = function (isEditor, devServerPort) {
 
         /* Bundles all the css and allows use of various niceties, including
           * imports, variables, calculations, and non-prefixed codes.
-          * The draft and prod options were removed as they were causing
-          * errors with css-loader. In both cases, the css is minified.
           */
         {
           test: /\.css$/,

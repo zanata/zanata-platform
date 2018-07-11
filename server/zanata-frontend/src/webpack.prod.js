@@ -1,3 +1,8 @@
+/**
+ * Webpack Production build configuration.
+ * Merged with webpack.common.js
+ * See: https://webpack.js.org/guides/production/ for production guidelines
+ */
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
@@ -82,8 +87,6 @@ module.exports = function (isEditor) {
 
         /* Bundles all the css and allows use of various niceties, including
           * imports, variables, calculations, and non-prefixed codes.
-          * The draft and prod options were removed as they were causing
-          * errors with css-loader. In both cases, the css is minified.
           */
         {
           test: /\.css$/,
@@ -121,7 +124,11 @@ module.exports = function (isEditor) {
         }
       ])
     ],
-
+    /**
+     * Webpack 4 optimization options.
+     * Overwrite the default plugins/options here.
+     * See: https://webpack.js.org/configuration/optimization/
+     */
     optimization: {
       minimizer: [
         new UglifyJsPlugin({

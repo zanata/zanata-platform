@@ -1,3 +1,8 @@
+/**
+ * Common webpack configuration.
+ * Merged with webpack.dev|prod|story.js using webpack-merge
+ * See: https://webpack.js.org/guides/production/
+ */
 const join = require('path').join
 const ManifestPlugin = require('webpack-manifest-plugin')
 
