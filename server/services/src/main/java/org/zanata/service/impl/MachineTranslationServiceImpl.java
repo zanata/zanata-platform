@@ -172,14 +172,14 @@ public class MachineTranslationServiceImpl implements
         if (response.getStatus() == 200) {
             MTDocument result = response.readEntity(MTDocument.class);
             if (!result.getWarnings().isEmpty()) {
-                log.warn("Machine translation returns warning: {}", result.getWarnings());
+                log.warn("MT returned warnings: {}", result.getWarnings());
             }
             return result;
         } else {
-            log.warn("Machine translation return status: {}, header: {}, body: {}",
+            log.error("MT returned status: {}, header: {}, body: {}",
                     response.getStatus(), response.getHeaders(),
                     response.readEntity(String.class));
-            throw new ZanataServiceException("failed to get translations from machine translation");
+            throw new ZanataServiceException("failed to get translations from MT");
         }
     }
 
@@ -192,7 +192,7 @@ public class MachineTranslationServiceImpl implements
         HProjectIteration version = entityManager.find(HProjectIteration.class, versionId);
         Map<String, HDocument> documents = version.getDocuments();
         if (documents.isEmpty()) {
-            log.warn("no document in this version {}", version.userFriendlyToString());
+            log.info("no documents in {}", version.userFriendlyToString());
             return AsyncTaskResult.completed();
         }
         taskHandle.setMaxProgress(documents.size());
@@ -203,7 +203,7 @@ public class MachineTranslationServiceImpl implements
         String projectSlug = version.getProject().getSlug();
         String versionSlug = version.getSlug();
 
-        log.info("prepare to send {} of documents to MT", documents.size());
+        log.info("about to send {} document(s) to MT", documents.size());
 
         // We clear the cache because we apparently don't trust the incremental
         // stats calculations. By clearing first, we save the cache from
@@ -222,7 +222,7 @@ public class MachineTranslationServiceImpl implements
         // concurrent activity):
         versionStateCache.clearVersionStatsCache(targetVersionId);
 
-        log.info("{} prefill translation with machine translations for version {}, {}",
+        log.info("{} prefill with MT for {}, {}",
                 cancelled ? "CANCELLED" : "COMPLETED",
                 version.userFriendlyToString(), overallStopwatch);
         return AsyncTaskResult.completed();
@@ -236,6 +236,10 @@ public class MachineTranslationServiceImpl implements
         List<HTextFlow> textFlowsToTranslate =
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
                         documentId, overwriteFuzzy);
+        if (textFlowsToTranslate.isEmpty()) {
+            log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
+            return;
+        }
 
         MTDocument mtDocument = textFlowsToMTDoc
                 .fromTextFlows(projectSlug, versionSlug,
