@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * reducer for TMX components
  */
@@ -18,6 +17,7 @@ import {
   TMX_ALL
 } from '../actions/tmx-actions'
 
+// @ts-ignore any
 const buildTMXFileName = (project, version, srcLocale, locale) => {
   const p = !isUndefined(project) ? project : 'allProjects'
   const i = !isUndefined(version) ? version : 'allVersions'
@@ -55,7 +55,7 @@ const tmx = handleActions(
           }
       )
     },
-    [GET_LOCALE_FAILURE]: (state, action) => {
+    [GET_LOCALE_FAILURE]: (state, _action) => {
       return update(
           state, {
             tmxExport: {
@@ -66,6 +66,7 @@ const tmx = handleActions(
     },
     [GET_TMX_REQUEST]: (state, action) => {
       const downloading = cloneDeep(state.tmxExport.downloading)
+      // @ts-ignore
       downloading[action.payload.srcLocaleId] = true
       return update(
           state, {
@@ -77,6 +78,7 @@ const tmx = handleActions(
     },
     [GET_TMX_SUCCESS]: (state, action) => {
       const downloading = cloneDeep(state.tmxExport.downloading)
+      // @ts-ignore
       const {blob, srcLocaleId, project, version} = action.payload
       const filename = buildTMXFileName(project, version, srcLocaleId,
           undefined)
@@ -92,6 +94,7 @@ const tmx = handleActions(
     },
     [GET_TMX_FAILURE]: (state, action) => {
       const downloading = cloneDeep(state.tmxExport.downloading)
+      // @ts-ignore
       delete downloading[action.payload.srcLocaleId]
       return update(
           state, {
