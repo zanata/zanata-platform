@@ -33,12 +33,12 @@ class AllowAnonymousExtension : BeforeTestExecutionCallback, AfterTestExecutionC
 
 
     override fun beforeTestExecution(context: ExtensionContext) {
-        SampleDataResourceClient.allowAnonymousUser(true)
+        allowAnonymousUser(true)
     }
 
     override fun afterTestExecution(context: ExtensionContext) {
         try {
-            SampleDataResourceClient.allowAnonymousUser(false)
+            allowAnonymousUser(false)
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

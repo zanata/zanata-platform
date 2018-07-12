@@ -27,7 +27,7 @@ import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.PeriodFormatterBuilder
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.extension.ExtensionContext
+//import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.zanata.page.WebDriverFactory
 import org.zanata.util.AllowAnonymousExtension
