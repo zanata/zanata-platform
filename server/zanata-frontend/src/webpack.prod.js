@@ -78,11 +78,15 @@ module.exports = function (isEditor) {
           test: /\.tsx?$/,
           exclude: /node_modules/,
           enforce: 'pre',
-          loader: 'tslint-loader',
-          options: {
-            failOnHint: true,
-            formatter: 'verbose'
-          }
+          use: [
+            {
+              loader: 'tslint-loader',
+              options: {
+                failOnHint: true,
+                formatter: 'verbose'
+              }
+            }
+          ]
         },
 
         /* Bundles all the css and allows use of various niceties, including
