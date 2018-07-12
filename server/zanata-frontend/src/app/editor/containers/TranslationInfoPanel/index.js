@@ -103,9 +103,9 @@ class TranslationInfoPanel extends React.Component {
     if (notification && prevProps.notification !== notification) {
       // @ts-ignore any
       Notification[notification.severity]({
+        key: notification.key,
         message: notification.message,
-        description: notification.description,
-        duration: notification.duration
+        description: notification.description
       })
     }
   }

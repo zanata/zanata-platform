@@ -11,6 +11,7 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
+import Notification from 'antd/lib/notification'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
 import Textarea from 'react-textarea-autosize'
 
@@ -32,9 +33,11 @@ const ConcurrentModal: React.SFC<ConcurrentModalProps> = (props) => {
   const lastModifiedDate = new Date(latest.lastModifiedDate)
   const onCancel = () => closeConcurrentModal()
   const saveLatest = () => {
+    Notification.close(latest.lastModifiedDate)
     saveResolveConflictLatest(latest, original)
   }
   const saveOriginal = () => {
+    Notification.close(latest.lastModifiedDate)
     saveResolveConflictOriginal(latest, original)
   }
   return (

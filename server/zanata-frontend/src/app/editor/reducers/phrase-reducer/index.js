@@ -236,6 +236,7 @@ export const phraseReducer = handleActions({
     update(state, {
       notification: {
         $set: {
+          key: response.lastModifiedDate,
           severity: SEVERITY.ERROR,
           message: 'Concurrent edit detected',
           description: 'Please resolve conflicts',
