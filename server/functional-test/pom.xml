@@ -77,7 +77,7 @@
       -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0
     </cargo.debug.jvm.args>
     <!-- this property can be used to control what test needs to be run by failsafe -->
-    <default.test.patterns>**/BasicAcceptanceTestSuite.java</default.test.patterns>
+    <default.test.patterns>BasicAcceptanceTest</default.test.patterns>
     <include.test.patterns>${default.test.patterns}</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
@@ -86,6 +86,8 @@
     <jndi-remote-client.groupId>org.wildfly.core</jndi-remote-client.groupId>
     <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
     <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
+    <junit.platform.version>1.0.1</junit.platform.version>
+    <junit.jupiter.version>5.2.0</junit.jupiter.version>
   </properties>
 
   <dependencyManagement>
@@ -315,12 +317,12 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.2.0</version>
+      <version>${junit.jupiter.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.2.0</version>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -593,7 +595,7 @@
         </property>
       </activation>
       <properties>
-        <include.test.patterns>**/DetailedTestSuite.java</include.test.patterns>
+        <tests>BasicAcceptanceTest | DetailedTest</tests>
       </properties>
       <build>
         <plugins>
@@ -817,11 +819,20 @@
 
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.jupiter.version}</version>
+              </dependency>
+          </dependencies>
             <configuration>
               <runOrder>alphabetical</runOrder>
               <!--<forkMode>always</forkMode>-->
+              <groups>${include.test.patterns}</groups>
               <includes>
-                <include>${include.test.patterns}</include>
+                <include>**/*Test.java</include>
+                <include>**/*Test.kt</include>
               </includes>
               <properties>
                 <property>

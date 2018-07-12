@@ -39,5 +39,5 @@ import kotlin.annotation.Retention
         AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER,
         AnnotationTarget.PROPERTY_SETTER)
 @Retention
-@Tag("BasicAcceptancetest")
+@Tag("BasicAcceptanceTest")
 annotation class BasicAcceptanceTest
