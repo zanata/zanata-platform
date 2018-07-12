@@ -134,7 +134,7 @@ const toProjectVersionString = (projectVersion) => {
  * @returns {APIAction} redux api action object FIXME
  */
 export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
-  const endpoint = `${apiUrl}/tm/project/${projectSlug}/version/${versionSlug}`
+  const endpoint = `${apiUrl}/mt/project/${projectSlug}/version/${versionSlug}`
   // console.error(_projectSlug, _versionSlug, _mergeOptions)
   /** @type {APITypes} */
   const types = [VERSION_MT_MERGE_REQUEST,
@@ -153,8 +153,13 @@ export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
         }
       }
     }, VERSION_MT_MERGE_FAILURE]
+  const serverOptions = {
+    toLocale: mergeOptions.selectedLocales[0],
+    saveState: mergeOptions.saveAs,
+    overwriteFuzzy: mergeOptions.overwriteFuzzy
+  }
   const apiRequest = buildAPIRequest(
-    endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(mergeOptions)
+    endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(serverOptions)
   )
   return {
     [CALL_API]: apiRequest
