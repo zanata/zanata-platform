@@ -79,7 +79,7 @@ class Languages extends Component {
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
-        duration: null
+        duration: notification.duration
       })
     }
   }

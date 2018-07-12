@@ -42,7 +42,8 @@ const review = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: `Failed to retrieve review criteria.`,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       }
     })

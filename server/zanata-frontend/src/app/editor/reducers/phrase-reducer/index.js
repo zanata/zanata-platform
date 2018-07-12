@@ -221,7 +221,8 @@ export const phraseReducer = handleActions({
                 : ` as ${saveInfo.translations[0]}`}
               <br />
               Status {response.status} {response.statusText}
-            </p>
+            </p>,
+          duration: null
         }
       },
       detail: {
@@ -237,7 +238,8 @@ export const phraseReducer = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: 'Concurrent edit detected',
-          description: 'Please resolve conflicts'
+          description: 'Please resolve conflicts',
+          duration: null
         }
       },
       detail: {

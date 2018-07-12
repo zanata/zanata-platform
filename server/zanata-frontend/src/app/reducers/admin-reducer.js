@@ -81,7 +81,8 @@ const admin = handleActions({
           $set: {
             severity: SEVERITY.ERROR,
             message: GET_SERVER_SETTINGS_FAILED_MSG,
-            description: getErrorMessage(action)
+            description: getErrorMessage(action),
+            duration: null
           }
         }
       })
@@ -103,7 +104,8 @@ const admin = handleActions({
           $set: {
             severity: SEVERITY.ERROR,
             message: SAVE_SERVER_SETTINGS_FAILED_MSG,
-            description: getErrorMessage(action)
+            description: getErrorMessage(action),
+            duration: null
           }
         }
       })
@@ -112,7 +114,8 @@ const admin = handleActions({
         notification: {
           $set: {
             severity: SEVERITY.INFO,
-            message: SAVE_SERVER_SETTINGS_MSG
+            message: SAVE_SERVER_SETTINGS_MSG,
+            duration: 3.5
           }
         },
         serverSettings: {
@@ -160,7 +163,8 @@ const admin = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: GET_SERVER_SETTINGS_FAILED_MSG,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       },
       serverSettings: {
@@ -175,7 +179,8 @@ const admin = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: `Add Criteria failed.`,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       }
     })
@@ -186,7 +191,8 @@ const admin = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: `Edit criteria failed.`,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       }
     })
@@ -197,7 +203,8 @@ const admin = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: `Delete Criteria failed.`,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       }
     })
@@ -208,7 +215,8 @@ const admin = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: `Failed to retrieve review criteria.`,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       }
     })
@@ -219,7 +227,8 @@ const admin = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: SAVE_SERVER_SETTINGS_FAILED_MSG,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       },
       serverSettings: {
