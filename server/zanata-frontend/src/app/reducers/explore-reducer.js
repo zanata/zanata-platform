@@ -114,7 +114,8 @@ export default handleActions({
   }
 },
 // default state
-  {
+  /** @type {import('./state').ExploreState} */
+  ({
     error: false,
     loading: {
       Project: false,
@@ -123,4 +124,4 @@ export default handleActions({
       Group: false
     },
     results: {}
-  })
+  }))

@@ -23,12 +23,15 @@ import {
 
 import { SEVERITY } from '../actions/common-actions'
 
+/** @disabled.type {import('./state').AdminState} */
 const defaultState = {
   notification: undefined,
   review: {
+    key: undefined,
     criteria: []
   },
   serverSettings: {
+    key: undefined,
     loading: false,
     saving: false,
     settings: {}

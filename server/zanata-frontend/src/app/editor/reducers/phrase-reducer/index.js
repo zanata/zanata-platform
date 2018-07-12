@@ -61,6 +61,7 @@ function clamp (number, lower, upper) {
   return Math.max(lower, Math.min(number, upper))
 }
 
+/** @type {import('../state').PhrasesState} */
 export const defaultState = {
   fetchingList: false,
   fetchingFilteredList: false,

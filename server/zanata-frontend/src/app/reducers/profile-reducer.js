@@ -159,13 +159,13 @@ const processUserStatistics = (state, json) => {
 }
 
 export default handleActions({
-  [CLEAR_MESSAGE]: (state, action) => {
+  [CLEAR_MESSAGE]: (state, _action) => {
     return {
       ...state,
       notification: undefined
     }
   },
-  [LOAD_USER_REQUEST]: (state, action) => {
+  [LOAD_USER_REQUEST]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -187,7 +187,7 @@ export default handleActions({
       }
     }
   },
-  [LOAD_USER_FAILURE]: (state, action) => {
+  [LOAD_USER_FAILURE]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -203,7 +203,7 @@ export default handleActions({
       }
     }
   },
-  [USER_STATS_REQUEST]: (state, action) => {
+  [USER_STATS_REQUEST]: (state, _action) => {
     return {
       ...state,
       loading: true,
@@ -217,7 +217,7 @@ export default handleActions({
       loading: false
     }
   },
-  [USER_STATS_FAILURE]: (state, action) => {
+  [USER_STATS_FAILURE]: (state, _action) => {
     return {
       ...state,
       loading: false,
@@ -258,7 +258,7 @@ export default handleActions({
         filterByContentStateAndDay(matrix, contentStateOption, selectedDay)
     }
   },
-  [GET_LOCALE_REQUEST]: (state, action) => {
+  [GET_LOCALE_REQUEST]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -281,7 +281,7 @@ export default handleActions({
       }
     }
   },
-  [GET_LOCALE_FAILURE]: (state, action) => {
+  [GET_LOCALE_FAILURE]: (state, _action) => {
     return {
       ...state,
       loading: false,
@@ -300,7 +300,8 @@ export default handleActions({
   }
 },
 // default state
-  {
+  /** @type {import('./state').ProfileState} */
+  ({
     matrix: [],
     matrixForAllDays: [],
     wordCountsForEachDayFilteredByContentState: [],
@@ -315,4 +316,4 @@ export default handleActions({
       username: '',
       loading: false
     }
-  })
+  }))

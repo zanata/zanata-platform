@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { handleActions } from 'redux-actions'
 import { isEmpty, cloneDeep, forEach, size } from 'lodash'
 import {
@@ -65,15 +64,18 @@ const ERROR_MSG = 'We are unable to get glossary information from server. ' +
 const PROJECT_ERROR_MSG = 'We are unable to get project information ' +
   'from server. Please refresh this page and try again.'
 
+// @ts-ignore
 const glossary = handleActions({
-  [CLEAR_MESSAGE]: (state, action) => {
+  [CLEAR_MESSAGE]: (state, _action) => {
     return {
       ...state,
       notification: undefined
     }
   },
   [GLOSSARY_INIT_STATE_FROM_URL]: (state, action) => {
+    // @ts-ignore
     const query = action.payload.query
+    // @ts-ignore
     const projectSlug = action.payload.projectSlug
     return {
       ...state,
@@ -84,7 +86,7 @@ const glossary = handleActions({
       projectSlug: projectSlug
     }
   },
-  [GLOSSARY_PERMISSION_REQUEST]: (state, action) => ({
+  [GLOSSARY_PERMISSION_REQUEST]: (state, _action) => ({
     ...state,
     permission: {
       canAddNewEntry: false,
@@ -107,15 +109,19 @@ const glossary = handleActions({
       return {
         ...state,
         permission: {
+          // @ts-ignore payload
           canAddNewEntry: action.payload.insertGlossary,
+          // @ts-ignore payload
           canUpdateEntry: action.payload.updateGlossary,
+          // @ts-ignore payload
           canDeleteEntry: action.payload.deleteGlossary,
+          // @ts-ignore payload
           canDownload: action.payload.downloadGlossary
         }
       }
     }
   },
-  [PROJECT_GET_DETAILS_REQUEST]: (state, action) => ({
+  [PROJECT_GET_DETAILS_REQUEST]: (state, _action) => ({
     ...state,
     project: undefined
   }),
@@ -138,7 +144,7 @@ const glossary = handleActions({
       }
     }
   },
-  [PROJECT_GET_DETAILS_FAILURE]: (state, action) => ({
+  [PROJECT_GET_DETAILS_FAILURE]: (state, _action) => ({
     ...state,
     project: undefined,
     termsLoading: false,
@@ -148,7 +154,7 @@ const glossary = handleActions({
       duration: null
     }
   }),
-  [GLOSSARY_PERMISSION_FAILURE]: (state, action) => ({
+  [GLOSSARY_PERMISSION_FAILURE]: (state, _action) => ({
     ...state,
     permission: {
       canAddNewEntry: false,
@@ -190,11 +196,12 @@ const glossary = handleActions({
         }
       }
     } else {
-      let importFile = state.importFile
-      importFile.status = 0
       return {
         ...state,
-        importFile: importFile
+        importFile: {
+          ...state.importFile,
+          status: 0,
+        }
       }
     }
   },
@@ -209,11 +216,12 @@ const glossary = handleActions({
     notification: {
       severity: SEVERITY.INFO,
       message: 'File imported successfully',
+      // @ts-ignore payload
       description: size(action.payload.glossaryEntries) + ' terms imported.',
       duration: 3.5
     }
   }),
-  [GLOSSARY_UPLOAD_FAILURE]: (state, action) => ({
+  [GLOSSARY_UPLOAD_FAILURE]: (state, _action) => ({
     ...state,
     importFile: {
       show: false,
@@ -274,7 +282,7 @@ const glossary = handleActions({
       }
     }
   },
-  [GLOSSARY_EXPORT_REQUEST]: (state, action) => {
+  [GLOSSARY_EXPORT_REQUEST]: (state, _action) => {
     return {
       ...state,
       exportFile: {
@@ -283,7 +291,7 @@ const glossary = handleActions({
       }
     }
   },
-  [GLOSSARY_EXPORT_SUCCESS]: (state, action) => {
+  [GLOSSARY_EXPORT_SUCCESS]: (state, _action) => {
     return {
       ...state,
       exportFile: {
@@ -293,7 +301,7 @@ const glossary = handleActions({
       }
     }
   },
-  [GLOSSARY_EXPORT_FAILURE]: (state, action) => {
+  [GLOSSARY_EXPORT_FAILURE]: (state, _action) => {
     return {
       ...state,
       exportFile: {
@@ -330,21 +338,26 @@ const glossary = handleActions({
   [GLOSSARY_RESET_TERM]: (state, action) => {
     return {
       ...state,
+      // @ts-ignore
       selectedTerm: cloneDeep(state.terms[action.payload])
     }
   },
   [GLOSSARY_UPDATE_FIELD]: (state, action) => {
     let newSelectedTerm = cloneDeep(state.selectedTerm)
+    // @ts-ignore payload
     switch (action.payload.field) {
       case 'src':
+        // @ts-ignore payload
         newSelectedTerm.srcTerm.content = action.payload.value
         break
       case 'locale':
         if (newSelectedTerm.transTerm) {
+          // @ts-ignore payload
           newSelectedTerm.transTerm.content = action.payload.value
         } else {
           newSelectedTerm.transTerm =
             GlossaryHelper.generateEmptyTerm(state.locale)
+          // @ts-ignore payload
           newSelectedTerm.transTerm.content = action.payload.value
         }
         if (isEmpty(newSelectedTerm.transTerm.content)) {
@@ -352,13 +365,16 @@ const glossary = handleActions({
         }
         break
       case 'pos':
+        // @ts-ignore payload
         newSelectedTerm.pos = action.payload.value
         break
       case 'description':
+        // @ts-ignore payload
         newSelectedTerm.description = action.payload.value
         break
       case 'comment':
         if (newSelectedTerm.transTerm) {
+          // @ts-ignore payload
           newSelectedTerm.transTerm.comment = action.payload.value
         } else {
           console.error('comment not allow for empty translation')
@@ -392,8 +408,10 @@ const glossary = handleActions({
     }
   },
   [GLOSSARY_STATS_SUCCESS]: (state, action) => {
+    // @ts-ignore
     const transLocales = isEmpty(action.payload.transLocale)
       ? []
+      // @ts-ignore any and payload
       : action.payload.transLocale.map(result => ({
         value: result.locale.localeId,
         label: result.locale.displayName,
@@ -402,6 +420,7 @@ const glossary = handleActions({
     return ({
       ...state,
       stats: {
+        // @ts-ignore
         srcLocale: action.payload.srcLocale,
         transLocales: transLocales
       },
@@ -419,7 +438,7 @@ const glossary = handleActions({
       duration: null
     }
   }),
-  [GLOSSARY_TERMS_INVALIDATE]: (state, action) => ({
+  [GLOSSARY_TERMS_INVALIDATE]: (state, _action) => ({
     ...state,
     termsDidInvalidate: true
   }),
@@ -442,12 +461,14 @@ const glossary = handleActions({
       ...state,
       deleting: {
         ...state.deleting,
+        // @ts-ignore possible bug?
         [entryId]: entryId
       }
     }
   },
   [GLOSSARY_DELETE_SUCCESS]: (state, action) => {
     let deleting = cloneDeep(state.deleting)
+    // @ts-ignore
     const entryId = action.payload.id
     delete deleting[entryId]
     let terms = cloneDeep(state.terms)
@@ -459,7 +480,7 @@ const glossary = handleActions({
       deleting: deleting
     }
   },
-  [GLOSSARY_DELETE_FAILURE]: (state, action) => ({
+  [GLOSSARY_DELETE_FAILURE]: (state, _action) => ({
     ...state,
     notification: {
       severity: SEVERITY.ERROR,
@@ -484,6 +505,7 @@ const glossary = handleActions({
       }
     } else {
       let saving = cloneDeep(state.saving)
+      // @ts-ignore
       const entryId = action.payload.id
       saving[entryId] = cloneDeep(action.payload)
       return {
@@ -496,6 +518,7 @@ const glossary = handleActions({
     let saving = cloneDeep(state.saving)
     let selectedTerm = state.selectedTerm
     let terms = cloneDeep(state.terms)
+    // @ts-ignore
     forEach(action.payload.glossaryEntries, (rawEntry) => {
       const entry = GlossaryHelper.generateEntry(rawEntry, state.locale)
       terms[rawEntry.id] = entry
@@ -513,7 +536,7 @@ const glossary = handleActions({
       selectedTerm: selectedTerm
     }
   },
-  [GLOSSARY_UPDATE_FAILURE]: (state, action) => {
+  [GLOSSARY_UPDATE_FAILURE]: (state, _action) => {
     return {
       ...state,
       notification: {
@@ -550,6 +573,7 @@ const glossary = handleActions({
   },
   [GLOSSARY_CREATE_SUCCESS]: (state, action) => {
     const newEntry = state.newEntry
+    // @ts-ignore payload
     return (action.payload.warnings.length > 0)
       ? {
         ...state,
@@ -563,6 +587,7 @@ const glossary = handleActions({
           severity: SEVERITY.ERROR,
           message:
             'We were unable to save the glossary entry.',
+          // @ts-ignore
           description: action.payload.warnings,
           duration: null
         }
@@ -596,6 +621,7 @@ const glossary = handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable to save the glossary entry.',
+        // @ts-ignore
         description: action.payload.response,
         duration: null
       }
@@ -615,6 +641,7 @@ const glossary = handleActions({
   },
   [GLOSSARY_TERMS_SUCCESS]: (state, action) => {
     let terms = {}
+    // @ts-ignore payload
     forEach(action.payload.entities.glossaryTerms, (entry) => {
       terms[entry.id] = GlossaryHelper.generateEntry(entry, state.locale)
     })
@@ -622,9 +649,12 @@ const glossary = handleActions({
     return {
       ...state,
       termsLoading: false,
+      // @ts-ignore
       termsLastUpdated: action.meta.receivedAt,
       terms,
+      // @ts-ignore
       termIds: action.payload.result.results,
+      // @ts-ignore
       termCount: action.payload.result.totalCount
     }
   },
@@ -635,13 +665,14 @@ const glossary = handleActions({
     termsLoading: false
   }),
   [GLOSSARY_SELECT_TERM]: (state, action) => {
+    // @ts-ignore
     let selectedTerm = cloneDeep(state.terms[action.payload])
     return {
       ...state,
       selectedTerm: selectedTerm
     }
   },
-  [GLOSSARY_DELETE_ALL_REQUEST]: (state, action) => {
+  [GLOSSARY_DELETE_ALL_REQUEST]: (state, _action) => {
     const deleteAll = state.deleteAll
     return {
       ...state,
@@ -651,7 +682,7 @@ const glossary = handleActions({
       }
     }
   },
-  [GLOSSARY_DELETE_ALL_SUCCESS]: (state, action) => {
+  [GLOSSARY_DELETE_ALL_SUCCESS]: (state, _action) => {
     const deleteAll = state.deleteAll
     return {
       ...state,
@@ -662,7 +693,7 @@ const glossary = handleActions({
       }
     }
   },
-  [GLOSSARY_DELETE_ALL_FAILURE]: (state, action) => {
+  [GLOSSARY_DELETE_ALL_FAILURE]: (state, _action) => {
     const deleteAll = state.deleteAll
     return {
       ...state,
@@ -710,7 +741,7 @@ const glossary = handleActions({
       }
     }
   },
-  [GLOSSARY_GET_QUALIFIED_NAME_FAILURE]: (state, action) => {
+  [GLOSSARY_GET_QUALIFIED_NAME_FAILURE]: (state, _action) => {
     return {
       ...state,
       notification: {
@@ -722,7 +753,8 @@ const glossary = handleActions({
   }
 },
 // default state
-  {
+  /** @type {import('./state').GlossaryState} */
+  ({
     src: DEFAULT_LOCALE.localeId,
     locale: '',
     filter: '',
@@ -773,7 +805,24 @@ const glossary = handleActions({
       isDeleting: false
     },
     statsError: false,
-    statsLoading: false
-  })
+    statsLoading: false,
+    notification: undefined,
+    result: undefined,
+    entities: undefined,
+    warnings: undefined,
+    id: undefined,
+    srcLocale: undefined,
+    transLocale: undefined,
+    value: undefined,
+    field: undefined,
+    deleteGlossary: undefined,
+    downloadGlossary: undefined,
+    insertGlossary: undefined,
+    projectSlug: undefined,
+    query: undefined,
+    updateGlossary: undefined,
+    glossaryEntries: undefined,
+    response: undefined,
+  }))
 
 export default glossary
