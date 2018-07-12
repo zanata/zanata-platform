@@ -13,7 +13,7 @@
     "check": "node scripts/check-engines",
     "js": "yarn run check && webpack",
     "build": "yarn run check && node scripts/build",
-    "draft": "yarn run check && node scripts/build --draft",
+    "draft": "yarn run check && node scripts/build",
     "extract-messages": "yarn run check && node scripts/extract-messages",
     "watch": "yarn run check && node scripts/dev-server",
     "watch:editor": "yarn run check && node scripts/dev-server --editor",

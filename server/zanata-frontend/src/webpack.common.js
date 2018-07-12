@@ -7,9 +7,7 @@ const join = require('path').join
 const ManifestPlugin = require('webpack-manifest-plugin')
 
 /** @typedef
-    {import('webpack').Configuration & {
-      devServer?: import('webpack-dev-server').Configuration
-    }} WebpackConfig
+    {import('webpack').Configuration} WebpackConfig
  */
 
 /**

@@ -20,9 +20,7 @@ const postCssLoader = {
 }
 
 /** @typedef
-    {import('webpack').Configuration & {
-      devServer?: import('webpack-dev-server').Configuration
-    }} WebpackConfig
+    {import('webpack').Configuration} WebpackConfig
  */
 
 /**

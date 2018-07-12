@@ -1,23 +1,12 @@
 /* eslint-disable no-console */
-const c = require('cli-color')
 const webpack = require('webpack')
-const createConfig = require('../webpack.prod.js')
+const config = require('../webpack.prod.js')
 
 // execute icon scripts to generate required files
 require('./createIconsComponent')
 require('./generateIconList')
 require('./extract-messages')
 
-const isDraft = process.argv.indexOf('--draft') !== -1
-
-console.log(isDraft
-  ? c.black.bgYellow(' DRAFT BUILD - do not deploy! ')
-  : c.white.bgCyan(' PRODUCTION BUILD '))
-
-/* equivalent of command-line `webpack --env.buildtype=draft` or
- * `webpack --env.buildtype=prod`
- */
-const config = createConfig({ buildtype: isDraft ? 'draft' : 'prod' })
 webpack(config, (err, stats) => {
   if (err) {
     console.error(err.stack || err)

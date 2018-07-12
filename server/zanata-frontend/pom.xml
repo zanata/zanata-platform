@@ -21,7 +21,7 @@
   <properties>
     <!-- Node and Yarn versions that will be downloaded and used for zanata-frontend. -->
     <node.version>v8.11.0</node.version>
-    <yarn.version>v1.3.2</yarn.version>
+    <yarn.version>v1.7.0</yarn.version>
     <!-- The location to download the correct version of Node and Yarn to.
         ${download.dir} comes from zanata-server/pom.xml -->
     <yarn.install.directory>${download.dir}/zanata/node-${node.version}-yarn-${yarn.version}</yarn.install.directory>
