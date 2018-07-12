@@ -7,6 +7,9 @@ import { storiesOf } from '@storybook/react';
  */
 // @ts-ignore any
 storiesOf('MTSuggestionsButton', module)
-    .add('default', () =>(
-        <MTSuggestionsButton />)
+    .add('Google translations', () =>(
+        <MTSuggestionsButton backendId='Google' />)
+    )
+    .add('Microsoft translations', () =>(
+        <MTSuggestionsButton backendId='Microsoft' />)
     )
