@@ -78,8 +78,8 @@ public class GetTransUnitsNavigationService {
 
         public SimpleHTextFlow(Long id, String resId, ContentState contentState,
                 HLocale hLocale) {
+            super(null, resId);
             setId(id);
-            setResId(resId);
             HTextFlowTarget target = new HTextFlowTarget(this, hLocale);
             target.setState(contentState);
             getTargets().put(hLocale.getId(), target);

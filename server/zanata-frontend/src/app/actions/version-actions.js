@@ -194,6 +194,8 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
           // Just making sure res.json() does not raise an error
           // @ts-ignore any
           return res.json().then((json) => {
+            // TODO this is dodgy. ProcessStatus object should include link
+            // to cancelUrl
             const cancelUrl = replace(json.url,
                 '/rest/process/', '/rest/process/cancel/')
             return {...json, cancelUrl}

@@ -252,7 +252,7 @@ public class ZanataIdentity implements Identity, Serializable {
 
         for (Group sg : getSubject().getPrincipals(Group.class)) {
             if (ROLES_GROUP.equals(sg.getName())) {
-                return sg.isMember(new Role(role));
+                return sg.isMember(new Role(role)) || sg.isMember(new Role("admin"));
             }
         }
         return false;

@@ -149,7 +149,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
         assertThat(identity.hasRole("admin")).isTrue();
         identity.checkRole("admin"); // checkRole will not cause an exception
-        assertThat(identity.hasRole("user")).isFalse();
+        assertThat(identity.hasRole("user")).isTrue();
     }
 
     @Test(expected = NotLoggedInException.class)

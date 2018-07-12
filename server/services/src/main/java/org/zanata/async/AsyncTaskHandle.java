@@ -28,8 +28,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 
+import javax.annotation.Nullable;
+
 import org.zanata.security.ZanataIdentity;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -41,18 +44,25 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+// TODO this doesn't look thread safe
 public class AsyncTaskHandle<V> implements Serializable {
 
     private static final long serialVersionUID = -2896367626313653728L;
     @SuppressFBWarnings("SE_BAD_FIELD")
     private CompletableFuture<V> futureResult;
-    public long maxProgress = 100;
-    public long currentProgress = 0;
+    private long maxProgress = 100;
+    private long currentProgress = 0;
     private long startTime = -1;
     private long finishTime = -1;
     private String cancelledBy;
     private long cancelledTime;
     private String keyId;
+
+    public static boolean taskIsNotRunning(
+            @Nullable AsyncTaskHandle<?> handleByKey) {
+        return handleByKey == null || handleByKey.isCancelled()
+                || handleByKey.isDone();
+    }
 
     public boolean isRunning() {
         return isStarted() && !isCancelled() && !isDone();

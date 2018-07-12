@@ -54,8 +54,8 @@ public class EntityTestData {
     private static HTextFlow makeTextFlow(HDocument hDocument,
             long textFlowId) {
         HTextFlow hTextFlow =
-                new HTextFlow(hDocument, "resId" + textFlowId, "hello world " +
-                        textFlowId);
+                new HTextFlow(hDocument, "resId" + textFlowId);
+        hTextFlow.setContents("hello world " + textFlowId);
         hTextFlow.setId(textFlowId);
         hTextFlow.setPos((int) textFlowId);
         return hTextFlow;
@@ -76,7 +76,8 @@ public class EntityTestData {
                         ContentType.PO, sourceLocale);
         hDocument.setProjectIteration(hProjectIteration);
         HTextFlow hTextFlow =
-                new HTextFlow(hDocument, "resId" + id, "hello world " + id);
+                new HTextFlow(hDocument, "resId" + id);
+        hTextFlow.setContents("hello world " + id);
         hTextFlow.setId(id);
         hTextFlow.setPos((int) id);
 

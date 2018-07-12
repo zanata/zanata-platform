@@ -31,7 +31,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -85,6 +84,7 @@ public class AsyncProcessService {
     @Context
     private UriInfo uriInfo;
 
+    @SuppressWarnings("unused")
     public AsyncProcessService() {
     }
 
@@ -113,10 +113,12 @@ public class AsyncProcessService {
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
      */
-    @Path("key/{keyId}")
+    // NB version-actions.js assumes that it can change a process status URL
+    // into a cancel URL by changing /rest/process/ to /rest/process/cancel/
+    @Path("key")
     @GET
     @TypeHint(ProcessStatus.class)
-    public Response getAsyncProcessStatus(@PathParam("keyId") String keyId) {
+    public Response getAsyncProcessStatus(@QueryParam("keyId") String keyId) {
         AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -155,7 +157,7 @@ public class AsyncProcessService {
         }
         List<ProcessStatus> processStatuses = tasks.entrySet().stream()
                 .map(taskEntry -> handleToProcessStatus(taskEntry.getValue(),
-                        uriInfo.getBaseUri() + "process/key/"
+                        uriInfo.getBaseUri() + "process/key?keyId="
                                 + taskEntry.getKey()))
                 .collect(Collectors.toList());
         return Response.ok(processStatuses).build();
@@ -176,8 +178,10 @@ public class AsyncProcessService {
      *         the server while performing this operation.
      */
     @POST
-    @Path("cancel/key/{keyId}")
-    public Response cancelAsyncProcess(@PathParam("keyId") String keyId) {
+    // NB version-actions.js assumes that it can change a process status URL
+    // into a cancel URL by changing /rest/process/ to /rest/process/cancel/
+    @Path("cancel/key")
+    public Response cancelAsyncProcess(@QueryParam("keyId") String keyId) {
         AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -185,7 +189,7 @@ public class AsyncProcessService {
 
         if (!handle.isRunning()) {
             ProcessStatus entity = handleToProcessStatus(handle,
-                    uriInfo.getBaseUri() + "process/key/" + keyId);
+                    uriInfo.getBaseUri() + "process/key?keyId=" + keyId);
             return Response.ok(entity).build();
         }
 
@@ -203,12 +207,12 @@ public class AsyncProcessService {
         handle.setCancelledTime(System.currentTimeMillis());
 
         ProcessStatus processStatus = handleToProcessStatus(handle,
-                uriInfo.getBaseUri() + "process/cancel/key/" + keyId);
+                uriInfo.getBaseUri() + "process/cancel/key?keyId=" + keyId);
         return Response.ok(processStatus).build();
     }
 
     @Nonnull
-    public static ProcessStatus handleToProcessStatus(AsyncTaskHandle<?> handle,
+    static ProcessStatus handleToProcessStatus(AsyncTaskHandle<?> handle,
             String url) {
         ProcessStatus status = new ProcessStatus();
         status.setStatusCode(
