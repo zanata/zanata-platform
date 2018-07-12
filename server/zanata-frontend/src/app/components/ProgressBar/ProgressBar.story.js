@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { ProgressBar, Well, Table } from 'react-bootstrap'

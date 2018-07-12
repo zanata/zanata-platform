@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react'
 import {storiesOf} from '@storybook/react'
 import {ListGroup, ListGroupItem, Well, Table} from 'react-bootstrap'

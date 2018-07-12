@@ -10,19 +10,18 @@ class AboutPage extends Component {
     aboutLink: PropTypes.string,
     linkName: PropTypes.string
   }
-
-  render() {
+  render () {
     const { aboutText } = this.props
     return (
-        <div className='flexTab wideView'>
-          <h2>About</h2>
-          <p>{aboutText}</p>
+      <div className='flexTab wideView'>
+        <h2>About</h2>
+        <p>{aboutText}</p>
 
-          <Link link={this.props.aboutLink} useHref>
-            <Icon name='link' className='n1' />
-            {this.props.linkName}
-          </Link>
-        </div>
+        <Link link={this.props.aboutLink} useHref>
+          <Icon name='link' className='n1' />
+          {this.props.linkName}
+        </Link>
+      </div>
     )
   }
 }

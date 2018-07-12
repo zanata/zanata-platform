@@ -58,40 +58,6 @@ module.exports = function (isEditor, devServerPort) {
     },
     module: {
       rules: [
-        /* Checks for errors in syntax, and for problematic and inconsistent
-        * code in all JavaScript files.
-        * Configured in .eslintrc
-        */
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          enforce: 'pre',
-          loader: 'eslint-loader',
-          options: {
-            failOnWarning: false,
-            failOnError: false
-          }
-        },
-
-        /* Checks for errors in syntax, and for problematic and inconsistent
-        * code in all TypeScript files.
-        * Configured in tslint.json
-        */
-        {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          enforce: 'pre',
-          use: [
-            {
-              loader: 'tslint-loader',
-              options: {
-                failOnHint: true,
-                formatter: 'verbose'
-              }
-            }
-          ]
-        },
-
         /* Bundles all the css and allows use of various niceties, including
           * imports, variables, calculations, and non-prefixed codes.
           */

@@ -18,6 +18,40 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 module.exports = {
   module: {
     rules: [
+     /* Checks for errors in syntax, and for problematic and inconsistent
+      * code in all JavaScript files.
+      * Configured in .eslintrc
+      */
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        enforce: 'pre',
+        loader: 'eslint-loader',
+        options: {
+          failOnWarning: false,
+          failOnError: false
+        }
+      },
+
+     /* Checks for errors in syntax, and for problematic and inconsistent
+      * code in all TypeScript files.
+      * Configured in tslint.json
+      */
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        enforce: 'pre',
+        use: [
+          {
+            loader: 'tslint-loader',
+            options: {
+              failOnHint: true,
+              formatter: 'verbose'
+            }
+          }
+        ]
+      },
+
       /* Transpiles JS/JSX/TS/TSX files through TypeScript (tsc)
        */
       {

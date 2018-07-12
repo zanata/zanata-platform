@@ -14,45 +14,46 @@ const linkname = 'Our awesome webpage'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
-        <div>
-          <Sidebar />
-          <div className='flexTab'>
-            <p>This sidebar example has the active tag applied to both the People
-              and Languages pages to provide examples of how this design handles
-              sidebar links.</p>
-            <p>The sidebar nav has been implemented using &nbsp;
-              <a href='https://react-bootstrap.github.io/components.html#navs'>
-                react bootstrap components</a>.</p>
-          </div>
+      <div>
+        <Sidebar />
+        <div className='flexTab'>
+          <p>This sidebar example has the active tag applied to both the People
+            and Languages pages to provide examples of how this design handles
+            sidebar links.
+          </p>
+          <p>The sidebar nav has been implemented using &nbsp;
+            <a href='https://react-bootstrap.github.io/components.html#navs'>
+            react bootstrap components</a>.</p>
+        </div>
       </div>
     ))
     .add('AboutPage', () => (
-        <div>
-          <Sidebar />
-          <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
-        </div>
+      <div>
+        <Sidebar />
+        <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
+      </div>
     ))
     .add('PeoplePage', () => (
-        <div>
-          <Sidebar />
-          <PeoplePage />
-        </div>
+      <div>
+        <Sidebar />
+        <PeoplePage />
+      </div>
     ))
     .add('GroupsPage', () => (
-        <div>
-          <Sidebar />
-          <GroupsPage />
-        </div>
+      <div>
+        <Sidebar />
+        <GroupsPage />
+      </div>
     ))
     .add('LanguagesPage', () => (
-        <div>
-          <Sidebar />
-          <LanguagesPage />
-        </div>
+      <div>
+        <Sidebar />
+        <LanguagesPage />
+      </div>
     ))
     .add('DocumentsPage', () => (
-        <div>
-          <Sidebar />
-          <DocumentsPage />
-        </div>
+      <div>
+        <Sidebar />
+        <DocumentsPage />
+      </div>
     ))
