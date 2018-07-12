@@ -44,6 +44,7 @@ import {
   getMaxPageIndex
 } from '../../selectors'
 import { hasAdvancedFilter } from '../../utils/filter-util'
+import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
 import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
@@ -266,6 +267,7 @@ export const phraseReducer = handleActions({
           newTranslations: {
             $set: [saveInfo.content]
           },
+          status: { $set: transUnitStatusToPhraseStatus(saveInfo.status) },
           translations: {
             $set: [saveInfo.content]
           }
@@ -289,6 +291,7 @@ export const phraseReducer = handleActions({
           revision: { $set: revision },
           conflict: { $set: undefined },
           inProgressSave: { $set: undefined },
+          status: { $set: saveInfo.status },
           translations: {
             $set: state.detail[phraseId].newTranslations
           }
