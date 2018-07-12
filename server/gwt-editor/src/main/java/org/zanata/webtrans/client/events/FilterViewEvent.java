@@ -15,7 +15,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
      */
     private static final Type<FilterViewEventHandler> TYPE = new Type<>();
     public static final FilterViewEvent DEFAULT = new FilterViewEvent(false,
-            false, false, false, false, false, EditorFilter.ALL, false);
+        false, false, false, false, false, false, EditorFilter.ALL, false);
 
     /**
      * Gets the type associated with this event.
@@ -27,20 +27,21 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
     }
 
     private boolean filterTranslated, filterFuzzy, filterUntranslated,
-            filterApproved, filterRejected, filterHasError;
+            filterApproved, filterRejected, filterHasError, filterMT;
     private boolean cancelFilter;
     private EditorFilter editorFilter;
 
     public FilterViewEvent(boolean filterTranslated, boolean filterFuzzy,
             boolean filterUntranslated, boolean filterApproved,
             boolean filterRejected, boolean filterHasError,
-            EditorFilter editorFilter, boolean cancelFilter) {
+            boolean filterMT, EditorFilter editorFilter, boolean cancelFilter) {
         this.filterTranslated = filterTranslated;
         this.filterFuzzy = filterFuzzy;
         this.filterUntranslated = filterUntranslated;
         this.filterApproved = filterApproved;
         this.filterRejected = filterRejected;
         this.filterHasError = filterHasError;
+        this.filterMT = filterMT;
         this.editorFilter = editorFilter;
         this.cancelFilter = cancelFilter;
     }
@@ -83,6 +84,10 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
         return filterHasError;
     }
 
+    public boolean isFilterMT() {
+        return filterMT;
+    }
+
     public EditorFilter getEditorFilter() {
         return editorFilter;
     }
@@ -98,6 +103,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
                 .withFilterApproved(filterApproved)
                 .withFilterRejected(filterRejected)
                 .withFilterHasError(filterHasError)
+                .withFilterMT(filterMT)
                 .withEditorFilter(editorFilter);
     }
 
@@ -110,6 +116,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
                 .add("filterApproved", filterApproved)
                 .add("filterRejected", filterRejected)
                 .add("filterHasError", filterHasError)
+                .add("filterMT", filterMT)
                 .add("editorFilter", editorFilter)
                 .add("cancelFilter", cancelFilter).toString();
     }

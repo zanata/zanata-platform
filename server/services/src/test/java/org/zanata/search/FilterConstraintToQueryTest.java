@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.model.type.TranslationSourceType.MACHINE_TRANS;
 import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
 import java.util.List;
 import org.hibernate.Query;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.model.HLocale;
+import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import com.google.common.collect.Lists;
@@ -111,7 +113,7 @@ public class FilterConstraintToQueryTest {
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(FilterConstraints
                         .builder().keepAll().excludeNew().build(), documentId);
-        String result = constraintToQuery.buildStateCondition();
+        String result = constraintToQuery.buildTargetCondition();
         assertThat(result).isEqualToIgnoringCase(
                 " EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:ContentStateList)))");
     }
@@ -121,7 +123,7 @@ public class FilterConstraintToQueryTest {
         FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery
                 .filterInSingleDocument(FilterConstraints.builder().keepAll()
                         .excludeTranslated().build(), documentId);
-        String result = constraintToQuery.buildStateCondition();
+        String result = constraintToQuery.buildTargetCondition();
         assertThat(result).isEqualToIgnoringCase(
                 "( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:ContentStateList))) OR :locale not in indices(tf.targets))");
     }
@@ -135,7 +137,7 @@ public class FilterConstraintToQueryTest {
                                         .excludeTranslated().build(),
                                 documentId);
         constraintToQuery.setContentCriterion(contentCriterion);
-        String result = constraintToQuery.buildStateCondition();
+        String result = constraintToQuery.buildTargetCondition();
         assertThat(result).isEqualToIgnoringCase(
                         "( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf and locale=:locale) AND state in (:ContentStateList))) OR (:locale not in indices(tf.targets) AND " + SOURCE_CONTENT_CASE_INSENSITIVE + "))");
     }
@@ -281,6 +283,22 @@ public class FilterConstraintToQueryTest {
         verify(query).setParameter(Locale.namedParam(), hLocale.getId());
         verify(query).setParameter(SearchString.namedParam(),
                 "%\\% blah blah \\%%");
+        verifyNoMoreInteractions(query);
+    }
+
+    @Test
+    public void testBuildIncludeMTCondition() {
+        FilterConstraints constraints = FilterConstraints.builder()
+            .checkInTarget(true).includeMT(true).build();
+        FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery
+            .filterInSingleDocument(constraints, documentId);
+        constraintToQuery.setQueryParameters(query, hLocale);
+        verify(query).setParameter(
+            FilterConstraintToQuery.Parameters.DocumentId.namedParam(),
+            documentId.getId());
+        verify(query).setParameter(Locale.namedParam(), hLocale.getId());
+        verify(query).setParameter(IncludeMT.namedParam(),
+            MACHINE_TRANS);
         verifyNoMoreInteractions(query);
     }
 }

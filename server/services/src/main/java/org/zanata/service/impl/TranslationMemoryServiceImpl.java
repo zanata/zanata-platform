@@ -71,6 +71,7 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.dto.suggestion.SuggestionDetail;
 import org.zanata.rest.editor.dto.suggestion.TextFlowSuggestionDetail;
@@ -115,6 +116,12 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             SysProperties.getFloat(SysProperties.TM_BOOST_RESID, 1.5F);
     private static final float BOOST_ITERATION =
             SysProperties.getFloat(SysProperties.TM_BOOST_ITERATION, 1.0F);
+
+    /**
+     * Hard code to Google for now.
+     * TODO: Read the engine type from textFlowTarget
+     */
+    private static final String MT_COMMENT = "Translated by Google";
 
     // private static final float BOOST_PROJITERSLUG = SysProperties.getFloat(
     // SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
@@ -349,7 +356,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             ArrayList<String> targetContents =
                     Lists.newArrayList(textFlowTarget.getContents());
             TransMemoryResultItem.MatchType matchType =
-                    fromContentState(textFlowTarget.getState());
+                getMatchType(textFlowTarget.getSourceType(),
+                    textFlowTarget.getState());
             double percent = calculateSimilarityPercentage(transMemoryQuery,
                     textFlowContents);
             if (percent < MINIMUM_SIMILARITY) {
@@ -417,19 +425,21 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         return percent;
     }
 
-    private static TransMemoryResultItem.MatchType
-            fromContentState(ContentState contentState) {
+    public static TransMemoryResultItem.MatchType getMatchType(
+        TranslationSourceType sourceType, ContentState contentState) {
+        if (sourceType == TranslationSourceType.MACHINE_TRANS) {
+            return TransMemoryResultItem.MatchType.MT;
+        }
         switch (contentState) {
-        case Approved:
-            return TransMemoryResultItem.MatchType.ApprovedInternal;
+            case Approved:
+                return TransMemoryResultItem.MatchType.ApprovedInternal;
 
-        case Translated:
-            return TransMemoryResultItem.MatchType.TranslatedInternal;
+            case Translated:
+                return TransMemoryResultItem.MatchType.TranslatedInternal;
 
-        default:
-            throw new RuntimeException(
+            default:
+                throw new RuntimeException(
                     "Cannot map content state: " + contentState);
-
         }
     }
 
@@ -470,17 +480,22 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         // TODO change sourceId to include type, then include the id of imported
         // matches
         item.addSourceId(textFlowTarget.getTextFlow().getId());
-        // Workaround: since Imported does not have a details view in the
-        // current editor,
-        // I am treating it as the lowest priority, so will be overwritten by
-        // other match types.
-        // A better fix is to have the DTO hold all the match types so the
-        // editor
-        // can show them in whatever way is most sensible.
-        ContentState state = textFlowTarget.getState();
-        if (state == ContentState.Approved || item
+        if (item.getMatchType() == TransMemoryResultItem.MatchType.MT) {
+             item.addOrigin(MT_COMMENT);
+        } else {
+            // Workaround: since Imported does not have a details view in the
+            // current editor,
+            // I am treating it as the lowest priority, so will be overwritten by
+            // other match types.
+            // A better fix is to have the DTO hold all the match types so the
+            // editor
+            // can show them in whatever way is most sensible.
+            ContentState state = textFlowTarget.getState();
+            if (state == ContentState.Approved || item
                 .getMatchType() == TransMemoryResultItem.MatchType.Imported) {
-            item.setMatchType(fromContentState(state));
+                item.setMatchType(getMatchType(textFlowTarget.getSourceType(),
+                    textFlowTarget.getState()));
+            }
         }
     }
 

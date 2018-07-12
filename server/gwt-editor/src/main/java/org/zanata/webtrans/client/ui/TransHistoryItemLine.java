@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.resources.client.CssResource;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -43,6 +44,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
+import org.zanata.webtrans.shared.model.TranslationSourceType;
 
 public class TransHistoryItemLine extends Composite {
     private static TransHistoryItemLineUiBinder ourUiBinder = GWT
@@ -54,6 +56,11 @@ public class TransHistoryItemLine extends Composite {
     private final TransHistoryItem item;
     private final TranslationHistoryDisplay.Listener listener;
 
+    interface Styles extends CssResource {
+        String sourceTypeIcon();
+    }
+    @UiField
+    Styles style;
     @UiField(provided = true)
     InlineHTML heading;
     @UiField(provided = true)
@@ -62,6 +69,8 @@ public class TransHistoryItemLine extends Composite {
     InlineLabel creationDate;
     @UiField(provided = true)
     InlineHTML revision;
+    @UiField(provided = true)
+    InlineHTML mt;
     @UiField
     Anchor compare;
     @UiField
@@ -114,7 +123,16 @@ public class TransHistoryItemLine extends Composite {
             revisionComment = new InlineHTML("");
         }
 
+        mt = new InlineHTML("");
+
         initWidget(ourUiBinder.createAndBindUi(this));
+
+        if (TranslationSourceType.MACHINE_TRANS
+            .equals(item.getTranslationSourceType())) {
+            mt.setHTML(template
+                .mtIcon(item.getTranslationSourceType().getBackendId(),
+                    style.sourceTypeIcon()));
+        }
 
         if (item.getStatus() == ContentState.Approved
                 || item.getStatus() == ContentState.Rejected) {
@@ -165,5 +183,8 @@ public class TransHistoryItemLine extends Composite {
 
         @Template("<span class='txt--meta'>{0}</span>")
         SafeHtml revisionComment(String comment);
+
+        @Template("<span class='label {0}' title='Translated by {0}'>MT</span>")
+        SafeHtml mtIcon(String backendId, String className);
     }
 }

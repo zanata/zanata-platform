@@ -18,7 +18,6 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -119,12 +118,14 @@ public class GetTranslationHistoryHandler extends
         int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
                 hLocale);
         return new TransHistoryItem(
-                hTextFlowTarget.getVersionNum().toString(),
-                GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
-                        hTextFlowTarget, nPlurals),
-                hTextFlowTarget.getState(), lastModifiedBy,
-                hTextFlowTarget.getLastChanged(),
-                hTextFlowTarget.getRevisionComment()
+            hTextFlowTarget.getVersionNum().toString(),
+            GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
+                hTextFlowTarget, nPlurals),
+            hTextFlowTarget.getState(), lastModifiedBy,
+            hTextFlowTarget.getLastChanged(),
+            hTextFlowTarget.getRevisionComment(),
+            org.zanata.webtrans.shared.model.TranslationSourceType
+                .getInstance(hTextFlowTarget.getSourceType().getAbbr())
         ).setModifiedByPersonName(
                 nameOrEmptyString(hTextFlowTarget.getLastModifiedBy()));
     }
@@ -163,12 +164,13 @@ public class GetTranslationHistoryHandler extends
         @Override
         public TransHistoryItem apply(HTextFlowTargetHistory targetHistory) {
             return new TransHistoryItem(
-                    targetHistory.getVersionNum().toString(),
-                    targetHistory.getContents(), targetHistory.getState(),
-                    usernameOrEmptyString(targetHistory.getLastModifiedBy()),
-                    targetHistory.getLastChanged(),
-                    targetHistory.getRevisionComment())
-                    .setModifiedByPersonName(
+                targetHistory.getVersionNum().toString(),
+                targetHistory.getContents(), targetHistory.getState(),
+                usernameOrEmptyString(targetHistory.getLastModifiedBy()),
+                targetHistory.getLastChanged(),
+                targetHistory.getRevisionComment(),
+                org.zanata.webtrans.shared.model.TranslationSourceType.getInstance(targetHistory.getSourceType().getAbbr()))
+                .setModifiedByPersonName(
                     targetHistory.getLastModifiedBy().getName());
         }
     }

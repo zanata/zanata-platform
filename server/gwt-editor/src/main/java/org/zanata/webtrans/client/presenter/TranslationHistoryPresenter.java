@@ -130,7 +130,8 @@ public class TranslationHistoryPresenter extends
             List<String> newTargets = targetContentsPresenter.getNewTargets();
             if (!Objects.equal(latest.getContents(), newTargets)) {
                 all.add(new TransHistoryItem(messages.unsaved(), newTargets,
-                        null, messages.you(), new Date(), latest.getRevisionComment()));
+                    null, messages.you(), new Date(),
+                    latest.getRevisionComment(), latest.getTranslationSourceType()));
             }
         }
         all.addAll(otherEntries);

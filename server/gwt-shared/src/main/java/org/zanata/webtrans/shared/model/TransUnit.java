@@ -37,6 +37,7 @@ public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
     private String targetComment;
     private int commentsCount;
     private String revisionComment;
+    private TranslationSourceType translationSourceType;
 
     // for GWT
     private TransUnit() {
@@ -61,6 +62,7 @@ public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
         this.targetComment = builder.targetComment;
         this.commentsCount = builder.commentsCount;
         this.revisionComment = builder.revisionComment;
+        this.translationSourceType = builder.translationSourceType;
     }
 
     @Override
@@ -205,6 +207,16 @@ public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
         this.revisionComment = revisionComment;
     }
 
+    void setTranslationSourceType(
+        TranslationSourceType translationSourceType) {
+        this.translationSourceType = translationSourceType;
+    }
+
+    public TranslationSourceType getTranslationSourceType() {
+        return this.translationSourceType;
+    }
+
+
     public String debugString() {
         // @formatter:off
         return MoreObjects.toStringHelper(this)
@@ -245,6 +257,7 @@ public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
         private String targetComment;
         private int commentsCount;
         private String revisionComment;
+        private TranslationSourceType translationSourceType;
 
         private Builder(TransUnit transUnit) {
             this.status = transUnit.status;
@@ -264,6 +277,7 @@ public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
             this.verNum = transUnit.verNum;
             this.commentsCount = transUnit.commentsCount;
             this.revisionComment = transUnit.revisionComment;
+            this.translationSourceType = transUnit.translationSourceType;
         }
 
         private Builder() {
@@ -403,6 +417,12 @@ public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
 
         public Builder setRevisionComment(String revisionComment) {
             this.revisionComment = revisionComment;
+            return this;
+        }
+
+        public Builder setTranslationSourceType(
+            TranslationSourceType translationSourceType) {
+            this.translationSourceType = translationSourceType;
             return this;
         }
     }

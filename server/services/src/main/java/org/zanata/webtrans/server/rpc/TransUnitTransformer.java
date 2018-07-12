@@ -89,6 +89,9 @@ public class TransUnitTransformer {
             }
             builder.setLastModifiedTime(target.getLastChanged());
             builder.setRevisionComment(target.getRevisionComment());
+            builder.setTranslationSourceType(
+                org.zanata.webtrans.shared.model.TranslationSourceType
+                    .getInstance(target.getSourceType().getAbbr()));
         }
         return builder.build();
     }

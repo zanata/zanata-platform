@@ -89,8 +89,8 @@ public class TransFilterPresenterTest {
     @Test
     public void willSetOptionsBackOnFilterViewCancelEvent() {
         FilterViewEvent event =
-                new FilterViewEvent(true, true, true, true, true, false,
-                        EditorFilter.ALL, true);
+            new FilterViewEvent(true, true, true, true, true, false, false,
+                EditorFilter.ALL, true);
         HistoryToken historyToken = new HistoryToken();
         when(history.getHistoryToken()).thenReturn(historyToken);
 
@@ -101,6 +101,7 @@ public class TransFilterPresenterTest {
         verify(display).setUntranslatedFilter(event.isFilterFuzzy());
         verify(display).setApprovedFilter(event.isFilterApproved());
         verify(display).setRejectedFilter(event.isFilterRejected());
+        verify(display).setMTFilter(event.isFilterMT());
 
         assertThat(historyToken.isFilterUntranslated())
                 .isEqualTo(event.isFilterUntranslated());
@@ -114,13 +115,15 @@ public class TransFilterPresenterTest {
                 .isEqualTo(event.isFilterRejected());
         assertThat(historyToken.isFilterHasError())
                 .isEqualTo(event.isFilterHasError());
+        assertThat(historyToken.isFilterMT())
+            .isEqualTo(event.isFilterMT());
     }
 
     @Test
     public void willUpdateSearchTermIfItsNotCancelEvent() {
         FilterViewEvent cancelEvent =
-                new FilterViewEvent(true, true, true, true, true, false,
-                        EditorFilter.ALL, false);
+            new FilterViewEvent(true, true, true, true, true, false, false,
+                EditorFilter.ALL, false);
 
         presenter.onFilterView(cancelEvent);
 
@@ -135,6 +138,7 @@ public class TransFilterPresenterTest {
         configHolder.setFilterByApproved(true);
         configHolder.setFilterByRejected(true);
         configHolder.setFilterByHasError(true);
+        configHolder.setFilterByMT(true);
 
         HistoryToken historyToken = new HistoryToken();
         when(history.getHistoryToken()).thenReturn(historyToken);
@@ -154,6 +158,8 @@ public class TransFilterPresenterTest {
                 configHolder.getState().isFilterByRejected());
         verify(display).setHasErrorFilter(
                 configHolder.getState().isFilterByHasError());
+        verify(display).setMTFilter(
+            configHolder.getState().isFilterByMT());
 
         assertThat(
                 historyToken.isFilterTranslated())
@@ -169,6 +175,8 @@ public class TransFilterPresenterTest {
                 .isEqualTo(configHolder.getState().isFilterByRejected());
         assertThat(historyToken.isFilterHasError())
                 .isEqualTo(configHolder.getState().isFilterByHasError());
+        assertThat(historyToken.isFilterMT())
+            .isEqualTo(configHolder.getState().isFilterByMT());
     }
 
     @Test
@@ -177,7 +185,7 @@ public class TransFilterPresenterTest {
         when(history.getHistoryToken()).thenReturn(historyToken);
 
         presenter.messageFilterOptionChanged(true, false, true, true, false,
-                false);
+            false, false);
 
         UserConfigHolder configHolder = userOptionsService.getConfigHolder();
         assertThat(configHolder.getState().isFilterByTranslated()).isTrue();
@@ -192,6 +200,7 @@ public class TransFilterPresenterTest {
         assertThat(historyToken.isFilterApproved()).isTrue();
         assertThat(historyToken.isFilterRejected()).isFalse();
         assertThat(historyToken.isFilterHasError()).isFalse();
+        assertThat(historyToken.isFilterMT()).isFalse();
         verify(history).newItem(historyToken);
     }
 }

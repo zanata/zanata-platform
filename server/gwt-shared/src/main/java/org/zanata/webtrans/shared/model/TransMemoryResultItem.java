@@ -43,7 +43,7 @@ public class TransMemoryResultItem extends SearchResultItem implements
         // Note: The order is significant for ordering of TM results in the UI
 
         /* Imported from an external source (i.e. TMX) */
-        Imported, TranslatedInternal, ApprovedInternal,
+        Imported, TranslatedInternal, ApprovedInternal, MT
     }
 
     private ArrayList<String> sourceContents;

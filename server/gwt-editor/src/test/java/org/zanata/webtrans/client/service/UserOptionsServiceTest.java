@@ -191,6 +191,8 @@ public class UserOptionsServiceTest {
                 .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
         assertThat(configHolder.getState().isFilterByRejected())
                 .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
+        assertThat(configHolder.getState().isFilterByMT())
+            .isEqualTo(UserConfigHolder.DEFAULT_FILTER);
         assertThat(configHolder.getState().getNavOption())
                 .isEqualTo(NavOption.FUZZY_UNTRANSLATED);
         assertThat(configHolder.getState().getEditorPageSize())

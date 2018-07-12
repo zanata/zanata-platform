@@ -64,6 +64,8 @@ public class TransMemoryView extends Composite implements
         String translated();
 
         String approved();
+
+        String mtIcon();
     }
 
     @UiField
@@ -343,6 +345,11 @@ public class TransMemoryView extends Composite implements
             if (item.getMatchType() == MatchType.Imported) {
                 String originStr = Joiner.on(", ").join(item.getOrigins());
                 infoCell.setText(ShortString.shorten(originStr, 10));
+                infoCell.setTitle(originStr);
+            } else if (item.getMatchType() == MatchType.MT) {
+                String originStr = Joiner.on(", ").join(item.getOrigins());
+                infoCell.setStyleName("txt--mini " + style.mtIcon());
+                infoCell.setText("MT");
                 infoCell.setTitle(originStr);
             } else {
                 infoCell.setStyleName("i i--info txt--lead");
