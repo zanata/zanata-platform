@@ -7,7 +7,7 @@ import React from 'react'
 class MTSuggestionsButton extends React.Component {
 
   render () {
-    const text = 'Translated by Google'
+    const text = (<img src='https://i.imgur.com/MWJ978k.png' />)
     return (
       <span className='Button--MT'>
         <Tooltip placement='right' title={text}>
