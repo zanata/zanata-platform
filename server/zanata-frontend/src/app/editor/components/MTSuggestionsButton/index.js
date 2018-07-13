@@ -10,12 +10,12 @@ class MTSuggestionsButton extends React.Component {
     backendId: PropTypes.string.isRequired
   }
   render () {
-    const backendId = 'Google'
-    const title = this.props.backendId === backendId ?
+    const { backendId } = this.props
+    const title = backendId === 'Google' ?
         <a href='https://translate.google.com/'>
           <img src='http://zanata.org/images/translated-by-google-white-short.png'
             alt='Translated by Google' /></a>
-        : 'Translated by ' + this.props.backendId
+        : 'Translated by ' + backendId
     return (
       <span className='Button--MT'>
         <Tooltip placement='right' title={title}>
