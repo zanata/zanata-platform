@@ -92,11 +92,10 @@ public class LanguagesPage extends BasePage {
         List<WebElement> tags = findRowByLocale(localeId)
           .findElements(defaultLabel);
             for (WebElement tag : tags) {
-                System.out.println(tag.getText());
-                    if (tag.getText().contains("DEFAULT")) {
-                        return true;
-                    }
+                if (tag.getText().contains("DEFAULT")) {
+                    return true;
                 }
+            }
             return false;
         }
     }
