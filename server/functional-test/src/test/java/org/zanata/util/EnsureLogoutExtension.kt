@@ -20,7 +20,10 @@
  */
 package org.zanata.util
 
-import org.junit.jupiter.api.extension.*
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback
+import org.junit.jupiter.api.extension.BeforeEachCallback
+import org.junit.jupiter.api.extension.ExtensionContext
+import org.zanata.page.WebDriverFactory
 import org.zanata.page.utility.HomePage
 import org.zanata.workflow.BasicWorkFlow
 
@@ -34,11 +37,12 @@ import org.zanata.workflow.BasicWorkFlow
 class EnsureLogoutExtension : BeforeEachCallback, AfterTestExecutionCallback {
 
     override fun beforeEach(context: ExtensionContext) {
-        logoutIfLoggedIn()
+        WebDriverFactory.INSTANCE.ignoringDswid { logoutIfLoggedIn() }
+
     }
 
     override fun afterTestExecution(context: ExtensionContext) {
-        logoutIfLoggedIn()
+        WebDriverFactory.INSTANCE.ignoringDswid { logoutIfLoggedIn() }
     }
 
     private fun logoutIfLoggedIn(): HomePage {
