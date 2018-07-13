@@ -1,0 +1,14 @@
+.Button--MT .ant-btn {
+  font-size: 0.75rem;
+}
+
+.Button--MT .ant-btn:hover,
+.Button--MT .ant-btn:focus {
+  color: #fff !important;
+}
+
+.Label-MT{
+  color: #fff !important;
+  font-size: 0.75rem;
+}
+

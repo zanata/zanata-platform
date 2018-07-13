@@ -6992,6 +6992,46 @@ exports[`Editor Storyshots LanguageSelectList default 1`] = `
 </div>
 `;
 
+exports[`Editor Storyshots MTSuggestionsButton Google translations 1`] = `
+<span
+  className="Button--MT"
+>
+  <Button
+    className="Button--snug u-roundish Button--neutral"
+    onBlur={undefined}
+    onClick={undefined}
+    onContextMenu={undefined}
+    onFocus={undefined}
+    onMouseDown={undefined}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onTouchStart={undefined}
+  >
+    MT
+  </Button>
+</span>
+`;
+
+exports[`Editor Storyshots MTSuggestionsButton Microsoft translations 1`] = `
+<span
+  className="Button--MT"
+>
+  <Button
+    className="Button--snug u-roundish Button--neutral"
+    onBlur={undefined}
+    onClick={undefined}
+    onContextMenu={undefined}
+    onFocus={undefined}
+    onMouseDown={undefined}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onTouchStart={undefined}
+  >
+    MT
+  </Button>
+</span>
+`;
+
 exports[`Editor Storyshots ProgressBar Large 1`] = `
 <div
   className="Progressbar Progressbar--lg"
