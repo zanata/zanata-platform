@@ -275,16 +275,13 @@ public class MachineTranslationServiceImpl implements
     private void translateInBatch(List<HTextFlow> textFlows,
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
-        int index = 0;
-        while (index < textFlows.size()) {
+        int batchStart = 0;
+        while (batchStart < textFlows.size()) {
             // work out upper bound of index for each batch
-            int bound = Math.min(index + BATCH_SIZE, textFlows.size());
-            List<HTextFlow> sourceBatch = textFlows.subList(index, bound);
+            int batchEnd = Math.min(batchStart + BATCH_SIZE, textFlows.size());
+            List<HTextFlow> sourceBatch = textFlows.subList(batchStart, batchEnd);
             List<TypeString> transContentBatch =
-                    transDoc.getContents().subList(index, bound);
-
-            index += bound;
-
+                    transDoc.getContents().subList(batchStart, batchEnd);
             try {
                 transactionUtil.run(() -> {
                     List<TransUnitUpdateRequest> updateRequests =
@@ -298,6 +295,7 @@ public class MachineTranslationServiceImpl implements
             } catch (Exception e) {
                 log.error("error prefilling translation with machine translation", e);
             }
+            batchStart = batchEnd;
         }
     }
 
