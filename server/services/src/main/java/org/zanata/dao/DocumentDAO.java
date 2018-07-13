@@ -406,6 +406,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         if (totalCount == null) {
             totalCount = 0L;
         }
+        // TODO keep it as long
         return totalCount.intValue();
     }
 

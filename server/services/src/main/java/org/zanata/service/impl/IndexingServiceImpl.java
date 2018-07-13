@@ -173,7 +173,7 @@ public class IndexingServiceImpl implements IndexingService {
         try {
             Long entityCount =
                     getHTextFlowTargetCountForProject(hProject, session);
-            handle.setMaxProgress(entityCount.intValue());
+            handle.setMaxProgress(entityCount);
             // TODO this is necessary because isInProgress checks number of
             // operations, which may be 0
             // look at updating isInProgress not to care about count
@@ -208,7 +208,7 @@ public class IndexingServiceImpl implements IndexingService {
         try (FullTextSession session = openFullTextSession()) {
             Long entityCount =
                     getHTextFlowTargetCountForProjectVersion(iteration, session);
-            handle.setMaxProgress(entityCount.intValue());
+            handle.setMaxProgress(entityCount);
             // this is necessary because isInProgress checks number of
             // operations, which may be 0
             // look at updating isInProgress not to care about count
