@@ -90,6 +90,7 @@ public class MachineTranslationServiceImpl implements
 
     // this is org.zanata.magpie.model.BackendID#GOOGLE
     private static final String BACKEND_GOOGLE = "GOOGLE";
+    private static final String BACKEND_DEV = "DEV";
 
     private URI mtServiceURL;
     private String mtUser;
@@ -357,6 +358,8 @@ public class MachineTranslationServiceImpl implements
     private String getRevisionComment(String backendId) {
         if (BACKEND_GOOGLE.equals(backendId)) {
             return "Translated by Google";
+        } else if (BACKEND_DEV.equals(backendId)) {
+            return "Pseudo-translated by MT (DEV)";
         } else {
             log.warn("Unexpected MT backendId: {}", backendId);
             return "Translated by MT backendId: " + backendId;
