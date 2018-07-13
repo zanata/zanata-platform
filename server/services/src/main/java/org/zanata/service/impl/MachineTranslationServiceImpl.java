@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -157,29 +158,34 @@ public class MachineTranslationServiceImpl implements
 
     private MTDocument getTranslationFromMT(MTDocument request,
             LocaleId toLocale) throws ZanataServiceException {
-        ResteasyClient client = new ResteasyClientBuilder().build();
 
-        ResteasyWebTarget webTarget = client.target(mtServiceURL).path("api")
-                .path("document").path("translate")
-                .queryParam("toLocaleCode", toLocale.getId());
-        Response response = webTarget.request(MediaType.APPLICATION_JSON_TYPE)
-                .header("X-Auth-User", mtUser)
-                .header("X-Auth-Token", mtToken)
-                .header("Content-Type", MediaType.APPLICATION_JSON)
-                .header("Accept", MediaType.APPLICATION_JSON)
-                .post(Entity.json(request));
+        try {
+            ResteasyClient client = new ResteasyClientBuilder().build();
 
-        if (response.getStatus() == 200) {
-            MTDocument result = response.readEntity(MTDocument.class);
-            if (!result.getWarnings().isEmpty()) {
-                log.warn("MT returned warnings: {}", result.getWarnings());
+            ResteasyWebTarget webTarget = client.target(mtServiceURL).path("api")
+                    .path("document").path("translate")
+                    .queryParam("toLocaleCode", toLocale.getId());
+            Response response = webTarget.request(MediaType.APPLICATION_JSON_TYPE)
+                    .header("X-Auth-User", mtUser)
+                    .header("X-Auth-Token", mtToken)
+                    .header("Content-Type", MediaType.APPLICATION_JSON)
+                    .header("Accept", MediaType.APPLICATION_JSON)
+                    .post(Entity.json(request));
+
+            if (response.getStatus() == 200) {
+                MTDocument result = response.readEntity(MTDocument.class);
+                if (!result.getWarnings().isEmpty()) {
+                    log.warn("MT returned warnings: {}", result.getWarnings());
+                }
+                return result;
+            } else {
+                log.error("MT returned status: {}, header: {}, body: {}",
+                        response.getStatus(), response.getHeaders(),
+                        response.readEntity(String.class));
+                throw new ZanataServiceException("failed to get translations from MT");
             }
-            return result;
-        } else {
-            log.error("MT returned status: {}, header: {}, body: {}",
-                    response.getStatus(), response.getHeaders(),
-                    response.readEntity(String.class));
-            throw new ZanataServiceException("failed to get translations from MT");
+        } catch (ProcessingException e) {
+            throw new ZanataServiceException("Exception while talking to MT", 502, e);
         }
     }
 
