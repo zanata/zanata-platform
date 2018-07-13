@@ -75,13 +75,13 @@ public class TransMemoryMergeStatusResolverTest {
 
     private static TransMemoryResultItem tmResultWithSimilarity(double percent) {
         return new TransMemoryResultItem(null, null,
-                MatchType.TranslatedInternal, 0, percent, 1L);
+                MatchType.TranslatedInternal, 0, percent, 1L, false);
     }
 
     private static TransMemoryResultItem
             tmResultWithSimilarityAndExternallyImported(double percent) {
         return new TransMemoryResultItem(null, null, MatchType.Imported, 0,
-                percent, null);
+                percent, null, false);
     }
 
     private static TransMemoryDetails tmDetail(String projectName,
