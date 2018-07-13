@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
@@ -251,6 +253,12 @@ public class LocalesService implements LocalesResource {
         identity.checkPermission("insert-language");
         if (localeServiceImpl.localeExists(localeDetails.getLocaleId())) {
             return Response.ok().build();
+        }
+        Matcher matcher = Pattern.compile("[\\w\\d@.-]+")
+                .matcher(localeDetails.getLocaleId().toJavaName());
+        if (!matcher.matches()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid Locale ID").build();
         }
         HLocale hLocale = LocaleServiceImpl.convertToHLocale(localeDetails);
         localeDAO.makePersistent(hLocale);
