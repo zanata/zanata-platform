@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.Async;
@@ -73,7 +74,6 @@ import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TransMemoryMergeService;
-import org.zanata.service.TranslationCounter;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
@@ -303,20 +303,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         // we need a separate read only transaction to load all the entities and close
         // it so that the following batch job can take as long as it can and no
         // transaction reaper will kick in.
-        NeededEntities neededEntities = new NeededEntities();
+        NeededEntities neededEntities;
         try {
-            transactionUtil.call(() -> {
-                // since this is async we need to reload entities
-                neededEntities.targetVersion =
-                        projectIterationDAO.findById(targetVersionId);
-                neededEntities.targetLocale =
-                        localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
-                neededEntities.localesInTargetVersion = localeServiceImpl
-                        .getSupportedLanguageByProjectIteration(neededEntities.targetVersion);
-                neededEntities.activeTextFlows = textFlowDAO.countActiveTextFlowsInProjectIteration(
-                        targetVersionId);
-                return neededEntities;
-            });
+            neededEntities = loadEntities(targetVersionId, mergeRequest);
         } catch (Exception e) {
             log.error("error loading entities", e);
             return AsyncTaskResult.completed();
@@ -333,7 +322,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
 
         taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
-        taskHandle.setMaxProgress((int) activeTextFlows);
+        taskHandle.setMaxProgress(activeTextFlows);
         taskHandle.setTotalTextFlows(activeTextFlows);
 
         Stopwatch overallStopwatch = Stopwatch.createStarted();
@@ -390,6 +379,27 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         sendTMMergeEmail(mergeRequest, mergeResult, neededEntities);
 
         return AsyncTaskResult.completed();
+    }
+
+    @NotNull
+    private NeededEntities loadEntities(
+            Long targetVersionId, VersionTMMerge mergeRequest)
+            throws Exception {
+        NeededEntities neededEntities;
+        neededEntities = new NeededEntities();
+        transactionUtil.call(() -> {
+            // since this is async we need to reload entities
+            neededEntities.targetVersion =
+                    projectIterationDAO.findById(targetVersionId);
+            neededEntities.targetLocale =
+                    localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
+            neededEntities.localesInTargetVersion = localeServiceImpl
+                    .getSupportedLanguageByProjectIteration(neededEntities.targetVersion);
+            neededEntities.activeTextFlows = textFlowDAO.countActiveTextFlowsInProjectIteration(
+                    targetVersionId);
+            return neededEntities;
+        });
+        return neededEntities;
     }
 
     private boolean shouldTranslate(@Nullable ContentState state) {
