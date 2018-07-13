@@ -435,7 +435,9 @@ public class CopyVersionServiceImpl implements CopyVersionService {
             copy.setComment(new HSimpleComment(tft.getComment().getComment()));
         }
         copy.setRevisionComment(TranslationUtil.getCopyVersionMessage(tft));
-        copy.setSourceType(TranslationSourceType.COPY_VERSION);
+        if (copy.getSourceType() != TranslationSourceType.MACHINE_TRANS) {
+            copy.setSourceType(TranslationSourceType.COPY_VERSION);
+        }
         TranslationUtil.copyEntity(tft, copy);
         // copy review comment
         copy.setReviewComments(
