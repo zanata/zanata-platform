@@ -427,6 +427,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     @Override
     public HTextFlowTarget copyTextFlowTarget(HTextFlow newTf,
             HTextFlowTarget tft) throws Exception {
+        // This includes revisionComment (eg Translated by Google)
         HTextFlowTarget copy = JPACopier.<HTextFlowTarget> copyBean(tft,
                 "textFlow", "reviewComments", "history");
         copy.setTextFlow(newTf);

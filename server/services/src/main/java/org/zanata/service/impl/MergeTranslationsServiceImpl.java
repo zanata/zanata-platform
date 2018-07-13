@@ -172,7 +172,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         return AsyncTaskResult.completed();
     }
 
-    protected int mergeTranslationBatch(HProjectIteration sourceVersion,
+    private int mergeTranslationBatch(HProjectIteration sourceVersion,
             HProjectIteration targetVersion, List<HLocale> supportedLocales,
             boolean useNewerTranslation, int offset, int batchSize) {
         try {
@@ -198,7 +198,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         Map<DocumentLocaleKey, Map<ContentState, Long>> docStatsMap =
                 Maps.newHashMap();
         Map<DocumentLocaleKey, Long> lastUpdatedTargetId = Maps.newHashMap();
-        ;
         for (HTextFlow[] results : matches) {
             HTextFlow sourceTf = results[0];
             HTextFlow targetTf = results[1];

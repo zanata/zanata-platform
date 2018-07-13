@@ -223,6 +223,8 @@ public class MachineTranslationServiceImpl implements
         for (Iterator<HDocument> iterator = documents.values().iterator();
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
+            // FIXME ensure we add attribution comment to document (PO/POT/Properties)
+            // FIXME fail for other docs (since we can't add attribution comment)
             addMachineTranslationsToDoc(doc, targetLocale, projectSlug,
                     versionSlug, options.getSaveState(), options.getOverwriteFuzzy());
             taskHandle.increaseProgress(1);
