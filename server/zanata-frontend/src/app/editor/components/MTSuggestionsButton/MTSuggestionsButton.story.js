@@ -1,5 +1,7 @@
+// @ts-nocheck
+/* eslint-disable */
 import React from 'react'
-import MTSuggestionsButton from '.'
+import MTSuggestionsButton from './index.tsx'
 import { storiesOf } from '@storybook/react';
 
 /*
@@ -11,5 +13,5 @@ storiesOf('MTSuggestionsButton', module)
         <MTSuggestionsButton backendId='Google' />)
     )
     .add('Microsoft translations', () =>(
-        <MTSuggestionsButton backendId='Microsoft' />)
+        <MTSuggestionsButton backendId='Ms' />)
     )
