@@ -172,17 +172,19 @@ public class MachineTranslationServiceImpl implements
                     .header("Accept", MediaType.APPLICATION_JSON)
                     .post(Entity.json(request));
 
-            if (response.getStatus() == 200) {
+            int status = response.getStatus();
+            if (status == 200) {
                 MTDocument result = response.readEntity(MTDocument.class);
                 if (!result.getWarnings().isEmpty()) {
                     log.warn("MT returned warnings: {}", result.getWarnings());
                 }
                 return result;
             } else {
+                String entity = response.readEntity(String.class);
                 log.error("MT returned status: {}, header: {}, body: {}",
-                        response.getStatus(), response.getHeaders(),
-                        response.readEntity(String.class));
-                throw new ZanataServiceException("failed to get translations from MT");
+                        status, response.getHeaders(), entity);
+                throw new ZanataServiceException("Error code " + status +
+                        " returned from MT: " + entity);
             }
         } catch (ProcessingException e) {
             throw new ZanataServiceException("Exception while talking to MT", 502, e);
