@@ -196,7 +196,7 @@ public class TransMemoryMergeServiceImplTest {
     private static TransMemoryResultItem tmResult(Long sourceId, int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.ApprovedInternal, 1D, percent, 1L);
+                        MatchType.ApprovedInternal, 1D, percent, 1L, false);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }
@@ -205,7 +205,7 @@ public class TransMemoryMergeServiceImplTest {
             int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.Imported, 1D, percent, 1L);
+                        MatchType.Imported, 1D, percent, 1L, false);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }

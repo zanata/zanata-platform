@@ -155,7 +155,7 @@ public class TransMemoryPresenterTest {
         TransMemoryResultItem object =
                 new TransMemoryResultItem(new ArrayList<String>(),
                         new ArrayList<String>(), MatchType.ApprovedInternal, 0,
-                        0, null);
+                        0, null, false);
         when(display.getSearchType()).thenReturn(searchType);
 
         presenter.showTMDetails(object);
@@ -168,7 +168,7 @@ public class TransMemoryPresenterTest {
         TransMemoryResultItem object =
                 new TransMemoryResultItem(new ArrayList<String>(),
                         new ArrayList<String>(), MatchType.ApprovedInternal, 0,
-                        0, null);
+                        0, null, false);
         ArgumentCaptor<CopyDataToEditorEvent> eventCaptor =
                 ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
 
