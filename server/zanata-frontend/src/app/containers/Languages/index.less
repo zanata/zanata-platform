@@ -1,4 +1,4 @@
-@import "../../styles/variables.less";
+@import "../../styles/antdvars.less";
 
 #newLang .react-autosuggest__container input {
   width: auto;
@@ -25,7 +25,7 @@
 .react-autosuggest__container--open .react-autosuggest__suggestions-container {
   display: block;
   position: absolute;
-  border: 1px solid @color-muted;
+  border: 1px solid @muted-color;
   background-color: #fff;
   border-bottom-left-radius: @border-radius-base;
   border-bottom-right-radius: @border-radius-base;
@@ -42,7 +42,7 @@
   padding: 0.4rem 0.5rem;
 }
 .react-autosuggest__suggestion--highlighted {
-  background-color: @color-neutral;
+  background-color: @neutral-color;
 }
 
 #newLang .form-control {
@@ -55,8 +55,7 @@
 }
 
 .languages {
-  padding: 1rem;
-  
+
   span.languageCode {
     font-size: 0.9rem;
     color: #aaa;
@@ -65,13 +64,19 @@
   table#languages-table {
     margin: 0;
   }
-
+  .table > tbody > tr > td {
+    line-height: 1.8rem;
+    vertical-align: middle;
+  }
   select#sort-options {
     width: inherit;
   }
 
   select#sort-options {
     width: inherit;
+  }
+  .ant-input-search {
+    margin-top: 0;
   }
 
 }

@@ -46,7 +46,7 @@ class MainContent extends React.Component {
     if (phrases.length === 0) {
       // TODO translate "No content"
       return (
-        <div className="u-posCenterCenter u-textEmpty u-textCenter">
+        <div className="u-posCenterCenter u-textEmpty tc">
           <span className="u-sMB-1-4">
             <Icon name="translate" className="s6" />
           </span>

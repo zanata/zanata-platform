@@ -72,14 +72,14 @@ class RecentContributions extends React.Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='matrixHeading bstrapReact' id='userProfile-matrix'>
+      <div className='matrixHeading' id='userProfile-matrix'>
         <div className='u-flexCenter'>
           <h2 className='userProfile-recentContributions'>
           Recent Contributions</h2>
           <div className='dateRange-container'>
-            <Button className='btn-link u-pullRight' aria-label='button'
+            <Button className='btn-link fr pa0' aria-label='button'
               onClick={() => this.onToggleShowDateRange()}>
-              <span className='dateRange-textField'>
+              <span>
                 <TextInput editable={false} value={displayDateRange} />
               </span>
             </Button>
@@ -103,7 +103,7 @@ class RecentContributions extends React.Component {
                     () => handleDateRangeChanged(this.state.dateRange)}>
                     Apply
                   </Button>]} >
-                <span className='u-textMuted'>(Maximum 365 days)</span>
+                <span className='txt-muted'>(Maximum 365 days)</span>
                 <DateRange
                   startDate={this.state.dateRange.startDate}
                   endDate={this.state.dateRange.endDate}

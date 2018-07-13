@@ -154,7 +154,7 @@ class TransUnitTranslationPanel extends React.Component {
     let translations
     let validationMsgs
     if (isLoading) {
-      translations = <span className="u-textMeta">
+      translations = <span className="u-textNeutral">
         <LoaderText loading />
       </span>
     } else {
@@ -307,8 +307,8 @@ export class TranslationItem extends React.Component {
 
     const highlightHeader = selected && index === selectedPluralIndex
     const headerClass = highlightHeader
-      ? 'u-textMini u-textPrimary'
-      : 'u-textMeta'
+      ? 'u-textMini txt-primary'
+      : 'u-textNeutral'
 
     const itemHeader = isPlural &&
       <div className="TransUnit-itemHeader">

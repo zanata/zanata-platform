@@ -106,7 +106,7 @@ class GlossaryTermModal extends React.Component {
             <span className="modal-term">{term.source}</span>
           </Col>
           <Col span={12} className={directionClassTarget}>
-            <h3 className='txt-info'>Translation : {targetLocale}</h3>
+            <h3 className='u-textInfo'>Translation : {targetLocale}</h3>
             <span className={
               cx('modal-term', {'u-textMuted': isEmpty(term.target)})}>
                 {isEmpty(term.target) ? '-none-' : term.target}
