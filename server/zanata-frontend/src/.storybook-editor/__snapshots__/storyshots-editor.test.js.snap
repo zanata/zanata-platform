@@ -80,7 +80,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     </div>
   </div>
   <span
-    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+    className="small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
     <span
       className=""
@@ -107,6 +107,28 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
     <span>
       2:19 AM
     </span>
+  </span>
+  <span
+    className="Button--MT mh1"
+  >
+    <Button
+      className="u-roundish Button--neutral"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+      size="small"
+    >
+      <span
+        className="f7"
+      >
+        MT
+      </span>
+    </Button>
   </span>
 </div>
 `;
@@ -184,7 +206,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     </div>
   </div>
   <span
-    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+    className="small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
     <span
       className=""
@@ -211,6 +233,28 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
     <span>
       2:19 AM
     </span>
+  </span>
+  <span
+    className="Button--MT mh1"
+  >
+    <Button
+      className="u-roundish Button--neutral"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+      size="small"
+    >
+      <span
+        className="f7"
+      >
+        MT
+      </span>
+    </Button>
   </span>
 </div>
 `;
@@ -295,7 +339,7 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     </div>
   </div>
   <span
-    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+    className="small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
     <span
       className=""
@@ -322,6 +366,28 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
     <span>
       2:19 AM
     </span>
+  </span>
+  <span
+    className="Button--MT mh1"
+  >
+    <Button
+      className="u-roundish Button--neutral"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+      size="small"
+    >
+      <span
+        className="f7"
+      >
+        MT
+      </span>
+    </Button>
   </span>
 </div>
 `;
@@ -438,7 +504,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     </div>
   </div>
   <span
-    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+    className="small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
     <span
       className=""
@@ -465,6 +531,28 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
     <span>
       2:19 AM
     </span>
+  </span>
+  <span
+    className="Button--MT mh1"
+  >
+    <Button
+      className="u-roundish Button--neutral"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+      size="small"
+    >
+      <span
+        className="f7"
+      >
+        MT
+      </span>
+    </Button>
   </span>
 </div>
 `;
@@ -581,7 +669,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     </div>
   </div>
   <span
-    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+    className="small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
     <span
       className=""
@@ -608,6 +696,28 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
     <span>
       2:19 AM
     </span>
+  </span>
+  <span
+    className="Button--MT mh1"
+  >
+    <Button
+      className="u-roundish Button--neutral"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+      size="small"
+    >
+      <span
+        className="f7"
+      >
+        MT
+      </span>
+    </Button>
   </span>
 </div>
 `;
@@ -724,7 +834,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     </div>
   </div>
   <span
-    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+    className="small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
     <span
       className=""
@@ -751,6 +861,28 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
     <span>
       2:19 AM
     </span>
+  </span>
+  <span
+    className="Button--MT mh1"
+  >
+    <Button
+      className="u-roundish Button--neutral"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+      size="small"
+    >
+      <span
+        className="f7"
+      >
+        MT
+      </span>
+    </Button>
   </span>
 </div>
 `;
@@ -795,6 +927,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
           created a translation revision
         </span>
       </span>
+       
     </span>
   </p>
   <div
@@ -835,7 +968,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     </div>
   </div>
   <span
-    className="u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
+    className="small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary"
   >
     <span
       className=""
@@ -862,6 +995,28 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
     <span>
       2:19 AM
     </span>
+  </span>
+  <span
+    className="Button--MT mh1"
+  >
+    <Button
+      className="u-roundish Button--neutral"
+      onBlur={undefined}
+      onClick={undefined}
+      onContextMenu={undefined}
+      onFocus={undefined}
+      onMouseDown={undefined}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onTouchStart={undefined}
+      size="small"
+    >
+      <span
+        className="f7"
+      >
+        MT
+      </span>
+    </Button>
   </span>
 </div>
 `;
@@ -7812,6 +7967,58 @@ exports[`Editor Storyshots TextDiff default 1`] = `
   </span>
 </div>
 `;
+
+exports[`Editor Storyshots TransSourceTypeIndicator Google translations 1`] = `
+<span
+  className="Button--MT mh1"
+>
+  <Button
+    className="u-roundish Button--neutral"
+    onBlur={undefined}
+    onClick={undefined}
+    onContextMenu={undefined}
+    onFocus={undefined}
+    onMouseDown={undefined}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onTouchStart={undefined}
+    size="small"
+  >
+    <span
+      className="f7"
+    >
+      MT
+    </span>
+  </Button>
+</span>
+`;
+
+exports[`Editor Storyshots TransSourceTypeIndicator Microsoft translations 1`] = `
+<span
+  className="Button--MT mh1"
+>
+  <Button
+    className="u-roundish Button--neutral"
+    onBlur={undefined}
+    onClick={undefined}
+    onContextMenu={undefined}
+    onFocus={undefined}
+    onMouseDown={undefined}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onTouchStart={undefined}
+    size="small"
+  >
+    <span
+      className="f7"
+    >
+      MT
+    </span>
+  </Button>
+</span>
+`;
+
+exports[`Editor Storyshots TransSourceTypeIndicator Not MT 1`] = `undefined`;
 
 exports[`Editor Storyshots Validation All Validators 1`] = `
 <div>

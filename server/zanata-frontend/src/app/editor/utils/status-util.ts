@@ -15,6 +15,7 @@ export const STATUS_NEEDS_WORK_SERVER = phrases.STATUS_NEEDS_WORK_SERVER
 export const STATUS_TRANSLATED = phrases.STATUS_TRANSLATED
 export const STATUS_APPROVED = phrases.STATUS_APPROVED
 export const STATUS_REJECTED = phrases.STATUS_REJECTED
+export const STATUS_MT = phrases.STATUS_MT
 
 /**
  * Get a string representing the status that should be

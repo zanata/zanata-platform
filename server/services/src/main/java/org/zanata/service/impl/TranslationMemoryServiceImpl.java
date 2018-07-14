@@ -117,12 +117,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     private static final float BOOST_ITERATION =
             SysProperties.getFloat(SysProperties.TM_BOOST_ITERATION, 1.0F);
 
-    /**
-     * Hard code to Google for now.
-     * TODO: Read the engine type from textFlowTarget
-     */
-    private static final String MT_COMMENT = "Translated by Google";
-
     // private static final float BOOST_PROJITERSLUG = SysProperties.getFloat(
     // SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
     private static final double MINIMUM_SIMILARITY = 1.0;
@@ -480,22 +474,18 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         // TODO change sourceId to include type, then include the id of imported
         // matches
         item.addSourceId(textFlowTarget.getTextFlow().getId());
-        if (item.getMatchType() == TransMemoryResultItem.MatchType.MT) {
-             item.addOrigin(MT_COMMENT);
-        } else {
-            // Workaround: since Imported does not have a details view in the
-            // current editor,
-            // I am treating it as the lowest priority, so will be overwritten by
-            // other match types.
-            // A better fix is to have the DTO hold all the match types so the
-            // editor
-            // can show them in whatever way is most sensible.
-            ContentState state = textFlowTarget.getState();
-            if (state == ContentState.Approved || item
-                .getMatchType() == TransMemoryResultItem.MatchType.Imported) {
-                item.setMatchType(getMatchType(textFlowTarget.getSourceType(),
-                    textFlowTarget.getState()));
-            }
+        // Workaround: since Imported does not have a details view in the
+        // current editor,
+        // I am treating it as the lowest priority, so will be overwritten by
+        // other match types.
+        // A better fix is to have the DTO hold all the match types so the
+        // editor
+        // can show them in whatever way is most sensible.
+        ContentState state = textFlowTarget.getState();
+        if (state == ContentState.Approved || item
+            .getMatchType() == TransMemoryResultItem.MatchType.Imported) {
+            item.setMatchType(getMatchType(textFlowTarget.getSourceType(),
+                textFlowTarget.getState()));
         }
     }
 

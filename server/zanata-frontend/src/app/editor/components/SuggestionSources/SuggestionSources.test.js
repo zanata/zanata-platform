@@ -15,7 +15,10 @@ describe('SuggestionSourcesTest', () => {
         suggestion={{
           matchDetails: [
             {
-              type: 'IMPORTED_TM',
+              type: {
+                key: 'IMPORTED_TM',
+                metadata: ''
+              },
               transMemorySlug: 'patterson'
             }
           ],
@@ -40,7 +43,10 @@ describe('SuggestionSourcesTest', () => {
           suggestion={{
             matchDetails: [
               {
-                type: 'IMPORTED_TM',
+                type: {
+                  key: 'IMPORTED_TM',
+                  metadata: ''
+                },
                 transMemorySlug: 'patterson'
               }
             ],

@@ -77,7 +77,7 @@ public class TransMemoryResultItem extends SearchResultItem implements
         this.targetContents = targetContents;
         this.matchType = matchType;
         this.fromVersionId = fromVersionId;
-        this.origins = new ArrayList<String>();
+        this.origins = new ArrayList<>();
     }
 
     public List<String> getOrigins() {

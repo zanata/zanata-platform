@@ -41,7 +41,7 @@ class SuggestionDetailsModal extends Component {
         matchDetail, key: index, eventKey: index
       }
       switch (matchDetail.type) {
-        case 'LOCAL_PROJECT':
+        case 'LOCAL_PROJECT': case 'MT':
           return <LocalProjectDetailPanel {...props} />
         case 'IMPORTED_TM':
           return <ImportedTMDetailPanel {...props} />

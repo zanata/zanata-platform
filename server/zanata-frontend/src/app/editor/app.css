@@ -35,6 +35,7 @@
 @import './components/TransUnit/index.css';
 @import './components/InputGroup/index.css';
 @import 'components/ConcurrentModal/index.css';
+@import 'components/TransSourceTypeIndicator/index.css';
 
 
 /**
