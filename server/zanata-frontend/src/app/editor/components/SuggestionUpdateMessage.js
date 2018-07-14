@@ -1,7 +1,9 @@
+// @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { FormattedDate } from 'react-intl'
 import { Icon } from '../../components'
+import TransSourceTypeIndicator from './TransSourceTypeIndicator/index.tsx'
 
 /**
  * Show an appropriate message about the source and time of the most
@@ -12,7 +14,12 @@ class SuggestionUpdateMessage extends React.Component {
     matchType: PropTypes.oneOf(['imported', 'translated', 'approved'])
       .isRequired,
     user: PropTypes.string,
-    lastChanged: PropTypes.instanceOf(Date)
+    lastChanged: PropTypes.instanceOf(Date),
+    transSourceType: PropTypes.shape({
+      key: PropTypes.oneOf(
+        ['IMPORTED_TM', 'LOCAL_PROJECT', 'MT']).isRequired,
+      metadata: PropTypes.string
+    }).isRequired,
   }
 
   message = () => {
@@ -45,11 +52,16 @@ class SuggestionUpdateMessage extends React.Component {
   }
 
   render () {
+    const { transSourceType } = this.props
     return (
-      <span className="u-textNeutral">
-        <Icon name="history" className="s0" />
-        <span className="u-sML-1-4">{this.message()}</span>
-      </span>
+      <React.Fragment>
+        <span className="u-textNeutral">
+          <Icon name="history" className="s0" />
+          <span className="u-sML-1-4">{this.message()}</span>
+        </span>
+        <TransSourceTypeIndicator type={transSourceType.key}
+          metadata={transSourceType.metadata} />
+      </React.Fragment>
     )
   }
 }

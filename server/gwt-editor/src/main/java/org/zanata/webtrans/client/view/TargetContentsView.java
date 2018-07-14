@@ -144,7 +144,8 @@ public class TargetContentsView extends Composite implements
         int rowIndex = 0;
         for (String target : cachedTargets) {
             Editor editor =
-                    new Editor(target, rowIndex, listener, transUnit.getId());
+                new Editor(target, rowIndex, listener, transUnit.getId(),
+                    transUnit.getTranslationSourceType());
             editor.ensureDebugId(transUnit.getRowIndex() + "-");
             editorGrid.setWidget(rowIndex, 0, editor);
             editors.add(editor);

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TranslationSourceType;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -53,6 +54,9 @@ public class Editor extends Composite implements ToggleEditor {
     @UiField(provided = true)
     TextAreaWrapper textArea;
 
+    @UiField(provided = true)
+    TransSourceIndicator transSourceIndicator;
+
     // Timer period, in ms
     private static final int TYPING_TIMER_INTERVAL = 200;
 
@@ -84,7 +88,8 @@ public class Editor extends Composite implements ToggleEditor {
     private final Command onCodeMirrorFocusCallback;
 
     public Editor(String displayString, final int index,
-            final TargetContentsDisplay.Listener listener, final TransUnitId id) {
+        final TargetContentsDisplay.Listener listener, final TransUnitId id,
+        final TranslationSourceType translationSourceType) {
         this.listener = listener;
         this.index = index;
         this.id = id;
@@ -100,6 +105,8 @@ public class Editor extends Composite implements ToggleEditor {
             textArea = new EditorTextArea(displayString);
         }
 
+        transSourceIndicator = new TransSourceIndicator(translationSourceType);
+
         initWidget(uiBinder.createAndBindUi(this));
         // determine whether to show or hide buttons
         showCopySourceButton(listener.isDisplayButtons());
@@ -109,7 +116,6 @@ public class Editor extends Composite implements ToggleEditor {
         } else {
             setViewMode(ViewMode.EDIT);
         }
-
         setText(displayString);
     }
 

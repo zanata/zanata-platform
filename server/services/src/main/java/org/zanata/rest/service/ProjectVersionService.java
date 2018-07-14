@@ -46,7 +46,9 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.ModelEntityBase;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.RestUtil;
@@ -357,9 +359,13 @@ public class ProjectVersionService implements ProjectVersionResource {
         List<TransUnitStatus> statusList =
                 Lists.newArrayListWithExpectedSize(textFlows.size());
         for (HTextFlow textFlow : textFlows) {
-            ContentState state =
-                    textFlow.getTargets().get(hLocale.getId()).getState();
-            statusList.add(new TransUnitStatus(textFlow.getId(), textFlow.getResId(), state));
+            HTextFlowTarget target = textFlow.getTargets().get(hLocale.getId());
+            ContentState state = target.getState();
+            String transSourceType = target.getSourceType() != null ?
+                target.getSourceType().getAbbr() : null;
+            statusList.add(
+                new TransUnitStatus(textFlow.getId(), textFlow.getResId(),
+                    state, transSourceType));
         }
         Object entity = new GenericEntity<List<TransUnitStatus>>(statusList){};
         return Response.ok(entity).build();

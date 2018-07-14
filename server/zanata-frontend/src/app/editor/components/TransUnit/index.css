@@ -319,7 +319,8 @@ h3.TransUnit-heading {
 }
 
 .TransUnit-metaDataComments,
-.TransUnit-metaDataErrors {
+.TransUnit-metaDataErrors,
+.TransUnit-metaDataMT{
   position: absolute;
   right: 0;
   left: 0;
@@ -331,6 +332,10 @@ h3.TransUnit-heading {
 
 .TransUnit-metaDataErrors {
   top: calc(var(--TransUnit-rhythm) * 1.75);
+}
+
+.TransUnit-metaDataMT {
+  top: calc(var(--TransUnit-rhythm) * 2.75);
 }
 
 .TransUnit-metaDataErrorsIcon {

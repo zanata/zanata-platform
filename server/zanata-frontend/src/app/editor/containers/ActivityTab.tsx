@@ -50,7 +50,8 @@ const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) =
     user: {
       name: value.commenterName,
       username: value.username
-    }
+    },
+    translationSourceType: value.translationSourceType
   }
 })
 
@@ -66,7 +67,8 @@ const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map
     user: {
       name: historyItem.modifiedByPersonName,
       username: historyItem.modifiedBy
-    }
+    },
+    translationSourceType: historyItem.translationSourceType
   }
 })), latest: latestHistoryAsItem(latest)})
 
@@ -80,7 +82,8 @@ const latestHistoryAsItem = (latest) => ({
   user: {
     name: latest.modifiedByPersonName,
     username: latest.modifiedBy
-  }
+  },
+  translationSourceType: latest.translationSourceType
 })
 
 interface Props {

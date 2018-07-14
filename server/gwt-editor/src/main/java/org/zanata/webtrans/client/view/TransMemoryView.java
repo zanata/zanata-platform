@@ -12,8 +12,10 @@ import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
+import org.zanata.webtrans.client.ui.TransSourceIndicator;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.TranslationSourceType;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.common.base.Joiner;
@@ -64,8 +66,6 @@ public class TransMemoryView extends Composite implements
         String translated();
 
         String approved();
-
-        String mtIcon();
     }
 
     @UiField
@@ -283,11 +283,13 @@ public class TransMemoryView extends Composite implements
         SimplePanel panel = new SimplePanel();
         // display multiple target strings
 
-        if (object.getMatchType() == MatchType.ApprovedInternal) {
+        if (object.getMatchType() == MatchType.ApprovedInternal ||
+            object.getMatchType() == MatchType.MT) {
             panel.addStyleName(style.approved());
-        } else if (object.getMatchType() == MatchType.TranslatedInternal) {
+        } else if (object.getMatchType() == MatchType.TranslatedInternal ||
+            object.getMatchType() == MatchType.MT) {
             panel.addStyleName(style.translated());
-        //} else if (object.getMatchType() == MatchType.Imported) {
+            //} else if (object.getMatchType() == MatchType.Imported) {
             // TODO Add a style for imported/TMX matches
         }
 
@@ -347,10 +349,7 @@ public class TransMemoryView extends Composite implements
                 infoCell.setText(ShortString.shorten(originStr, 10));
                 infoCell.setTitle(originStr);
             } else if (item.getMatchType() == MatchType.MT) {
-                String originStr = Joiner.on(", ").join(item.getOrigins());
-                infoCell.setStyleName("txt--mini " + style.mtIcon());
-                infoCell.setText("MT");
-                infoCell.setTitle(originStr);
+                infoCell = new TransSourceIndicator(TranslationSourceType.MACHINE_TRANS);
             } else {
                 infoCell.setStyleName("i i--info txt--lead");
                 infoCell.addClickHandler(new ClickHandler() {

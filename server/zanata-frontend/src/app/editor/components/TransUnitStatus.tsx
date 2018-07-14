@@ -56,12 +56,19 @@ class TransUnitStatus extends React.Component<TransUnitStatusProps, any> {
           <span className="u-textDanger">
             <Icon name="dot" title="Error" className="n1" />
           </span>
-          <br />
-          <span>{phrase.comments}</span>
         </button>
       </li>
       )
       : undefined
+
+    const mtIndicator = phrase.transSourceType === 'MT' && (
+      <li className="TransUnit-metaDataItem TransUnit-metaDataMT">
+        <button tabIndex={-1}
+          className="TransUnit-metaDataButton">
+          <span className="u-textDanger b">MT</span>
+        </button>
+      </li>
+    )
 
     return (
       <div className={className}>
@@ -71,6 +78,7 @@ class TransUnitStatus extends React.Component<TransUnitStatusProps, any> {
         <ul className="TransUnit-metaData">
           {comments}
           {errors}
+          {mtIndicator}
         </ul>
       </div>
     )

@@ -11,11 +11,11 @@ import java.util.Objects;
  * Copy of org.zanata.model.type.TranslationSourceType for GWT
  */
 public class TranslationSourceType implements IsSerializable, Serializable {
-    private String backendId;
+    private String metadata;
     private String abbr;
 
     // hard coded to Google
-    public static TranslationSourceType MACHINE_TRANS =
+    public final static TranslationSourceType MACHINE_TRANS =
         new TranslationSourceType("MT", "Google");
 
     public final static TranslationSourceType COPY_TRANS =
@@ -46,9 +46,9 @@ public class TranslationSourceType implements IsSerializable, Serializable {
         this(abbr, null);
     }
 
-    private TranslationSourceType(String abbr, String backendId) {
+    private TranslationSourceType(String abbr, String metadata) {
         this.abbr = abbr;
-        this.backendId = backendId;
+        this.metadata = metadata;
     }
 
     public static TranslationSourceType getInstance(String abbr) {
@@ -76,8 +76,8 @@ public class TranslationSourceType implements IsSerializable, Serializable {
         }
     }
 
-    public String getBackendId() {
-        return backendId;
+    public String getMetadata() {
+        return metadata;
     }
 
     public String getAbbr() {
@@ -89,11 +89,13 @@ public class TranslationSourceType implements IsSerializable, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TranslationSourceType that = (TranslationSourceType) o;
-        return backendId == that.backendId && abbr == that.abbr;
+        return Objects.equals(metadata, that.metadata) &&
+            Objects.equals(abbr, that.abbr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(backendId, abbr);
+
+        return Objects.hash(metadata, abbr);
     }
 }

@@ -33,17 +33,41 @@ public interface SuggestionDetail extends Serializable {
      * Different types may present different information, so use
      * different class representations.
      */
-    enum SuggestionType {
+    class SuggestionType {
 
         /**
          * A suggestion from a project on this Zanata server.
          */
-        LOCAL_PROJECT,
+        public static final SuggestionType LOCAL_PROJECT =
+            new SuggestionType("LOCAL_PROJECT", null);
 
         /**
          * A suggestion from an imported translation memory.
          */
-        IMPORTED_TM
+        public static final SuggestionType IMPORTED_TM =
+            new SuggestionType("IMPORTED_TM", null);
+
+        /**
+         * From machine translation.
+         */
+        public static final SuggestionType MT =
+            new SuggestionType("MT", "GOOGLE");
+
+        private String key;
+        private String metadata;
+
+        SuggestionType(String key, String metadata) {
+            this.key = key;
+            this.metadata = metadata;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getMetadata() {
+            return metadata;
+        }
     }
 
     /**

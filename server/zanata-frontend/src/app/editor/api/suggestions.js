@@ -98,7 +98,7 @@ function addBestMatchScores (suggestion) {
   var bestMatchModificationDate, bestMatchScore
   var topMatch = suggestion.matchDetails[0]
 
-  if (topMatch.type === 'LOCAL_PROJECT') {
+  if (topMatch.type === 'LOCAL_PROJECT' || topMatch.type === 'MT') {
     bestMatchModificationDate = topMatch.lastModifiedDate
     bestMatchScore = topMatch.contentState === 'Translated' ? 0 : 1
   }
@@ -125,6 +125,9 @@ function addBestMatchScores (suggestion) {
  * @return {string} representation of order that will sort appropriately.
  */
 function typeAndDateSort (detail) {
+  if (detail.type === 'MT') {
+    return '4' + detail.lastModifiedDate
+  }
   if (detail.type === 'IMPORTED_TM') {
     return '3' + detail.lastChanged
   }

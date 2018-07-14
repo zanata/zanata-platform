@@ -23,6 +23,8 @@ package org.zanata.rest.editor.dto.suggestion;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentState;
 import org.zanata.model.*;
+import org.zanata.model.type.TranslationSourceType;
+
 import java.util.Date;
 
 /**
@@ -31,7 +33,7 @@ import java.util.Date;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TextFlowSuggestionDetail implements SuggestionDetail {
     private static final long serialVersionUID = -3779746347162161883L;
-    private final SuggestionType type = SuggestionType.LOCAL_PROJECT;
+    private final SuggestionType type;
     private final Long textFlowId;
     private final String sourceComment;
     private final String targetComment;
@@ -74,6 +76,16 @@ public class TextFlowSuggestionDetail implements SuggestionDetail {
         this.lastModifiedDate = tft.getLastChanged();
         this.lastModifiedBy = haveLastModifiedUsername
                 ? lastModifiedPerson.getAccount().getUsername() : null;
+        this.type = getSuggestionType(tft.getSourceType());
+    }
+
+    private SuggestionType getSuggestionType(TranslationSourceType sourceType) {
+        switch (sourceType) {
+            case MACHINE_TRANS:
+                return SuggestionType.MT;
+            default:
+                return SuggestionType.LOCAL_PROJECT;
+        }
     }
 
     public SuggestionType getType() {

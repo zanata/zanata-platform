@@ -13,7 +13,11 @@ class SuggestionTranslations extends React.Component {
       copying: PropTypes.bool.isRequired,
       matchType: PropTypes.string.isRequired,
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.string.isRequired,
+        type: PropTypes.shape({
+          key: PropTypes.oneOf(
+            ['IMPORTED_TM', 'LOCAL_PROJECT', 'MT']).isRequired,
+          metadata: PropTypes.string
+        }).isRequired,
         contentState: PropTypes.string
       })),
       similarityPercent: PropTypes.number,

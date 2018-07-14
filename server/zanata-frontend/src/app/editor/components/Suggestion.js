@@ -20,8 +20,11 @@ class Suggestion extends React.Component {
       // true when the translation has just been copied
       copying: PropTypes.bool.isRequired,
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.oneOf(
-          ['IMPORTED_TM', 'LOCAL_PROJECT']).isRequired,
+        type: PropTypes.shape({
+          key: PropTypes.oneOf(
+            ['IMPORTED_TM', 'LOCAL_PROJECT', 'MT']).isRequired,
+          metadata: PropTypes.string
+        }).isRequired,
         contentState: PropTypes.oneOf(['Translated', 'Approved'])
       })),
       similarityPercent: PropTypes.number,
@@ -44,10 +47,10 @@ class Suggestion extends React.Component {
   matchType = (suggestion) => {
     let topMatch = suggestion.matchDetails[0]
 
-    if (topMatch.type === 'IMPORTED_TM') {
+    if (topMatch.type.key === 'IMPORTED_TM') {
       return 'imported'
     }
-    if (topMatch.type === 'LOCAL_PROJECT') {
+    if (topMatch.type.key === 'LOCAL_PROJECT' || topMatch.type.key === 'MT') {
       if (topMatch.contentState === 'Translated') {
         return 'translated'
       }
