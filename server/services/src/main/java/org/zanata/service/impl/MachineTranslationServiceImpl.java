@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -89,6 +90,7 @@ public class MachineTranslationServiceImpl implements
 
     // this is org.zanata.magpie.model.BackendID#GOOGLE
     private static final String BACKEND_GOOGLE = "GOOGLE";
+    private static final String BACKEND_DEV = "DEV";
 
     private URI mtServiceURL;
     private String mtUser;
@@ -157,29 +159,36 @@ public class MachineTranslationServiceImpl implements
 
     private MTDocument getTranslationFromMT(MTDocument request,
             LocaleId toLocale) throws ZanataServiceException {
-        ResteasyClient client = new ResteasyClientBuilder().build();
 
-        ResteasyWebTarget webTarget = client.target(mtServiceURL).path("api")
-                .path("document").path("translate")
-                .queryParam("toLocaleCode", toLocale.getId());
-        Response response = webTarget.request(MediaType.APPLICATION_JSON_TYPE)
-                .header("X-Auth-User", mtUser)
-                .header("X-Auth-Token", mtToken)
-                .header("Content-Type", MediaType.APPLICATION_JSON)
-                .header("Accept", MediaType.APPLICATION_JSON)
-                .post(Entity.json(request));
+        try {
+            ResteasyClient client = new ResteasyClientBuilder().build();
 
-        if (response.getStatus() == 200) {
-            MTDocument result = response.readEntity(MTDocument.class);
-            if (!result.getWarnings().isEmpty()) {
-                log.warn("MT returned warnings: {}", result.getWarnings());
+            ResteasyWebTarget webTarget = client.target(mtServiceURL).path("api")
+                    .path("document").path("translate")
+                    .queryParam("toLocaleCode", toLocale.getId());
+            Response response = webTarget.request(MediaType.APPLICATION_JSON_TYPE)
+                    .header("X-Auth-User", mtUser)
+                    .header("X-Auth-Token", mtToken)
+                    .header("Content-Type", MediaType.APPLICATION_JSON)
+                    .header("Accept", MediaType.APPLICATION_JSON)
+                    .post(Entity.json(request));
+
+            int status = response.getStatus();
+            if (status == 200) {
+                MTDocument result = response.readEntity(MTDocument.class);
+                if (!result.getWarnings().isEmpty()) {
+                    log.warn("MT returned warnings: {}", result.getWarnings());
+                }
+                return result;
+            } else {
+                String entity = response.readEntity(String.class);
+                log.error("MT returned status: {}, header: {}, body: {}",
+                        status, response.getHeaders(), entity);
+                throw new ZanataServiceException("Error code " + status +
+                        " returned from MT: " + entity);
             }
-            return result;
-        } else {
-            log.error("MT returned status: {}, header: {}, body: {}",
-                    response.getStatus(), response.getHeaders(),
-                    response.readEntity(String.class));
-            throw new ZanataServiceException("failed to get translations from MT");
+        } catch (ProcessingException e) {
+            throw new ZanataServiceException("Exception while talking to MT", 502, e);
         }
     }
 
@@ -266,16 +275,13 @@ public class MachineTranslationServiceImpl implements
     private void translateInBatch(List<HTextFlow> textFlows,
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
-        int index = 0;
-        while (index < textFlows.size()) {
+        int batchStart = 0;
+        while (batchStart < textFlows.size()) {
             // work out upper bound of index for each batch
-            int bound = Math.min(index + BATCH_SIZE, textFlows.size());
-            List<HTextFlow> sourceBatch = textFlows.subList(index, bound);
+            int batchEnd = Math.min(batchStart + BATCH_SIZE, textFlows.size());
+            List<HTextFlow> sourceBatch = textFlows.subList(batchStart, batchEnd);
             List<TypeString> transContentBatch =
-                    transDoc.getContents().subList(index, bound);
-
-            index += bound;
-
+                    transDoc.getContents().subList(batchStart, batchEnd);
             try {
                 transactionUtil.run(() -> {
                     List<TransUnitUpdateRequest> updateRequests =
@@ -289,6 +295,7 @@ public class MachineTranslationServiceImpl implements
             } catch (Exception e) {
                 log.error("error prefilling translation with machine translation", e);
             }
+            batchStart = batchEnd;
         }
     }
 
@@ -349,6 +356,8 @@ public class MachineTranslationServiceImpl implements
     private String getRevisionComment(String backendId) {
         if (BACKEND_GOOGLE.equals(backendId)) {
             return "Translated by Google";
+        } else if (BACKEND_DEV.equals(backendId)) {
+            return "Pseudo-translated by MT (DEV)";
         } else {
             log.warn("Unexpected MT backendId: {}", backendId);
             return "Translated by MT backendId: " + backendId;

@@ -35,6 +35,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.dto.TranslationData;
@@ -71,10 +72,7 @@ public class TranslationService implements TranslationResource {
     @Inject
     private LocaleService localeServiceImpl;
 
-    /**
-     * See {@link org.zanata.model.type.TranslationSourceType#JS_EDITOR_ENTRY}
-     */
-    private final String sourceType = "JS";
+    private static final String sourceType = TranslationSourceType.JS_EDITOR_ENTRY.getAbbr();
 
     @Override
     @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
