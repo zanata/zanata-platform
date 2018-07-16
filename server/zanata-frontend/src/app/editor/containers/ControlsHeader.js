@@ -136,7 +136,7 @@ export const ControlsHeader = ({
         <EditorSearchInput />
       </div>
       <div className="u-floatRight controlHeader-right">
-        <ul className="u-listHorizontal u-textCenter">
+        <ul className="u-listHorizontal tc">
           <li className="u-sMV-1-4">
             <Pager
               firstPage={firstPage}

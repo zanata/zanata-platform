@@ -36,7 +36,7 @@ public class LanguagesPage extends BasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(LanguagesPage.class);
     private By addLanguageButton = By.id("btn-language-add-new");
-    private By defaultLabel = By.className("label-default");
+    private By defaultLabel = By.className("ant-tag");
 
     public LanguagesPage(WebDriver driver) {
         super(driver);
@@ -89,6 +89,14 @@ public class LanguagesPage extends BasePage {
     public boolean languageIsEnabledByDefault(String localeId) {
         log.info("Query is language enabled by default {}", localeId);
         // Search for enabledByDefaultLabel label
-        return !findRowByLocale(localeId).findElements(defaultLabel).isEmpty();
+        List<WebElement> tags = findRowByLocale(localeId)
+          .findElements(defaultLabel);
+            for (WebElement tag : tags) {
+                if (tag.getText().contains("DEFAULT")) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
-}
+

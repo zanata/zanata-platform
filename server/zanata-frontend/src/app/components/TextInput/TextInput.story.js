@@ -3,7 +3,6 @@ import React from 'react'
 import { action } from '@storybook/addon-actions'
 import { storiesOf } from '@storybook/react'
 import { TextInput } from '../'
-import { Well } from 'react-bootstrap'
 
 storiesOf('TextInput', module)
     .add('default', () => (
@@ -11,7 +10,7 @@ storiesOf('TextInput', module)
           <h2><img
               src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
               width="42px"/> TextInput</h2>
-          <Well bsSize="large">Basic text input field</Well>
+          <p>Basic text input field</p>
       <TextInput
           maxLength={100}
           id='demo'

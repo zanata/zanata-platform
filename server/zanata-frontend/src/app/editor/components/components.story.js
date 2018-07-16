@@ -8,7 +8,9 @@ require('./ActivityFeedItem/ActivityFeedItem.story')
 require('./ActivitySelectList/ActivitySelectList.story')
 require('./Button/Button.story.js')
 require('./CommentBox/CommentBox.story')
+/*
 require('./ConcurrentModal/Concurrent.story.js')
+ */
 require('./DateAndTimeDisplay/DateAndTimeDisplay.story')
 require('./EditorSearchInput/EditorSearchInput.story.js')
 require('./GlossarySearchInput/GlossarySearchInput.story.js')

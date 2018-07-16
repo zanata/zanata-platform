@@ -90,23 +90,23 @@ class UserProfile extends Component {
 
     let content
     if (user.loading || loading) {
-      content = (<div className='userProfile bstrapReact'>
+      content = (<div className='userProfile'>
         <LoaderText className='loaderText s8' loading />
       </div>)
     } else if (isEmpty(username)) {
-      content = <div className='u-flexColumn userProfile-wrapper bstrapReact'>
+      content = <div className='u-flexColumn userProfile-wrapper'>
       </div>
     } else {
-      content = (<div className='u-flexColumn userProfile-wrapper bstrapReact'>
+      content = (<div className='u-flexColumn userProfile-wrapper'>
         <div className='userProfile-details' id='userProfile-overview'>
           <img className='userProfile-details-avatar'
             src={user.imageUrl ? user.imageUrl : ''} alt={username} />
           <div className='u-flexColumn details-text'>
             {name &&
-              <div className='username h1 ellipsis'
+              <h1 className='fw5 ellipsis'
                 id='profile-displayname'>
               {name}
-              </div>
+              </h1>
             }
             <ul className='largeFontList'>
               <li className='u-flexCenter' id='profile-username'>
@@ -120,8 +120,7 @@ class UserProfile extends Component {
               </li>)}
               {languageTeams &&
               (<ul id='profileLanguages'>
-                <Icon name='language' className='s0' title='Spoken languages'
-                  parentClassName='iconLanguage u-pullLeft' />
+                <Icon name='language' className='s0' title='Spoken languages' />
                 <li>{languageTeams}</li>
               </ul>)}
               {roles && isLoggedIn &&

@@ -1,4 +1,4 @@
-@import "../../styles/variables.less";
+@import "../../styles/antdvars.less";
 
 #tmxExportModal {
   // These are bootstrap overrides specific to this modal
@@ -22,7 +22,7 @@
     font-weight: 500;
   }
 
-  .tmxExport p.u-textWarning {
+  .tmxExport p.txt-warn {
     font-size: 0.75rem;
   }
 
@@ -41,24 +41,24 @@
   }
 
   table.tmxTable tbody tr td:first-child {
-    color: @color-light;
+    color: @info-color;
   }
 
   table.tmxTable .btn-sm {
-    padding: @spacing-small-horizontal @spacing-large-horizontal;
+    padding: 0.31rem 0.62rem;
   }
 
   .asterix {
     vertical-align: bottom;
-    margin-left: @spacing-half-base;
-    color: @color-warning;
+    margin-left: 0.5rem;
+    color: @error-color;
   }
 
   table.tmxTable .badge {
-    background-color: @color-muted;
+    background-color: @muted-color;
     color: #fff;
     font-size: 1rem;
-    line-height: @line-height-small;
+    line-height: 1;
     width: 4rem;
     font-weight: 400;
     height: 100%;
@@ -73,7 +73,7 @@
   .tmxExport p.allWarnings .btn-link {
     font-size: 0.75rem;
     line-height: @spacing-base;
-    color: @color-warning;
+    color: @warning-color;
   }
 
   .tmxExport p.allWarnings .btn-link .n1 {

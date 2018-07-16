@@ -8,6 +8,7 @@ import {
 import { UNSPECIFIED } from '../utils/reject-trans-util'
 import { SEVERITY } from '../../actions/common-actions'
 
+/** @type {import('./state').ReviewState} */
 const defaultState = {
   notification: undefined,
   showReviewModal: false,

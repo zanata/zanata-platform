@@ -209,11 +209,11 @@ class Glossary extends Component {
         className='reactList'
         ref={(c) => { this.list = c }} />)
     } else {
-      list = (<div className='loader-loadingContainer'>
-        <span className='u-textLoadingMuted'>
+      list = (<div>
+        <p className='txt-muted tc'>
           <Icon name='glossary' />
-        </span>
-        <p className='glossaryText-muted'>No content</p>
+        </p>
+        <p className='txt-muted b tc'>No content</p>
       </div>)
     }
 
@@ -223,11 +223,11 @@ class Glossary extends Component {
         <div className='wideView' id='glossary'>
           <Layout>
             <ViewHeader title={headerTitle} />
-            <div className='glossaryHeader'>
+            <div>
               <Row>
                 {termCount > 0 &&
                   <Row>
-                    <Col span={2} offset={1}>
+                    <Col span={1} offset={1}>
                       <Select options={pageSizeOption}
                         placeholder='Terms per page'
                         value={intPageSize}
@@ -240,7 +240,7 @@ class Glossary extends Component {
                   </Row>
                 }
                 {displayPaging &&
-                  <div className='u-pullRight glossaryPaging'>
+                  <div className='fr glossaryPaging'>
                     <Button aria-label='button'
                       className='btn-link' disabled={currentPage <= 1}
                       title='First page' icon='left'
@@ -256,7 +256,7 @@ class Glossary extends Component {
                           gotoPreviousPage(currentPage, totalPage)
                         }}
                     />
-                    <span className='u-textNeutral-top'>
+                    <span className='txt-neutral'>
                       {currentPage} of {totalPage}
                     </span>
                     <Button aria-label='button'
@@ -275,7 +275,7 @@ class Glossary extends Component {
                         gotoLastPage(currentPage, totalPage)
                       }}
                     />
-                    <span className='textNeutralTotal'
+                    <span className='txt-neutral'
                       title='Total glossary terms'>
                       <Row>
                         <Icon name='glossary' className='s1' /> {termCount}

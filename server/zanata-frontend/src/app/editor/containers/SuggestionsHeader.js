@@ -97,14 +97,14 @@ class SuggestionsHeader extends React.Component {
 
     return (
       <nav className="Editor-suggestionsHeader u-bgHighest u-sPH-3-4">
-        <h2 className="Heading--panel u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
+        <h2 className="Heading--panel u-textPrimary u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
           <span className="u-textMuted">
             <Icon name="suggestions" className="s0" />
           </span>
           Suggestions
         </h2>
-        <div className="u-floatRight">
-          <ul className="u-listHorizontal u-textCenter">
+        <div className="fr">
+          <ul className="u-listHorizontal tc">
           {/*
             <li className="u-smv-1-4">
               <a className="Link--neutral u-sizeHeight-1_1-2"

@@ -105,7 +105,7 @@ class TMMergeProjectSources extends Component {
       ? DO_NOT_RENDER
       : (
       <span>
-        <Search className='textInput'
+        <Search
           placeholder='input search text'
           onSearch={this.projectSearchTermChanged}
           enterButton />
@@ -117,7 +117,7 @@ class TMMergeProjectSources extends Component {
             <React.Fragment>
               <LoaderText loading={fetchingProject}
                 loadingText={'Fetching Projects'} />
-              <span className='u-textMuted'>{noResults}</span>
+              <span className='txt-muted'>{noResults}</span>
             </React.Fragment>
             <ProjectVersionPanels projectVersions={projectVersions}
               selectedVersions={mergeOptions.selectedVersions}
@@ -140,12 +140,12 @@ class TMMergeProjectSources extends Component {
           <Col span={24} className='v-mid'>
             <Switch defaultChecked
               onChange={this.toggleChange} />
-            <span className='f4 ml2'>From </span>
-            <span className='f4 b mr2'>Project Source</span>
+            <span className='f4 ml2 v-mid'>From </span>
+            <span className='f4 b mr2 v-mid'>Project Source</span>
             <Tooltip placement='right'
               title={fromProjectSourceTooltip}>
-              <a className='btn-link tooltip-btn' aria-label='button'>
-                <Icon name='info' className='s0' />
+              <a className='btn-link pa0' aria-label='button'>
+                <Icon name='info' className='s0 v-mid' />
               </a>
             </Tooltip>
           </Col>
@@ -181,7 +181,7 @@ class TMMergeProjectSources extends Component {
           <Col span={24}>
             <Card>
               <p>Translations which satisfy all conditions will copy as
-                <span className='u-textBold u-textSuccess'> translated</span>.
+                <span className='b txt-success'> translated</span>.
               </p>
             </Card>
           </Col>

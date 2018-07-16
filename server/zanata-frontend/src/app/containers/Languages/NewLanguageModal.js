@@ -126,7 +126,7 @@ class NewLanguageModal extends Component {
   renderSuggestion = (suggestion) => {
     return (
       <span name='new-language-displayName'>
-        <span className='u-textLight'>
+        <span className='txt-muted'>
           {suggestion.displayName}
         </span> <span className='u-textSuggestion'>
           {suggestion.localeId}
@@ -239,11 +239,11 @@ class NewLanguageModal extends Component {
               <span>Plural forms {' '}
                 <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
                   target='_blank'>
-                  <Icon name='info' className='s0' parentClassName='iconInfo'
+                  <Icon name='info' className='s0'
                     title='Help' />
                 </a>
                 {showPluralFormsWarning &&
-                  <div className='u-textSmall'
+                  <div className='f6'
                     id='new-language-pluralforms-warning'>
                     No plural information available. Assuming no plurals.
                   </div>

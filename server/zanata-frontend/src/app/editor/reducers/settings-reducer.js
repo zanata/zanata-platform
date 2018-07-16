@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import { createSelector } from 'reselect'
@@ -29,7 +28,9 @@ export const XML_ENTITY = 'XML_ENTITY'
 export const PRINTF_VARIABLES = 'PRINTF_VARIABLES'
 export const PRINTF_XSI_EXTENSION = 'PRINTF_XSI_EXTENSION'
 
-/* Parse values of known settings to appropriate types */
+/** Parse values of known settings to appropriate types
+ */
+// @ts-ignore any
 function parseKnownSettings (settings) {
   return mapValues(settings, (value, key) => {
     try {
@@ -49,12 +50,15 @@ function parseKnownSettings (settings) {
   })
 }
 
-/* convenience function to construct an empty setting body */
+/** convenience function to construct an empty setting body
+ * @param value {any}
+ */
 const newSetting = value => ({ value, saving: false, error: undefined })
 
 // Default validator value: one of ['Error','Warning','Off']
 export const defaultValidation = 'Off'
 
+/** @type {import('./state').EditorSettingsState} */
 export const defaultState = {
   // state for all settings being requested on app load
   fetching: false,
@@ -80,26 +84,37 @@ export const defaultState = {
 }
 
 /* Selectors */
+/** @param settings {import('./state').EditorSettingsState} */
 export const getSuggestionsPanelVisible = settings =>
   settings.settings[KEY_SUGGESTIONS_VISIBLE].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getEnterSavesImmediately = settings =>
   settings.settings[ENTER_SAVES_IMMEDIATELY].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getSyntaxHighlighting = settings =>
   settings.settings[SYNTAX_HIGHLIGTING].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getSuggestionsDiff = settings =>
   settings.settings[SUGGESTIONS_DIFF].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getValidateHtmlXml = settings =>
   settings.settings[HTML_XML].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getValidateNewLine = settings =>
   settings.settings[NEW_LINE].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getValidateTab = settings =>
   settings.settings[TAB].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getValidateJavaVariables = settings =>
   settings.settings[JAVA_VARIABLES].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getValidateXmlEntity = settings =>
   settings.settings[XML_ENTITY].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getValidatePrintfVariables = settings =>
   settings.settings[PRINTF_VARIABLES].value
+/** @param settings {import('./state').EditorSettingsState} */
 export const getValidatePrintfXsi = settings =>
   settings.settings[PRINTF_XSI_EXTENSION].value
 export const getShortcuts = createSelector(getEnterSavesImmediately,
@@ -107,6 +122,7 @@ export const getShortcuts = createSelector(getEnterSavesImmediately,
     // Both shortcuts are at index 0, but replacing by value in case they move
     GOTO_NEXT_ROW_FAST: {
       keyConfig: {
+        // @ts-ignore any
         keys: {$apply: keys => keys.map(v => v === 'mod+enter' ? 'enter' : v)}
       }
     }
@@ -114,12 +130,14 @@ export const getShortcuts = createSelector(getEnterSavesImmediately,
 
 export default handleActions({
   [SETTING_UPDATE]: (state, { payload }) => {
+    // @ts-ignore
     const keys = Object.keys(payload)
     if (keys.length !== 1) {
       console.error(`expected object with exactly 1 key, but got: ${JSON.stringify(payload)}`) // eslint-disable-line max-len
       return state
     }
     const key = keys[0]
+    // @ts-ignore
     const value = payload[key]
     if (!has(state.settings, key)) {
       console.error(`updating ${key}, but it is not in state to update`)
@@ -173,17 +191,20 @@ export default handleActions({
     fetching: {$set: false},
     error: {$set: payload}
   }),
+  // @ts-ignore meta
   [SETTINGS_SAVE_REQUEST]: (state, { meta: {settings} }) => update(state, {
-    settings: mapValues(settings, value => ({saving: {$set: true}}))
+    settings: mapValues(settings, _value => ({saving: {$set: true}}))
   }),
+  // @ts-ignore meta
   [SETTINGS_SAVE_SUCCESS]: (state, { meta: {settings} }) => update(state, {
-    settings: mapValues(settings, value => ({
+    settings: mapValues(settings, _value => ({
       saving: {$set: false},
       error: {$set: undefined}
     }))
   }),
+  // @ts-ignore meta
   [SETTINGS_SAVE_FAILURE]: (state, { payload, meta }) => update(state, {
-    settings: mapValues(meta.settings, value => ({
+    settings: mapValues(meta.settings, _value => ({
       saving: {$set: false},
       error: {$set: payload}
     }))

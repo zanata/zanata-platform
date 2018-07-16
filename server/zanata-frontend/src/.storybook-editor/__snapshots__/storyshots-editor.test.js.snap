@@ -5438,6 +5438,7 @@ exports[`Editor Storyshots CommentBox default 1`] = `
 </div>
 `;
 
+<<<<<<< HEAD
 exports[`Editor Storyshots Concurrent editing modal 1`] = `
 <div
   style={
@@ -5527,6 +5528,8 @@ exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
 </div>
 `;
 
+=======
+>>>>>>> master
 exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
 <div
   style={
@@ -6536,7 +6539,7 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
           className="ant-col-12"
         >
           <h3
-            className="txt-info"
+            className="u-textInfo"
           >
             Translation : 
             de
@@ -6580,7 +6583,9 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                   <span
                     className="loaderText"
                   >
-                    <span>
+                    <span
+                      className="f5 b"
+                    >
                       Searching...
                       <span
                         className="loader"
@@ -6616,7 +6621,9 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                   <span
                     className="loaderText"
                   >
-                    <span>
+                    <span
+                      className="f5 b"
+                    >
                       Searching...
                       <span
                         className="loader"

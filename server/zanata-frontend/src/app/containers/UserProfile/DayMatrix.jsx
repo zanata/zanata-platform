@@ -41,7 +41,8 @@ const DayMatrix = ({
       {date
         ? <Button aria-label='button'
           onClick={() => handleSelectedDayChanged(date)}
-          className={date === selectedDay ? btnStyle + ' active' : btnStyle}
+          className={date === selectedDay ? btnStyle +
+            ' btn-default active' : btnStyle + ' btn-default'}
           disabled={dateIsInFuture || !date}
           // @ts-ignore
           title={wordCount + ' words'}>

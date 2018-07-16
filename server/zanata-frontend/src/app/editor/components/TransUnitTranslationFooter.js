@@ -211,7 +211,7 @@ class TransUnitTranslationFooter extends React.Component {
       saveAsMode && statusShortcutKeys[selectedButtonStatus]
     const actionButton = (
       <Button
-        className={cx('EditorButton u-sizeHeight-1_1-4 u-textCapitalize',
+        className={cx('EditorButton u-sizeHeight-1_1-4 ttc',
                       buttonClassByStatus[selectedButtonStatus])}
         disabled={isSaving || !translationHasChanged}
         onClick={saveCallback}>

@@ -148,7 +148,7 @@ class Entry extends Component {
             <td className='td-3 tight'>
               {secondColumnContent}
             </td>
-            <td className='hidesmall td-3 tight'>
+            <td className='td-3 tight'>
             {termsLoading
               ? loadingDiv
               : (<EditableText
@@ -186,8 +186,7 @@ class Entry extends Component {
                       handleTermFieldUpdate(field, e)}
                     handleUpdateTerm={(entry) =>
                       handleUpdateTerm(entry, false)} />
-                  <div
-                    className='u-row--transparent row--selected editable-op1'>
+                  <div>
                     <div className='hidden-lesm'>
                       <Row className='entry-row'>
                         {updateButton}

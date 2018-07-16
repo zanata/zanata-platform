@@ -40,7 +40,7 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
       <span>I will need to review it</span><br />
       <CopyLabel type={FUZZY} value={value} />
       <Tooltip placement='right' title={copyAsFuzzyTooltip}>
-        <a className="btn-link tooltip-btn iconInfoVersionMerge" role="button">
+        <a className="btn-link pa0 v-mid ml1 txt-info" role="button">
           <Icon name="info" className="s0" />
         </a>
       </Tooltip>

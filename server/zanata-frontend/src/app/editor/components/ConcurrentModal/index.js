@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react'
-import { Alert } from 'react-bootstrap'
+import Alert from 'antd/lib/alert'
+import 'antd/lib/alert/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Card from 'antd/lib/card'
@@ -32,15 +33,15 @@ class ConcurrentModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alert bsStyle="danger"><span className="alert-link"><a
+          <Alert type="danger"><span className="alert-link"><a
             href="">Username</a></span> has saved a new version while you
             are editing. Please resolve conflicts.</Alert>
             <Card>
-              <p className="u-sizeHeight-1_1-2">
+              <span className="u-sizeHeight-1_1-2">
                 <strong>Username</strong> created a <span
                   className='u-textSuccess'>Translated</span> revision
                 <Tag color='blue'>latest</Tag>
-              </p>
+              </span>
               <span className="revisionBox">
                 <Textarea
                   className='form-control'
@@ -58,9 +59,9 @@ class ConcurrentModal extends React.Component {
               </span>
             </Card>
             <Card>
-              <p className="u-sizeHeight-1_1-2"><strong>You</strong> created
+              <span className="u-sizeHeight-1_1-2"><strong>You</strong> created
                 an <span className="u-textHighlight">Unsaved</span> revision.
-              </p>
+              </span>
               <span className="revisionBox">
                 <Textarea
                   className='form-control'
