@@ -101,6 +101,7 @@ storiesOf('MTMergeModal', module)
       projectSlug='myProject'
       versionSlug='myVersion'
       onCancel={action('onCancel')}
+      onCancelMTMerge={action('onCancelMTMerge')}
       onSubmit={action('onSubmit')}
       mergeProcessFinished={action('mergeProcessFinished')}
       queryMTMergeProgress={action('queryMTMergeProgress')}

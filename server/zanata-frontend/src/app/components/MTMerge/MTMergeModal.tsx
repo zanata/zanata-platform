@@ -4,6 +4,7 @@ import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import { replace } from 'lodash'
 import { LocaleId, Locale, ProcessStatus } from '../../utils/prop-types-util'
 import { getVersionLanguageSettingsUrl } from '../../utils/UrlHelper'
 import { STATUS_NEEDS_WORK } from '../../editor/utils/phrase'
@@ -24,7 +25,6 @@ export type MTMergeModalStateProps = Readonly<{
   showMTMerge: boolean
   availableLocales: Locale[]
   processStatus?: ProcessStatus
-  notification?: any
 }>
 
 // Redux dispatch, ie connect's TDispatchProps
@@ -33,6 +33,7 @@ export type MTMergeModalDispatchProps = Readonly<{
   queryMTMergeProgress: (url: string) => void
   onSubmit: (projectSlug: string, projectVersion: string, mtMergeOptions: MTMergeAPIOptions) => void
   onCancel: () => void
+  onCancelMTMerge: (url: string) => void
 }>
 
 // connect's TOwnProps
@@ -81,17 +82,21 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
       projectSlug,
       versionSlug,
       availableLocales,
-      // notification,
-      // triggered,
       processStatus,
+      onCancelMTMerge,
       queryMTMergeProgress,
     } = this.props
     const enableSubmit = this.state.checkedLocales.length > 0 && !processStatus
     const queryProgress = () => {
       queryMTMergeProgress(processStatus ? processStatus.url : '')
     }
-    // TODO: disable or implement mt merge cancel
-    const cancelMerge = () => 'cancel'
+    const cancelMerge = () => {
+      if (this.props.processStatus) {
+        const cancelUrl = replace(this.props.processStatus.url,
+          '/rest/process/', '/rest/process/cancel/')
+        onCancelMTMerge(cancelUrl)
+      }
+    }
     return (
       <Modal
         title="Machine Translation Batch Merge"

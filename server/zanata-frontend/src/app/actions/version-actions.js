@@ -40,6 +40,9 @@ import {
   TM_MERGE_CANCEL_REQUEST,
   TM_MERGE_CANCEL_SUCCESS,
   TM_MERGE_CANCEL_FAILURE,
+  MT_MERGE_CANCEL_REQUEST,
+  MT_MERGE_CANCEL_SUCCESS,
+  MT_MERGE_CANCEL_FAILURE,
   MT_MERGE_PROCESS_FINISHED,
   TM_MERGE_PROCESS_FINISHED
 } from './version-action-types'
@@ -287,6 +290,22 @@ export function cancelTMMergeRequest (url) {
     TM_MERGE_CANCEL_REQUEST,
     TM_MERGE_CANCEL_SUCCESS,
     TM_MERGE_CANCEL_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(url, 'POST', getJsonHeaders(), types)
+  }
+}
+
+/**
+ * @param {string} url
+ * @returns {APIAction} redux api action object
+ */
+export function cancelMTMergeRequest (url) {
+  /** @type {APITypes} */
+  const types = [
+    MT_MERGE_CANCEL_REQUEST,
+    MT_MERGE_CANCEL_SUCCESS,
+    MT_MERGE_CANCEL_FAILURE
   ]
   return {
     [CALL_API]: buildAPIRequest(url, 'POST', getJsonHeaders(), types)

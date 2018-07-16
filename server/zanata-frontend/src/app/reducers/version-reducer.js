@@ -20,7 +20,9 @@ import {
   // QUERY_TM_MERGE_PROGRESS_SUCCESS,
   QUERY_TM_MERGE_PROGRESS_FAILURE,
   MT_MERGE_PROCESS_FINISHED,
-  TM_MERGE_PROCESS_FINISHED
+  TM_MERGE_PROCESS_FINISHED,
+  MT_MERGE_CANCEL_FAILURE,
+  MT_MERGE_CANCEL_SUCCESS
 } from '../actions/version-action-types'
 import { SEVERITY, statusToSeverity } from '../actions/common-actions'
 
@@ -227,6 +229,29 @@ const version = handleActions({
             : SEVERITY.INFO}`,
           message: `MT Merge finished ${state.MTMerge.processStatus
             ? 'with status: ' + state.MTMerge.processStatus.statusCode : ''}`
+        }
+      }
+    })
+  },
+  [MT_MERGE_CANCEL_SUCCESS]: (state, _action) => {
+    return update(state, {
+      MTMerge: { processStatus: { $set: undefined } },
+      notification: {
+        $set: {
+          severity: SEVERITY.SUCCESS,
+          message: 'MT Merge cancelled successfuly',
+        }
+      }
+    })
+  },
+  [MT_MERGE_CANCEL_FAILURE]: (state, action) => {
+    return update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: 'Cancel MT Merge request failed',
+          description: action.error,
+          duration: null
         }
       }
     })
