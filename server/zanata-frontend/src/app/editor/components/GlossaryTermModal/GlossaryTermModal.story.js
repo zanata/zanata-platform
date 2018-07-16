@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import Lorem from 'react-lorem-component'
 import GlossaryTermModal from './component'
 
 const defaultClick = () => {}
@@ -12,11 +11,7 @@ storiesOf('GlossaryTermModal', module)
   .addDecorator((story) => (
     <React.Fragment>
       <h1>Lorem Ipsum</h1>
-      <Lorem count={1} />
-      <Lorem mode="list" />
       <h2>Dolor Sit Amet</h2>
-      <Lorem />
-      <Lorem mode="list" />
       <div className="static-modal">
         {story()}
       </div>
