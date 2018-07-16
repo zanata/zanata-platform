@@ -25,7 +25,8 @@ const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
         // projectVersions,
         processStatus,
         // queryStatus
-      }
+      },
+      notification
     }
   } = state
   return {
@@ -33,7 +34,7 @@ const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
     // triggered,
     availableLocales: locales as Locale[],
     // projectVersions,
-    // notification,
+    notification,
     processStatus,
     // queryStatus
   }

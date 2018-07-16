@@ -22,6 +22,7 @@ import {
   MT_MERGE_PROCESS_FINISHED,
   TM_MERGE_PROCESS_FINISHED
 } from '../actions/version-action-types'
+import { SEVERITY, statusToSeverity } from '../actions/common-actions'
 
 /** @typedef {import('./state').ProjectVersionState} ProjectVersionState */
 
@@ -218,7 +219,16 @@ const version = handleActions({
   },
   [MT_MERGE_PROCESS_FINISHED]: (state, _action) => {
     return update(state, {
-      MTMerge: { processStatus: { $set: undefined } }
+      // MTMerge: { processStatus: { $set: undefined } },
+      notification: {
+        $set: {
+          severity: `${state.MTMerge.processStatus
+            ? statusToSeverity(state.MTMerge.processStatus.statusCode)
+            : SEVERITY.INFO}`,
+          message: `MT Merge finished ${state.MTMerge.processStatus
+            ? 'with status: ' + state.MTMerge.processStatus.statusCode : ''}`
+        }
+      }
     })
   },
   [TM_MERGE_PROCESS_FINISHED]: (state, _action) => {

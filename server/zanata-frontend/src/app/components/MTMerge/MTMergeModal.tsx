@@ -5,10 +5,11 @@ import 'antd/lib/modal/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import { LocaleId, Locale, ProcessStatus } from '../../utils/prop-types-util'
+import { getVersionLanguageSettingsUrl } from '../../utils/UrlHelper'
 import { STATUS_NEEDS_WORK } from '../../editor/utils/phrase'
+import { isProcessEnded } from '../../utils/EnumValueUtils'
 import { MTMergeOptions, MTTranslationStatus } from './MTMergeOptions'
 import CancellableProgressBar from '../ProgressBar/CancellableProgressBar'
-import { getVersionLanguageSettingsUrl } from '../../utils/UrlHelper'
 
 export type MTTranslationStatus = MTTranslationStatus
 
@@ -23,6 +24,7 @@ export type MTMergeModalStateProps = Readonly<{
   showMTMerge: boolean
   availableLocales: Locale[]
   processStatus?: ProcessStatus
+  notification?: any
 }>
 
 // Redux dispatch, ie connect's TDispatchProps
@@ -61,11 +63,11 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
 
   // @ts-ignore any
   componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
     const { processStatus } = this.props
-    if (processStatus !== prevProps.processStatus
-      && (processStatus && processStatus.percentageComplete >= 100)) {
-        this.props.mergeProcessFinished()
+    if (processStatus !== prevProps.processStatus && (processStatus)) {
+      if (isProcessEnded(processStatus)) {
+        setTimeout(this.props.mergeProcessFinished, 1000)
+      }
     }
   }
 
@@ -84,7 +86,7 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
       processStatus,
       queryMTMergeProgress,
     } = this.props
-    const enableSubmit = this.state.checkedLocales.length > 0
+    const enableSubmit = this.state.checkedLocales.length > 0 && !processStatus
     const queryProgress = () => {
       queryMTMergeProgress(processStatus ? processStatus.url : '')
     }
@@ -99,7 +101,7 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
         destroyOnClose={true}
         footer={[
           <Button key="back" onClick={this.handleCancel}>
-            Cancel
+            Close
           </Button>,
           <Button key="submit" type="primary" onClick={this.handleOk} disabled={!enableSubmit}>
             Run Merge
@@ -148,7 +150,12 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
   }
 
   private handleCancel = (_: any) => {
+    const { processStatus } = this.props
     this.props.onCancel()
+    // If a merge has completed, reload the page to see the MT merge results
+    if (processStatus && isProcessEnded(processStatus)) {
+      setTimeout(window.location.reload.bind(window.location), 1000)
+    }
   }
 
   private onLocaleChange = (checkedLocales: LocaleId[]) => {
