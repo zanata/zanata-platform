@@ -66,8 +66,7 @@ describe('DraggableVersionPanels', () => {
         removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <span>
-        <React.Fragment>
+      <React.Fragment>
         <Layout className="d-inh">
         Adjust priority of selected versions
         <br />
@@ -91,7 +90,6 @@ describe('DraggableVersionPanels', () => {
           value={someVersions[1]} removeVersion={callback} />
         </Layout>
       </React.Fragment>
-      </span>
     )
     expect(actual).toEqual(expected)
   })

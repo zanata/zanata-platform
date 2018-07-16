@@ -123,16 +123,14 @@ class TransUnit extends React.Component {
       'undoEdit'
     ])
     return (
-      <React.Fragment>
-        <div className={className}
-          onClick={this.selectPhrase}>
-          <TransUnitStatus phrase={this.props.phrase} />
-          <TransUnitSourcePanel {...phraseSourcePanelProps} />
-          <TransUnitTranslationPanel {...phraseTranslationPanelProps}
-            saveDropdownKey={this.props.phrase.id}
-            showRejectModal={this.props.toggleRejectModal} />
-        </div>
-      </React.Fragment>
+      <div className={className}
+        onClick={this.selectPhrase}>
+        <TransUnitStatus phrase={this.props.phrase} />
+        <TransUnitSourcePanel {...phraseSourcePanelProps} />
+        <TransUnitTranslationPanel {...phraseTranslationPanelProps}
+          saveDropdownKey={this.props.phrase.id}
+          showRejectModal={this.props.toggleRejectModal} />
+      </div>
     )
   }
 }

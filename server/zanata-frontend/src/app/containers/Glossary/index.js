@@ -223,7 +223,6 @@ class Glossary extends Component {
         <div className='wideView' id='glossary'>
           <Layout>
             <ViewHeader title={headerTitle} />
-            <React.Fragment>
               <Row>
                 {termCount > 0 &&
                   <Row>
@@ -284,8 +283,6 @@ class Glossary extends Component {
                   </div>
                 }
               </Row>
-            </React.Fragment>
-
             <div className='glossaryList'>
               {list}
             </div>

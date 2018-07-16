@@ -36,17 +36,15 @@ class App extends Component {
       '/signup': configLinks.registerUrl
     }
     return (
-      <React.Fragment>
-        <div className='view'>
-          <Icons />
-          <Helmet
-            title='Zanata'
-            titleTemplate='Zanata: %s'
-          />
-          <Nav active={activePath} links={links} loading={loading} />
-          <div className='containerSidebar'>{children}</div>
-        </div>
-      </React.Fragment>
+      <div className='view'>
+        <Icons />
+        <Helmet
+          title='Zanata'
+          titleTemplate='Zanata: %s'
+        />
+        <Nav active={activePath} links={links} loading={loading} />
+        <div className='containerSidebar'>{children}</div>
+      </div>
     )
   }
 }

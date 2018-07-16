@@ -13,11 +13,9 @@ const SettingsOptions = ({settings, updateSetting, disabled}) => {
     </li>
   ))
   return (
-    <React.Fragment>
-      <ul>
-        {checkboxes}
-      </ul>
-    </React.Fragment>
+    <ul>
+      {checkboxes}
+    </ul>
   )
 }
 
