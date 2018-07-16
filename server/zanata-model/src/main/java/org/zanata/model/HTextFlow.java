@@ -222,8 +222,6 @@ public class HTextFlow extends HTextContainer implements Serializable,
         this.document = document;
     }
 
-    // TODO use orphanRemoval=true: requires JPA 2.0
-
     @OneToOne(optional = true, fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "comment_id")
