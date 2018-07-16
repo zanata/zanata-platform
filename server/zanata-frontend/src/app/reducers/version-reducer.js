@@ -17,7 +17,7 @@ import {
   VERSION_TM_MERGE_FAILURE,
   QUERY_MT_MERGE_PROGRESS_SUCCESS,
   QUERY_MT_MERGE_PROGRESS_FAILURE,
-  // QUERY_TM_MERGE_PROGRESS_SUCCESS,
+  QUERY_TM_MERGE_PROGRESS_SUCCESS,
   QUERY_TM_MERGE_PROGRESS_FAILURE,
   MT_MERGE_PROCESS_FINISHED,
   TM_MERGE_PROCESS_FINISHED,
@@ -207,12 +207,13 @@ const version = handleActions({
       MTMerge: { queryStatus: { $set: action.error } }
     })
   },
-  // [QUERY_TM_MERGE_PROGRESS_SUCCESS]: (state, action) => {
-  //   return update(state, {
-  //     // Using merge to ensure cancelUrl is not lost
-  //     TMMerge: { processStatus: { $merge: action.payload } }
-  //   })
-  // },
+  [QUERY_TM_MERGE_PROGRESS_SUCCESS]: (state, action) => {
+    // @ts-ignore
+    return update(state, {
+      // Using merge to ensure cancelUrl is not lost
+      TMMerge: { processStatus: { $merge: action.payload } }
+    })
+  },
   [QUERY_TM_MERGE_PROGRESS_FAILURE]: (state, action) => {
     // what do we do with failed status query?
     return update(state, {
