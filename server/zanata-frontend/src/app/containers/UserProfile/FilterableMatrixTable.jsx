@@ -40,7 +40,7 @@ const FilterableMatrixTable = ({
         categoryTitle='projectName'
         categoryName='Projects' />
     ])
-    : <div className='u-textMuted'>No contributions</div>
+    : <div className='txt-muted'>No contributions</div>
   return (
     <div>
       <div className='u-flexRow'>

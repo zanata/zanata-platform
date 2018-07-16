@@ -117,7 +117,7 @@ const Pager = ({
   }
 
   return (
-    <ul className="u-listHorizontal u-textCenter">
+    <ul className="u-listHorizontal tc">
       <PagerButton {...buttons.first} />
       <PagerButton {...buttons.prev} />
       <li className="u-sizeHeight-1 u-sPH-1-4">

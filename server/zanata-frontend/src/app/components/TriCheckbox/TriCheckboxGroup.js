@@ -3,7 +3,6 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import RealTriCheckbox from '.'
-import { ListGroup, ListGroupItem } from 'react-bootstrap'
 import { find } from 'lodash'
 
 class TriCheckboxGroup extends Component {
@@ -81,7 +80,7 @@ class TriCheckboxGroup extends Component {
   render () {
     const optionGroup = this.props.options.map((value, index) => {
       return (
-        <ListGroupItem key={index}>
+        <span className='list-group-item' key={index}>
           <RealTriCheckbox
             name={value.name}
             checked={this.state.options[index].checked}
@@ -89,23 +88,23 @@ class TriCheckboxGroup extends Component {
             onChange={this.subCheckboxClick}
           />
           {value.name}
-        </ListGroupItem>
+        </span>
       )
     })
     return (
       <div>
         <h3>Checkbox group with tri-state control</h3>
-        <ListGroup>
-          <ListGroupItem>
+        <span>
+          <span className='list-group-item'>
             <RealTriCheckbox
               checked={this.state.checked}
               indeterminate={this.state.indeterminate}
               onChange={this.masterCheckBoxClick}
             />
             <label>Fruits</label>
-          </ListGroupItem>
+          </span>
           {optionGroup}
-        </ListGroup>
+        </span>
       </div>
     )
   }

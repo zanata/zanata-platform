@@ -84,7 +84,7 @@ class AdminReview extends Component {
       </span>) : DO_NOT_RENDER
     return <div className='container centerWrapper' id='admin-review'>
       <Layout>
-        <Breadcrumb>
+        <Breadcrumb className='mt2'>
           <Breadcrumb.Item href='home'>
             <Link link='/admin/home'>Administration</Link>
           </Breadcrumb.Item>
@@ -114,7 +114,7 @@ class AdminReview extends Component {
         </span>
         {criteriaList}
         {newEntryForm}
-        <div className='mb3'>
+        <div className='mb3 mt3'>
           <Button type="primary" icon="plus"
             aria-label="button"
             onClick={this.showAddNewEntryForm}>

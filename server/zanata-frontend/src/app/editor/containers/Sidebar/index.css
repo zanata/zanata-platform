@@ -403,10 +403,6 @@ span.loader span div {
   color: var(--Sidebar-color-text);
 }
 
-.SidebarActivity .btn-toolbar {
-  margin-left: 1.5rem;
-}
-
 .SidebarToggle-hide span {
   vertical-align: sub;
 }
@@ -431,18 +427,6 @@ li .checkbox {
 
 li .checkbox input {
   margin-right: var(--Sidebar-spacing-small) !important;
-}
-
-.btn-toolbar .Button--primary {
-  margin-right: 0.75rem;
-}
-
-.btn-toolbar .Button--secondary {
-  margin-left: 0.75rem;
-}
-
-.btn-toolbar .Button--secondary .n1, .btn-toolbar .Button--primary .n1  {
-  vertical-align: middle;
 }
 
 .Button--spacing {
@@ -479,6 +463,8 @@ h1.SidebarEditor-heading button svg {
   margin-left: 0.75rem;
   margin-right: 0.75rem;
   margin-top: 1rem;
+  border-bottom: solid 1px #f7f7f7;
+  padding-bottom: 1rem;
 }
 
 .RevisionBox p {
@@ -507,6 +493,15 @@ h1.SidebarEditor-heading button svg {
 .RevisionBox p .s0 {
   padding-right: 0.375rem;
   vertical-align: sub;
+}
+
+td.info-icon .ant-btn.Button--link {
+  color: var(--Sidebar-color-highlight);
+}
+
+td.info-icon .ant-btn.Button--link:hover,
+td.info-icon .ant-btn.Button--link:focus {
+  color: var(--Sidebar-panel-dark);
 }
 
 img.ActivityAvatar {
@@ -605,6 +600,10 @@ h3.SettingsHeading {
 
 .ant-tabs-ink-bar {
   background-color: var(--Sidebar-color-text);
+}
+
+.SidebarEditor-wrapper .ant-btn-sm {
+  height: auto;
 }
 
 /* Media queries */

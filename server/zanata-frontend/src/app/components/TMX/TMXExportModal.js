@@ -150,7 +150,7 @@ class TMXExportModal extends Component {
           {size(srcLangRows) > 1 &&
             <p className='lead'>Source languages</p>}
             {srcLangRows}
-          <p className='u-textWarning'>
+          <p className='txt-warn'>
             {warningText}
           </p>
         </span>
