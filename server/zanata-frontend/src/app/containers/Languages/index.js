@@ -153,11 +153,8 @@ class Languages extends Component {
             }
             <div className='mt3 mb3'>
               {loading
-                ?
-                  <span className='di'>
-                    <LoaderText loading />
-                  </span>
-                : (
+                ? <span className='di'><LoaderText loading /></span>
+              : (
                 <span className='w-100 mt2'>
                   <Col xs={24} sm={23} md={8} className='ml3'>
                     <span>
@@ -203,24 +200,24 @@ class Languages extends Component {
                   </div>
                 }
                 {!loading && !noResults &&
-                    <table className='table' id='languages-table'>
-                      <thead>
-                        <tr className='dn mt4'>
-                          <th>Language</th>
-                          <th>&nbsp;</th>
-                          <th>&nbsp;</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                       {results.map(function (value, i) {
-                         return <Entry key={i} locale={value}
-                           userLanguageTeams={user.languageTeams}
-                           permission={permission}
-                           handleDelete={resetSearchText}
-                           isDeleting={deleting} />
-                       })}
-                      </tbody>
-                    </table>}
+                  <table className='table' id='languages-table'>
+                    <thead>
+                      <tr className='dn mt4'>
+                        <th>Language</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                     {results.map(function (value, i) {
+                       return <Entry key={i} locale={value}
+                         userLanguageTeams={user.languageTeams}
+                         permission={permission}
+                         handleDelete={resetSearchText}
+                         isDeleting={deleting} />
+                     })}
+                    </tbody>
+                  </table>}
             </div>
           </div>
         </Layout>

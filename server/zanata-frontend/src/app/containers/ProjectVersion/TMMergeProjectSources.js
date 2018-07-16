@@ -114,9 +114,9 @@ class TMMergeProjectSources extends Component {
             <span>
               Select source project versions to merge
             </span>
-              <LoaderText loading={fetchingProject}
-                loadingText={'Fetching Projects'} />
-              <span className='txt-muted'>{noResults}</span>
+            <LoaderText loading={fetchingProject}
+              loadingText={'Fetching Projects'} />
+            <span className='txt-muted'>{noResults}</span>
             <ProjectVersionPanels projectVersions={projectVersions}
               selectedVersions={mergeOptions.selectedVersions}
               onVersionCheckboxChange={onVersionCheckboxChange}

@@ -98,9 +98,9 @@ const CalendarMonthMatrix = ({
         </h3>
         {selectedDay &&
         (<Button className='btn-link btn-clear' aria-label='button'
-            onClick={() => handleSelectedDayChanged(null)}>
+          onClick={() => handleSelectedDayChanged(null)}>
             Clear selection
-          </Button>)}
+        </Button>)}
       </div>
       <table className={calClass}>
         <thead>

@@ -53,7 +53,7 @@ class TMMergeImportedTM extends Component {
           <span className="ml2 f4 v-mid">From </span>
           <span className="b f4 v-mid">TM Source</span>
         </div>
-          No project, document or context for TMX<br />
+        No project, document or context for TMX<br />
         <Row className='mt3 mb3'>
           <Col span={12}>
             <Radio checked={fromImportedTM === IGNORE_CHECK} disabled={disabled}
