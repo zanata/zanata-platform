@@ -34,7 +34,7 @@ describe('EditorSearchInputTest', () => {
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       /* eslint-disable max-len */
-      <div>
+      <React.Fragment>
         <div className="EditorInputGroup EditorInputGroup--outlined EditorInputGroup--rounded">
           <input type="search"
             placeholder="Search source and target text"
@@ -123,7 +123,7 @@ describe('EditorSearchInputTest', () => {
             </span>
           </Panel>
         </Collapse>
-      </div>
+      </React.Fragment>
       /* eslint-enable max-len */
     )
 // When we uncomment transComment in EditorSearchInput/index.js, this

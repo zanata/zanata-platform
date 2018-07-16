@@ -36,7 +36,7 @@ class App extends Component {
       '/signup': configLinks.registerUrl
     }
     return (
-      <div>
+      <React.Fragment>
         <div className='view'>
           <Icons />
           <Helmet
@@ -46,7 +46,7 @@ class App extends Component {
           <Nav active={activePath} links={links} loading={loading} />
           <div className='containerSidebar'>{children}</div>
         </div>
-      </div>
+      </React.Fragment>
     )
   }
 }

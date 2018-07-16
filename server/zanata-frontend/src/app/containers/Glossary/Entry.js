@@ -186,7 +186,7 @@ class Entry extends Component {
                       handleTermFieldUpdate(field, e)}
                     handleUpdateTerm={(entry) =>
                       handleUpdateTerm(entry, false)} />
-                  <div>
+                  <React.Fragment>
                     <div className='hidden-lesm'>
                       <Row className='entry-row'>
                         {updateButton}
@@ -207,7 +207,7 @@ class Entry extends Component {
                       this.setShowingDeleteEntryModal(display)}
                         handleDeleteEntry={handleDeleteTerm} />)
                     }
-                  </div>
+                  </React.Fragment>
                 </Row>)
               }
             </td>

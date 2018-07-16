@@ -153,11 +153,11 @@ class Languages extends Component {
             }
             <div className='mt3 mb3'>
               {loading
-                ? <div>
+                ? <React.Fragment>
                   <span className='di'>
                     <LoaderText loading />
                   </span>
-                </div>
+                </React.Fragment>
                 : (
                 <span className='w-100 mt2'>
                   <Col xs={24} sm={23} md={8} className='ml3'>
@@ -204,7 +204,7 @@ class Languages extends Component {
                   </div>
                 }
                 {!loading && !noResults &&
-                  <div>
+                  <React.Fragment>
                     <table className='table' id='languages-table'>
                       <thead>
                         <tr className='dn mt4'>
@@ -223,7 +223,7 @@ class Languages extends Component {
                        })}
                       </tbody>
                     </table>
-                  </div>}
+                  </React.Fragment>}
             </div>
           </div>
         </Layout>

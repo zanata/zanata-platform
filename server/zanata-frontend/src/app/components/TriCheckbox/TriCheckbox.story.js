@@ -162,7 +162,7 @@ storiesOf('TriCheckbox', module)
             />
           </td>
         </tr>
-      </tbody></Table>
+      </tbody></table>
     </React.Fragment>
   ))
   .add('checkbox group', () => (

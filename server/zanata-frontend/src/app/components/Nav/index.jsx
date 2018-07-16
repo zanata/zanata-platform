@@ -134,7 +134,7 @@ const Nav = ({
   }
 
   return (
-    <div>
+    <React.Fragment>
       <nav {...props} id='nav' name={username} className='nav-bar'>
         {items.map((item, itemId) => {
           if (((item.auth === 'public') || (item.auth === auth) ||
@@ -172,7 +172,7 @@ const Nav = ({
           return null
         })}
       </nav>
-    </div>
+    </React.Fragment>
   )
 }
 
