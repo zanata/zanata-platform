@@ -5676,93 +5676,6 @@ exports[`Editor Storyshots CommentBox default 1`] = `
 </div>
 `;
 
-exports[`Editor Storyshots Concurrent editing modal 1`] = `undefined`;
-
-exports[`Editor Storyshots Concurrent editing notification 1`] = `
-<div
-  className="alert alert-danger"
-  role="alert"
->
-  <span
-    className=""
-  >
-    <svg
-      className="s2"
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "<use xlink:href=\\"#Icon-warning\\" />",
-        }
-      }
-      style={
-        Object {
-          "fill": "currentColor",
-        }
-      }
-    />
-  </span>
-  <strong>
-    Concurrent editing detected.
-  </strong>
-   
-  <span
-    className="alert-link"
-  >
-    <a
-      href=""
-    >
-      Resolve merge conflicts
-    </a>
-     before continuing.
-  </span>
-</div>
-`;
-
-exports[`Editor Storyshots Concurrent editing transunit items 1`] = `
-<span>
-  <h1>
-    TransUnit items
-  </h1>
-  <img
-    src="https://i.imgur.com/yQWlJaH.png"
-  />
-  <h2>
-    Concurrent user notice
-  </h2>
-  <Button
-    className="EditorButton Button--link Button--small Button--concurrent"
-    onClick={[Function]}
-  >
-    <span
-      className=""
-    >
-      <svg
-        className="n1"
-        dangerouslySetInnerHTML={
-          Object {
-            "__html": "<use xlink:href=\\"#Icon-user\\" />",
-          }
-        }
-        style={
-          Object {
-            "fill": "currentColor",
-          }
-        }
-      />
-    </span>
-     username
-  </Button>
-  <h2>
-    Resolve merge conflict button
-  </h2>
-  <Button
-    className="EditorButton Button--secondary u-rounded"
-    onClick={[Function]}
-  >
-    Resolve conflict
-  </Button>
-</span>
-`;
-
 exports[`Editor Storyshots DateAndTimeDisplay default 1`] = `
 <span
   className={undefined}
@@ -6806,7 +6719,7 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
           className="ant-col-12"
         >
           <h3
-            className="txt-info"
+            className="u-textInfo"
           >
             Translation : 
             de
@@ -6850,7 +6763,9 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                   <span
                     className="loaderText"
                   >
-                    <span>
+                    <span
+                      className="f5 b"
+                    >
                       Searching...
                       <span
                         className="loader"
@@ -6886,7 +6801,9 @@ exports[`Editor Storyshots GlossaryTermModal details still loading 1`] = `
                   <span
                     className="loaderText"
                   >
-                    <span>
+                    <span
+                      className="f5 b"
+                    >
                       Searching...
                       <span
                         className="loader"

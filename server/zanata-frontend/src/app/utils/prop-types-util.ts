@@ -1,5 +1,22 @@
 import * as PropTypes from 'prop-types'
 import {processStatusCodes, entityStatuses, EntityStatus, ProcessStatusCode} from './EnumValueUtils'
+import { getPropTypes, PropTypeable } from 'prop-types-ts';
+import * as t from 'io-ts'
+
+// sfc() is based on https://github.com/gcanti/prop-types-ts/issues/15#issuecomment-378163613
+
+// If you want to specify the type U (eg HTMLAttributes<HTMLSpanElement>),
+// you also have to pass in the type T (`typeof type` where 'type' is the first arg),
+// even though it could be inferred.
+// Keep an eye on these TypeScript issues for better inferencing:
+// https://github.com/Microsoft/TypeScript/issues/20122
+// https://github.com/Microsoft/TypeScript/issues/10571
+// https://github.com/Microsoft/TypeScript/pull/23696
+export const sfc = <T extends PropTypeable, U>
+  (type: T, f: React.SFC<t.TypeOf<T>>): React.SFC<t.TypeOf<T> & U> => {
+  f.propTypes = getPropTypes(type) as any
+  return f
+}
 
 export const entityStatusPropType = PropTypes.oneOf(entityStatuses)
 

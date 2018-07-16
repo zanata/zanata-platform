@@ -67,6 +67,6 @@ const enhancedHistory = syncHistoryWithStore(history, store)
 
 render(
   // @ts-ignore store
-  <Root store={store} history={enhancedHistory} className='bstrapReact' />,
+  <Root store={store} history={enhancedHistory} />,
   document.getElementById('root')
 )

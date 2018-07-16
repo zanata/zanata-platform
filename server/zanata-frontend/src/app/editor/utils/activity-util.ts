@@ -1,10 +1,16 @@
-import {tuple} from '../../utils/tuple'
 import {Status} from './phrase'
+import * as t from 'io-ts'
+import * as PropTypes from "prop-types"
+
 export const ALL = 'all'
 export const COMMENTS = 'comments'
 export const UPDATES = 'updates'
-export const filterActivityTypes = tuple(ALL, COMMENTS, UPDATES)
-export type ActivityFilter = typeof filterActivityTypes[number]
+
+const filterActivityLiterals = t.tuple([t.literal(ALL), t.literal(COMMENTS), t.literal(UPDATES)])
+const filterActivityTypes = filterActivityLiterals.types.map(lit => lit.value)
+export const filterActivityPropType = PropTypes.oneOf(filterActivityTypes)
+export const ActivityFilterUnion = t.union(filterActivityLiterals.types)
+export type ActivityFilter = t.TypeOf<typeof ActivityFilterUnion>
 
 export interface User {
   name?: string,

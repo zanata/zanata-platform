@@ -29,7 +29,7 @@ class TransUnitSourceHeader extends React.Component {
     // TODO remove duplication of this between source and translation headers
     const buttonClass =
       'btn-link Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1' +
-        ' u-textCenter'
+        ' tc'
 
     const copyButtonItem = this.props.phrase.plural
       ? undefined
@@ -58,7 +58,7 @@ class TransUnitSourceHeader extends React.Component {
     return (
       <div className="TransUnit-panelHeader TransUnit-panelHeader--source">
         <TransUnitLocaleHeading {...this.props.sourceLocale} />
-        <ul className="u-floatRight u-listHorizontal">
+        <ul className="fr u-listHorizontal">
           {/* <li ng-show="appCtrl.PRODUCTION">
             <button class="Link Link--neutral u-sizeHeight-1_1-2
                            u-sizeWidth-1 u-textCenter"
