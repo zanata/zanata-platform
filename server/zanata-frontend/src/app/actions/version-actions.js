@@ -10,10 +10,7 @@ import {
 import { apiUrl } from '../config'
 import {replace} from 'lodash'
 import {toInternalTMSource} from '../utils/EnumValueUtils'
-import {
-  STATUS_NEEDS_WORK,
-  STATUS_TRANSLATED
-} from '../editor/utils/phrase'
+import { phraseStatusToTransUnitStatus } from '../editor/utils/status-util'
 // import {Action} from 'redux'
 
 import {
@@ -145,7 +142,6 @@ const toProjectVersionString = (projectVersion) => {
  */
 export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
   const endpoint = `${apiUrl}/mt/project/${projectSlug}/version/${versionSlug}`
-  // console.error(_projectSlug, _versionSlug, _mergeOptions)
   /** @type {APITypes} */
   const types = [VERSION_MT_MERGE_REQUEST,
     {
@@ -163,14 +159,12 @@ export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
         }
       }
     }, VERSION_MT_MERGE_FAILURE]
-  // TODO: move this to a util file
-  const status = mergeOptions.saveAs === STATUS_NEEDS_WORK
-    ? 'NeedReview' : mergeOptions.saveAs === STATUS_TRANSLATED
-      ? 'Translated' : 'NeedReview'
   const serverOptions = {
     toLocale: mergeOptions.selectedLocales[0],
-    saveState: status,
-    overwriteFuzzy: mergeOptions.overwriteFuzzy
+    // @ts-ignore any
+    saveState: phraseStatusToTransUnitStatus[mergeOptions.saveAs],
+    // TODO: Consider deleting entirely
+    overwriteFuzzy: true, // mergeOptions.overwriteFuzzy
   }
   const apiRequest = buildAPIRequest(
     endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(serverOptions)

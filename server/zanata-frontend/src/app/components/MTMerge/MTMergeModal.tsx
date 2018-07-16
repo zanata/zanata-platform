@@ -16,7 +16,7 @@ export type MTTranslationStatus = MTTranslationStatus
 
 export interface MTMergeAPIOptions {
   selectedLocales: LocaleId[]
-  saveAs?: MTTranslationStatus
+  saveAs: MTTranslationStatus
   overwriteFuzzy?: boolean
 }
 

@@ -35,9 +35,6 @@ const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
 
 const mapDispatchToProps = (dispatch: any): MTMergeModalDispatchProps => {
   return {
-    // toggleMTMergeModal: () => {
-    //   dispatch(toggleMTMergeModal())
-    // },
     queryMTMergeProgress: (url: string) => {
       dispatch(queryMTMergeProgress(url))
     },
