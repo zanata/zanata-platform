@@ -137,8 +137,7 @@ class SelectAllVersionsCheckbox extends Component {
             onChange={this.onAllVersionCheckboxChange}
             checked={allVersionsChecked}
             indeterminate={someVersionsChecked} /> <Icon name='project'
-              title='source project' className='s0'
-              parentClassName='iconTMX' /> {project.title} <LockIcon
+              title='source project' className='s0' /> {project.title} <LockIcon
                 status={project.status} />
         </span>
       </div>
@@ -171,7 +170,7 @@ class VersionMenuCheckbox extends Component {
         <span>
           <TriCheckbox onChange={this.onVersionCheckboxChange}
             checked={checked} /> <Icon name='version' title='source version'
-              className='s0' parentClassName='iconTMX' /> {version.id} <LockIcon
+              className='s0' /> {version.id} <LockIcon
                 status={version.status} />
         </span>
       </div>

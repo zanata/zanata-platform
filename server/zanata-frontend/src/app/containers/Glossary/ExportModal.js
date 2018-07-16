@@ -103,7 +103,7 @@ class ExportModal extends Component {
           {message}
           <br />
           For more details on how to export glossary
-          files, see our <a href={exportGlossaryUrl} className='u-textInfo'
+          files, see our <a href={exportGlossaryUrl} className='txt-info'
             target='_blank'>glossary export documentation</a>.
         </p>
       </Modal>)

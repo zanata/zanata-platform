@@ -11,9 +11,9 @@
   --TransUnit-color-secondary        : #20718A;
   --TransUnit-header-footer-color-bg : #fff;
   --TransUnit-heading-font-size      : 1rem;
-  --TransUnit-metaDataButton-size    : calc(12/16 * 1rem);
+  --TransUnit-metaDataButton-size    : calc(12 /16 * 1rem);
   --TransUnit-rhythm                 : 1.5rem;
-  --TransUnit-text-font-family       : 'Source Sans Pro', 'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif;
+  --TransUnit-text-font-family       : "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
   --TransUnit-text-font-size         : 1rem;
   --TransUnit-text-line-height       : 1.5;
   --TransUnit-text-color             : #444c54;
@@ -52,7 +52,7 @@
   visibility: hidden;
   width: 100%;
   height: var(--TransUnit-rhythm);
-  content: '';
+  content: "";
   /*transition: var(--TransUnit-transition);*/
   transform: scaleY(0);
   opacity: 0;
@@ -87,7 +87,6 @@
 .TransUnit-container.is-unit-selected .TransUnit {
   opacity: 0.8;
 }
-
 
 /**
  * Panels
@@ -173,6 +172,7 @@
 
 h3.TransUnit-heading {
   padding-left:1.5rem;
+  color: var(--TransUnit-color-secondary);
 }
 
 .TransUnit-text {
@@ -349,7 +349,6 @@ h3.TransUnit-heading {
   .TransUnit-panelFooterLeftNav {
     padding-left: calc(var(--TransUnit-rhythm) * 1);
   }
-
 }
 
 /**

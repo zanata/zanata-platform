@@ -92,7 +92,7 @@ class NavHeader extends React.Component {
     return (
       /* eslint-disable max-len */
       <nav role="navigation"
-        className="Editor-mainNav u-posRelative u-textCenter">
+        className="Editor-mainNav u-posRelative tc">
         <div className="u-posAbsoluteLeft">
           <Row className={directionClass}>
             <ProjectVersionLink {...ctx.projectVersion} />

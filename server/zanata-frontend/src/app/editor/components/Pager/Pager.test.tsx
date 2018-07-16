@@ -34,7 +34,7 @@ describe('PagerTest', () => {
         </IntlProvider>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <ul className='u-listHorizontal u-textCenter'>
+      <ul className='u-listHorizontal tc'>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
             title='First page'>

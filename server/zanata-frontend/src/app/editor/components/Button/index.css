@@ -94,12 +94,14 @@ not conflict with the other frontend code
 
 .Button--secondary:hover, .ant-btn.Button--secondary:hover {
   background-color: color(var(--Button-color-secondary) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--secondary:active,
 .Button--secondary.is-active,
-.ant-btn.Button--secondary:active {
+.ant-btn.Button--secondary:active, .ant-btn.Button--secondary.is-active {
   background-color: color(var(--Button-color-secondary) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Hightlight */
@@ -113,12 +115,14 @@ not conflict with the other frontend code
 .Button--highlight:hover,
 .ant-btn.Button--highlight:hover {
   background-color: color(var(--Button-color-highlight) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--highlight:active,
 .Button--highlight.is-active,
 .ant-btn.Button--highlight:active {
   background-color: color(var(--Button-color-highlight) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Success */
@@ -181,12 +185,14 @@ not conflict with the other frontend code
 
 .Button--warning:hover, .ant-btn.Button--warning:hover {
   background-color: color(var(--Button-color-warning) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--warning:active,
 .Button--warning.is-active,
 .ant-btn.Button--warning:active {
   background-color: color(var(--Button-color-warning) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Danger */
@@ -198,12 +204,14 @@ not conflict with the other frontend code
 
 .Button--danger:hover, .ant-btn.Button--danger:hover {
   background-color: color(var(--Button-color-danger) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--danger:active,
 .Button--danger.is-active,
 .ant-btn.Button--danger:active {
   background-color: color(var(--Button-color-danger) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Invisible */

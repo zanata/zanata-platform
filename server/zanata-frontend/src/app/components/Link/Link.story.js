@@ -3,7 +3,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Link } from '../'
-import { Well, Table } from 'react-bootstrap'
 
 storiesOf('Link', module)
     .add('link within frontend app', () => (
@@ -11,11 +10,11 @@ storiesOf('Link', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> Link in frontend</h2>
-          <Well bsSize="large"> Common link component which generates <code>a href</code> or in-page navigation link based on useHref.</Well>
+          <p> Common link component which generates <code>a href</code> or in-page navigation link based on useHref.</p>
       <Link link='/languages'>Languages</Link>
           <hr />
           <h3>Props</h3>
-          <Table striped bordered condensed hover>
+          <table>
           <thead>
           <tr>
             <th>Name</th>
@@ -50,7 +49,7 @@ storiesOf('Link', module)
             <td></td>
           </tr>
           </tbody>
-          </Table>
+          </table>
         </span>
     ))
     .add('link page not in frontend app', () => (
@@ -58,7 +57,7 @@ storiesOf('Link', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> Link *not* in frontend</h2>
-          <Well bsSize="large">Use this link colour anywhere outside of frontend. ie. Editor, zanata.org</Well>
+          <p>Use this link colour anywhere outside of frontend. ie. Editor, zanata.org</p>
       <Link link='http://zanata.org/language/view/ja' useHref>
         Japanese
       </Link>

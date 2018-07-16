@@ -7,7 +7,8 @@ import { action } from '@storybook/addon-actions'
 import { storiesOf } from '@storybook/react'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
-import { Table, Col, Well } from 'react-bootstrap'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 
 class TriCheckbox extends Component {
   static propTypes = {
@@ -91,7 +92,7 @@ storiesOf('TriCheckbox', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> TriCheckbox</h2>
-      <Well bsSize="large">Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.</Well>
+      <p>Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.</p>
       <h3>Setting Intermediate</h3>
       <WithButton
         checked={false}
@@ -103,7 +104,7 @@ storiesOf('TriCheckbox', module)
   .add('truth table', () => (
     <div>
       <h2>Truth Table</h2>
-      <Table striped bordered condensed hover><tbody>
+      <table striped bordered condensed hover><tbody>
         <tr>
           <th>checked</th>
           <th>intermediate</th>
@@ -162,7 +163,7 @@ storiesOf('TriCheckbox', module)
             />
           </td>
         </tr>
-      </tbody></Table>
+      </tbody></table>
     </div>
   ))
   .add('checkbox group', () => (

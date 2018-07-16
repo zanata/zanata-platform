@@ -3,7 +3,8 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 import { storiesOf } from '@storybook/react'
-import { Alert } from 'react-bootstrap'
+import Alert from 'antd/lib/alert'
+import 'antd/lib/alert/style/css'
 import { Icon } from '../../../components'
 import ConcurrentModal from '.'
 import Button from 'antd/lib/button'
@@ -15,7 +16,7 @@ import 'antd/lib/button/style/css'
 
 storiesOf('Concurrent editing', module)
     .add('notification', () => (
-        <Alert bsStyle='danger'>
+        <Alert type='danger'>
           <Icon name='warning' className='s2'/>
           <strong>Concurrent editing detected.</strong>
           &nbsp;

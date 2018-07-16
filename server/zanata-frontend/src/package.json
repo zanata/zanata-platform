@@ -190,7 +190,6 @@
     "prop-types-ts": "^0.6.0",
     "react": "16.4.0",
     "react-autosuggest": "9.0.1",
-    "react-bootstrap": "0.31.2",
     "react-chartjs-2": "2.7.0",
     "react-date-range": "0.9.4",
     "react-dom": "16.4.0",

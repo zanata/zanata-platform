@@ -33,26 +33,26 @@ const TeaserListHeader = ({
 
   /* eslint-disable react/jsx-no-bind */
   return (
-    <div className='teaserHeader'>
+    <div className='teaserHeader txt-muted'>
       <Layout>
         {headerIcon}
-        <h2 className='u-textDark u-textUppercase'>
+        <h2 className='txt-primary ttu'>
           {title}
-          <span className='u-textMutedLeft' title='Total records'>
+          <span className='txt-muted ml2' title='Total records'>
             {totalCount}
           </span>
         </h2>
         {totalPage > 1 && (
           <div className='teaserHeader-inner'>
             <div className='teaserHeader-pagination'>
-              <Button icon='left' className='btn-link iconsHeader'
+              <Button icon='left' className='btn-link'
                 aria-label='button'
                 disabled={currentPage === 1}
                 onClick={() => {
                   updatePage(type, currentPage, totalPage, false)
                 }} />
-              <span className='pageCurrent'>{currentPage} of {totalPage}</span>
-              <Button icon='right' className='btn-link iconsHeader'
+              <span>{currentPage} of {totalPage}</span>
+              <Button icon='right' className='btn-link'
                 disabled={currentPage === totalPage} aria-label='button'
                 onClick={() => {
                   updatePage(type, currentPage, totalPage, false)
@@ -60,7 +60,7 @@ const TeaserListHeader = ({
             </div>
           </div>
         )}
-        {loading && <Loader className='headerLoader s1' />}
+        {loading && <Loader className='f4 s1 ml2' />}
       </Layout>
     </div>
   )

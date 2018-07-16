@@ -3,7 +3,6 @@ import React from 'react'
 import {storiesOf} from '@storybook/react'
 import {Icon} from '../'
 import iconList from '../Icon/list'
-import {Table, Well} from 'react-bootstrap'
 
 /**
  * @param {string} name
@@ -48,10 +47,10 @@ storiesOf('Icon', module)
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> Icons</h2>
-          <Well bsSize="large">Icons for use throughout frontend. Use <code>className</code> prop to set size.</Well>
+          <p>Icons for use throughout frontend. Use <code>className</code> prop to set size.</p>
       <hr/>
           <h3>Props</h3>
-      <Table striped bordered condensed hover>
+      <table>
         <thead>
         <tr>
           <th>Name</th>
@@ -75,7 +74,7 @@ storiesOf('Icon', module)
           </td>
         </tr>
         </tbody>
-      </Table>
+      </table>
           <hr/>
           <span className="col-xs-12">
             <h3>Icon list</h3>
