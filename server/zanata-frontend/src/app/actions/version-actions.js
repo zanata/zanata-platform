@@ -10,6 +10,10 @@ import {
 import { apiUrl } from '../config'
 import {replace} from 'lodash'
 import {toInternalTMSource} from '../utils/EnumValueUtils'
+import {
+  STATUS_NEEDS_WORK,
+  STATUS_TRANSLATED
+} from '../editor/utils/phrase'
 // import {Action} from 'redux'
 
 import {
@@ -30,6 +34,9 @@ import {
   QUERY_TM_MERGE_PROGRESS_REQUEST,
   QUERY_TM_MERGE_PROGRESS_SUCCESS,
   QUERY_TM_MERGE_PROGRESS_FAILURE,
+  QUERY_MT_MERGE_PROGRESS_REQUEST,
+  QUERY_MT_MERGE_PROGRESS_SUCCESS,
+  QUERY_MT_MERGE_PROGRESS_FAILURE,
   TM_MERGE_CANCEL_REQUEST,
   TM_MERGE_CANCEL_SUCCESS,
   TM_MERGE_CANCEL_FAILURE,
@@ -153,9 +160,13 @@ export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
         }
       }
     }, VERSION_MT_MERGE_FAILURE]
+  // TODO: move this to a util file
+  const status = mergeOptions.saveAs === STATUS_NEEDS_WORK
+    ? 'NeedReview' : mergeOptions.saveAs === STATUS_TRANSLATED
+      ? 'Translated' : 'NeedReview'
   const serverOptions = {
     toLocale: mergeOptions.selectedLocales[0],
-    saveState: mergeOptions.saveAs,
+    saveState: status,
     overwriteFuzzy: mergeOptions.overwriteFuzzy
   }
   const apiRequest = buildAPIRequest(
@@ -247,6 +258,20 @@ export function queryTMMergeProgress (url) {
   const types = [QUERY_TM_MERGE_PROGRESS_REQUEST,
     QUERY_TM_MERGE_PROGRESS_SUCCESS,
     QUERY_TM_MERGE_PROGRESS_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(url, 'GET', getJsonHeaders(), types)
+  }
+}
+
+/**
+ * @param {string} url
+ * @returns {APIAction} redux api action object
+ */
+export function queryMTMergeProgress (url) {
+  /** @type {APITypes} */
+  const types = [QUERY_MT_MERGE_PROGRESS_REQUEST,
+    QUERY_MT_MERGE_PROGRESS_SUCCESS,
+    QUERY_MT_MERGE_PROGRESS_FAILURE]
   return {
     [CALL_API]: buildAPIRequest(url, 'GET', getJsonHeaders(), types)
   }

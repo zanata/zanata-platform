@@ -21,7 +21,7 @@ export type RootState = DeepReadonly<{
 }>
 
 // TODO verify types
-export type ProjectVersionState = DeepReadonly<{
+export type ProjectVersionState = {
   MTMerge: {
     showMTMerge: boolean
     triggered: boolean
@@ -40,7 +40,7 @@ export type ProjectVersionState = DeepReadonly<{
   fetchingProject: boolean
   fetchingLocale: boolean
   notification?: any
-}>
+}
 
 // see admin-reducer.js. Something is wrong with key and settings.
 // TODO remove key?

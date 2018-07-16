@@ -4,11 +4,11 @@ import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
-import { LocaleId, Locale } from '../../utils/prop-types-util'
-import { STATUS_NEEDS_WORK } from '../../editor/utils/phrase';
-import { MTMergeOptions, MTTranslationStatus } from './MTMergeOptions';
-// import CancellableProgressBar from '../ProgressBar/CancellableProgressBar';
-import { getVersionLanguageSettingsUrl } from '../../utils/UrlHelper';
+import { LocaleId, Locale, ProcessStatus } from '../../utils/prop-types-util'
+import { STATUS_NEEDS_WORK } from '../../editor/utils/phrase'
+import { MTMergeOptions, MTTranslationStatus } from './MTMergeOptions'
+import CancellableProgressBar from '../ProgressBar/CancellableProgressBar'
+import { getVersionLanguageSettingsUrl } from '../../utils/UrlHelper'
 
 export type MTTranslationStatus = MTTranslationStatus
 
@@ -22,10 +22,13 @@ export interface MTMergeAPIOptions {
 export type MTMergeModalStateProps = Readonly<{
   showMTMerge: boolean
   availableLocales: Locale[]
+  processStatus?: ProcessStatus
 }>
 
 // Redux dispatch, ie connect's TDispatchProps
 export type MTMergeModalDispatchProps = Readonly<{
+  mergeProcessFinished: () => void
+  queryMTMergeProgress: (url: string) => void
   onSubmit: (projectSlug: string, projectVersion: string, mtMergeOptions: MTMergeAPIOptions) => void
   onCancel: () => void
 }>
@@ -56,6 +59,16 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
     }
   }
 
+  // @ts-ignore any
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    const { processStatus } = this.props
+    if (processStatus !== prevProps.processStatus
+      && (processStatus && processStatus.percentageComplete >= 100)) {
+        this.props.mergeProcessFinished()
+    }
+  }
+
   availableLocaleIds() {
     return this.props.availableLocales.map(loc => loc.localeId)
   }
@@ -68,14 +81,15 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
       availableLocales,
       // notification,
       // triggered,
-      // processStatus,
+      processStatus,
+      queryMTMergeProgress,
     } = this.props
     const enableSubmit = this.state.checkedLocales.length > 0
-    // TODO get from props above
-    const processStatus: boolean = false
-
-    // TODO CancellableProgressBar, error message if no availableLocales
-    // cf. render() in TMMergeModal.js
+    const queryProgress = () => {
+      queryMTMergeProgress(processStatus ? processStatus.url : '')
+    }
+    // TODO: disable or implement mt merge cancel
+    const cancelMerge = () => 'cancel'
     return (
       <Modal
         title="Machine Translation Batch Merge"
@@ -94,12 +108,12 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
       >
         {processStatus ?
         (
-        // <CancellableProgressBar
-        //   onCancelOperation={this.cancelTMMerge}
-        //   processStatus={processStatus} buttonLabel='Cancel TM Merge'
-        //   queryProgress={this.queryTMMergeProgress}
-        // /> }
-          "TODO CancellableProgressBar"
+          <CancellableProgressBar
+            buttonLabel={'Cancel Operation'}
+            onCancelOperation={cancelMerge}
+            processStatus={processStatus}
+            queryProgress={queryProgress}
+          />
         )
         : availableLocales.length === 0 ?
         <p>This version has no enabled languages. You must enable at least one

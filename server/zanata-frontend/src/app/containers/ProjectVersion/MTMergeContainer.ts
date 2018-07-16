@@ -5,14 +5,14 @@ import {
   toggleMTMergeModal,
   mergeVersionFromMT,
   // Note: trying the existing TM process functions for now
-  // queryTMMergeProgress as queryMTMergeProgress,
+  queryMTMergeProgress,
   // cancelTMMergeRequest as cancelMTMergeRequest,
-  // currentMTMergeProcessFinished,
+  currentMTMergeProcessFinished,
   // MTMergeOptions
 } from '../../actions/version-actions'
 import { connect } from 'react-redux'
-import { Locale } from '../../utils/prop-types-util';
-import { RootState } from '../../reducers/state';
+import { Locale } from '../../utils/prop-types-util'
+import { RootState } from '../../reducers/state'
 
 const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
   const {
@@ -23,7 +23,7 @@ const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
         showMTMerge,
         // triggered,
         // projectVersions,
-        // processStatus,
+        processStatus,
         // queryStatus
       }
     }
@@ -34,7 +34,7 @@ const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
     availableLocales: locales as Locale[],
     // projectVersions,
     // notification,
-    // processStatus,
+    processStatus,
     // queryStatus
   }
 }
@@ -44,15 +44,15 @@ const mapDispatchToProps = (dispatch: any): MTMergeModalDispatchProps => {
     // toggleMTMergeModal: () => {
     //   dispatch(toggleMTMergeModal())
     // },
-    // queryMTMergeProgress: (url: string) => {
-    //   dispatch(queryMTMergeProgress(url))
-    // },
+    queryMTMergeProgress: (url: string) => {
+      dispatch(queryMTMergeProgress(url))
+    },
     // onCancelMTMerge: (url: string) => {
     //   dispatch(cancelMTMergeRequest(url))
     // },
-    // mergeProcessFinished: () => {
-    //   dispatch(currentMTMergeProcessFinished())
-    // },
+    mergeProcessFinished: () => {
+      dispatch(currentMTMergeProcessFinished())
+    },
     onCancel: () => {
       dispatch(toggleMTMergeModal())
     },

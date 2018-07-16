@@ -94,6 +94,7 @@ storiesOf('MTMerge', module)
 storiesOf('MTMergeModal', module)
   .add('single', () => (
     <MTMergeModal
+      processStatus={undefined}
       allowMultiple={false}
       showMTMerge={true}
       availableLocales={testLocales}
@@ -101,5 +102,7 @@ storiesOf('MTMergeModal', module)
       versionSlug='myVersion'
       onCancel={action('onCancel')}
       onSubmit={action('onSubmit')}
+      mergeProcessFinished={action('mergeProcessFinished')}
+      queryMTMergeProgress={action('queryMTMergeProgress')}
     />
   ))
