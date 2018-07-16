@@ -116,7 +116,7 @@ describe('TransUnitTranslationPanel', () => {
           lineStyle={lineStyle}>
           {'Je ne parle pas français'}
         </SyntaxHighlighter>
-        <React.Fragment></React.Fragment>{/* Validation Mock */ }
+        <div></div>{/* Validation Mock */ }
       </div>
     )
     expect(actual).toEqual(expected)

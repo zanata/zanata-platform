@@ -12,14 +12,12 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <React.Fragment>
-        <div className="TransUnit-item">
-          <div className="TransUnit-itemHeader" />
-          <div className="TransUnit-text TransUnit-text--tight">
-            As thick as you are, pay attention!
-          </div>
+      <div className="TransUnit-item">
+        <div className="TransUnit-itemHeader" />
+        <div className="TransUnit-text TransUnit-text--tight">
+          As thick as you are, pay attention!
         </div>
-      </React.Fragment>
+      </div>
     )
     expect(actual).toEqual(expected)
   })
@@ -67,16 +65,14 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <React.Fragment>
-        <div className="TransUnit-item">
-          <div className="TransUnit-itemHeader" />
-          <TextDiff
-            className="TransUnit-text TransUnit-text--tight Difference"
-            text1="As slick as you are, play attrition?"
-            text2="As thick as you are, pay attention!"
-            simpleMatch={false} />
-        </div>
-      </React.Fragment>
+      <div className="TransUnit-item">
+        <div className="TransUnit-itemHeader" />
+        <TextDiff
+          className="TransUnit-text TransUnit-text--tight Difference"
+          text1="As slick as you are, play attrition?"
+          text2="As thick as you are, pay attention!"
+          simpleMatch={false} />
+      </div>
     )
     expect(actual).toEqual(expected)
   })
@@ -129,16 +125,14 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <React.Fragment>
-        <div className="TransUnit-item">
-          <div className="TransUnit-itemHeader" />
-          <TextDiff
-            className="TransUnit-text TransUnit-text--tight Difference"
-            text1="As slick as you are, play attrition?"
-            text2="As thick as you are, pay attention!"
-            simpleMatch />
-        </div>
-      </React.Fragment>
+      <div className="TransUnit-item">
+        <div className="TransUnit-itemHeader" />
+        <TextDiff
+          className="TransUnit-text TransUnit-text--tight Difference"
+          text1="As slick as you are, play attrition?"
+          text2="As thick as you are, pay attention!"
+          simpleMatch />
+      </div>
     )
     expect(actual).toEqual(expected)
   })
