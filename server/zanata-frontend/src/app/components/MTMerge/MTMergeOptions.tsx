@@ -7,17 +7,17 @@ import Checkbox from 'antd/lib/checkbox'
 import 'antd/lib/checkbox/style/css'
 import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
-import Radio from 'antd/lib/radio'
-import 'antd/lib/radio/style/css'
 import Switch from 'antd/lib/switch'
 import 'antd/lib/switch/style/css'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
-import { RadioChangeEvent } from 'antd/lib/radio'
 import { LocaleId, Locale } from '../../utils/prop-types-util'
 import { STATUS_NEEDS_WORK, STATUS_TRANSLATED } from '../../editor/utils/phrase'
 
 const CheckboxGroup = Checkbox.Group
+const Option = Select.Option
 
 export type MTTranslationStatus = typeof STATUS_NEEDS_WORK | typeof STATUS_TRANSLATED
 
@@ -83,12 +83,21 @@ export class MTMergeOptions extends Component<Props> {
               </Checkbox>)}
             </CheckboxGroup>
           </div>
-          : <Radio.Group onChange={this.onRadioGroupChange}>
+          : <Select
+              showSearch
+              style={{ width: '100%' }}
+              placeholder="Select a locale"
+              onChange={this.onSelectChange}
+              filterOption={(input, option) => (
+                // @ts-ignore
+                (option.props.value + option.props.title).toLowerCase())
+                .indexOf(input.toLowerCase()) >= 0}
+            >
             {this.props.availableLocales.map(loc =>
-              <Radio key={loc.localeId} value={loc.localeId} checked={this.props.checkedLocales.includes(loc.localeId)}>
-                {loc.displayName}
-              </Radio>)}
-          </Radio.Group>
+              <Option key={loc.localeId} value={loc.localeId} title={loc.displayName}>
+                <span className='blue'>{loc.localeId}</span> {loc.displayName}
+              </Option>)}
+          </Select>
         }
 
         {/* Other options */}
@@ -96,7 +105,7 @@ export class MTMergeOptions extends Component<Props> {
         <div className="mt4 mb4">
           <Card hoverable>
             <div>
-              <h3 className="txt-info mb4">
+              <h3 className="txt-info">
                 <span className="mr2">
                   Save as
                 </span>
@@ -106,11 +115,11 @@ export class MTMergeOptions extends Component<Props> {
               </span>
               </h3>
             </div>
-
-            <Switch size="small" checked={this.props.overwriteFuzzy} onChange={this.props.onOverwriteFuzzyChange} />
+            {/* TODO: Consider removing this option entirely */}
+            {/* <Switch size="small" checked={this.props.overwriteFuzzy} onChange={this.props.onOverwriteFuzzyChange} />
             <span className="txt-primary">
               Overwrite existing fuzzy translations with MT
-            </span>
+            </span> */}
           </Card>
         </div>
         }
@@ -126,8 +135,9 @@ export class MTMergeOptions extends Component<Props> {
     this.props.onSaveAsChange(checked ? STATUS_TRANSLATED : STATUS_NEEDS_WORK)
   }
 
-  private onRadioGroupChange = (e: RadioChangeEvent) => {
-    const checkedLocale = e.target.value as LocaleId
+  // @ts-ignore any
+  private onSelectChange = (value) => {
+    const checkedLocale = value as LocaleId
     const checkedLocales = [checkedLocale]
     this.onLocaleChange(checkedLocales)
   }
