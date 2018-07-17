@@ -412,9 +412,9 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     @Override
     public HTextFlow copyTextFlow(HDocument newDocument, HTextFlow textFlow)
             throws Exception {
-        HTextFlow copy = JPACopier.<HTextFlow> copyBean(textFlow, "document",
+        HTextFlow copy = new HTextFlow(newDocument, textFlow.getResId());
+        JPACopier.copyBean(textFlow, copy, "document",
                 "content", "targets", "history", "potEntryData");
-        copy.setDocument(newDocument);
         // copy PotEntryData
         if (textFlow.getPotEntryData() != null) {
             HPotEntryData potEntryData = JPACopier.<HPotEntryData> copyBean(

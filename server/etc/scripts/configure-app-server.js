@@ -207,6 +207,10 @@ function parseArgs(args) {
         // stderr('Outputting jboss cli commands to stdout')
         opts.listCommands = true
         break
+      case '--machine-translation':
+        stderr('Enabling machine translation service')
+        opts.configCallbacks.push(configureMTService)
+        break
       case '--oauth':
         stderr('Enabling OAuth logins')
         opts.configCallbacks.push(configureOAuth)
@@ -430,6 +434,12 @@ function configureSystemProperties() {
   systemProperty('virusScanner', '${env.VIRUS_SCANNER:DISABLED}')
   systemProperty('zanata.email.defaultfromaddress', '${env.ZANATA_FROM_ADDRESS:no-reply@zanata.org}')
   systemProperty('zanata.file.directory', options.fileDir)
+}
+
+function configureMTService() {
+  systemProperty('mt.service.url', '${env.MT_SERVICE_URL:http://MT:8080}')
+  systemProperty('mt.service.user', '${env.MT_USER:test}')
+  systemProperty('mt.service.token', '${env.MT_USER:testkey}')
 }
 
 function disableFileLogger() {
