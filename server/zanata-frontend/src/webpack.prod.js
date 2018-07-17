@@ -116,7 +116,7 @@ module.exports = merge(common, {
   optimization: {
     minimizer: [
       new UglifyJsPlugin({
-        cache: true,
+        cache: false,
         parallel: true,
         sourceMap: true
       }),
