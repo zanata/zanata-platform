@@ -6518,37 +6518,15 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
 `;
 
 exports[`Frontend Storyshots MTMerge single 1`] = `
-<Alert
-  message="Have you run TM Merge first?"
-  showIcon={true}
-  type="warning"
-/>
-`;
-
-exports[`Frontend Storyshots MTMergeModal single 1`] = `
-<Modal
-  destroyOnClose={true}
-  footer={
-    Array [
-      <Button
-        onClick={[Function]}
-      >
-        Close
-      </Button>,
-      <Button
-        disabled={true}
-        onClick={[Function]}
-        type="primary"
-      >
-        Run Merge
-      </Button>,
-    ]
+<div
+  className="bstrapReact"
+  style={
+    Object {
+      "padding": "2em",
+    }
   }
-  onCancel={[Function]}
-  onOk={[Function]}
-  title="Machine Translation Batch Merge"
-  visible={true}
 >
+  <mock-icons />
   <Alert
     message="Have you run TM Merge first?"
     showIcon={true}
@@ -6679,7 +6657,174 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
       </div>
     </Card>
   </div>
-</Modal>
+</div>
+`;
+
+exports[`Frontend Storyshots MTMergeModal single 1`] = `
+<div
+  className="bstrapReact"
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Modal
+    destroyOnClose={true}
+    footer={
+      Array [
+        <Button
+          onClick={[Function]}
+        >
+          Close
+        </Button>,
+        <Button
+          disabled={true}
+          onClick={[Function]}
+          type="primary"
+        >
+          Run Merge
+        </Button>,
+      ]
+    }
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Machine Translation Batch Merge"
+    visible={true}
+  >
+    <Alert
+      message="Have you run TM Merge first?"
+      showIcon={true}
+      type="warning"
+    />
+    <h3
+      className="txt-info mt4"
+    >
+      <Icon
+        type="global"
+      />
+      Language
+    </h3>
+    <div
+      className="ant-select ant-select-enabled"
+      onBlur={[Function]}
+      onClick={[Function]}
+      onContextMenu={undefined}
+      onFocus={[Function]}
+      onMouseDown={[Function]}
+      onMouseEnter={undefined}
+      onMouseLeave={undefined}
+      onTouchStart={[Function]}
+      style={
+        Object {
+          "width": "100%",
+        }
+      }
+    >
+      <div
+        aria-autocomplete="list"
+        aria-expanded={false}
+        aria-haspopup="true"
+        className="ant-select-selection
+            ant-select-selection--single"
+        onKeyDown={[Function]}
+        role="combobox"
+        tabIndex={0}
+      >
+        <div
+          className="ant-select-selection__rendered"
+        >
+          <div
+            className="ant-select-selection__placeholder"
+            onClick={[Function]}
+            onMouseDown={[Function]}
+            style={
+              Object {
+                "WebkitUserSelect": "none",
+                "display": "block",
+                "userSelect": "none",
+              }
+            }
+            unselectable="unselectable"
+          >
+            Select a locale
+          </div>
+          <div
+            className="ant-select-search ant-select-search--inline"
+            style={
+              Object {
+                "display": "none",
+              }
+            }
+          >
+            <div
+              className="ant-select-search__field__wrap"
+            >
+              <input
+                autoComplete="off"
+                className="ant-select-search__field"
+                disabled={undefined}
+                id={undefined}
+                onChange={[Function]}
+                onKeyDown={[Function]}
+                value=""
+              />
+              <span
+                className="ant-select-search__field__mirror"
+              >
+                
+                 
+              </span>
+            </div>
+          </div>
+        </div>
+        <span
+          className="ant-select-arrow"
+          onClick={[Function]}
+          style={
+            Object {
+              "WebkitUserSelect": "none",
+              "userSelect": "none",
+            }
+          }
+          unselectable="unselectable"
+        >
+          <b />
+        </span>
+      </div>
+    </div>
+    <div
+      className="mt4 mb4"
+    >
+      <Card
+        hoverable={true}
+      >
+        <div>
+          <h3
+            className="txt-info"
+          >
+            <span
+              className="mr2"
+            >
+              Save as
+            </span>
+            <span
+              className="di"
+            >
+              <Switch
+                checkedChildren="translated"
+                className="transSwitch"
+                onChange={[Function]}
+                unCheckedChildren="fuzzy"
+              />
+            </span>
+          </h3>
+        </div>
+      </Card>
+    </div>
+  </Modal>
+</div>
 `;
 
 exports[`Frontend Storyshots ProgressBar default 1`] = `
