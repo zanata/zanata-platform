@@ -72,7 +72,7 @@ const version = handleActions({
       notification: { $set: {
         severity: 'error',
         message: 'We were unable load locale information. ' +
-        'Please refresh this page and try again.',
+          'Please refresh this page and try again.',
         duration: null
       }}
     }) : update(state, {
@@ -93,7 +93,7 @@ const version = handleActions({
       notification: { $set: {
         severity: 'error',
         message: 'We were unable load locale information. ' +
-        'Please refresh this page and try again.',
+          'Please refresh this page and try again.',
         duration: null
       }}
     })
@@ -104,7 +104,7 @@ const version = handleActions({
       notification: { $set: {
         severity: 'error',
         message: 'We were unable load project information. ' +
-        'Please refresh this page and try again.',
+          'Please refresh this page and try again.',
         duration: null
       }}
     }) : update(state, {
@@ -132,7 +132,7 @@ const version = handleActions({
       notification: { $set: {
         severity: 'error',
         message: 'We were unable load project information. ' +
-        'Please refresh this page and try again.',
+          'Please refresh this page and try again.',
         duration: null
       }}
     })

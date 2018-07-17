@@ -118,7 +118,8 @@ export default handleActions({
         },
         notification: {
           severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+          message: ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -144,7 +145,8 @@ export default handleActions({
       },
       notification: {
         severity: SEVERITY.ERROR,
-        message: ERROR_MSG
+        message: ERROR_MSG,
+        duration: null
       }
     }
   },
@@ -161,7 +163,8 @@ export default handleActions({
         loading: false,
         notification: {
           severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+          message: ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -178,7 +181,8 @@ export default handleActions({
       loading: false,
       notification: {
         severity: SEVERITY.ERROR,
-        message: ERROR_MSG
+        message: ERROR_MSG,
+        duration: null
       }
     }
   },
@@ -201,7 +205,8 @@ export default handleActions({
       notification: {
         severity: SEVERITY.ERROR,
         message: 'We were unable delete this language as it might ' +
-        'referenced by translations. Please disable it instead.'
+          'referenced by translations. Please disable it instead.',
+        duration: null
       }
     }
   },
@@ -218,7 +223,8 @@ export default handleActions({
         loading: false,
         notification: {
           severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+          message: ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -240,7 +246,8 @@ export default handleActions({
       },
       notification: {
         severity: SEVERITY.ERROR,
-        message: ERROR_MSG
+        message: ERROR_MSG,
+        duration: null
       }
     }
   },
@@ -265,7 +272,8 @@ export default handleActions({
         },
         notification: {
           severity: SEVERITY.ERROR,
-          message: CREATE_LANGUAGE_ERROR_MSG
+          message: CREATE_LANGUAGE_ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -281,7 +289,8 @@ export default handleActions({
           severity: SEVERITY.INFO,
           // @ts-ignore
           message: 'Language ' + action.payload.displayName +
-            ' has been created.'
+            ' has been created.',
+          duration: 3.5
         }
       }
     }
@@ -297,7 +306,8 @@ export default handleActions({
       },
       notification: {
         severity: SEVERITY.ERROR,
-        message: CREATE_LANGUAGE_ERROR_MSG
+        message: CREATE_LANGUAGE_ERROR_MSG,
+        duration: null
       }
     }
   }
