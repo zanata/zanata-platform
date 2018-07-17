@@ -1,27 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Frontend Storyshots Button default 1`] = `
-<div
-  className="bstrapReact"
-  style={
-    Object {
-      "padding": "2em",
-    }
-  }
->
-  <mock-icons />
-  <div
-    className="ant-layout"
-  >
-    <mock-button
-      type="primary"
-    >
-      Primary style
-    </mock-button>
-  </div>
-</div>
-`;
-
 exports[`Frontend Storyshots EditableText editing 1`] = `
 <div
   className="bstrapReact"
