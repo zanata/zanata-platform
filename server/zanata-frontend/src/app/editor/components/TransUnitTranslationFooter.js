@@ -31,7 +31,10 @@ import ValidationErrorsModal from '../components/ValidationErrorsModal'
 import { defaultSaveStatus, nonDefaultValidSaveStatuses, STATUS_REJECTED }
   from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
-import { toggleSaveErrorModal } from '../actions/phrases-actions'
+import {
+  toggleSaveErrorModal,
+  toggleConcurrentModal
+} from '../actions/phrases-actions'
 
 const buttonClassByStatus = {
   untranslated: 'Button--neutral',
@@ -64,6 +67,7 @@ class TransUnitTranslationFooter extends React.Component {
     phrase: PropTypes.object.isRequired,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
+    toggleConcurrentModal: PropTypes.func.isRequired,
     toggleGlossary: PropTypes.func.isRequired,
     suggestionCount: PropTypes.number.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
@@ -165,6 +169,7 @@ class TransUnitTranslationFooter extends React.Component {
       showSuggestions,
       suggestionCount,
       suggestionSearchType,
+      toggleConcurrentModal,
       toggleGlossary,
       showErrorModal,
       toggleSuggestionPanel,
@@ -266,13 +271,21 @@ class TransUnitTranslationFooter extends React.Component {
             </ul>
           </div>
           <div className="u-floatRight" ref="saveTransDropdown" tabIndex={0} >
-            {saveAsLabel}
-            <SplitDropdown
-              onToggle={this.toggleDropdown}
-              isOpen={dropdownIsOpen}
-              actionButton={actionButton}
-              toggleButton={dropdownToggleButton}
-              content={otherActionButtonList} />
+            {typeof phrase.conflict === 'undefined' ? saveAsLabel : null}
+            {typeof phrase.conflict === 'undefined'
+              ? <SplitDropdown
+                onToggle={this.toggleDropdown}
+                isOpen={dropdownIsOpen}
+                actionButton={actionButton}
+                toggleButton={dropdownToggleButton}
+                content={otherActionButtonList} />
+              : <Button
+                className={cx('EditorButton u-sizeHeight-1_1-4 u-textCapitalize u-rounded Button--warning')}
+                // @ts-ignore
+                title={'Resolve Conflict'}
+                onClick={toggleConcurrentModal}>
+                {'Resolve Conflict'}
+              </Button>}
           </div>
         </div>
       </React.Fragment>
@@ -288,7 +301,8 @@ function mapDispatchToProps (dispatch, _ownProps) {
     showErrorModal: (phraseId, showValidationErrorModal) => {
       // @ts-ignore any
       dispatch(toggleSaveErrorModal(phraseId, showValidationErrorModal))
-    }
+    },
+    toggleConcurrentModal: () => dispatch(toggleConcurrentModal())
   }
 }
 

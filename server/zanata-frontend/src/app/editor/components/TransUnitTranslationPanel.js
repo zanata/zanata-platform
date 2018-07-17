@@ -136,6 +136,35 @@ class TransUnitTranslationPanel extends React.Component {
     const isPlural = phrase.plural
     const directionClass = isRTL ? 'rtl' : 'ltr'
 
+    if (selected) {
+      const headerProps = pick(this.props, [
+        'cancelEdit',
+        'phrase',
+        'translationLocale',
+        'undoEdit'
+      ])
+      header = <TransUnitTranslationHeader {...headerProps} />
+
+      const footerProps = pick(this.props, [
+        'glossaryCount',
+        'glossaryVisible',
+        'openDropdown',
+        'phrase',
+        'saveAsMode',
+        'saveDropdownKey',
+        'savePhraseWithStatus',
+        'showSuggestions',
+        'suggestionCount',
+        'suggestionSearchType',
+        'toggleDropdown',
+        'toggleGlossary',
+        'toggleSuggestionPanel',
+        'showRejectModal',
+        'permissions'
+      ])
+      footer = <TransUnitTranslationFooter {...footerProps} />
+    }
+
     const {
       openDropdown,
       onValidationErrorChange,

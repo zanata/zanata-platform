@@ -33,7 +33,8 @@ import {fetchServerSettings, handleSaveServerSettings
 interface NOTIFICATION {
   severity: IconType,
   message: string,
-  description: string
+  description: string,
+  duration: number
 }
 
 interface AdminState {
@@ -105,7 +106,7 @@ class ServerSettings extends React.Component<Props, SettingsState> {
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
-        duration: null
+        duration: notification.duration
       })
     }
     if (!isEqual(this.props, nextProps)) {
