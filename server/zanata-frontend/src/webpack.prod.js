@@ -3,6 +3,7 @@
  * Merged with webpack.common.js
  * See: https://webpack.js.org/guides/production/ for production guidelines
  */
+/* eslint-disable max-len */
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
@@ -25,6 +26,25 @@ const postCssLoader = {
   }
 }
 
+// Default options for splitChunks cacheGroups
+const groupsOptions = {
+  chunks: 'all',
+  minSize: 0,
+  minChunks: 1,
+  reuseExistingChunk: true,
+  enforce: true
+}
+
+function recursiveIssuer (m) {
+  if (m.issuer) {
+    return recursiveIssuer(m.issuer)
+  } else if (m.name) {
+    return m.name
+  } else {
+    return false
+  }
+}
+
 /** @typedef
     {import('webpack').Configuration} WebpackConfig
  */
@@ -38,7 +58,7 @@ module.exports = merge(common, {
 
   entry: {
     'frontend': './app/entrypoint/index',
-    'editor': './app/editor/entrypoint/index.js',
+    'editor': './app/editor/entrypoint/index',
     'frontend.legacy': './app/entrypoint/legacy'
   },
 
@@ -63,7 +83,6 @@ module.exports = merge(common, {
       }
     ]
   },
-
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
@@ -71,7 +90,7 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: '[name].[hash].css',
+      filename: '[name].[hash].cache.css',
       chunkFilename: '[name].[hash].css'
     }),
     new webpack.HashedModuleIdsPlugin(),
@@ -109,12 +128,30 @@ module.exports = merge(common, {
         canPrint: true
       })
     ],
-    // namedModules: true, // NamedModulesPlugin()
+    // Split CSS chunks by entrypoint
+    // See: https://github.com/webpack-contrib/mini-css-extract-plugin#extracting-css-based-on-entry
     splitChunks: { // CommonsChunkPlugin()
       name: 'runtime',
-      chunks: 'all'
+      cacheGroups: {
+        fooStyles: {
+          name: 'frontend',
+          test: (m, c, entry = 'frontend') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
+          ...groupsOptions
+        },
+        barStyles: {
+          name: 'frontend.legacy',
+          test: (m, c, entry = 'frontend.legacy') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
+          ...groupsOptions
+        },
+        foobarStyles: {
+          name: 'editor',
+          test: (m, c, entry = 'editor') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
+          ...groupsOptions
+        },
+      }
     },
     noEmitOnErrors: true // NoEmitOnErrorsPlugin
+    // namedModules: true, // NamedModulesPlugin()
     // concatenateModules: true // ModuleConcatenationPlugin
   },
 
