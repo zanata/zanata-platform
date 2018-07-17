@@ -21,8 +21,9 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
-// eslint-disable-next-line no-unused-vars
-import { ActivityFilter } from '../../utils/activity-util'
+
+/** @typedef {import('../../utils/activity-util').ActivityFilter}
+    ActivityFilter */
 
 /* Tab keys for tracking active Tab */
 const activityTabKey = '1'

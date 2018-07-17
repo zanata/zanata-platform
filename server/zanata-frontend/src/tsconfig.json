@@ -17,8 +17,11 @@
         "importHelpers": true,
         "jsx": "react",
         "lib": [
-            // We transpile to ES5 syntax, but we use babel-polyfill
-            "dom", "es6", "dom.iterable", "scripthost"
+            // We transpile to ES5, with babel-polyfill for ES20xx features.
+            // For included polyfills, see https://github.com/zloirock/core-js
+            // (but check the version) and
+            // https://github.com/facebook/regenerator
+            "dom", "dom.iterable", "scripthost", "es2018"
         ],
         "module": "commonjs",
         "resolveJsonModule": true,

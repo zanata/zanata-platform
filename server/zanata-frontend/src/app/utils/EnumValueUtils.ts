@@ -1,8 +1,8 @@
 import { tuple } from './tuple'
 
-export const processStatusCodes = [
-  'NotAccepted', 'Waiting', 'Running', 'Finished', 'Cancelled', 'Failed']
-  export type ProcessStatusCode = typeof processStatusCodes[number]
+export const processStatusCodes = tuple(
+  'NotAccepted', 'Waiting', 'Running', 'Finished', 'Cancelled', 'Failed')
+export type ProcessStatusCode = typeof processStatusCodes[number]
 
 const isStatusCodeEnded = (statusCode: ProcessStatusCode) => {
   return statusCode === 'Finished' || statusCode === 'Cancelled' ||
@@ -11,7 +11,7 @@ const isStatusCodeEnded = (statusCode: ProcessStatusCode) => {
 /**
  * @returns whether a process status represents an ended process
  */
-export function isProcessEnded (processStatus: {statusCode: string}) {
+export function isProcessEnded (processStatus: {statusCode: ProcessStatusCode}) {
   return processStatus && isStatusCodeEnded(processStatus.statusCode)
 }
 

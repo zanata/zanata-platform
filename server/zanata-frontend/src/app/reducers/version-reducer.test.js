@@ -1,7 +1,7 @@
 /* global jest describe it expect */
 
+// import versionReducer, {defaultState} from './version-reducer'
 import versionReducer from './version-reducer'
-
 import {
   TOGGLE_TM_MERGE_MODAL,
   VERSION_LOCALES_REQUEST,
@@ -19,36 +19,48 @@ import {
   QUERY_TM_MERGE_PROGRESS_FAILURE,
   TM_MERGE_PROCESS_FINISHED
 } from '../actions/version-action-types'
+/** @typedef {import('./state').ProjectVersionState} ProjectVersionState */
+
+// @ts-ignore Need Redux 4: https://github.com/reactjs/redux/pull/2773
+const undefState = /** @type {ProjectVersionState} */ (undefined)
+const dummyAction = { type: 'any' }
 
 describe('version-reducer test', () => {
   it('can toggle the merge modal', () => {
-    const initial = versionReducer(undefined, { type: 'any' })
-    // @ts-ignore
+    const initial = versionReducer(undefState, dummyAction)
     const shown = versionReducer(initial, {
       type: TOGGLE_TM_MERGE_MODAL,
       payload: { show: true }
     })
-    // @ts-ignore
     const hidden = versionReducer(shown, {
       type: TOGGLE_TM_MERGE_MODAL,
       payload: { show: false }
     })
-    expect(initial.TMMerge).toEqual(
-      {processStatus: undefined, queryStatus: undefined,
-        projectVersions: [], show: false, triggered: false}
-    )
-    expect(shown.TMMerge).toEqual(
-      {processStatus: undefined, queryStatus: undefined,
-        projectVersions: [], show: true, triggered: false}
-    )
-    expect(hidden.TMMerge).toEqual(
-      {processStatus: undefined, queryStatus: undefined,
-        projectVersions: [], show: false, triggered: false}
-    )
+    expect(initial.TMMerge).toEqual({
+      processStatus: undefined,
+      queryStatus: undefined,
+      projectVersions: [],
+      show: false,
+      triggered: false
+    })
+    expect(shown.TMMerge).toEqual({
+      processStatus: undefined,
+      queryStatus: undefined,
+      projectVersions: [],
+      show: true,
+      triggered: false
+    })
+    expect(hidden.TMMerge).toEqual({
+      processStatus: undefined,
+      queryStatus: undefined,
+      projectVersions: [],
+      show: false,
+      triggered: false
+    })
   })
 
   it('can track fetching locales', () => {
-    const initial = versionReducer(undefined, { type: 'any' })
+    const initial = versionReducer(undefState, dummyAction)
     const requested = versionReducer(initial, {
       type: VERSION_LOCALES_REQUEST
     })
@@ -65,8 +77,8 @@ describe('version-reducer test', () => {
     }
     const localeSuccessAction = {
       type: VERSION_LOCALES_SUCCESS,
-      payload:
-        [{
+      payload: [
+        {
           displayName: 'Japanese',
           localeId: 'ja',
           nativeName: '日本語'
@@ -75,16 +87,21 @@ describe('version-reducer test', () => {
           displayName: 'Azerbaijani',
           localeId: 'az',
           nativeName: 'azərbaycan dili'
-        }]
+        }
+      ]
     }
-    const initial = versionReducer(undefined, {type: 'any'})
+    const initial = versionReducer(undefState, dummyAction)
     const localesRequested = versionReducer(initial, requestAction)
     // @ts-ignore
-    const localesReceived = versionReducer(localesRequested, localeSuccessAction)
+    const localesReceived = versionReducer(
+      localesRequested,
+      localeSuccessAction
+    )
 
     expect(localesRequested.fetchingLocale).toEqual(true)
     expect(localesReceived.fetchingLocale).toEqual(false)
-    expect(localesReceived.locales).toEqual([{
+    expect(localesReceived.locales).toEqual([
+      {
         displayName: 'Japanese',
         localeId: 'ja',
         nativeName: '日本語'
@@ -93,11 +110,12 @@ describe('version-reducer test', () => {
         displayName: 'Azerbaijani',
         localeId: 'az',
         nativeName: 'azərbaycan dili'
-      }])
+      }
+    ])
   })
 
   it('can track fetching projects', () => {
-    const initial = versionReducer(undefined, { type: 'any' })
+    const initial = versionReducer(undefState, dummyAction)
     const requested = versionReducer(initial, {
       type: PROJECT_PAGE_REQUEST
     })
@@ -115,9 +133,9 @@ describe('version-reducer test', () => {
     }
     const projectSuccessAction = {
       type: PROJECT_PAGE_SUCCESS,
-      meta: {timestamp},
-      payload:
-        [{
+      meta: { timestamp },
+      payload: [
+        {
           contributorCount: 0,
           description: 'A project',
           id: 'meikai',
@@ -131,30 +149,33 @@ describe('version-reducer test', () => {
             }
           ]
         },
-          {
-            contributorCount: 0,
-            description: 'Locked project',
-            id: 'meikailocked',
-            status: 'READONLY',
-            title: 'MeikaiLocked',
-            type: 'Project',
-            versions: [
-              {
-                id: 'ver1',
-                status: 'READONLY'
-              }
-            ]
-          }]
+        {
+          contributorCount: 0,
+          description: 'Locked project',
+          id: 'meikailocked',
+          status: 'READONLY',
+          title: 'MeikaiLocked',
+          type: 'Project',
+          versions: [
+            {
+              id: 'ver1',
+              status: 'READONLY'
+            }
+          ]
+        }
+      ]
     }
-    const initial = versionReducer(undefined, {type: 'any'})
+    const initial = versionReducer(undefState, dummyAction)
     const projectsRequested = versionReducer(initial, requestAction)
-    const projectsReceived = versionReducer(projectsRequested,
+    const projectsReceived = versionReducer(
+      projectsRequested,
       // @ts-ignore
-      projectSuccessAction)
+      projectSuccessAction
+    )
     expect(projectsRequested.fetchingProject).toEqual(true)
     expect(projectsReceived.fetchingProject).toEqual(false)
-    expect(projectsReceived.TMMerge.projectVersions).toEqual(
-      [{
+    expect(projectsReceived.TMMerge.projectVersions).toEqual([
+      {
         contributorCount: 0,
         description: 'A project',
         id: 'meikai',
@@ -181,39 +202,43 @@ describe('version-reducer test', () => {
             status: 'READONLY'
           }
         ]
-      }]
-    )
+      }
+    ])
   })
 
   it('does not use stale results', () => {
-    const stalePayload = [{
-      contributorCount: 0,
-      description: 'A stale project',
-      id: 'meikai1',
-      status: 'ACTIVE',
-      title: 'Meikai1',
-      type: 'Project',
-      versions: [
-        {
-          id: 'ver1',
-          status: 'ACTIVE'
-        }
-      ]
-    }]
-    const freshPayload = [{
-      contributorCount: 0,
-      description: 'A fresh project',
-      id: 'meikai2',
-      status: 'ACTIVE',
-      title: 'Meikai2',
-      type: 'Project',
-      versions: [
-        {
-          id: 'ver1',
-          status: 'ACTIVE'
-        }
-      ]
-    }]
+    const stalePayload = [
+      {
+        contributorCount: 0,
+        description: 'A stale project',
+        id: 'meikai1',
+        status: 'ACTIVE',
+        title: 'Meikai1',
+        type: 'Project',
+        versions: [
+          {
+            id: 'ver1',
+            status: 'ACTIVE'
+          }
+        ]
+      }
+    ]
+    const freshPayload = [
+      {
+        contributorCount: 0,
+        description: 'A fresh project',
+        id: 'meikai2',
+        status: 'ACTIVE',
+        title: 'Meikai2',
+        type: 'Project',
+        versions: [
+          {
+            id: 'ver1',
+            status: 'ACTIVE'
+          }
+        ]
+      }
+    ]
     const brunch = new Date(2017, 4, 4, 11, 0, 0, 0)
     const highTea = new Date(2017, 4, 4, 12, 0, 0, 3)
     const firstProjectSuccessAction = {
@@ -227,16 +252,21 @@ describe('version-reducer test', () => {
       payload: freshPayload
     }
     // The project result with the most recent timestamp should be maintained
-    const newestResults = versionReducer(undefined,
+    const newestResults = versionReducer(
+      undefState,
       // @ts-ignore
-      secondProjectSuccessAction)
-    const withStaleAction = versionReducer(newestResults,
+      secondProjectSuccessAction
+    )
+    const withStaleAction = versionReducer(
+      newestResults,
       // @ts-ignore
-      firstProjectSuccessAction)
+      firstProjectSuccessAction
+    )
 
     expect(withStaleAction.projectResultsTimestamp).toEqual(highTea)
-    expect(withStaleAction.TMMerge.projectVersions[0])
-      .toEqual(newestResults.TMMerge.projectVersions[0])
+    expect(withStaleAction.TMMerge.projectVersions[0]).toEqual(
+      newestResults.TMMerge.projectVersions[0]
+    )
   })
   it('can request a TM merge', () => {
     const requestAction = {
@@ -251,31 +281,40 @@ describe('version-reducer test', () => {
         url: 'http://localhost:8080/rest/process/key/TMMergeForVerKey-1-ja'
       }
     }
-    const initial = versionReducer(undefined, {type: 'any'})
+    const initial = versionReducer(undefState, dummyAction)
     const mergeRequested = versionReducer(initial, requestAction)
     // @ts-ignore
     const mergeReceived = versionReducer(mergeRequested, mergeSuccessAction)
-    expect(mergeReceived).toEqual({
-      TMMerge: {
-        processStatus: {
-          messages: [],
-          percentageComplete: 100,
-          statusCode: 'Running',
-          url: 'http://localhost:8080/rest/process/key/TMMergeForVerKey-1-ja'
+    expect(mergeReceived).toEqual(
+      /** @type {ProjectVersionState} */ {
+        MTMerge: {
+          processStatus: undefined,
+          queryStatus: undefined,
+          showMTMerge: false,
+          triggered: false
         },
-        projectVersions: [],
-        show: false,
-        triggered: false
-      },
-      fetchingLocale: false,
-      fetchingProject: false,
-      locales: [],
-      notification: undefined,
-      projectResultsTimestamp: initial.projectResultsTimestamp
-    })
+        TMMerge: {
+          processStatus: {
+            messages: [],
+            percentageComplete: 100,
+            statusCode: 'Running',
+            url: 'http://localhost:8080/rest/process/key/TMMergeForVerKey-1-ja'
+          },
+          projectVersions: [],
+          queryStatus: undefined,
+          show: false,
+          triggered: false
+        },
+        fetchingLocale: false,
+        fetchingProject: false,
+        locales: [],
+        notification: undefined,
+        projectResultsTimestamp: initial.projectResultsTimestamp
+      }
+    )
   })
   it('can track TM merge progress', () => {
-    const initial = versionReducer(undefined, { type: 'any' })
+    const initial = versionReducer(undefState, dummyAction)
     const requestAction = versionReducer(initial, {
       type: VERSION_TM_MERGE_REQUEST
     })
@@ -293,13 +332,20 @@ describe('version-reducer test', () => {
     const cancelSuccessAction = {
       type: TM_MERGE_CANCEL_SUCCESS
     }
-    const initial = versionReducer(undefined, {type: 'any'})
+    const initial = versionReducer(undefState, dummyAction)
     const cancelRequested = versionReducer(initial, requestAction)
     const cancelReceived = versionReducer(cancelRequested, cancelSuccessAction)
     expect(cancelReceived).toEqual({
+      MTMerge: {
+        processStatus: undefined,
+        queryStatus: undefined,
+        showMTMerge: false,
+        triggered: false
+      },
       TMMerge: {
         processStatus: undefined,
         projectVersions: [],
+        queryStatus: undefined,
         show: false,
         triggered: false
       },
@@ -311,7 +357,7 @@ describe('version-reducer test', () => {
     })
   })
   it('can Query TM merge progress', () => {
-    const initial = versionReducer(undefined, {type: 'any'})
+    const initial = versionReducer(undefState, dummyAction)
     const queryRequestAction = {
       type: QUERY_TM_MERGE_PROGRESS_REQUEST
     }
@@ -321,9 +367,16 @@ describe('version-reducer test', () => {
     const queryRequested = versionReducer(initial, queryRequestAction)
     const failureRecieved = versionReducer(queryRequested, queryFailureAction)
     expect(failureRecieved).toEqual({
+      MTMerge: {
+        processStatus: undefined,
+        queryStatus: undefined,
+        showMTMerge: false,
+        triggered: false
+      },
       TMMerge: {
         processStatus: undefined,
         projectVersions: [],
+        queryStatus: undefined,
         show: false,
         triggered: false
       },
@@ -335,7 +388,7 @@ describe('version-reducer test', () => {
     })
   })
   it('can handle TM Merge completion', () => {
-    const initial = versionReducer(undefined, {type: 'any'})
+    const initial = versionReducer(undefState, dummyAction)
     const queryRequestAction = {
       type: TM_MERGE_PROCESS_FINISHED
     }
