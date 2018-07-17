@@ -162,7 +162,7 @@ export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
   const serverOptions = {
     toLocale: mergeOptions.selectedLocales[0],
     // @ts-ignore any
-    saveState: phraseStatusToTransUnitStatus[mergeOptions.saveAs],
+    saveState: phraseStatusToTransUnitStatus(mergeOptions.saveAs),
     // TODO: Consider deleting entirely
     overwriteFuzzy: true, // mergeOptions.overwriteFuzzy
   }

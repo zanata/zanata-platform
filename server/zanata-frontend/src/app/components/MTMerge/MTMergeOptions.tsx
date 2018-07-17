@@ -93,7 +93,7 @@ export class MTMergeOptions extends Component<Props> {
                 (option.props.value + option.props.title).toLowerCase())
                 .indexOf(input.toLowerCase()) >= 0}
             >
-            {this.props.availableLocales.map(loc =>
+            {this.props.availableLocales.sort(this.compareLocId).map(loc =>
               <Option key={loc.localeId} value={loc.localeId} title={loc.displayName}>
                 <span className='blue'>{loc.localeId}</span> {loc.displayName}
               </Option>)}
@@ -125,6 +125,11 @@ export class MTMergeOptions extends Component<Props> {
         }
       </React.Fragment>
     )
+  }
+
+  // Sort comparitor by locale Id
+  private compareLocId (a: Locale, b: Locale) {
+    return a.localeId < b.localeId ? -1 : a.localeId > b.localeId ? 1 : 0
   }
 
   private availableLocaleIds() {
