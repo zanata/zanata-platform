@@ -105,7 +105,7 @@ const MergeOptions = (
           in other projects and versions into this project version.
           <Link useHref link={docLink} target='_blank'>
             <span title='help'>
-              <Icon name='help' className='s0' parentClassName='iconHelp' />
+              <Icon name='help' className='s0' />
               &nbsp;Need help?
             </span>
           </Link>
@@ -147,7 +147,7 @@ const MergeOptions = (
       </Col>
       <Col className='mb4'>
         <p className='b f4'>For every potential translation:</p>
-        <div className='di u-textNewBlue'>
+        <div className='di txt-newblue'>
           If text is less than <Select
             value={mergeOptions.matchPercentage}
             style={{ width: '5rem' }}
@@ -256,7 +256,7 @@ class TMMergeModal extends Component {
   }
   componentWillReceiveProps (nextProps) {
     const { locales, showTMMergeModal } = nextProps
-    // Fetch locales again when modal is closed then re-opened
+    // Fetch locales again when modal is re-opened
     // Reset the state when the modal is closed
     if (showTMMergeModal !== this.props.showTMMergeModal) {
       if (showTMMergeModal) {
@@ -471,9 +471,9 @@ class TMMergeModal extends Component {
     : (
       <span>
         <Row>
-          <Button className='btn-link link-danger'
+          <Button className='btn-danger' type='danger'
             onClick={toggleTMMergeModal}>
-            Close
+            Cancel
           </Button>
           <Button type='primary' className='btn-primary'
             onClick={this.submitForm}
@@ -492,7 +492,7 @@ class TMMergeModal extends Component {
         footer={modalFooter}
         width={'48rem'}>
         <span>
-          <p className='u-textDanger modalText-danger'>
+          <p className='txt-error tc pt3 mb0'>
             {notification && notification.message}</p>
           {modalBody}
         </span>

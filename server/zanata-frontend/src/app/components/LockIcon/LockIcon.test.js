@@ -3,7 +3,8 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import LockIcon from '.'
-import {Icon } from '../../components'
+import Icon from "antd/lib/icon";
+import "antd/lib/icon/style/css";
 
 describe('LockIcon', () => {
   it('renders a LockIcon when given a READONLY status', () => {
@@ -11,7 +12,7 @@ describe('LockIcon', () => {
       <LockIcon status={'READONLY'} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <Icon name="locked" className="s0 txt-warn" />
+      <Icon type="lock" className="s0 txt-warn" />
     )
     expect(actual).toEqual(expected)
   })

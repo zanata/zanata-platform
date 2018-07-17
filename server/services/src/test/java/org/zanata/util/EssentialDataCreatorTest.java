@@ -63,6 +63,8 @@ public class EssentialDataCreatorTest {
     private HAccount adminAccount;
     @Mock
     private ApplicationConfigurationDAO applicationConfigurationDAO;
+    private String[] allRoles = { "admin", "user", "glossarist", "glossary-admin",
+            "project-creator", "mt-suggestion", "mt-bulk" };
 
     @Before
     public void beforeMethod() {
@@ -73,7 +75,7 @@ public class EssentialDataCreatorTest {
 
     @Test
     public void canCreateAllRoles() {
-        givenRolesDoNotExists("admin", "user", "glossarist", "glossary-admin", "project-creator");
+        configureNonexistentRoles(allRoles);
 
         creator.prepare();
 
@@ -82,11 +84,13 @@ public class EssentialDataCreatorTest {
         verify(accountRoleDAO).create("glossary-admin", HAccountRole.RoleType.MANUAL, "glossarist");
         verify(accountRoleDAO).create("admin", HAccountRole.RoleType.MANUAL, "user", "glossary-admin");
         verify(accountRoleDAO).create("project-creator", HAccountRole.RoleType.MANUAL);
+        verify(accountRoleDAO).create("mt-suggestion", HAccountRole.RoleType.MANUAL);
+        verify(accountRoleDAO).create("mt-bulk", HAccountRole.RoleType.MANUAL);
     }
 
     @Test
     public void willNotCreateRolesIfTheyExists() {
-        givenRolesDoExists("admin", "user", "glossarist", "glossary-admin", "project-creator");
+        configureExistingRoles(allRoles);
 
         creator.prepare();
 
@@ -112,13 +116,13 @@ public class EssentialDataCreatorTest {
         assertThat(rolesForAccount).contains(role);
     }
 
-    private void givenRolesDoExists(String... roleNames) {
+    private void configureExistingRoles(String... roleNames) {
         for (String roleName : roleNames) {
             when(accountRoleDAO.roleExists(roleName)).thenReturn(true);
         }
     }
 
-    private void givenRolesDoNotExists(String... roleNames) {
+    private void configureNonexistentRoles(String... roleNames) {
         for (String roleName : roleNames) {
             when(accountRoleDAO.roleExists(roleName)).thenReturn(false);
             when(accountRoleDAO.create(anyString(), eq(HAccountRole.RoleType.MANUAL), ArgumentMatchers

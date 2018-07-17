@@ -23,7 +23,6 @@ package org.zanata.service;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HProject;
-import org.zanata.model.PersonProjectMemberships;
 import org.zanata.model.type.WebhookType;
 import org.zanata.service.impl.ProjectServiceImpl;
 

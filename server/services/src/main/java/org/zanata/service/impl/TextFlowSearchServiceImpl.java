@@ -23,6 +23,8 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.search.FullTextSession;
 import javax.enterprise.context.RequestScoped;
@@ -36,6 +38,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.ModelEntityBase;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.service.LocaleService;
@@ -144,8 +147,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
             documents = documentDAO.getAllByProjectIteration(projectSlug,
                     iterationSlug);
         }
-        List<Long> documentIds =
-                Lists.transform(documents, HDocumentToId.FUNCTION);
+        List<Long> documentIds = documents.stream()
+                .map(HDocument::getId)
+                .collect(Collectors.toList());
         FilterConstraintToQuery toQuery = FilterConstraintToQuery
                 .filterInMultipleDocuments(constraints, documentIds);
         String hql = toQuery.toEntityQuery();
@@ -216,14 +220,5 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
         HDocument document = documentDAO.getById(doc.getId());
         documentPaths.add(document.getDocId());
         return this.findTextFlows(workspace, documentPaths, constraints);
-    }
-
-    private enum HDocumentToId implements Function<HDocument, Long> {
-        FUNCTION;
-
-        @Override
-        public Long apply(HDocument input) {
-            return input != null ? input.getId(): null;
-        }
     }
 }

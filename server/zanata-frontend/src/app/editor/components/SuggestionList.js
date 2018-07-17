@@ -37,6 +37,7 @@ class SuggestionList extends React.Component {
         ['copySuggestion', 'search', 'showDiff', 'showDetail', 'isRTLSource',
           'isRTLTarget'])
 
+    // @ts-ignore any
     const suggestions = this.props.suggestions.map((suggestion, index) => {
       return <Suggestion key={index}
         index={index}

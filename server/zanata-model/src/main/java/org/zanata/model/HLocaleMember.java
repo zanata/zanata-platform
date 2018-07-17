@@ -30,14 +30,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author camunoz@redhat.com
  */
 @Entity
 @Table(name = "HLocale_Member")
+@GraphQLType(name = "LocaleMember")
 public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
     private HLocaleMemberPk id = new HLocaleMemberPk();
@@ -69,16 +73,19 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     }
 
     @Column(name = "isCoordinator")
+    @GraphQLQuery(name = "isCoordinator", description = "coordinator role")
     public boolean isCoordinator() {
         return isCoordinator;
     }
 
     @Column(name = "isReviewer")
+    @GraphQLQuery(name = "isReviewer", description = "reviewer role")
     public boolean isReviewer() {
         return isReviewer;
     }
 
     @Column(name = "isTranslator")
+    @GraphQLQuery(name = "isTranslator", description = "translator role")
     public boolean isTranslator() {
         return isTranslator;
     }
@@ -89,6 +96,7 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     }
 
     @Transient
+    @GraphQLQuery(name = "locale", description = "locale")
     public HLocale getSupportedLanguage() {
         return id.getSupportedLanguage();
     }

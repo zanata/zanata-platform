@@ -22,8 +22,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
-// @formatter:off
-// @formatter:on
 
 /**
  * Utility class for creating copy of Hibernate entity in

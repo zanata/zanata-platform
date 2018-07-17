@@ -26,12 +26,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -107,19 +105,10 @@ public class DashboardAction implements Serializable {
 
     public String getUserLanguageTeams() {
         HAccount account = accountDAO.findById(authenticatedAccount.getId());
-        return StringUtils.join(Collections2.transform(
-                account.getPerson().getLanguageMemberships(),
-                new Function<HLocale, Object>() {
-
-                    @Nullable
-                    @Override
-                    public Object apply(@Nonnull HLocale locale) {
-                        if (locale == null) {
-                            throw new NullPointerException("locale");
-                        }
-                        return locale.retrieveDisplayName();
-                    }
-                }), ", ");
+        Stream<String> names =
+                account.getPerson().getLanguageMemberships().stream()
+                        .map(HLocale::retrieveDisplayName);
+        return StringUtils.join(names.iterator(), ", ");
     }
 
     public String getUserRoles() {

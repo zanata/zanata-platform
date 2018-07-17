@@ -35,6 +35,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import com.google.common.base.Strings;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @author Patrick Huang
@@ -45,6 +46,7 @@ import com.google.common.base.Strings;
 @Cacheable
 @BatchSize(size = 20)
 @Access(AccessType.FIELD)
+@GraphQLType(name = "TextFlowTargetReviewComment")
 public class HTextFlowTargetReviewComment extends ModelEntityBase {
     private static final long serialVersionUID = 1413384329431214946L;
     @ManyToOne(fetch = FetchType.LAZY)

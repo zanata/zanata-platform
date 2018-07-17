@@ -3,9 +3,15 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
-import { EditableText, Icon, Modal } from '../../components'
+import { Icon } from '../../components'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Form from 'antd/lib/form'
+import 'antd/lib/form/style/'
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/'
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/index.less'
 
 /**
  * Popup windows to display a glossary entry
@@ -58,6 +64,7 @@ class EntryModal extends Component {
       handleUpdateTerm,
       handleTermFieldUpdate
     } = this.props
+    /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
 
     const transContent = entry.transTerm ? entry.transTerm.content : ''
     const transSelected = !!selectedTransLocale
@@ -70,116 +77,88 @@ class EntryModal extends Component {
       ? this.generateTermInfo(entry.transTerm)
       : this.generateTermInfo(entry.srcTerm)
 
-    /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
-    return (
-      <Modal show={show}
-        onHide={() => handleEntryModalDisplay(false)}>
-        <Modal.Header>
-          <Modal.Title>
-            Glossary Term
-            {transSelected
-              ? (<span>
-                <Icon name='language' className='s1'
-                  parentClassName='iconLanguage-neutral' />
-                <span className='u-textMuted'>{selectedTransLocale}</span>
-              </span>)
-              : (<span>
-                <Icon name='translate' className='s1'
-                  parentClassName='iconTranslate-neutral' />
-                <span className='u-textMuted'>{entry.termsCount}</span>
-              </span>)
-            }
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className='modal-section'>
-            <label className='text-bold'>Term</label>
-            <EditableText
-              className='textInput'
-              editable={false}
-              editing={false}>
-              {entry.srcTerm.content}
-            </EditableText>
-          </div>
-          <div className='modal-section'>
-            <label className='text-bold'>Part of speech</label>
-            <EditableText
-              editable={!transSelected}
-              editing
-              className='textState textInput'
-              maxLength={255}
-              placeholder='Add part of speech…'
-              emptyReadOnlyText='No part of speech'
-              onChange={(e) => handleTermFieldUpdate('pos', e)}>
-              {entry.pos}
-            </EditableText>
-          </div>
-          <div className='modal-section'>
-            <label className='text-bold'>Description</label>
-            <EditableText
-              editable={!transSelected}
-              editing
-              className='textInput'
-              maxLength={500}
-              placeholder='Add a description…'
-              emptyReadOnlyText='No description'
-              onChange={(e) => handleTermFieldUpdate('description', e)}>
-              {entry.description}
-            </EditableText>
-          </div>
-          {transSelected ? (
-            <div className='modal-section'>
-              <label className='text-bold'>Translation</label>
-              <EditableText
-                editable
-                className='textInput'
-                editing
-                maxLength={500}
-                placeholder='Add a translation…'
-                emptyReadOnlyText='No translation'
-                onChange={(e) => handleTermFieldUpdate('locale', e)}>
-                {transContent}
-              </EditableText>
-            </div>
-            ) : ''}
+    const onSubmit = () => {
+      handleUpdateTerm(entry)
+    }
+    const onCancel = () => {
+      handleResetTerm(entry.id)
+      handleEntryModalDisplay(false)
+    }
 
-          {transSelected ? (
-            <div className='modal-section'>
-              <label className='text-bold'>Comment</label><br />
-              <EditableText
-                maxLength={500}
-                className='textInput'
-                editable={enableComment}
-                editing={enableComment}
-                placeholder='Add a comment…'
-                emptyReadOnlyText='No comment'
-                multiline
-                onChange={(e) => handleTermFieldUpdate('comment', e)}>
-                {comment}
-              </EditableText>
-            </div>
-          ) : ''}
-          {!isEmpty(info) &&
-            <div className='modalText-muted'>{info}</div>
-          }
-        </Modal.Body>
-        <Modal.Footer>
-          <div className='u-pullRight'>
+    return (
+      <Modal
+        title={
+          <span>
+            Glossary Term {transSelected
+              ? (<span className='v-mid txt-muted'>
+                <Icon name='language' className='s1' />
+                <span className='txt-muted'>{selectedTransLocale}</span>
+              </span>)
+              : (<span className='v-mid txt-muted'>
+                <Icon name='translate' className='s1' />
+                <span className='txt-muted'>{entry.termsCount}</span>
+              </span>)}
+          </span>
+        }
+        visible={show}
+        onCancel={() => handleEntryModalDisplay(false)}
+        footer={
+          <React.Fragment>
             <Button className='btn-link' aria-label='button'
-              onClick={
-                () => {
-                  handleResetTerm(entry.id); handleEntryModalDisplay(false)
-                }
-              }>
+              onClick={onCancel}>
               Cancel
             </Button>
             <Button className='btn-primary' aria-label='button'
-              type='primary' onClick={() => handleUpdateTerm(entry)}
-              disabled={!canUpdate || isSaving} loading={isSaving}>
+              type='primary' onClick={onSubmit}
+              loading={isSaving}
+              disabled={!canUpdate}>
               Update
             </Button>
-          </div>
-        </Modal.Footer>
+          </React.Fragment>
+        }>
+        <Form layout='vertical'>
+          <Form.Item label={'Term'} title={'Term'}>
+            <Input
+              disabled
+              value={entry.srcTerm.content} />
+          </Form.Item>
+          <Form.Item label={'Part of speech'} title={'Part of speech'}>
+            <Input
+              disabled={transSelected}
+              maxLength={255}
+              onChange={(e) => handleTermFieldUpdate('pos', e)}
+              value={entry.pos} />
+          </Form.Item>
+          <Form.Item label={'Description'} title={'Description'}>
+            <Input
+              disabled={transSelected}
+              maxLength={500}
+              onChange={(e) => handleTermFieldUpdate('description', e)}
+              value={entry.description} />
+          </Form.Item>
+          {transSelected ? (
+            <Form.Item label={'Translation'} title={'Translation'}>
+              <Input
+                maxLength={500}
+                onChange={(e) => handleTermFieldUpdate('locale', e)}
+                placeholder='Add a translation…'
+                value={transContent} />
+            </Form.Item>
+          ) : ''}
+          {transSelected ? (
+            <Form.Item label={'Comment'} title={'Comment'}>
+              <Input.TextArea
+                disabled={!enableComment}
+                maxLength={500}
+                onChange={(e) => handleTermFieldUpdate('comment', e)}
+                placeholder='Add a comment…'
+                value={comment} />
+            </Form.Item>
+          ) : ''}
+        </Form>
+        {!isEmpty(info) &&
+          <div className='modalText-muted'>{info}</div>
+        }
       </Modal>
     )
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value*/

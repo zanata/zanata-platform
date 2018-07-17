@@ -22,6 +22,9 @@ import 'antd/lib/tag/style/css'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
 
+/** @typedef {import('../../utils/activity-util').ActivityFilter}
+    ActivityFilter */
+
 /* Tab keys for tracking active Tab */
 const activityTabKey = '1'
 const glossaryTabKey = '2'
@@ -45,12 +48,12 @@ const commentShape = PropTypes.shape({
   id: PropTypes.shape({id: PropTypes.number, value: PropTypes.number})
 })
 
-/* Panel displaying info, glossary, activity, etc. */
 class TranslationInfoPanel extends React.Component {
   static propTypes = {
     activityVisible: PropTypes.bool.isRequired,
     /* close the sidebar */
     close: PropTypes.func.isRequired,
+    conflict: PropTypes.any,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
@@ -67,7 +70,7 @@ class TranslationInfoPanel extends React.Component {
     notification: PropTypes.shape({
       severity: PropTypes.string,
       message: PropTypes.string,
-      description: PropTypes.string,
+      description: PropTypes.node,
       duration: PropTypes.number
     }),
     selectedPhrase: PropTypes.shape({
@@ -82,26 +85,32 @@ class TranslationInfoPanel extends React.Component {
     }),
     isRTL: PropTypes.bool.isRequired
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.handleSelectTab = this.handleSelectTab.bind(this)
     this.selectActivityTypeFilter =
       this.selectActivityTypeFilter.bind(this)
+
     this.state = {
       key: activityTabKey,
-      selectedActivites: 'all'
+      /** @type {ActivityFilter} */
+      selectedActivites: ('all')
     }
   }
+  // @ts-ignore any
   componentDidUpdate (prevProps) {
     const { notification } = this.props
     if (notification && prevProps.notification !== notification) {
+      // @ts-ignore any
       Notification[notification.severity]({
+        key: notification.key,
         message: notification.message,
-        description: notification.description,
-        duration: null
+        description: notification.description
       })
     }
   }
+  // @ts-ignore any
   handleSelectTab (key) {
     if (key === activityTabKey) {
       this.props.toggleActivity()
@@ -110,9 +119,11 @@ class TranslationInfoPanel extends React.Component {
     }
     this.setState({ key })
   }
+  /** @param activityFilterType {ActivityFilter} */
   selectActivityTypeFilter (activityFilterType) {
     this.setState(({ selectedActivites: activityFilterType }))
   }
+  // @ts-ignore any
   postComment = (postComment) => {
     const reviewData = {
       localeId: this.props.localeId,
@@ -212,6 +223,7 @@ class TranslationInfoPanel extends React.Component {
     )
   }
 }
+// @ts-ignore any
 function mapStateToProps (state) {
   const { glossary, phrases, context, activity } = state
   const { detail, selectedPhraseId, notification } = phrases
@@ -246,10 +258,12 @@ function mapStateToProps (state) {
   return newProps
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
     // @ts-ignore
     close: () => dispatch(setSidebarVisibility(false)),
+    // @ts-ignore any
     postReviewComment: (reviewData) =>
       dispatch(postReviewComment(dispatch, reviewData)),
     toggleActivity: () => dispatch(toggleActivity()),

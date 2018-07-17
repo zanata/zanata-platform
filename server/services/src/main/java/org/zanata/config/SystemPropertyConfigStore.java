@@ -20,19 +20,24 @@
  */
 package org.zanata.config;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Produces;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.security.AuthenticationType;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -62,6 +67,10 @@ public class SystemPropertyConfigStore implements ConfigStore {
     private static final String KEY_JAVAMELODY_STORAGE_DIRECTORY =
             "javamelody.storage-directory";
     private static final String KEY_ZANATA_HOME = "zanata.home";
+
+    private static final String KEY_MT_SERVICE_URL = "mt.service.url";
+    private static final String KEY_MT_SERVICE_USER = "mt.service.user";
+    private static final String KEY_MT_SERVICE_TOKEN = "mt.service.token";
     /**
      * @see SystemConfigStartupCheck
      */
@@ -141,6 +150,33 @@ public class SystemPropertyConfigStore implements ConfigStore {
         String zanataHome = System.getProperty(KEY_ZANATA_HOME);
         assert !Strings.isNullOrEmpty(zanataHome);
         return zanataHome;
+    }
+
+    @Produces
+    @MTServiceURL
+    protected @Nullable URI getMTServiceURL() {
+        String url = System.getProperty(KEY_MT_SERVICE_URL);
+        if (!Strings.isNullOrEmpty(url)) {
+            try {
+                return new URI(url);
+            } catch (URISyntaxException e) {
+                log.error("invalid url for MT service", e);
+                throw new RuntimeException("invalid url for MT service:" + url);
+            }
+        }
+        return null;
+    }
+
+    @Produces
+    @MTServiceUser
+    protected @Nullable String getMTServiceUser() {
+        return System.getProperty(KEY_MT_SERVICE_USER);
+    }
+
+    @Produces
+    @MTServiceToken
+    protected @Nullable String getMTServiceToken() {
+        return System.getProperty(KEY_MT_SERVICE_TOKEN);
     }
 
     public Map<AuthenticationType, String> getLoginModuleNames() {

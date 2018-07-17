@@ -22,6 +22,7 @@ class CriteriaDropdown extends Component {
     onUnspecifiedCriteria: PropTypes.func.isRequired,
     criteriaDescription: PropTypes.string.isRequired
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = {
@@ -33,6 +34,7 @@ class CriteriaDropdown extends Component {
     const {
       criteriaList, criteriaDescription, onUnspecifiedCriteria, onCriteriaChange
     } = this.props
+    // @ts-ignore any
     const options = criteriaList.map((value, index) => {
       return (
         <Select.Option key={index}>
@@ -40,6 +42,7 @@ class CriteriaDropdown extends Component {
         </Select.Option>
       )
     })
+    // @ts-ignore any
     const handleChange = (value) => {
       if (criteriaList[value].description === UNSPECIFIED.description) {
         onUnspecifiedCriteria()

@@ -9,7 +9,7 @@ const messages = Messages[locale]
 
 const XmlEntityValidator =
   new XmlEntityValidation(locale, messages)
-
+// @ts-ignore any
 const noErrors = []
 
 describe('XmlEntityValidation', () => {
@@ -17,12 +17,14 @@ describe('XmlEntityValidation', () => {
     const source = 'Source string without xml entity'
     const target = 'Target string without xml entity'
     const errorList = XmlEntityValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('testWithCompleteEntity', () => {
     const source = 'Source string'
     const target = 'Target string: &mash; bla bla &test;'
     const errorList = XmlEntityValidator.doValidate(source, target)
+    // @ts-ignore any
     expect(errorList).toEqual(noErrors)
   })
   it('testWithIncompleteEntityCharRef', () => {

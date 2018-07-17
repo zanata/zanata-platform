@@ -6,6 +6,7 @@ import stateChangeDispatchMiddleware from './state-change-dispatch'
  * e.g. My Project (1.0) to Afrikaans - Zanata Web Translation
  */
 const titleUpdateMiddleware = stateChangeDispatchMiddleware(
+  // @ts-ignore any
   (_dispatch, oldState, newState) => {
     const pre = oldState.context
     const { versionSlug } = newState.context
@@ -29,6 +30,7 @@ const titleUpdateMiddleware = stateChangeDispatchMiddleware(
 /**
  * Set the browser title.
  */
+// @ts-ignore any
 function setTitle (project, version, language) {
   if (window.document) {
     window.document.title =
@@ -39,6 +41,7 @@ function setTitle (project, version, language) {
 /**
  * Look up the project name from the state, using the slug as a fallback.
  */
+// @ts-ignore any
 function findProjectName (state) {
   return state.headerData.context.projectVersion.project.name ||
     state.context.projectSlug
@@ -47,6 +50,7 @@ function findProjectName (state) {
 /**
  * Look up the locale name from the state, using the locale id as a fallback.
  */
+// @ts-ignore any
 function findLocaleName (state) {
   const localeId = state.context.lang
   const locale = state.ui.uiLocales[localeId]

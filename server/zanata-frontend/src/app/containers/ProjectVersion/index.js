@@ -1,8 +1,9 @@
-// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import Notification from 'antd/lib/notification'
+import MTMerge from './MTMergeContainer'
 import TMMergeModal from './TMMergeModal'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
 
@@ -13,6 +14,7 @@ import {
 import {
   showExportTMXModal
 } from '../../actions/tmx-actions'
+import { fetchVersionLocales } from '../../actions/version-actions'
 
 /**
  * Root component for Project Version Page
@@ -24,7 +26,21 @@ class ProjectVersion extends Component {
     params: PropTypes.shape({
       project: PropTypes.string.isRequired,
       version: PropTypes.string.isRequired
-    })
+    }),
+    notification: PropTypes.node
+  }
+
+  // @ts-ignore any
+  componentDidUpdate (prevProps, prevState) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      // @ts-ignore any
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: notification.duration
+      })
+    }
   }
 
   render () {
@@ -32,9 +48,18 @@ class ProjectVersion extends Component {
     return (
       <div className='wideView' id='sidebarVersion'>
         <div className='u-centerBlock'>
-          <TMMergeModal projectSlug={params.project}
+          <MTMerge
+            allowMultiple={false}
+            projectSlug={params.project}
+            versionSlug={params.version}
+          />
+          <TMMergeModal
+            // @ts-ignore
+            projectSlug={params.project}
             versionSlug={params.version} />
-          <TMXExportModal project={params.project}
+          <TMXExportModal
+            // @ts-ignore
+            project={params.project}
             version={params.version} />
         </div>
       </div>
@@ -42,15 +67,27 @@ class ProjectVersion extends Component {
   }
 }
 
+// @ts-ignore
 const mapDispatchToProps = (dispatch) => {
   return {
+    // @ts-ignore any
+    fetchVersionLocales: (project, version) => {
+      dispatch(fetchVersionLocales(project, version))
+    },
     toggleTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
     },
+    // @ts-ignore any
     toggleTMXExportModal: (show) => {
+      // @ts-ignore
       dispatch(showExportTMXModal(show))
     }
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(ProjectVersion)
+// @ts-ignore any
+const mapStateToProps = (state) => {
+  return { notification: state.projectVersion.notification }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectVersion)

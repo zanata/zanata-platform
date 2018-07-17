@@ -11,9 +11,9 @@ import {
  * Bottom section of contribution statistic page.
  * See RecentContribution for main page.
  * @type
-    { React.StatelessComponent<{dateRange, selectedContentState, selectedDay,
-      wordCountForEachDay, wordCountForSelectedDay, handleFilterChanged,
-      handleSelectedDayChanged}>
+    { React.StatelessComponent<{dateRange: any, selectedContentState: any,
+      selectedDay: any, wordCountForEachDay: any, wordCountForSelectedDay: any,
+      handleFilterChanged: any, handleSelectedDayChanged: any}>
     }
  */
 const FilterableMatrixTable = ({
@@ -40,7 +40,7 @@ const FilterableMatrixTable = ({
         categoryTitle='projectName'
         categoryName='Projects' />
     ])
-    : <div className='u-textMuted'>No contributions</div>
+    : <div className='txt-muted'>No contributions</div>
   return (
     <div>
       <div className='u-flexRow'>

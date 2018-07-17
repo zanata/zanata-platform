@@ -28,10 +28,12 @@ class TMMergeImportedTM extends Component {
   defaultState = {
     enabled: true
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = this.defaultState
   }
+  // @ts-ignore any
   toggleChange = (e) => {
     const checked = e.target.checked
     this.setState(() => ({
@@ -48,8 +50,8 @@ class TMMergeImportedTM extends Component {
             <Switch defaultChecked
               onChange={this.toggleChange} />
           </span>
-          <span className="ml2 f4">From </span>
-          <span className="b f4">TM Source</span>
+          <span className="ml2 f4 v-mid">From </span>
+          <span className="b f4 v-mid">TM Source</span>
         </div>
         <div>
           No project, document or context for TMX<br />
@@ -60,9 +62,8 @@ class TMMergeImportedTM extends Component {
                 <span>I don't mind at all</span><br />
                 <CopyLabel type={IGNORE_CHECK} value={fromImportedTM} />
                 <Tooltip placement='right' overlay={tooltip}>
-                  <a className="btn-link tooltip-btn" role="button">
-                    <Icon name="info" className="s0"
-                      parentClassName="iconInfoVersionMerge" />
+                  <a className="btn-link pa0" role="button">
+                    <Icon name="info" className="s0 v-mid ml1 txt-info" />
                   </a>
                 </Tooltip>
               </Radio>

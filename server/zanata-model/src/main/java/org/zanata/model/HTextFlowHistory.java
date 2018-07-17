@@ -43,9 +43,11 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.google.common.base.Objects;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @Immutable
+@GraphQLType(name = "TextFlowHistory")
 public class HTextFlowHistory extends HTextContainer implements Serializable,
         ITextFlowHistory {
 

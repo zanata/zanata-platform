@@ -6,6 +6,7 @@ const EMO_STYLE = `${BASE_STYLE}; color: #ffe100`
 const LABEL_STYLE = `${BASE_STYLE}; color: #3c42e0; font-weight: bold`
 const MESSAGE_STYLE = `${BASE_STYLE}; color: #3c93e0`
 
+// @ts-ignore any
 export default function TODO (message, ...data) {
   // eslint-disable-next-line no-console
   console.log('%c🚧🚧🚧%c TODO %c%s %c🚧🚧🚧',

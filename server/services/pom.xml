@@ -156,6 +156,7 @@
             <ignoredResourcePattern>schema/xml\.xsd</ignoredResourcePattern>
             <!-- infinispan-core/common -->
             <ignoredResourcePattern>features\.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>about.html</ignoredResourcePattern>
           </ignoredResourcePatterns>
         </configuration>
       </plugin>
@@ -305,6 +306,7 @@
   </build>
 
   <dependencies>
+
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
@@ -995,6 +997,31 @@
     </dependency>
 
     <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>2.5.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xmlunit</groupId>
+          <artifactId>xmlunit-legacy</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>net.minidev</groupId>
+          <artifactId>accessors-smart</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-runtime</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
       <scope>provided</scope>
@@ -1548,6 +1575,10 @@
       <artifactId>maven-dependency-analyzer</artifactId>
       <version>1.7</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
     </dependency>
   </dependencies>
 

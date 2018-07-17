@@ -1,6 +1,7 @@
 import { createAction } from 'redux-actions'
 import { auth } from '../config'
-import { HTTPVerb } from 'redux-api-middleware';
+import { HTTPVerb } from 'redux-api-middleware'
+import { processStatusCodes, ProcessStatusCode } from '../utils/EnumValueUtils'
 
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE'
 export const clearMessage = createAction(CLEAR_MESSAGE)
@@ -12,7 +13,17 @@ export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE'
 export const SEVERITY = {
   INFO: 'info',
   WARN: 'warn',
-  ERROR: 'error'
+  ERROR: 'error',
+  SUCCESS: 'success'
+}
+
+// Convert async process status to notification severity
+export const statusToSeverity = (status: ProcessStatusCode) => {
+  return status === processStatusCodes[0 || 5]
+    ? SEVERITY.ERROR : status === processStatusCodes[1 || 2]
+      ? SEVERITY.INFO : status === processStatusCodes[3]
+        ? SEVERITY.SUCCESS : status === processStatusCodes[4]
+          ? SEVERITY.WARN : SEVERITY.INFO
 }
 
 export const DEFAULT_LOCALE = {
@@ -42,7 +53,7 @@ export const getJsonHeaders = () => {
 export type APITypes = [string|{}, string|{}, string|{}]
 
 // derived from RSAAction in redux-api-middleware.d.ts
-interface APIRequest {
+export interface APIRequest {
     endpoint: string;  // or function
     method: HTTPVerb;
     body?: any;

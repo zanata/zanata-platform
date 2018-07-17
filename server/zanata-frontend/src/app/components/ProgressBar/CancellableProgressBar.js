@@ -25,6 +25,7 @@ class CancellableProgressBar extends Component {
   static defaultProps = {
     buttonLabel: 'Cancel Operation'
   }
+  // @ts-ignore any
   constructor (props) {
     super(props)
     this.state = {
@@ -44,6 +45,7 @@ class CancellableProgressBar extends Component {
   componentDidMount () {
     this.queryProgressLoop()
   }
+  // @ts-ignore any
   componentWillUpdate (nextProp, nextState) {
     if (isProcessEnded(nextProp.processStatus) || nextState.stopTimer) {
       this.stopTimer()
@@ -57,7 +59,7 @@ class CancellableProgressBar extends Component {
       onCancelOperation, processStatus, buttonLabel
     } = this.props
     return (
-      <div className='bstrapReact'>
+      <div>
         <Progress percent={processStatus.percentageComplete}
           showInfo
         />

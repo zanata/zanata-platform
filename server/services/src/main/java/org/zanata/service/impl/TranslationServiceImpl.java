@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
@@ -268,15 +269,9 @@ public class TranslationServiceImpl implements TranslationService {
     private void validateReviewPermissionIfApplicable(
             List<TransUnitUpdateRequest> translationRequests,
             HProjectIteration projectIteration, HLocale hLocale) {
-        Optional<TransUnitUpdateRequest> hasReviewRequest = Iterables.tryFind(
-                translationRequests, new Predicate<TransUnitUpdateRequest>() {
-
-                    @Override
-                    public boolean apply(TransUnitUpdateRequest input) {
-                        return isReviewState(input.getNewContentState());
-                    }
-                });
-        if (hasReviewRequest.isPresent()) {
+        boolean hasReviewRequest = translationRequests.stream()
+                .anyMatch(it -> isReviewState(it.getNewContentState()));
+        if (hasReviewRequest) {
             identity.checkPermission("translation-review",
                     projectIteration.getProject(), hLocale);
         }
@@ -697,15 +692,11 @@ public class TranslationServiceImpl implements TranslationService {
         // so that it can lazily load associated objects
         HProjectIteration iteration =
                 projectIterationDAO.findById(projectIterationId);
+        List<String> resIds = batch.stream()
+                .map(TextFlowTarget::getResId)
+                .collect(Collectors.toList());
         Map<String, HTextFlow> resIdToTextFlowMap =
-                textFlowDAO.getByDocumentAndResIds(document, Lists.transform(
-                        batch, new Function<TextFlowTarget, String>() {
-
-                            @Override
-                            public String apply(TextFlowTarget input) {
-                                return input.getResId();
-                            }
-                        }));
+                textFlowDAO.getByDocumentAndResIds(document, resIds);
         final int numPlurals = resourceUtils.getNumPlurals(document, locale);
         List<TextFlowTargetStateChange> targetStates = Lists.newArrayList();
         Map<ContentState, Long> contentStateDeltas = Maps.newHashMap();

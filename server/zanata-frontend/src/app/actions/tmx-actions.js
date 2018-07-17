@@ -29,15 +29,18 @@ export const showExportTMXModal =
     createAction(SHOW_EXPORT_TMX_MODAL)
 export const setInitialState = createAction(SET_INITIAL_STATE)
 
+// @ts-ignore any
 const fetchSourceLanguages = (endpoint) => {
   /** @type {APITypes} */
   const apiTypes = [
     GET_LOCALE_REQUEST,
     {
       type: GET_LOCALE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -54,16 +57,20 @@ const fetchSourceLanguages = (endpoint) => {
   }
 }
 
+// @ts-ignore any
 const getTMX = (srcLocaleId, project, version, endpoint) => {
   /** @type {APITypes} */
   const apiTypes = [
     {
       type: GET_TMX_REQUEST,
+      // @ts-ignore any
       payload: (_action, _state) => ({srcLocaleId: srcLocaleId})
     },
     {
       type: GET_TMX_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.blob().then((blob) => {
           return {blob, srcLocaleId, project, version}
         })
@@ -74,6 +81,7 @@ const getTMX = (srcLocaleId, project, version, endpoint) => {
     },
     {
       type: GET_TMX_FAILURE,
+      // @ts-ignore any
       payload: (_action, _state) => ({srcLocaleId: srcLocaleId})
     }
   ]
@@ -82,7 +90,9 @@ const getTMX = (srcLocaleId, project, version, endpoint) => {
   }
 }
 
+// @ts-ignore any
 export const tmxInitialLoad = (project, version) => {
+  // @ts-ignore any
   return (dispatch, _getState) => {
     if (isLoggedIn) {
       let type
@@ -107,7 +117,10 @@ export const tmxInitialLoad = (project, version) => {
   }
 }
 
+// @ts-ignore any
 export const exportTMX = (localeId, project, version) => {
+  // getState() returns TopLevelState (state.ts)
+  // @ts-ignore any
   return (dispatch, getState) => {
     const type = getState().tmx.tmxExport.type
     let endpoint

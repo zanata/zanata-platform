@@ -36,7 +36,7 @@ class App extends Component {
       '/signup': configLinks.registerUrl
     }
     return (
-      <div className='bstrapReact'>
+      <div>
         <div className='view'>
           <Icons />
           <Helmet
@@ -44,7 +44,7 @@ class App extends Component {
             titleTemplate='Zanata: %s'
           />
           <Nav active={activePath} links={links} loading={loading} />
-          <div className='containerSidebar bstrapReact'>{children}</div>
+          <div className='containerSidebar'>{children}</div>
         </div>
       </div>
     )

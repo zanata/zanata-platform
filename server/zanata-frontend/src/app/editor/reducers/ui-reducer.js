@@ -1,5 +1,4 @@
 /* eslint-disable spaced-comment */
-/* @flow */ // TODO convert to TS
 import { handleActions } from 'redux-actions'
 import { createSelector } from 'reselect'
 import {
@@ -27,34 +26,15 @@ import { DEFAULT_LOCALE } from '../../config'
 export const GLOSSARY_TAB = 'GLOSSARY_TAB'
 export const ACTIVITY_TAB = 'ACTIVITY_TAB'
 
-export const identity = (key/*: any*/) => {
+/** @param key {string} */
+export const identity = (key) => {
   // TODO pahuang implement gettextCatalog.getString
   // console.log('gettextCatalog.getString')
   return key
 }
 
-/*::
-type State = {
-  +panels: {
-    +navHeader: {
-      +visible: bool
-    },
-    +sidebar: {
-      +visible: bool,
-      +selectedTab: 'GLOSSARY_TAB'
-    },
-    +suggestions: {
-      +heightPercent: number
-    },
-    +keyShortcuts: {
-      +visible: bool
-    }
-  },
-  +showSettings: bool
-}
-*/
-
-const defaultState /*: State*/ = {
+/** @type {import('./state').EditorUIState} */
+const defaultState = {
   panels: {
     navHeader: {
       visible: true
@@ -70,6 +50,7 @@ const defaultState /*: State*/ = {
       visible: false
     }
   },
+  appLocaleData: undefined,
   uiLocales: {},
   selectedUiLocale: DEFAULT_LOCALE.localeId,
   showSettings: false,
@@ -80,13 +61,17 @@ const defaultState /*: State*/ = {
 
 /* selectors */
 export const getNavHeaderVisible =
-  (state/*: State*/) => state.panels.navHeader.visible
+  /** @param state {import('./state').EditorUIState} */
+  (state) => state.panels.navHeader.visible
 // always show sidebar when settings is on
-export const getSidebarVisible = (state/*: State*/) =>
+/** @param state {import('./state').EditorUIState} */
+export const getSidebarVisible = (state) =>
   state.panels.sidebar.visible || state.showSettings
-export const getSidebarTab = (state/*: State*/) =>
+/** @param state {import('./state').EditorUIState} */
+export const getSidebarTab = (state) =>
   state.panels.sidebar.selectedTab
-export const getShowSettings = (state/*: State*/) => state.showSettings
+/** @param state {import('./state').EditorUIState} */
+export const getShowSettings = (state) => state.showSettings
 export const getGlossaryVisible = createSelector(getSidebarVisible,
   getShowSettings, getSidebarTab,
     (sidebar, settings, tab) => sidebar && !settings && tab === GLOSSARY_TAB)
@@ -97,9 +82,11 @@ export const getActivityVisible = createSelector(getSidebarVisible,
 export const getInfoPanelVisible = createSelector(getSidebarVisible,
   getShowSettings, (sidebar, settings) => sidebar && !settings)
 export const getKeyShortcutsVisible =
-  (state/*: State*/) => state.panels.keyShortcuts.visible
+  /** @param state {import('./state').EditorUIState} */
+  (state) => state.panels.keyShortcuts.visible
 
 /* instruct immutability-helper to toggle a boolean value */
+// @ts-ignore any
 const $toggle = {$apply: bool => !bool}
 
 export default handleActions({

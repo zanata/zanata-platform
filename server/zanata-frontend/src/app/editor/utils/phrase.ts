@@ -29,6 +29,7 @@ export interface Phrase {
   lastModifiedTime?: string,
   selectedPluralIndex?: number,
   sources?: string[],
+  showValidationErrorModal?: boolean,
   translations?: string[],
   newTranslations?: string[],
   inProgressSave?: boolean,

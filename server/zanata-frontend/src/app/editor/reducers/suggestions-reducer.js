@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import {
@@ -13,6 +12,7 @@ import {
   TEXT_SUGGESTIONS_UPDATED
 } from '../actions/suggestions-action-types'
 
+/** @type {import('./state').SuggestionsState} */
 const defaultState = {
   searchType: 'phrase',
   showDetailModalForIndex: undefined,
@@ -38,15 +38,18 @@ const defaultState = {
 
 const suggestionsReducer = handleActions({
   // could add action.copying and combine started+finished actions
+  // @ts-ignore
   [PHRASE_SUGGESTION_FINISHED_COPYING]: (state, {payload: {phraseId, index}}) =>
     update(state, { searchByPhrase: { [phraseId]: { suggestions: { [index]: {
       copying: {$set: false}} } } } }),
 
+  // @ts-ignore
   [PHRASE_SUGGESTION_STARTED_COPYING]: (state, {payload: {phraseId, index}}) =>
     update(state, { searchByPhrase: { [phraseId]: { suggestions: { [index]: {
       copying: {$set: true}} } } } }),
 
   [PHRASE_SUGGESTIONS_UPDATED]: (state, { payload:
+    // @ts-ignore
     {phraseId, loading, searchStrings, suggestions, timestamp}}) =>
     update(state, { searchByPhrase: { [phraseId]:
         // must $set a new object because the key may not yet be defined
@@ -65,13 +68,16 @@ const suggestionsReducer = handleActions({
 
   [TEXT_SUGGESTION_FINISHED_COPYING]: (state, { payload }) =>
     update(state,
+      // @ts-ignore
       {textSearch: {suggestions: {[payload]: {copying: {$set: false}}}}}),
 
   [TEXT_SUGGESTION_STARTED_COPYING]: (state, { payload }) =>
     update(state,
+      // @ts-ignore
       {textSearch: {suggestions: {[payload]: {copying: {$set: true}}}}}),
 
   [TEXT_SUGGESTIONS_UPDATED]: (state, { payload:
+    // @ts-ignore
     {loading, searchStrings, suggestions, timestamp} }) => update(state,
       {textSearch: {
         loading: {$set: loading},

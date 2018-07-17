@@ -44,6 +44,7 @@ export const sortOption = [
   {display: 'Members (high-low)', value: '-member'}
 ]
 
+// @ts-ignore any
 const getLocalesList = (state) => {
   const query = state.routing.locationBeforeTransitions.query
   let queries = []
@@ -67,9 +68,11 @@ const getLocalesList = (state) => {
     LOAD_LANGUAGES_REQUEST,
     {
       type: LOAD_LANGUAGES_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -86,6 +89,7 @@ const getLocalesList = (state) => {
   }
 }
 
+// @ts-ignore any
 const searchLocales = (query) => {
   const endpoint = apiUrl + '/locales/new?filter=' + encodeURIComponent(query)
 
@@ -94,9 +98,11 @@ const searchLocales = (query) => {
     LOAD_LANGUAGES_SUGGESTION_REQUEST,
     {
       type: LOAD_LANGUAGES_SUGGESTION_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return json
           })
@@ -113,6 +119,7 @@ const searchLocales = (query) => {
   }
 }
 
+// @ts-ignore any
 const getLocalesPermission = (dispatch) => {
   const endpoint = apiUrl + '/user/permission/locales'
 
@@ -121,9 +128,11 @@ const getLocalesPermission = (dispatch) => {
     LANGUAGE_PERMISSION_REQUEST,
     {
       type: LANGUAGE_PERMISSION_SUCCESS,
+      // @ts-ignore any
       payload: (_action, state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             dispatch(getLocalesList(state))
             return json
@@ -141,6 +150,7 @@ const getLocalesPermission = (dispatch) => {
   }
 }
 
+// @ts-ignore any
 const getUserInfo = (dispatch) => {
   const endpoint = apiUrl + '/user'
 
@@ -149,9 +159,11 @@ const getUserInfo = (dispatch) => {
     LOAD_USER_REQUEST,
     {
       type: LOAD_USER_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             dispatch(getLocalesPermission(dispatch))
             return json
@@ -169,6 +181,7 @@ const getUserInfo = (dispatch) => {
   }
 }
 
+// @ts-ignore any
 const deleteLanguage = (dispatch, localeId) => {
   const endpoint = apiUrl + '/locales/locale/' + localeId
   /** @type {APITypes} */
@@ -176,6 +189,7 @@ const deleteLanguage = (dispatch, localeId) => {
     LANGUAGE_DELETE_REQUEST,
     {
       type: LANGUAGE_DELETE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, state, res) => {
         dispatch(getLocalesList(state))
         return res
@@ -191,6 +205,7 @@ const deleteLanguage = (dispatch, localeId) => {
   }
 }
 
+// @ts-ignore any
 const createNewLanguage = (details, dispatch) => {
   const endpoint = apiUrl + '/locales/locale'
   let headers = getJsonHeaders()
@@ -201,9 +216,11 @@ const createNewLanguage = (details, dispatch) => {
     CREATE_LANGUAGE_REQUEST,
     {
       type: CREATE_LANGUAGE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             dispatch(getLocalesList(state))
             return json
@@ -223,6 +240,7 @@ const createNewLanguage = (details, dispatch) => {
 }
 
 export const initialLoad = () => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     // validate page number from query
     const page = parseInt(
@@ -249,7 +267,9 @@ export const initialLoad = () => {
   }
 }
 
+// @ts-ignore any
 export const handleUpdatePageSize = (pageSize) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       size: pageSize
@@ -258,7 +278,9 @@ export const handleUpdatePageSize = (pageSize) => {
   }
 }
 
+// @ts-ignore any
 export const handleUpdateSort = (sort) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       sort: sort
@@ -267,7 +289,9 @@ export const handleUpdateSort = (sort) => {
   }
 }
 
+// @ts-ignore any
 export const handleUpdateSearch = (search) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       search: search,
@@ -277,13 +301,17 @@ export const handleUpdateSearch = (search) => {
   }
 }
 
+// @ts-ignore any
 export const handleDelete = (localeId) => {
+  // @ts-ignore any
   return (dispatch, _getState) => {
     dispatch(deleteLanguage(dispatch, localeId))
   }
 }
 
+// @ts-ignore any
 export const handlePageUpdate = (page) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       page: page
@@ -296,7 +324,9 @@ export const TOGGLE_NEW_LANGUAGE_DISPLAY = 'TOGGLE_NEW_LANGUAGE_DISPLAY'
 export const handleNewLanguageDisplay =
   createAction(TOGGLE_NEW_LANGUAGE_DISPLAY)
 
+// @ts-ignore any
 export const handleLoadSuggestion = (query) => {
+  // @ts-ignore any
   return (dispatch, _getState) => {
     if (!isEmpty(query)) {
       dispatch(searchLocales(query))
@@ -304,7 +334,9 @@ export const handleLoadSuggestion = (query) => {
   }
 }
 
+// @ts-ignore any
 export const handleSaveNewLanguage = (details) => {
+  // @ts-ignore any
   return (dispatch, _getState) => {
     dispatch(createNewLanguage(details, dispatch))
   }

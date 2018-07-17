@@ -70,6 +70,7 @@ import org.zanata.util.StringUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -83,6 +84,7 @@ import com.google.common.collect.ImmutableList;
 @Cacheable
 @NamedQueries({ @NamedQuery(name = HTextFlow.QUERY_GET_BY_DOC_AND_RES_ID_BATCH,
         query = "select distinct tf from HTextFlow tf left join fetch tf.targets tft left join fetch tft.history where tf.document = :document and tf.resId in (:resIds) and tf.obsolete = false") })
+@GraphQLType(name = "TextFlow")
 public class HTextFlow extends HTextContainer implements Serializable,
         ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow {
     private static final org.slf4j.Logger log =
@@ -114,10 +116,19 @@ public class HTextFlow extends HTextContainer implements Serializable,
     // Only for internal use (persistence transient)
     private HTextFlowHistory initialState;
 
+    public HTextFlow(HDocument document, String resId) {
+        this.document = document;
+        this.resId = resId;
+    }
+
+    @VisibleForTesting
     public HTextFlow(HDocument document, String resId, String content) {
-        setDocument(document);
-        setResId(resId);
+        this(document, resId);
         setContents(content);
+    }
+
+    @VisibleForTesting
+    public HTextFlow() {
     }
 
     @Id
@@ -133,13 +144,13 @@ public class HTextFlow extends HTextContainer implements Serializable,
 
     @Transient
     @Override
+    @Nonnull
     public LocaleId getLocale() {
         return getDocument().getSourceLocaleId();
     }
+
     // we can't use @NotNull because the position isn't set until the object has
     // been persisted
-    // @Column(insertable=false, updatable=false)
-
     @Column(insertable = false, updatable = false, nullable = false)
     @Override
     public Integer getPos() {
@@ -156,7 +167,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
                 + ":" + getResId();
     }
     // TODO make this case sensitive
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    // TODO PERF NaturalId(mutable=false) for better criteria caching
 
     @NaturalId
     @Size(max = 255)
@@ -193,7 +204,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     public void setObsolete(boolean obsolete) {
         this.obsolete = obsolete;
     }
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    // TODO PERF NaturalId(mutable=false) for better criteria caching
 
     @ManyToOne
     @JoinColumn(name = "document_id", insertable = false, updatable = false,
@@ -206,12 +217,11 @@ public class HTextFlow extends HTextContainer implements Serializable,
         return document;
     }
 
+    @VisibleForTesting
     public void setDocument(HDocument document) {
-        if (!Objects.equal(this.document, document)) {
-            this.document = document;
-            updateWordCount();
-        }
+        this.document = document;
     }
+
     // TODO use orphanRemoval=true: requires JPA 2.0
 
     @OneToOne(optional = true, fetch = FetchType.LAZY,
@@ -430,6 +440,12 @@ public class HTextFlow extends HTextContainer implements Serializable,
             return "en";
         }
         LocaleId docLocaleId = docLocale.getLocaleId();
+        //noinspection ConstantConditions
+        if (docLocaleId == null) {
+            // *should* only happen in tests
+            log.warn("null locale, assuming \'en\'");
+            return "en";
+        }
         return docLocaleId.getId();
     }
 
@@ -463,6 +479,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
         this.revision = revision;
     }
 
+    @VisibleForTesting
     public void setResId(final String resId) {
         this.resId = resId;
     }
@@ -509,9 +526,6 @@ public class HTextFlow extends HTextContainer implements Serializable,
 
     public void setContent5(final String content5) {
         this.content5 = content5;
-    }
-
-    public HTextFlow() {
     }
 
     @Override

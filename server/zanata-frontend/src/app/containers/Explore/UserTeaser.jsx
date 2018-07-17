@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Link, Icon } from '../../components'
+import { Link } from '../../components'
 import { getProfileUrl } from '../../utils/UrlHelper'
 
 /**
@@ -13,8 +13,7 @@ const UserTeaser = ({
   ...props
 }) => {
   const wordsTranslated = details.wordsTranslated &&
-    (<div className='wordsTranslatedView'>
-      <Icon parentClassName='iconTranslate-muted' />
+    (<div className='items-center center'>
         {details.wordsTranslated}
     </div>)
   const url = getProfileUrl(details.id)
@@ -25,7 +24,7 @@ const UserTeaser = ({
           src={details.avatarUrl}
           alt={details.id}
           className='avatar-round' />
-        <Link link={url} className='text-bold'>
+        <Link link={url} className='b btn-link'>
           {details.description}
         </Link>
       </div>

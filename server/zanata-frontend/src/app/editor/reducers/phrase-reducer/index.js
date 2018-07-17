@@ -26,10 +26,16 @@ import {
   SAVE_FINISHED,
   SAVE_FAILED,
   SAVE_INITIATED,
+  SAVE_CONFLICT,
+  SAVE_CONFLICT_RESOLVED_LATEST,
+  SAVE_CONFLICT_RESOLVED_ORIGINAL,
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
-  UNDO_EDIT
+  TOGGLE_CONCURRENT_MODAL,
+  TOGGLE_SAVE_WITH_ERROR_MODAL,
+  UNDO_EDIT,
+  VALIDATION_ERRORS
 } from '../../actions/phrases-action-types'
 import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
 import {
@@ -38,6 +44,7 @@ import {
   getMaxPageIndex
 } from '../../selectors'
 import { hasAdvancedFilter } from '../../utils/filter-util'
+import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
 import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
@@ -54,6 +61,7 @@ function clamp (number, lower, upper) {
   return Math.max(lower, Math.min(number, upper))
 }
 
+/** @type {import('../state').PhrasesState} */
 export const defaultState = {
   fetchingList: false,
   fetchingFilteredList: false,
@@ -67,6 +75,7 @@ export const defaultState = {
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
   notification: undefined,
+  showConflictModal: false,
   selectedPhraseId: undefined,
   /* Cursor/selection position within the currently editing translation, used
    * for inserting terms from glossary etc. */
@@ -199,7 +208,7 @@ export const phraseReducer = handleActions({
         revision: {$set: revision}
       }),
 
-  [SAVE_FAILED]: (state, { payload: { phraseId, saveInfo, response } }) =>
+  [SAVE_FAILED]: (state, { getState, payload: { phraseId, saveInfo, response } }) =>
     update(state, {
       notification: {
         $set: {
@@ -207,13 +216,14 @@ export const phraseReducer = handleActions({
           message: `Save Translation Failed`,
           description:
             <p>
-            Unable to save phraseId {phraseId}
-            {isEmpty(saveInfo.translations)
+              Unable to save phraseId {phraseId}
+              {isEmpty(saveInfo.translations)
                 ? null
                 : ` as ${saveInfo.translations[0]}`}
               <br />
-            Status {response.status} {response.statusText}
-            </p>
+              Status {response.status} {response.statusText}
+            </p>,
+          duration: null
         }
       },
       detail: {
@@ -221,6 +231,81 @@ export const phraseReducer = handleActions({
           inProgressSave: { $set: undefined }
         }
       }
+    }),
+
+  [SAVE_CONFLICT]: (state, { getState, payload: { phraseId, saveInfo, response } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          key: response.lastModifiedDate,
+          severity: SEVERITY.ERROR,
+          message: 'Concurrent edit detected',
+          description: 'Please resolve conflicts',
+          duration: null
+        }
+      },
+      detail: {
+        [phraseId]: {
+          conflict: { $set: { response, saveInfo } },
+          inProgressSave: { $set: undefined }
+        }
+      }
+    }),
+
+  [SAVE_CONFLICT_RESOLVED_LATEST]: (state, { getState, payload: {
+    phraseId, saveInfo, revision } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.INFO,
+          message: 'Concurrent edit successfully resolved',
+          description: `Using the Latest edit`,
+          duration: 3.5
+        }
+      },
+      detail: {
+        [phraseId]: {
+          revision: {$set: revision},
+          conflict: { $set: undefined },
+          inProgressSave: { $set: undefined },
+          newTranslations: {
+            $set: [saveInfo.content]
+          },
+          status: { $set: transUnitStatusToPhraseStatus(saveInfo.status) },
+          translations: {
+            $set: [saveInfo.content]
+          }
+        }
+      }
+    }),
+
+  [SAVE_CONFLICT_RESOLVED_ORIGINAL]: (state, { getState, payload: {
+    phraseId, saveInfo, revision } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.INFO,
+          message: 'Concurrent edit successfully resolved',
+          description: `Using the Original edit`,
+          duration: 3.5
+        }
+      },
+      detail: {
+        [phraseId]: {
+          revision: { $set: revision },
+          conflict: { $set: undefined },
+          inProgressSave: { $set: undefined },
+          status: { $set: saveInfo.status },
+          translations: {
+            $set: state.detail[phraseId].newTranslations
+          }
+        }
+      }
+    }),
+
+  [TOGGLE_CONCURRENT_MODAL]: (state) =>
+    update(state, {
+      showConflictModal: {$set: !state.showConflictModal}
     }),
 
   [SAVE_INITIATED]: (state, {getState, payload: {phraseId, saveInfo}}) =>
@@ -256,7 +341,17 @@ export const phraseReducer = handleActions({
     changeSelectedIndex(state, getState(), index => index + 1),
 
   [MOVE_PREVIOUS]: (state, { getState }) =>
-    changeSelectedIndex(state, getState(), index => index - 1)
+    changeSelectedIndex(state, getState(), index => index - 1),
+
+  [VALIDATION_ERRORS]: (state, { payload: { phraseId, hasValidationError } }) =>
+    update(state, {
+      detail: { [phraseId]: { errors: { $set: hasValidationError } } }
+    }),
+
+  [TOGGLE_SAVE_WITH_ERROR_MODAL]: (state, { payload: { phraseId, showValidationErrorModal } }) =>
+    update(state, {
+      detail: { [phraseId]: { showValidationErrorModal: { $set: showValidationErrorModal } } }
+    })
 }, defaultState)
 
 /**

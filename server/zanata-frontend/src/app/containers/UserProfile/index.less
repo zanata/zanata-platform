@@ -1,4 +1,4 @@
-@import "../../styles/variables.less";
+@import "../../styles/antdvars.less";
 /* User profile */
 
 #profile {
@@ -30,53 +30,50 @@
     padding-bottom: 3rem;
   }
   .userProfile-wrapper {
-    margin-top: @spacing-rh;
+    margin-top: @spacing-sm;
+  }
+  .matrixHeading {
+    width: 100%;
   }
   h2.matrixHeading {
+    width: 100%;
     flex-grow: 1;
     -webkit-flex-grow: 1;
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
   }
-  .modal-content {
-    max-width: 750px !important;
-  }
-  .dateRange-textField input.textInput {
-    font-size: 0.986rem;
+  .dateRange-container input.textInput {
+    font-size: 0.875rem;
     text-align: center;
+    width: 100%;
   }
   .dateRange-calendar {
     width: 100%;
   }
   .dateRange-container {
-    width: 13rem;
+    min-width: 15rem;
   }
   .dateRange-container button {
     width: 100%;
+  }
+  .dateRange-container button:focus, .dateRange-container button:hover {
+    border: solid 1px @info-color;
   }
   #userProfile-matrix canvas {
     width: 100% !important;
     max-width: 100% !important;
   }
-  #profile-username, #profileLanguages, #profileRoles {
-    line-height: @line-height-large;
-  }
   #profileLanguages {
     display: inline-flex;
-  }
-  .rdr-MonthAndYear-innerWrapper .button {
-    padding: 0;
+    align-items: baseline;
   }
   #profileLanguages a {
     display: block;
-    padding-right: @spacing-rq;
-  }
-  #profileLanguages .iconLanguage {
-    padding-right: @spacing-rq;
+    padding-right: @spacing-md;
   }
   .dateRange-textField input.textInput {
     width: 12rem;
-    font-size: 0.986rem;
+    font-size: 0.875rem;
   }
   .dateRange-calendar {
     width: 100%;
@@ -88,21 +85,14 @@
     width: 100%;
     min-width: 21rem;
     max-width: 24rem;
-    margin-bottom: @spacing-base-and-a-half;
+    margin-bottom: @spacing-lg;
   }
   img.userProfile-details-avatar {
-    border-radius: @border-radius-img;
+    border-radius: 500px;
     margin-left: auto;
     float: right;
     overflow: hidden;
     width: 30%;
-  }
-  .userProfile .userProfile-details-text {
-    margin-right: @spacing-rq;
-    flex: 1;
-    -webkit-box-flex: 1;
-    -moz-flex: 1;
-    -webkit-flex: 1;
   }
   .userProfile .username {
     font-size: 1.728rem;
@@ -113,11 +103,16 @@
     overflow: hidden;
   }
   span.userProfile-email {
-    margin-left: @spacing-rh;
-    color: @color-muted;
+    margin-left: @spacing-sm;
+    color: @muted-color;
   }
-  ul.largeFontList li.u-flexCenter svg {
-    margin-right: @spacing-rq;
+  ul.largeFontList li.u-flexCenter svg, ul#profileLanguages svg {
+    margin-right: @spacing-sm;
+    vertical-align: sub;
+    color: @muted-color;
+  }
+  ul#profileLanguages svg {
+    vertical-align: sub;
   }
   #userProfile-matrix tbody tr td:not(:first-child), #userProfile-matrix tr th:not(:first-child) {
     text-align: center;
@@ -135,16 +130,16 @@
     -webkit-flex-wrap: nowrap;
     /* Safari 6.1+ */
     width: 100%;
-    margin-bottom: @spacing-base-and-a-half;
+    margin-bottom: @spacing-lg;
   }
   #profile-displayname {
-    margin-bottom: @spacing-rh;
+    margin-bottom: @spacing-sm;
     margin-top: 0;
-    padding-right: @spacing-rh;
+    padding-right: @spacing-sm;
     height: 100%;
   }
   #userProfile-matrix h2, #userProfile-matrix h3 {
-    color: @color-dark;
+    color: @primary-color;
     font-size: 1.2rem;
     margin-bottom: 0;
   }
@@ -158,7 +153,7 @@
   }
   .userProfile-activityGraph {
     background-clip: padding-box;
-    border-width: @spacing-rh;
+    border-width: @spacing-sm;
     border-color: transparent;
     border-style: solid;
     overflow: hidden;
@@ -166,25 +161,25 @@
     position: relative;
     text-align: center;
     vertical-align: top;
-    margin-bottom: @spacing-base-and-a-half;
+    margin-bottom: @spacing-lg;
     width: 100%
   }
   .userProfile-activityGraph h3 {
-    color: @color-dark;
+    color: @primary-color;
   }
   .userProfile-activityGraph .matrixBox {
     position: relative !important;
   }
   .userProfile-activityGraph .cal-date {
     font-size: 0.833rem !important;
-    padding-top: @spacing-rq;
-    padding-bottom: @spacing-rq;
+    padding-top: @spacing-sm;
+    padding-bottom: @spacing-sm;
     background-color: rgba(255, 255, 255, 0.15);
   }
   .userProfile-activityGraph .cal-info {
     background-color: rgba(255, 255, 255, 0.30);
-    padding-top: @spacing-rq;
-    padding-bottom: @spacing-rq;
+    padding-top: @spacing-sm;
+    padding-bottom: @spacing-sm;
     font-weight: 600;
   }
   .userProfile-activityTable-inner {
@@ -193,19 +188,21 @@
     display: -moz-flex;
     display: -ms-flex;
     display: -o-flex;
-    margin-bottom: @spacing-rq;
+    margin-bottom: @spacing-sm;
   }
   #userProfile-activityTable td button {
-    height: 5.5rem;
+    height: 4rem;
     padding: 0 !important;
-    width: 100%;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
   }
   #userProfile-activityTable td button.btn-primary {
     background-color: rgba(84, 102, 119, 0.65) !important;
   }
   #userProfile-activityTable td button.btn-warning {
     background-color: rgba(233, 221, 0, 0.65);
-    color: @color-dark;
+    color: @primary-color;
   }
   #userProfile-activityTable td button.btn-info {
     background-color: rgba(2, 154, 207, 0.65);
@@ -218,52 +215,52 @@
     padding-left: 0;
     padding-right: 0;
   }
- .success.btn-default, .plain.btn-default, .primary.btn-default, .unsure.btn-default {
+ .ant-btn.success.btn-default.ant-btn-sm, .ant-btn.plain.btn-default.ant-btn-sm, .ant-btn.primary.btn-default.ant-btn-sm, .ant-btn.unsure.btn-default.ant-btn-sm {
     border-radius: 1.071rem;
-    margin-right: @spacing-half-base;
-    border: solid 1px @gray;
-    margin-bottom: @spacing-half-base;
+    margin-right: @spacing-lg;
+    border: solid 1px #e7e7e7;
+    margin-bottom: 0.5rem;
   }
-  .plain.btn-default:focus, .plain.btn-default:hover, .plain.btn-default.active {
+  .ant-btn.plain.btn-default.ant-btn-sm:focus, .ant-btn.plain.btn-default.ant-btn-sm:hover, .ant-btn.plain.btn-default.ant-btn-sm.active {
     background-color: rgba(84, 102, 119, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  .primary.btn-default:focus, .primary.btn-default:hover, .primary.btn-default.active {
+  .ant-btn.primary.btn-default.ant-btn-sm:focus, .ant-btn.primary.btn-default.ant-btn-sm:hover, .ant-btn.primary.btn-default.ant-btn-sm.active {
     background-color: rgba(3, 166, 215, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  .success.btn-default:focus, .success.btn-default:hover, .success.btn-default.active {
+  .ant-btn.success.btn-default.ant-btn-sm:focus, .ant-btn.success.btn-default.ant-btn-sm:hover, .ant-btn.success.btn-default.ant-btn-sm.active {
     background-color: rgba(98, 200, 118, 0.95);
     color: #fff;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
-  .unsure.btn-default:focus, .unsure.btn-default:hover, .unsure.btn-default.active {
+  .ant-btn.unsure.btn-default.ant-btn-sm:focus, .ant-btn.unsure.btn-default.ant-btn-sm:hover, .ant-btn.unsure.btn-default.ant-btn-sm.active {
     background-color: rgba(233, 221, 0, 1);
-    color: @color-dark;
+    color: @primary-color;
     text-decoration: none;
     outline: 0;
     box-shadow: none;
   }
   #userProfile-activityTable td button.active.btn.btn-primary {
-    background-color: @color-dark;
+    background-color: @primary-color;
   }
   #userProfile-activityTable td button.active.btn.btn-warning {
-    background-color: @color-unsure;
-    color: @color-dark;
+    background-color: @unsure-color;
+    color: #222;
   }
   #userProfile-activityTable td button.active.btn.btn-info {
-    background-color: @color-light;
+    background-color: @info-color;
   }
   #userProfile-activityTable td button.active.btn.btn-success {
-    background-color: @color-success;
+    background-color: @success-color;
   }
   #userProfile-activityTable td button.btn-primary:focus, #userProfile-activityTable td button.btn-info:focus, #userProfile-activityTable td button.btn-warning:focus, #userProfile-activityTable td button.btn-success:focus {
     outline: 0;
@@ -272,7 +269,7 @@
   }
   #userProfile-activityTable td button.btn-warning:focus {
     background-color: rgba(233, 221, 0, 0.95);
-    color: @color-dark;
+    color: @primary-color;
   }
   #userProfile-activityTable td button.btn-primary:focus {
     background-color: rgba(84, 102, 119, 0.85);
@@ -284,7 +281,7 @@
     background-color: rgba(98, 200, 118, 0.85);
   }
   #userProfile-activityTable .btn-clear {
-    margin-top: @spacing-half-base;
+    margin-top: @spacing-base;
     padding: 0;
     margin-left: @spacing-base;
   }
@@ -297,18 +294,15 @@
     line-height: 1.4rem;
     padding: 0 !important;
     border: none;
-    margin: @spacing-rq;
-  }
-  .modal-content {
-    max-width: inherit;
+    margin: @spacing-md;
   }
   .matrix-inner {
     width: 100%;
     margin-right: @spacing-base;
   }
   // @screen-xs variable depreciated
-  @media (max-width: 29.375rem) {
-    .matrix-table {
+  @media (max-width: 575.98px) {
+  .matrix-table {
       display: block;
     }
     .matrixHeading {
@@ -318,7 +312,7 @@
       padding-left: 0;
     }
   }
-  @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
+  @media (min-width: 576px) and (max-width: 767.98px) {
     .matrix-table {
       display: flex;
       display: -webkit-flex;
@@ -328,9 +322,6 @@
       flex-direction: row;
       -webkit-flex-direction: row;
     }
-    .matrixHeading {
-      width: 100%;
-    }
     #userProfile-matrix h2 {
       margin-top: 0;
     }
@@ -339,17 +330,17 @@
       min-width: 100%;
     }
   }
-  @media (min-width: @screen-md-min) {
+  @media (min-width: 767.99px) {
     .matrixHeading {
-      margin-right: @spacing-rq;
-      margin-left: @spacing-rq;
+      margin-right: @spacing-md;
+      margin-left: @spacing-md;
     }
     h2.matrixHeading {
       min-width: 0;
       margin-left: 3rem;
     }
   }
-  @media (min-width: @screen-md-min) and (max-width: @screen-lg-min) {
+  @media (min-width: 767.99px) and (max-width: 992px) {
     .userProfile-wrapper {
       flex-direction: column;
       -webkit-flex-direction: column;
@@ -357,7 +348,6 @@
   }
   @media (min-width: 1200px) {
     .userProfile-wrapper {
-      padding-right: 4rem;
       flex-direction: row;
       -webkit-flex-direction: row;
     }
@@ -367,14 +357,13 @@
       -webkit-flex-direction: row;
     }
     .matrix-inner {
-      width: 50%;
-      margin-right: @spacing-rq;
+      width: 100%;
+      margin-right: @spacing-md;
     }
   }
 }
-@media (min-width: @screen-md-min) {
+@media (min-width: 992px) {
   .wideView {
-    margin-top: @spacing-rh;
+    margin-top: @spacing-sm;
   }
 }
-

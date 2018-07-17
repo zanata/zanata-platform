@@ -73,7 +73,7 @@ export const messages = defineMessages({
   lastPage: { id: 'Pager.lastPage', defaultMessage: 'Last page' }
 })
 
-export const Pager = ({
+const Pager = ({
   intl,
   firstPage,
   previousPage,
@@ -117,7 +117,7 @@ export const Pager = ({
   }
 
   return (
-    <ul className="u-listHorizontal u-textCenter">
+    <ul className="u-listHorizontal tc">
       <PagerButton {...buttons.first} />
       <PagerButton {...buttons.prev} />
       <li className="u-sizeHeight-1 u-sPH-1-4">
