@@ -49,7 +49,8 @@ describe('review-trans-reducer', () => {
       notification: {
         description: undefined,
         message: 'Failed to retrieve review criteria.',
-        severity: 'error'
+        severity: 'error',
+        duration: null
       },
       criteria: [],
       showReviewModal: false

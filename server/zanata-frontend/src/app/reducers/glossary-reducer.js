@@ -101,7 +101,8 @@ const glossary = handleActions({
         ...state,
         notification: {
           severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+          message: ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -132,7 +133,8 @@ const glossary = handleActions({
         termsLoading: false,
         notification: {
           severity: SEVERITY.ERROR,
-          message: PROJECT_ERROR_MSG
+          message: PROJECT_ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -148,7 +150,8 @@ const glossary = handleActions({
     termsLoading: false,
     notification: {
       severity: SEVERITY.ERROR,
-      message: PROJECT_ERROR_MSG
+      message: PROJECT_ERROR_MSG,
+      duration: null
     }
   }),
   [GLOSSARY_PERMISSION_FAILURE]: (state, _action) => ({
@@ -161,7 +164,8 @@ const glossary = handleActions({
     },
     notification: {
       severity: SEVERITY.ERROR,
-      message: ERROR_MSG
+      message: ERROR_MSG,
+      duration: null
     }
   }),
   [GLOSSARY_UPDATE_LOCALE]: (state, action) => ({
@@ -187,7 +191,8 @@ const glossary = handleActions({
           severity: SEVERITY.ERROR,
           message:
             'We were unable to import your file. ' +
-            'Please refresh this page and try again.'
+            'Please refresh this page and try again.',
+          duration: null
         }
       }
     } else {
@@ -212,7 +217,8 @@ const glossary = handleActions({
       severity: SEVERITY.INFO,
       message: 'File imported successfully',
       // @ts-ignore payload
-      description: size(action.payload.glossaryEntries) + ' terms imported.'
+      description: size(action.payload.glossaryEntries) + ' terms imported.',
+      duration: 3.5
     }
   }),
   [GLOSSARY_UPLOAD_FAILURE]: (state, _action) => ({
@@ -227,7 +233,8 @@ const glossary = handleActions({
       severity: SEVERITY.ERROR,
       message:
         'We were unable to import your file. ' +
-        'Please refresh this page and try again.'
+        'Please refresh this page and try again.',
+      duration: null
     }
   }),
   [GLOSSARY_UPDATE_IMPORT_FILE]: (state, action) => {
@@ -305,7 +312,8 @@ const glossary = handleActions({
       notification: {
         severity: SEVERITY.ERROR,
         message: 'We are unable to export glossary entries from server. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   },
@@ -387,7 +395,8 @@ const glossary = handleActions({
         ...state,
         notification: {
           severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+          message: ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -425,7 +434,8 @@ const glossary = handleActions({
     statsLoading: false,
     notification: {
       severity: SEVERITY.ERROR,
-      message: ERROR_MSG
+      message: ERROR_MSG,
+      duration: null
     }
   }),
   [GLOSSARY_TERMS_INVALIDATE]: (state, _action) => ({
@@ -440,7 +450,8 @@ const glossary = handleActions({
           severity: SEVERITY.ERROR,
           message:
           'We were unable to delete the glossary term. ' +
-          'Please refresh this page and try again.'
+            'Please refresh this page and try again.',
+          duration: null
         }
       }
     }
@@ -475,7 +486,8 @@ const glossary = handleActions({
       severity: SEVERITY.ERROR,
       message:
         'We were unable to delete the glossary term. ' +
-        'Please refresh this page and try again.'
+        'Please refresh this page and try again.',
+      duration: null
     }
   }),
 
@@ -487,7 +499,8 @@ const glossary = handleActions({
           severity: SEVERITY.ERROR,
           message:
           'We were unable to update the glossary term. ' +
-          'Please refresh this page and try again.'
+            'Please refresh this page and try again.',
+          duration: null
         }
       }
     } else {
@@ -530,7 +543,8 @@ const glossary = handleActions({
         severity: SEVERITY.ERROR,
         message:
           'We were unable to update the glossary term. ' +
-          'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   },
@@ -542,7 +556,8 @@ const glossary = handleActions({
           severity: SEVERITY.ERROR,
           message:
           'We were unable save glossary entry. ' +
-          'Please refresh this page and try again.'
+            'Please refresh this page and try again.',
+          duration: null
         }
       }
     } else {
@@ -690,7 +705,8 @@ const glossary = handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable to delete glossary entries. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   },
@@ -700,7 +716,8 @@ const glossary = handleActions({
         ...state,
         notification: {
           severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+          message: ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -713,7 +730,8 @@ const glossary = handleActions({
         ...state,
         notification: {
           severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+          message: ERROR_MSG,
+          duration: null
         }
       }
     } else {
@@ -728,7 +746,8 @@ const glossary = handleActions({
       ...state,
       notification: {
         severity: SEVERITY.ERROR,
-        message: ERROR_MSG
+        message: ERROR_MSG,
+        duration: null
       }
     }
   }

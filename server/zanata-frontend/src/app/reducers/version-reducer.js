@@ -44,7 +44,8 @@ const version = handleActions({
       fetchingLocale: { $set: false },
       notification: { $set: {
         message: 'We were unable load locale information. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }}
     }) : update(state, {
       fetchingLocale: { $set: true },
@@ -63,7 +64,8 @@ const version = handleActions({
       fetchingLocale: { $set: false },
       notification: { $set: {
         message: 'We were unable load locale information. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }}
     })
   },
@@ -72,7 +74,8 @@ const version = handleActions({
       fetchingProject: { $set: false },
       notification: { $set: {
         message: 'We were unable load project information. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }}
     }) : update(state, {
       fetchingProject: { $set: true },
@@ -96,7 +99,8 @@ const version = handleActions({
       fetchingProject: { $set: false },
       notification: { $set: {
         message: 'We were unable load project information. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }}
     })
   },
@@ -121,7 +125,8 @@ const version = handleActions({
     return update(state, {
       TMMerge: { triggered: { $set: false } },
       notification: { $set: {
-        message: msg
+        message: msg,
+        duration: null
       } }
     })
   },
