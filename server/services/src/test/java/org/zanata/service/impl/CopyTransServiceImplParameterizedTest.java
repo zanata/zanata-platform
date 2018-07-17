@@ -269,10 +269,10 @@ public class CopyTransServiceImplParameterizedTest {
         projectIteration.getDocuments().put(doc.getDocId(), doc);
         // Create the text Flow
         HTextFlow textFlow = new HTextFlow();
+        textFlow.setDocument(doc);
         textFlow.setContents("Source Content"); // Source content matches
         textFlow.setPlural(false);
         textFlow.setObsolete(false);
-        textFlow.setDocument(doc);
         if (copyTransExecution.contextMatches) {
             textFlow.setResId("same-context");
         } else {

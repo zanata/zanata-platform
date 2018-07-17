@@ -194,9 +194,7 @@ public class ResourceUtils implements Serializable {
                     log.debug("TextFlow with id {} has changed", tf.getId());
                 }
             } else {
-                textFlow = new HTextFlow();
-                textFlow.setDocument(to);
-                textFlow.setResId(tf.getId());
+                textFlow = new HTextFlow(to, tf.getId());
                 textFlow.setRevision(nextDocRev);
                 transferFromTextFlow(tf, textFlow, enabledExtensions);
                 changed = true;
