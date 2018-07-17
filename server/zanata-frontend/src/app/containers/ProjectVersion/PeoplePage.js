@@ -11,9 +11,7 @@ class PeoplePage extends Component {
       /* eslint-disable max-len */
         <div className='flexTab wideView'>
           <h2>People</h2>
-          <React.Fragment>
           Content
-          </React.Fragment>
         </div>
         /* eslint-enable max-len */
     )
