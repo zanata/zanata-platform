@@ -52,6 +52,7 @@ class TranslationInfoPanel extends React.Component {
     activityVisible: PropTypes.bool.isRequired,
     /* close the sidebar */
     close: PropTypes.func.isRequired,
+    conflict: PropTypes.any,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
@@ -68,7 +69,7 @@ class TranslationInfoPanel extends React.Component {
     notification: PropTypes.shape({
       severity: PropTypes.string,
       message: PropTypes.string,
-      description: PropTypes.any,
+      description: PropTypes.node,
       duration: PropTypes.number
     }),
     selectedPhrase: PropTypes.shape({
@@ -102,9 +103,9 @@ class TranslationInfoPanel extends React.Component {
     if (notification && prevProps.notification !== notification) {
       // @ts-ignore any
       Notification[notification.severity]({
+        key: notification.key,
         message: notification.message,
-        description: notification.description,
-        duration: null
+        description: notification.description
       })
     }
   }

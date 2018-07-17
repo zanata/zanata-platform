@@ -22,7 +22,7 @@ import {
   SAVE_SERVER_SETTINGS_FAILURE,
   SAVE_SERVER_SETTINGS_REQUEST,
   SAVE_SERVER_SETTINGS_SUCCESS
-} from "../actions/admin-actions";
+} from '../actions/admin-actions'
 
 describe('admin-reducer test', () => {
   it('can save server settings request', () => {
@@ -51,7 +51,7 @@ describe('admin-reducer test', () => {
         defaultValue: ''
       }
     ]
-    const result =  keyBy(settings, o => o.key)
+    const result = keyBy(settings, o => o.key)
     const getAll = adminReducer(initial, {
       type: SAVE_SERVER_SETTINGS_SUCCESS,
       payload: settings
@@ -74,6 +74,7 @@ describe('admin-reducer test', () => {
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
         .toEqual({
+          duration: null,
           description: '401 - Unauthorized',
           message: 'Failed to save settings.' +
           'Please refresh this page and try again',
@@ -106,7 +107,7 @@ describe('admin-reducer test', () => {
         defaultValue: ''
       }
     ]
-    const result =  keyBy(settings, o => o.key)
+    const result = keyBy(settings, o => o.key)
     const getAll = adminReducer(initial, {
       type: GET_SERVER_SETTINGS_SUCCESS,
       payload: settings
@@ -130,6 +131,7 @@ describe('admin-reducer test', () => {
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
         .toEqual({
+          duration: null,
           description: '401 - Unauthorized',
           message: 'Unable to get server settings.' +
           'Please refresh this page and try again',
@@ -165,6 +167,7 @@ describe('admin-reducer test', () => {
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual({
+        duration: null,
         description: '401 - Unauthorized',
         message: 'Failed to retrieve review criteria.',
         severity: 'error' })
@@ -198,6 +201,7 @@ describe('admin-reducer test', () => {
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual({
+        duration: null,
         description: '401 - Unauthorized',
         message: 'Add Criteria failed.',
         severity: 'error'
@@ -238,6 +242,7 @@ describe('admin-reducer test', () => {
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual({
+        duration: null,
         description: '401 - Unauthorized',
         message: 'Edit criteria failed.',
         severity: 'error'
@@ -276,6 +281,7 @@ describe('admin-reducer test', () => {
     expect(initial.notification).toBeUndefined()
     expect(failed.notification)
       .toEqual({
+        duration: null,
         description: '401 - Unauthorized',
         message: 'Delete Criteria failed.',
         severity: 'error'

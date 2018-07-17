@@ -198,7 +198,8 @@ export default handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable load user info. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   },
@@ -224,7 +225,8 @@ export default handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable load user statistics. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   },
@@ -291,7 +293,8 @@ export default handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable load user information. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   }

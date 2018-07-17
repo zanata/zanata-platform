@@ -44,6 +44,7 @@ describe('phrase-reducer test', () => {
       saveAsMode: false,
       inDoc: {},
       inDocFiltered: {},
+      notification: undefined,
       detail: {},
       filter: defaultFilterState,
       selectedPhraseId: undefined,
@@ -51,6 +52,7 @@ describe('phrase-reducer test', () => {
         start: 0,
         end: 0
       },
+      showConflictModal: false,
       paging: {
         countPerPage: 20,
         pageIndex: 0

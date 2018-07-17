@@ -1,17 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Frontend Storyshots Button default 1`] = `
-<div
-  className="ant-layout"
->
-  <Button
-    type="primary"
-  >
-    Primary style
-  </Button>
-</div>
-`;
-
 exports[`Frontend Storyshots EditableText editing 1`] = `
 <span>
   <h2>
