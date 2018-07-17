@@ -40,6 +40,7 @@ import org.hibernate.HibernateException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
@@ -184,21 +185,31 @@ public class TranslationServiceImpl implements TranslationService {
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class,
                     request.getTransUnitId().getValue());
             TranslationResultImpl result = new TranslationResultImpl();
-            result.newContentState = newContentState;
             result.similarityPercent = request.getSimilarityPercent();
             if (runValidation) {
                 String validationMessage = validateTranslations(
                         newContentState, projectIteration,
                         request.getTransUnitId().toString(),
                         hTextFlow.getContents(), request.getNewContents());
-                if (!StringUtils.isEmpty(validationMessage)) {
-                    log.warn(validationMessage);
-                    result.isSuccess = false;
-                    result.errorMessage = validationMessage;
-                    results.add(result);
-                    continue;
+                boolean failedValidation = !StringUtils.isEmpty(validationMessage);
+                if (failedValidation) {
+                    ContentState existingState =
+                            getTranslationState(hLocale, hTextFlow);
+                    if (existingState.isTranslated()) {
+                        // don't replace an existing translation with an invalid translation
+                        log.warn(validationMessage);
+                        result.isSuccess = false;
+                        result.errorMessage = validationMessage;
+                        results.add(result);
+                        continue;
+                    } else {
+                        // if TFT was untranslated or fuzzy, use the new
+                        // translation, but mark as fuzzy
+                        newContentState = ContentState.NeedReview;
+                    }
                 }
             }
+            result.newContentState = newContentState;
             HTextFlowTarget hTextFlowTarget =
                     textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
             // if hTextFlowTarget is created, any further hibernate fetch will
@@ -264,6 +275,15 @@ public class TranslationServiceImpl implements TranslationService {
             docStatsEvent.fire(docEvent);
         }
         return results;
+    }
+
+    @NotNull
+    private ContentState getTranslationState(HLocale hLocale,
+            HTextFlow hTextFlow) {
+        HTextFlowTarget hTextFlowTarget =
+                textFlowTargetDAO.getTextFlowTarget(hTextFlow, hLocale);
+        return hTextFlowTarget != null ? hTextFlowTarget.getState()
+                : ContentState.New;
     }
 
     private void validateReviewPermissionIfApplicable(
