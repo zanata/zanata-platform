@@ -272,7 +272,7 @@ public class MachineTranslationServiceImpl implements
                         backendId);
         MTDocument result = getTranslationFromMT(mtDocument,
                 targetLocale.getLocaleId());
-        translateInBatch(textFlowsToTranslate, result, targetLocale, saveState);
+        saveTranslationsInBatches(textFlowsToTranslate, result, targetLocale, saveState);
         return true;
     }
 
@@ -288,7 +288,7 @@ public class MachineTranslationServiceImpl implements
                 documentId, targetLocale, constraints.build());
     }
 
-    private void translateInBatch(List<HTextFlow> textFlows,
+    private void saveTranslationsInBatches(List<HTextFlow> textFlows,
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
         int batchStart = 0;

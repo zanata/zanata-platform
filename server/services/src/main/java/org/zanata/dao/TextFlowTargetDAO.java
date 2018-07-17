@@ -242,12 +242,13 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                 .append("WHERE tf.contentHash = :contentHash AND locale.localeId = :localeId ")
                 .append("AND tft.tf_id = tf.id ")
                 .append("AND tft.locale = locale.id ")
-                // 4 = TranslationSourceType.MACHINE_TRANS
-                .append("AND tft.sourceType <> 4")
+                // 'MT' = TranslationSourceType.MACHINE_TRANS
+                .append("AND (tft.sourceType IS NULL OR tft.sourceType <> 'MT') ")
                 .append("AND tf.document_id = hDoc.id ")
                 .append("AND hDoc.project_iteration_id = iter.id ")
                 .append("AND iter.project_id = project.id ")
                 // (2, 3) = (ContentState.Translated, ContentState.Approved)
+                // 'O' = EntityStatus.OBSOLETE
                 .append("AND tft.state in (2, 3) AND tft.tf_id <> :textFlowId AND iter.status <> 'O' AND project.status <> 'O' ");
         if (checkContext) {
             queryBuilder.append("AND tf.resId = :resId ");
