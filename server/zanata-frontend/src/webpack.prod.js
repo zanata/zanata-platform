@@ -133,17 +133,17 @@ module.exports = merge(common, {
     splitChunks: { // CommonsChunkPlugin()
       name: 'runtime',
       cacheGroups: {
-        fooStyles: {
+        frontendStyles: {
           name: 'frontend',
           test: (m, c, entry = 'frontend') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
           ...groupsOptions
         },
-        barStyles: {
+        legacyStyles: {
           name: 'frontend.legacy',
           test: (m, c, entry = 'frontend.legacy') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
           ...groupsOptions
         },
-        foobarStyles: {
+        editorStyles: {
           name: 'editor',
           test: (m, c, entry = 'editor') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
           ...groupsOptions
