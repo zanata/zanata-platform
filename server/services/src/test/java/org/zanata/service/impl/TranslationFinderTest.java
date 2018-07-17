@@ -238,7 +238,7 @@ public class TranslationFinderTest {
             queryDoc.setProjectIteration(queryProjIter);
             queryDoc.setFullPath(execution.getDocument());
             // Create the text Flow
-            HTextFlow queryTextFlow = new HTextFlow();
+            HTextFlow queryTextFlow = new HTextFlow(queryDoc, execution.getContext());
             // TODO test that the query textflow is excluded from results
             // (when the query textflow has been persisted and indexed)
             queryTextFlow.setId(-999L);
@@ -246,8 +246,6 @@ public class TranslationFinderTest {
                                                                // matches
             queryTextFlow.setPlural(false);
             queryTextFlow.setObsolete(false);
-            queryTextFlow.setDocument(queryDoc);
-            queryTextFlow.setResId(execution.getContext());
             // For all the executions whose queries are expected to find a
             // match,
             // the target which is expected to match is HTextFlowTarget 100

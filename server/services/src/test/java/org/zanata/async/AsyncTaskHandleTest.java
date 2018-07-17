@@ -24,6 +24,8 @@ package org.zanata.async;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Carlos Munoz <a
@@ -142,5 +144,25 @@ public class AsyncTaskHandleTest {
         result.completeExceptionally(new RuntimeException());
 
         assertThat(withException.get()).isTrue();
+    }
+
+    @Test
+    public void canCheckIfTaskIsRunning() {
+        assertThat(AsyncTaskHandle.taskIsNotRunning(null)).isTrue();
+    }
+
+    @Test
+    public void taskIsNotRunningIfItsCancelled() {
+        AsyncTaskHandle taskHandle = mock(AsyncTaskHandle.class);
+        when(taskHandle.isCancelled()).thenReturn(true);
+
+        assertThat(AsyncTaskHandle.taskIsNotRunning(taskHandle)).isTrue();
+    }
+
+    @Test
+    public void taskIsNotRunningIfItsDone() {
+        AsyncTaskHandle taskHandle = mock(AsyncTaskHandle.class);
+        when(taskHandle.isDone()).thenReturn(true);
+        assertThat(AsyncTaskHandle.taskIsNotRunning(taskHandle)).isTrue();
     }
 }

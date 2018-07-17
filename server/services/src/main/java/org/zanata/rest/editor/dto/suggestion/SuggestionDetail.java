@@ -33,7 +33,7 @@ public interface SuggestionDetail extends Serializable {
      * Different types may present different information, so use
      * different class representations.
      */
-    class SuggestionType {
+    class SuggestionType implements Serializable {
 
         /**
          * A suggestion from a project on this Zanata server.

@@ -80,14 +80,14 @@ public class EssentialDataCreator {
         if (!prepared) {
             boolean adminExists;
             boolean isNewInstance = false;
-            createRoleIfNotExist("project-creator");
+            createRoleUnlessItExists("project-creator");
             if (accountRoleDAO.roleExists("user")) {
                 addIncludeRole("user", "project-creator");
             } else {
-                createRoleIfNotExist("user", "project-creator");
+                createRoleUnlessItExists("user", "project-creator");
             }
-            createRoleIfNotExist("glossarist");
-            createRoleIfNotExist("glossary-admin", "glossarist");
+            createRoleUnlessItExists("glossarist");
+            createRoleUnlessItExists("glossary-admin", "glossarist");
             if (accountRoleDAO.roleExists("admin")) {
                 List<?> adminUsers = accountRoleDAO.listMembers("admin");
                 adminExists = !adminUsers.isEmpty();
@@ -113,6 +113,8 @@ public class EssentialDataCreator {
                 log.warn(
                         "No admin users found. Admin users can be enabled via system property: zanata.security.adminusers");
             }
+            createRoleUnlessItExists("mt-suggestion");
+            createRoleUnlessItExists("mt-bulk");
             // Enable en-US by default
             HLocale enUSLocale = localeDAO.findByLocaleId(EN_US);
             if (enUSLocale == null) {
@@ -142,7 +144,7 @@ public class EssentialDataCreator {
         }
     }
 
-    private void createRoleIfNotExist(@Nonnull String role,
+    private void createRoleUnlessItExists(@Nonnull String role,
             String... includesRoles) {
         if (!accountRoleDAO.roleExists(role)) {
             createRole(role, includesRoles);
