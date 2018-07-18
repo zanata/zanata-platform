@@ -2,7 +2,7 @@ import * as PropTypes from 'prop-types'
 import React from 'react'
 import { Icon } from '../../components'
 import cx from 'classnames'
-import { Phrase } from '../utils/phrase';
+import { Phrase } from '../utils/phrase'
 
 const statusNames = {
   untranslated: 'Untranslated',
@@ -65,7 +65,7 @@ class TransUnitStatus extends React.Component<TransUnitStatusProps, any> {
       <li className="TransUnit-metaDataItem TransUnit-metaDataMT">
         <button tabIndex={-1}
           className="TransUnit-metaDataButton">
-          <span className="u-textDanger b">MT</span>
+          <span className="b">MT</span>
         </button>
       </li>
     )
