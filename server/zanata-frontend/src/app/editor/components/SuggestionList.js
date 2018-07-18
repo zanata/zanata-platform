@@ -46,9 +46,9 @@ class SuggestionList extends React.Component {
     })
 
     return (
-      <div>
+      <React.Fragment>
         {suggestions}
-      </div>
+      </React.Fragment>
     )
   }
 }

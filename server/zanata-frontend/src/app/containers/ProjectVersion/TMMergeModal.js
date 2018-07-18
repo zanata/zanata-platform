@@ -460,10 +460,10 @@ class TMMergeModal extends Component {
         />
         )
     const modalBody =
-      <div>
+      <React.Fragment>
         {modalBodyInner}
         <p>Note: Zanata will send you a TM Merge Report by email when processing is complete.</p>
-      </div>
+      </React.Fragment>
     const hasTMSource = this.state.fromAllProjects ||
       this.state.fromImportedTM || this.state.selectedVersions.length > 0
     const modalFooter = processStatus

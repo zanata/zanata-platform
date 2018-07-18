@@ -22,12 +22,12 @@ describe('CancellableProgressBar', () => {
         queryProgress={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <React.Fragment>
         <Progress percent={0} showInfo />
         <button type='button' className='ant-btn btn-danger ant-btn-danger'>
           <span>Cancel TM Merge</span>
         </button>
-      </div>
+      </React.Fragment>
     )
     expect(actual).toEqual(expected)
   })
@@ -43,12 +43,12 @@ describe('CancellableProgressBar', () => {
         processStatus={cancelledStatus} buttonLabel='Cancel TM Merge'
         queryProgress={callback} />
     )).toEqual(ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <React.Fragment>
         <Progress percent={0} showInfo />
         <button disabled type='button' className='ant-btn btn-danger ant-btn-danger'>
           <span>Cancel TM Merge</span>
         </button>
-      </div>
+      </React.Fragment>
     ))
   })
 

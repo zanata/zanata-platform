@@ -104,7 +104,7 @@ export const SettingsPanel = ({
     ]}
     updateSetting={updateValidationSetting} />
   return (
-    <div>
+    <React.Fragment>
       <h1 className="SidebarEditor-heading">
         <Icon className="s1" name="settings" /> Settings
         <span className="s1 u-pullRight">
@@ -114,27 +114,25 @@ export const SettingsPanel = ({
         </span>
       </h1>
       <div className={directionClass + ' SidebarEditor-wrapper'}>
-        <div>
-          <h2 className='SettingsHeading'>Editor options</h2>
-          <SettingsOptions
-            settings={[
-              {
-                id: ENTER_SAVES_IMMEDIATELY,
-                label: 'Enter key saves immediately',
-                active: enterSavesImmediately
-              },
-              {
-                id: SYNTAX_HIGHLIGTING,
-                label: 'Syntax Highlighting',
-                active: syntaxHighligting
-              }
-            ]}
-            updateSetting={updateSetting} />
-          {validationOptionsHeader}
-          {validationOptions}
-        </div>
+        <h2 className='SettingsHeading'>Editor options</h2>
+        <SettingsOptions
+          settings={[
+            {
+              id: ENTER_SAVES_IMMEDIATELY,
+              label: 'Enter key saves immediately',
+              active: enterSavesImmediately
+            },
+            {
+              id: SYNTAX_HIGHLIGTING,
+              label: 'Syntax Highlighting',
+              active: syntaxHighligting
+            }
+          ]}
+          updateSetting={updateSetting} />
+        {validationOptionsHeader}
+        {validationOptions}
       </div>
-    </div>
+    </React.Fragment>
   )
 }
 
