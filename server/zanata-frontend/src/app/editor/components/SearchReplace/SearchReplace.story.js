@@ -5,8 +5,5 @@ import SearchReplace from "./index"
 storiesOf('SearchReplace', module)
 
   .add('default', () => (
-
-    <div>
-      <SearchReplace />
-    </div>
+    <SearchReplace />
   ))

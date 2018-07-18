@@ -7226,13 +7226,1550 @@ exports[`Editor Storyshots RejectTranslationModal Initial state 1`] = `
 `;
 
 exports[`Editor Storyshots SearchReplace default 1`] = `
-<div>
-  <Button
-    className="Button--invisible"
-    icon="swap"
-    onClick={[Function]}
-    type="primary"
-  />
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <mock-modal
+    className="searchReplaceModal"
+    onCancel={[Function]}
+    onOk={[Function]}
+    title="Project-wide Search and Replace"
+    visible={true}
+  >
+    <div
+      className="ant-row"
+      style={undefined}
+    >
+      <span
+        className="mr6"
+      >
+        <span
+          className="mr2"
+        >
+          Search in:
+        </span>
+        <div
+          className="ant-select ant-select-enabled"
+          onBlur={[Function]}
+          onClick={[Function]}
+          onContextMenu={undefined}
+          onFocus={[Function]}
+          onMouseDown={[Function]}
+          onMouseEnter={undefined}
+          onMouseLeave={undefined}
+          onTouchStart={[Function]}
+          style={undefined}
+        >
+          <div
+            aria-autocomplete="list"
+            aria-expanded={false}
+            aria-haspopup="true"
+            className="ant-select-selection
+            ant-select-selection--single"
+            onKeyDown={[Function]}
+            role="combobox"
+            tabIndex={0}
+          >
+            <div
+              className="ant-select-selection__rendered"
+            >
+              <div
+                className="ant-select-selection-selected-value"
+                style={
+                  Object {
+                    "display": "block",
+                    "opacity": 1,
+                  }
+                }
+                title="source and target"
+              >
+                source and target
+              </div>
+            </div>
+            <span
+              className="ant-select-arrow"
+              onClick={[Function]}
+              style={
+                Object {
+                  "WebkitUserSelect": "none",
+                  "userSelect": "none",
+                }
+              }
+              unselectable="unselectable"
+            >
+              <b />
+            </span>
+          </div>
+        </div>
+      </span>
+      <span
+        className="mr4"
+      >
+        <label
+          className="ant-checkbox-wrapper"
+          onMouseEnter={undefined}
+          onMouseLeave={undefined}
+          style={undefined}
+        >
+          <span
+            className="ant-checkbox"
+            style={Object {}}
+          >
+            <input
+              autoFocus={undefined}
+              checked={false}
+              className="ant-checkbox-input"
+              disabled={undefined}
+              id={undefined}
+              name={undefined}
+              onBlur={[Function]}
+              onChange={[Function]}
+              onClick={undefined}
+              onFocus={[Function]}
+              readOnly={undefined}
+              tabIndex={undefined}
+              type="checkbox"
+              value={undefined}
+            />
+            <span
+              className="ant-checkbox-inner"
+            />
+          </span>
+          <span>
+            Match case
+          </span>
+        </label>
+      </span>
+      <label
+        className="ant-checkbox-wrapper"
+        onMouseEnter={undefined}
+        onMouseLeave={undefined}
+        style={undefined}
+      >
+        <span
+          className="ant-checkbox ant-checkbox-checked"
+          style={Object {}}
+        >
+          <input
+            autoFocus={undefined}
+            checked={true}
+            className="ant-checkbox-input"
+            disabled={undefined}
+            id={undefined}
+            name={undefined}
+            onBlur={[Function]}
+            onChange={[Function]}
+            onClick={undefined}
+            onFocus={[Function]}
+            readOnly={undefined}
+            tabIndex={undefined}
+            type="checkbox"
+            value={undefined}
+          />
+          <span
+            className="ant-checkbox-inner"
+          />
+        </span>
+        <span>
+          Require preview
+        </span>
+      </label>
+    </div>
+    <div
+      className="ant-row mt3 mb2"
+      style={undefined}
+    >
+      <div
+        className="ant-col-23"
+      >
+        <span
+          className="ant-input-affix-wrapper"
+          style={undefined}
+        >
+          <span
+            className="ant-input-prefix"
+          >
+            <i
+              className="anticon anticon-search"
+              style={
+                Object {
+                  "color": "rgba(84,102,119,1)",
+                }
+              }
+            />
+          </span>
+          <input
+            className="ant-input"
+            disabled={false}
+            onKeyDown={[Function]}
+            placeholder="Search in project"
+            style={null}
+            type="text"
+          />
+        </span>
+      </div>
+      <div
+        className="ant-col-1"
+      >
+        <span
+          className="icon-sub ml3"
+        >
+          <i
+            className="anticon anticon-cross"
+          />
+        </span>
+      </div>
+    </div>
+    <div
+      className="ant-row mb2 mt2"
+      style={undefined}
+    >
+      <div
+        className="ant-col-23"
+      >
+        <span
+          className="ant-input-affix-wrapper"
+          style={undefined}
+        >
+          <span
+            className="ant-input-prefix"
+          >
+            <i
+              className="anticon anticon-swap"
+              style={
+                Object {
+                  "color": "rgba(84,102,119,1)",
+                }
+              }
+            />
+          </span>
+          <input
+            className="ant-input"
+            disabled={false}
+            onKeyDown={[Function]}
+            placeholder="Replace in project"
+            style={null}
+            type="text"
+          />
+        </span>
+      </div>
+      <div
+        className="ant-col-1"
+      >
+        <span
+          className="icon-sub ml3"
+        >
+          <i
+            className="anticon anticon-cross"
+          />
+        </span>
+      </div>
+    </div>
+    <div
+      className="ant-row"
+      style={undefined}
+    >
+      <span
+        className="fr mt2 mb4"
+      >
+        <mock-button
+          className="mr2 Button--primary"
+        >
+          Search
+        </mock-button>
+        <mock-button
+          className="Button--secondary"
+          type="primary"
+        >
+          Replace
+        </mock-button>
+      </span>
+    </div>
+    <div
+      className="ant-card searchReplaceResultsCard ant-card-bordered"
+    >
+      <div
+        className="ant-card-body"
+        style={undefined}
+      >
+        <div
+          className="ant-row"
+          style={undefined}
+        >
+          <mock-button
+            className="mr2 leftCaret Button--invisible"
+            icon="left"
+            size="small"
+          />
+          Document 
+          <strong>
+            1
+          </strong>
+           of 
+          <strong>
+            27
+          </strong>
+          <mock-button
+            className="ml2 rightCaret mr4 Button--invisible"
+            icon="right"
+            size="small"
+          />
+          <mock-tag>
+            11 of 207 matching textflows selected
+          </mock-tag>
+          <span
+            className="highlight fr f7"
+          >
+            Matching textflows
+          </span>
+        </div>
+        <div
+          className="ant-row mt3 mb2"
+          style={undefined}
+        >
+          <div
+            className="ant-col-4"
+          >
+            <h2
+              className="f4"
+            >
+              <i
+                className="anticon anticon-file-text"
+              />
+              Document name
+            </h2>
+          </div>
+          <div
+            className="docOptions"
+          >
+            <mock-button
+              className="mr2 Button--invisible"
+            >
+              <i
+                className="anticon anticon-eye f4"
+              />
+            </mock-button>
+            <mock-button
+              className="Button--invisible"
+            >
+              <i
+                className="anticon anticon-search f4"
+              />
+            </mock-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="ant-table-wrapper"
+      style={undefined}
+    >
+      <div
+        className="ant-spin-nested-loading"
+        style={null}
+      >
+        <div
+          className="ant-spin-container"
+        >
+          <div
+            className="ant-table ant-table-large ant-table-scroll-position-left"
+            id={undefined}
+            style={Object {}}
+          >
+            <div
+              className="ant-table-content"
+            >
+              <div
+                className="ant-table-body"
+                onScroll={[Function]}
+                style={Object {}}
+              >
+                <table
+                  className=""
+                  style={Object {}}
+                >
+                  <colgroup>
+                    <col
+                      style={
+                        Object {
+                          "minWidth": undefined,
+                          "width": undefined,
+                        }
+                      }
+                    />
+                    <col
+                      style={
+                        Object {
+                          "minWidth": undefined,
+                          "width": undefined,
+                        }
+                      }
+                    />
+                    <col
+                      style={
+                        Object {
+                          "minWidth": undefined,
+                          "width": undefined,
+                        }
+                      }
+                    />
+                    <col
+                      style={
+                        Object {
+                          "minWidth": undefined,
+                          "width": undefined,
+                        }
+                      }
+                    />
+                    <col
+                      style={
+                        Object {
+                          "minWidth": undefined,
+                          "width": undefined,
+                        }
+                      }
+                    />
+                  </colgroup>
+                  <thead
+                    className="ant-table-thead"
+                  >
+                    <tr
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <th
+                        className="ant-table-selection-column"
+                      >
+                        <span>
+                          <div
+                            className="ant-table-selection"
+                          >
+                            <label
+                              className="ant-checkbox-wrapper"
+                              onMouseEnter={undefined}
+                              onMouseLeave={undefined}
+                              style={undefined}
+                            >
+                              <span
+                                className="ant-checkbox"
+                                style={Object {}}
+                              >
+                                <input
+                                  autoFocus={undefined}
+                                  checked={false}
+                                  className="ant-checkbox-input"
+                                  disabled={false}
+                                  id={undefined}
+                                  name={undefined}
+                                  onBlur={[Function]}
+                                  onChange={[Function]}
+                                  onClick={undefined}
+                                  onFocus={[Function]}
+                                  readOnly={undefined}
+                                  tabIndex={undefined}
+                                  type="checkbox"
+                                  value={undefined}
+                                />
+                                <span
+                                  className="ant-checkbox-inner"
+                                />
+                              </span>
+                            </label>
+                          </div>
+                        </span>
+                      </th>
+                      <th
+                        className=""
+                      >
+                        <span>
+                          Index
+                        </span>
+                      </th>
+                      <th
+                        className=""
+                      >
+                        <span>
+                          Source
+                        </span>
+                      </th>
+                      <th
+                        className=""
+                      >
+                        <span>
+                          Target
+                        </span>
+                      </th>
+                      <th
+                        className=""
+                      >
+                        <span>
+                          
+                        </span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    className="ant-table-tbody"
+                  >
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        0
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        1
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        2
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        3
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        4
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        5
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        6
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        7
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        8
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                    <tr
+                      className="ant-table-row  ant-table-row-level-0"
+                      onClick={[Function]}
+                      onContextMenu={[Function]}
+                      onDoubleClick={[Function]}
+                      onMouseEnter={[Function]}
+                      onMouseLeave={[Function]}
+                      style={
+                        Object {
+                          "height": null,
+                        }
+                      }
+                    >
+                      <td
+                        className="ant-table-selection-column"
+                        onClick={[Function]}
+                      >
+                        <span
+                          onClick={[Function]}
+                        >
+                          <label
+                            className="ant-checkbox-wrapper"
+                            onMouseEnter={undefined}
+                            onMouseLeave={undefined}
+                            style={undefined}
+                          >
+                            <span
+                              className="ant-checkbox"
+                              style={Object {}}
+                            >
+                              <input
+                                autoFocus={undefined}
+                                checked={false}
+                                className="ant-checkbox-input"
+                                disabled={undefined}
+                                id={undefined}
+                                name={undefined}
+                                onBlur={[Function]}
+                                onChange={[Function]}
+                                onClick={undefined}
+                                onFocus={[Function]}
+                                readOnly={undefined}
+                                tabIndex={undefined}
+                                type="checkbox"
+                                value={undefined}
+                              />
+                              <span
+                                className="ant-checkbox-inner"
+                              />
+                            </span>
+                          </label>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span
+                          className="ant-table-row-indent indent-level-0"
+                          style={
+                            Object {
+                              "paddingLeft": "0px",
+                            }
+                          }
+                        />
+                        9
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        text source
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <span>
+                          text 
+                          <span
+                            className="highlight"
+                          >
+                            target
+                          </span>
+                        </span>
+                      </td>
+                      <td
+                        className=""
+                        onClick={[Function]}
+                      >
+                        <mock-button
+                          className="btn-link fr"
+                        >
+                          <i
+                            className="anticon anticon-edit f4"
+                          />
+                        </mock-button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <ul
+            className="ant-pagination ant-table-pagination"
+            style={Object {}}
+            unselectable="unselectable"
+          >
+            <li
+              aria-disabled={true}
+              className="ant-pagination-disabled ant-pagination-prev"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex={null}
+              title="Previous Page"
+            >
+              <a
+                className="ant-pagination-item-link"
+              />
+            </li>
+            <li
+              className="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex="0"
+              title={1}
+            >
+              <a>
+                1
+              </a>
+            </li>
+            <li
+              className="ant-pagination-item ant-pagination-item-2"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex="0"
+              title={2}
+            >
+              <a>
+                2
+              </a>
+            </li>
+            <li
+              aria-disabled={false}
+              className=" ant-pagination-next"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex={0}
+              title="Next Page"
+            >
+              <a
+                className="ant-pagination-item-link"
+              />
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </mock-modal>
 </div>
 `;
 

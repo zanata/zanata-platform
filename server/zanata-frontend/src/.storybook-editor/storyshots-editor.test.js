@@ -6,6 +6,7 @@ import {
 
 jest.mock('antd/lib/button', () => 'mock-button')
 jest.mock('antd/lib/modal', () => 'mock-modal')
+jest.mock('antd/lib/tag', () => 'mock-tag')
 
 jest.mock('../app/components/Icon', () => 'mock-icon')
 jest.mock('../app/components/Icons', () => 'mock-icons')
