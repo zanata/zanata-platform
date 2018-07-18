@@ -1,4 +1,4 @@
-
+@import 'tachyons/css/tachyons.min.css';
 /**
  * Utils
  */
@@ -36,7 +36,7 @@
 @import './components/InputGroup/index.css';
 @import 'components/ConcurrentModal/index.css';
 @import 'components/TransSourceTypeIndicator/index.css';
-
+@import 'components/SearchReplace/index.css';
 
 /**
  * Views

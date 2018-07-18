@@ -2,7 +2,6 @@
 
 exports[`Frontend Storyshots EditableText editing 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -149,7 +148,6 @@ exports[`Frontend Storyshots EditableText editing 1`] = `
 
 exports[`Frontend Storyshots EditableText not editing 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -179,7 +177,6 @@ exports[`Frontend Storyshots EditableText not editing 1`] = `
 
 exports[`Frontend Storyshots Foundation colours 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -373,7 +370,6 @@ exports[`Frontend Storyshots Foundation colours 1`] = `
 
 exports[`Frontend Storyshots Foundation typography 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -396,7 +392,6 @@ exports[`Frontend Storyshots Foundation typography 1`] = `
 
 exports[`Frontend Storyshots Icon default 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -1204,7 +1199,6 @@ exports[`Frontend Storyshots Icon default 1`] = `
 
 exports[`Frontend Storyshots Icon sizes 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6322,7 +6316,6 @@ exports[`Frontend Storyshots Icon sizes 1`] = `
 
 exports[`Frontend Storyshots Link link page not in frontend app 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6352,7 +6345,6 @@ exports[`Frontend Storyshots Link link page not in frontend app 1`] = `
 
 exports[`Frontend Storyshots Link link within frontend app 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6463,7 +6455,6 @@ exports[`Frontend Storyshots Link link within frontend app 1`] = `
 
 exports[`Frontend Storyshots LoaderText default 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6519,7 +6510,6 @@ exports[`Frontend Storyshots LoaderText default 1`] = `
 
 exports[`Frontend Storyshots MTMerge single 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6662,7 +6652,6 @@ exports[`Frontend Storyshots MTMerge single 1`] = `
 
 exports[`Frontend Storyshots MTMergeModal single 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6829,7 +6818,6 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
 
 exports[`Frontend Storyshots ProgressBar default 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6872,7 +6860,6 @@ exports[`Frontend Storyshots ProgressBar default 1`] = `
 
 exports[`Frontend Storyshots TextInput default 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6914,7 +6901,6 @@ exports[`Frontend Storyshots TextInput default 1`] = `
 
 exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -6993,7 +6979,6 @@ exports[`Frontend Storyshots TriCheckbox checkbox group 1`] = `
 
 exports[`Frontend Storyshots TriCheckbox default 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -7030,7 +7015,6 @@ exports[`Frontend Storyshots TriCheckbox default 1`] = `
 
 exports[`Frontend Storyshots TriCheckbox truth table 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",
@@ -7145,7 +7129,6 @@ exports[`Frontend Storyshots TriCheckbox truth table 1`] = `
 
 exports[`Frontend Storyshots TriCheckbox with custom styles 1`] = `
 <div
-  className="bstrapReact"
   style={
     Object {
       "padding": "2em",

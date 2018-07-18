@@ -20,9 +20,6 @@ import { fetchSettings } from '../actions/settings-actions'
 // This is needed to load intl-polyfill
 __webpack_public_path__ = serverUrl || '/' // eslint-disable-line
 
-import 'tachyons/css/tachyons.min.css'
-import '../index.css'
-
 /**
  * Top level of the Zanata editor app.
  *

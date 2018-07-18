@@ -21,8 +21,8 @@
 package org.zanata.util;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
+import net.sf.okapi.common.exceptions.OkapiIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,19 +36,17 @@ public class OkapiUtil {
     private OkapiUtil() {
     }
 
+    /**
+     * Validate a Zanata localeId to BCP-47 and return an equivalent Okapi LocaleId
+     * @param zanataLocale Zanata LocaleId to convert
+     * @return Okapi LocaleId, as-is to preserve case (no normalization)
+     * @throws IllegalArgumentException on validation failure
+     */
     public static @Nonnull
-    LocaleId toOkapiLocale(@Nonnull org.zanata.common.LocaleId zanataLocale) {
-        return LocaleId.fromBCP47(zanataLocale.getId());
-    }
-
-    public static @Nonnull
-    LocaleId toOkapiLocaleOrEmpty(@Nullable org.zanata.common.LocaleId locale) {
-        if (locale == null) {
-            // TMXWriter demands a non-null target locale, but if you write
-            // your TUs with writeTUFull(), it is never actually used.
-            return LocaleId.EMPTY;
-        }
-        return toOkapiLocale(locale);
+    LocaleId toOkapiLocale(@Nonnull org.zanata.common.LocaleId zanataLocale)
+            throws IllegalArgumentException {
+        LocaleId.fromBCP47(zanataLocale.getId());
+        return new LocaleId(zanataLocale.getId(), false);
     }
 
     /**
