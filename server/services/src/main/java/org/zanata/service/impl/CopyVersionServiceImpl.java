@@ -427,6 +427,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     @Override
     public HTextFlowTarget copyTextFlowTarget(HTextFlow newTf,
             HTextFlowTarget tft) throws Exception {
+        // This includes revisionComment (eg Translated by Google)
         HTextFlowTarget copy = JPACopier.<HTextFlowTarget> copyBean(tft,
                 "textFlow", "reviewComments", "history");
         copy.setTextFlow(newTf);
@@ -435,7 +436,9 @@ public class CopyVersionServiceImpl implements CopyVersionService {
             copy.setComment(new HSimpleComment(tft.getComment().getComment()));
         }
         copy.setRevisionComment(TranslationUtil.getCopyVersionMessage(tft));
-        copy.setSourceType(TranslationSourceType.COPY_VERSION);
+        if (copy.getSourceType() != TranslationSourceType.MACHINE_TRANS) {
+            copy.setSourceType(TranslationSourceType.COPY_VERSION);
+        }
         TranslationUtil.copyEntity(tft, copy);
         // copy review comment
         copy.setReviewComments(

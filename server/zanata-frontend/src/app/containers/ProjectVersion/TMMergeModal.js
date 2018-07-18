@@ -256,7 +256,7 @@ class TMMergeModal extends Component {
   }
   componentWillReceiveProps (nextProps) {
     const { locales, showTMMergeModal } = nextProps
-    // Fetch locales again when modal is closed then re-opened
+    // Fetch locales again when modal is re-opened
     // Reset the state when the modal is closed
     if (showTMMergeModal !== this.props.showTMMergeModal) {
       if (showTMMergeModal) {
@@ -460,10 +460,10 @@ class TMMergeModal extends Component {
         />
         )
     const modalBody =
-      <div>
+      <React.Fragment>
         {modalBodyInner}
         <p>Note: Zanata will send you a TM Merge Report by email when processing is complete.</p>
-      </div>
+      </React.Fragment>
     const hasTMSource = this.state.fromAllProjects ||
       this.state.fromImportedTM || this.state.selectedVersions.length > 0
     const modalFooter = processStatus

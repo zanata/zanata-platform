@@ -92,7 +92,7 @@ class TriCheckboxGroup extends Component {
       )
     })
     return (
-      <div>
+      <React.Fragment>
         <h3>Checkbox group with tri-state control</h3>
         <span>
           <span className='list-group-item'>
@@ -105,7 +105,7 @@ class TriCheckboxGroup extends Component {
           </span>
           {optionGroup}
         </span>
-      </div>
+      </React.Fragment>
     )
   }
 }

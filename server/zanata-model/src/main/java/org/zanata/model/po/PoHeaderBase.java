@@ -41,7 +41,6 @@ public abstract class PoHeaderBase extends ModelEntityBase {
     // stored in the format used by java.util.Properties.store(Writer)
     // see PoUtility.headerEntriesToString
     private String entries;
-    // TODO use orphanRemoval=true: requires JPA 2.0
 
     @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "comment_id")

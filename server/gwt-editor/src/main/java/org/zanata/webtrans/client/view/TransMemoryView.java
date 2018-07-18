@@ -283,11 +283,9 @@ public class TransMemoryView extends Composite implements
         SimplePanel panel = new SimplePanel();
         // display multiple target strings
 
-        if (object.getMatchType() == MatchType.ApprovedInternal ||
-            object.getMatchType() == MatchType.MT) {
+        if (object.getMatchType() == MatchType.ApprovedInternal) {
             panel.addStyleName(style.approved());
-        } else if (object.getMatchType() == MatchType.TranslatedInternal ||
-            object.getMatchType() == MatchType.MT) {
+        } else if (object.getMatchType() == MatchType.TranslatedInternal) {
             panel.addStyleName(style.translated());
             //} else if (object.getMatchType() == MatchType.Imported) {
             // TODO Add a style for imported/TMX matches
@@ -344,12 +342,12 @@ public class TransMemoryView extends Composite implements
                     SIMILARITY_COL, "txt--align-center");
 
             Anchor infoCell = new Anchor();
-            if (item.getMatchType() == MatchType.Imported) {
+            if (item.isMachineTranslation()) {
+                infoCell = new TransSourceIndicator(TranslationSourceType.MACHINE_TRANS);
+            } else if (item.getMatchType() == MatchType.Imported) {
                 String originStr = Joiner.on(", ").join(item.getOrigins());
                 infoCell.setText(ShortString.shorten(originStr, 10));
                 infoCell.setTitle(originStr);
-            } else if (item.getMatchType() == MatchType.MT) {
-                infoCell = new TransSourceIndicator(TranslationSourceType.MACHINE_TRANS);
             } else {
                 infoCell.setStyleName("i i--info txt--lead");
                 infoCell.addClickHandler(new ClickHandler() {

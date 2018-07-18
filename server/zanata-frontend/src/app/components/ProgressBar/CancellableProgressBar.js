@@ -59,7 +59,7 @@ class CancellableProgressBar extends Component {
       onCancelOperation, processStatus, buttonLabel
     } = this.props
     return (
-      <div>
+      <React.Fragment>
         <Progress percent={processStatus.percentageComplete}
           showInfo
         />
@@ -68,7 +68,7 @@ class CancellableProgressBar extends Component {
           onClick={onCancelOperation}>
           {buttonLabel}
         </Button>
-      </div>
+      </React.Fragment>
     )
   }
 }

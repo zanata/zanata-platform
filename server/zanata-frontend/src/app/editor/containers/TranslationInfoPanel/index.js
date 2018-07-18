@@ -21,8 +21,9 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
-// eslint-disable-next-line no-unused-vars
-import { ActivityFilter } from '../../utils/activity-util'
+
+/** @typedef {import('../../utils/activity-util').ActivityFilter}
+    ActivityFilter */
 
 /* Tab keys for tracking active Tab */
 const activityTabKey = '1'
@@ -160,7 +161,7 @@ class TranslationInfoPanel extends React.Component {
       : glossaryVisible ? glossaryTabKey
       : activityTabKey
     return (
-      <div>
+      <React.Fragment>
         <h1 className="SidebarEditor-heading">
           <Icon name="info" className="s1" parentClassName='details-svg' />
           <span className="hide-md">
@@ -218,7 +219,7 @@ class TranslationInfoPanel extends React.Component {
             </TabPane>
           </Tabs>
         </span>
-      </div>
+      </React.Fragment>
     )
   }
 }

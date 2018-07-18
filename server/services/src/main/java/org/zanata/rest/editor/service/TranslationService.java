@@ -73,7 +73,7 @@ public class TranslationService implements TranslationResource {
     @Inject
     private LocaleService localeServiceImpl;
 
-    private static final String sourceType = TranslationSourceType.JS_EDITOR_ENTRY.getAbbr();
+    private static final String SOURCE_TYPE_JS_EDITOR = TranslationSourceType.JS_EDITOR_ENTRY.getAbbr();
 
     @Override
     @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
@@ -118,7 +118,7 @@ public class TranslationService implements TranslationResource {
         TransUnitUpdateRequest request = new TransUnitUpdateRequest(
                 new TransUnitId(requestData.getId().longValue()),
                 requestData.getContents(), requestData.getStatus(),
-                requestData.getRevision(), sourceType);
+                requestData.getRevision(), SOURCE_TYPE_JS_EDITOR);
         if (revisionComment != null) {
             request.addRevisionComment(revisionComment);
         }

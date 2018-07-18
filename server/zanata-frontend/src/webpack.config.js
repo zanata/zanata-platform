@@ -14,7 +14,7 @@ var ManifestPlugin = require('webpack-manifest-plugin')
 // We need this plugin to detect a `--watch` mode. It may be removed later
 // after https://github.com/webpack/webpack/issues/3460 will be resolved.
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin
-const tsImportPluginFactory = require('ts-import-plugin')
+
 /**
  * Helper so we can use ternary with undefined to not specify a key
  * @param {any} obj

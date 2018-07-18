@@ -148,12 +148,12 @@ class UserProfile extends Component {
       </div>)
     }
     return (
-      <div>
+      <React.Fragment>
         <Helmet title='User Profile' />
         <div className='wideView' id='profile' >
           {content}
         </div>
-      </div>
+      </React.Fragment>
     )
   }
 }
