@@ -6,7 +6,7 @@ import org.zanata.common.ContentState;
 import org.zanata.model.po.HPotEntryData;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 
 /**
  * A builder to build HTextFlow entity and possibly [HTextFlowTarget] [and

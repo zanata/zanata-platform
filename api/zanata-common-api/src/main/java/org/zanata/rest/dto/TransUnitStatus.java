@@ -10,6 +10,10 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentState;
 
+/***
+ * INTERNAL API ONLY - SUBJECT TO CHANGE OR REMOVAL WITHOUT NOTICE <br/>
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "id", "resId", "status", "transSourceType"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)

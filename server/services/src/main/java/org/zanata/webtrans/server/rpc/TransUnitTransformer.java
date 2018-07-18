@@ -29,9 +29,9 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
 
 @Named("transUnitTransformer")
 @RequestScoped
@@ -90,11 +90,10 @@ public class TransUnitTransformer {
             }
             builder.setLastModifiedTime(target.getLastChanged());
             builder.setRevisionComment(target.getRevisionComment());
-            org.zanata.webtrans.shared.model.TranslationSourceType type =
+            TranslationSourceType type =
                 target.getSourceType() == null ?
                     TranslationSourceType.UNKNOWN :
-                    org.zanata.webtrans.shared.model.TranslationSourceType
-                        .getInstance(target.getSourceType().getAbbr());
+                    TranslationSourceType.getValueOf(target.getSourceType().getAbbr());
             builder.setTranslationSourceType(type);
         }
         return builder.build();
