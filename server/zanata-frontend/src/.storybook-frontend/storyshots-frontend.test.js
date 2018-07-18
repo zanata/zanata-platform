@@ -13,6 +13,9 @@ jest.mock('antd/lib/icon', () => 'Icon')
 jest.mock('antd/lib/modal', () => 'Modal')
 jest.mock('antd/lib/switch', () => 'Switch')
 
+jest.mock('../app/components/Icon', () => 'mock-icon')
+jest.mock('../app/components/Icons', () => 'mock-icons')
+
 initStoryshots({
   suite: 'Frontend Storyshots',
   configPath: '.storybook-frontend',

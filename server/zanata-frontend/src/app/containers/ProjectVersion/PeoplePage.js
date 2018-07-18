@@ -12,6 +12,7 @@ class PeoplePage extends Component {
       /* eslint-disable max-len */
         <div className='flexTab wideView'>
           <h2>People</h2>
+          Content
         </div>
         /* eslint-enable max-len */
     )

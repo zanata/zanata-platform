@@ -209,21 +209,20 @@ class Glossary extends Component {
         className='reactList'
         ref={(c) => { this.list = c }} />)
     } else {
-      list = (<div>
+      list = (<React.Fragment>
         <p className='txt-muted tc'>
           <Icon name='glossary' />
         </p>
         <p className='txt-muted b tc'>No content</p>
-      </div>)
+      </React.Fragment>)
     }
 
     return (
-      <div>
+      <React.Fragment>
         <Helmet title={headerTitle} />
         <div className='wideView' id='glossary'>
           <Layout>
             <ViewHeader title={headerTitle} />
-            <div>
               <Row>
                 {termCount > 0 &&
                   <Row>
@@ -284,14 +283,12 @@ class Glossary extends Component {
                   </div>
                 }
               </Row>
-            </div>
-
             <div className='glossaryList'>
               {list}
             </div>
           </Layout>
         </div>
-      </div>
+      </React.Fragment>
     )
     /* eslint-enable react/jsx-no-bind */
   }

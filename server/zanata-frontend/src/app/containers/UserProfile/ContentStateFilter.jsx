@@ -31,9 +31,9 @@ const ContentStateFilter = ({
     /* eslint-enable react/jsx-no-bind */
   })
   return (
-    <div>
+    <React.Fragment>
       {optionItems}
-    </div>
+    </React.Fragment>
   )
 }
 
