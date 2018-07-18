@@ -119,7 +119,7 @@ class JsonAdapter : FileFormatAdapter {
             }
         } catch (exception: Exception) {
             when(exception) {
-                is IOException, is FileNotFoundException -> {
+                is IOException -> {
                     throw FileFormatAdapterException(
                             "Cannot create the translated file")
                 }
@@ -199,4 +199,5 @@ class JsonAdapter : FileFormatAdapter {
                 .withPrintMode(PrintMode.PRETTY)
                 .unflatten()
     }
+
 }

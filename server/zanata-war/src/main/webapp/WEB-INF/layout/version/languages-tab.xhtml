@@ -395,7 +395,7 @@
                           </h:outputLink>
                         </li>
                       </ui:fragment>
-                      <ui:fragment rendered="#{versionHomeAction.isUserAllowedToTranslateOrReview(selectedLocale) and versionHomeAction.isFileUploadAllowed(selectedLocale)}">
+                      <ui:fragment rendered="#{versionHomeAction.isUserAllowedToUploadTranslationFile(selectedLocale)}">
                         <li>
                           <a href="#" class="i__item--right"
                              data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
@@ -405,12 +405,12 @@
                             <i class="i i--import i__item__icon"></i>
                           </a>
                         </li>
-                        <ui:fragment rendered="#{versionHomeAction.canUploadRawFileTranslation(document.path, document.name)}">
+                        <ui:fragment rendered="#{versionHomeAction.canUploadRawFileTranslation(document.name)}">
                           <li>
                             <a href="#" class="i__item--right"
                                data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
                                data-target="#uploadTranslationDialog"
-                               title="#{msgs['jsf.Upload.Description.File']}">
+                               title="#{msgs['jsf.Upload.Description.Raw']}">
                               #{msgs.format('jsf.Upload.Label', versionHomeAction.translationExtensionOf(document.path, document.name).concat('*'))}
                               <i class="i i--import i__item__icon"></i>
                             </a>
