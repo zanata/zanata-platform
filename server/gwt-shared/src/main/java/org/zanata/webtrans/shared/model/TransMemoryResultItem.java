@@ -53,8 +53,9 @@ public class TransMemoryResultItem extends SearchResultItem implements
     private MatchType matchType;
     // The optional origin identifiers for this result (i.e. A Trans memory name)
     private List<String> origins;
-    private ArrayList<Long> sourceIdList = new ArrayList<Long>();
+    private ArrayList<Long> sourceIdList = new ArrayList<>();
     private Long fromVersionId;
+    private boolean machineTranslation;
 
     // for GWT
     @SuppressWarnings("unused")
@@ -71,13 +72,14 @@ public class TransMemoryResultItem extends SearchResultItem implements
     public TransMemoryResultItem(ArrayList<String> sourceContents,
             ArrayList<String> targetContents, MatchType matchType,
             double relevanceScore, double similarityPercent,
-            Long fromVersionId) {
+            Long fromVersionId, boolean machineTranslation) {
         super(relevanceScore, similarityPercent);
         this.sourceContents = sourceContents;
         this.targetContents = targetContents;
         this.matchType = matchType;
         this.fromVersionId = fromVersionId;
-        this.origins = new ArrayList<String>();
+        this.origins = new ArrayList<>();
+        this.machineTranslation = machineTranslation;
     }
 
     public List<String> getOrigins() {
@@ -88,26 +90,8 @@ public class TransMemoryResultItem extends SearchResultItem implements
         this.origins.add(origin);
     }
 
-    // FIXME remove this
-    @Deprecated
-    public String getSource() {
-        if (sourceContents.size() == 0) {
-            return null;
-        }
-        return sourceContents.get(0);
-    }
-
     public ArrayList<String> getSourceContents() {
         return sourceContents;
-    }
-
-    // FIXME remove this
-    @Deprecated
-    public String getTarget() {
-        if (targetContents.size() == 0) {
-            return null;
-        }
-        return targetContents.get(0);
     }
 
     public List<String> getTargetContents() {
@@ -140,5 +124,9 @@ public class TransMemoryResultItem extends SearchResultItem implements
 
     public Long getFromVersionId() {
         return fromVersionId;
+    }
+
+    public boolean isMachineTranslation() {
+        return machineTranslation;
     }
 }

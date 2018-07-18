@@ -58,6 +58,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.dto.MachineTranslationPrefill;
 import org.zanata.rest.service.MachineTranslationsManager;
 import org.zanata.service.LocaleService;
@@ -81,6 +82,7 @@ import com.google.common.base.Joiner;
 
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({
+        AttributionService.class,
         TextFlowsToMTDoc.class,
         TextFlowDAO.class,
         TextFlowTargetDAO.class,
@@ -200,6 +202,7 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
 
     private HProjectIteration makeProjectVersion(String projectSlug, String versionSlug) {
         HProject project = new HProject();
+        project.setDefaultProjectType(ProjectType.File);
         project.setName("test project");
         project.setSlug(projectSlug);
         getEm().persist(project);
@@ -270,6 +273,7 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
             HDocument doc =
                     new HDocument("pot/message" + i, ContentType.PO, sourceLocale);
             doc.setProjectIteration(version);
+            doc.setPoHeader(new HPoHeader());
             version.getDocuments().put(doc.getDocId(), doc);
             getEm().persist(doc);
             // each document has the same number of text flows

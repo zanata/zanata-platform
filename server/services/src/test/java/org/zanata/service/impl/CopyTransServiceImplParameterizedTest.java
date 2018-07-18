@@ -78,10 +78,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.zanata.common.ContentState.Approved;
@@ -366,14 +370,26 @@ public class CopyTransServiceImplParameterizedTest {
         }
     }
 
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     private static Set<CopyTransExecution> generateExecutions() {
         Set<CopyTransExecution> allExecutions = new HashSet<>();
         // NB combinations which affect the query parameters
         // (context match/mismatch, etc) are tested in TranslationFinderTest
-        Set<Object[]> paramsSet = cartesianProduct(Arrays.asList(REJECT),
-                Arrays.asList(REJECT), Arrays.asList(REJECT),
-                Arrays.asList(true), Arrays.asList(true), Arrays.asList(true),
-                Arrays.asList(Translated, Approved));
+        Set<Object[]> paramsSet = cartesianProduct(
+                // contextMismatchAction
+                asList(REJECT),
+                // projectMismatchAction
+                asList(REJECT),
+                // documentMismatchAction
+                asList(REJECT),
+                // contextMatches
+                asList(true),
+                // projectMatches
+                asList(true),
+                // documentMatches
+                asList(true),
+                // matchState
+                asList(Translated, Approved));
         for (Object[] params : paramsSet) {
             CopyTransExecution exec = new CopyTransExecution(
                     (HCopyTransOptions.ConditionRuleAction) params[0],

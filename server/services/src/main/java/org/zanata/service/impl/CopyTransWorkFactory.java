@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.NeedReview;
 import static org.zanata.common.ContentState.New;
@@ -32,8 +33,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
+
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocStatsEvent;
@@ -60,11 +63,10 @@ import com.google.common.collect.Maps;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Named("copyTransWorkFactory")
-@javax.enterprise.context.Dependent
+@Dependent
 public class CopyTransWorkFactory implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(CopyTransWorkFactory.class);
+    private static final Logger log =
+            getLogger(CopyTransWorkFactory.class);
     private static final long serialVersionUID = 3709610236866704460L;
 
     // Inject textFlowTargetDAO (@DatabaseSearch) for Hibernate-based query
@@ -118,9 +120,15 @@ public class CopyTransWorkFactory implements Serializable {
                                 document.getLocale().getLocaleId(),
                                 checkContext, checkDocument, checkProject);
                 if (bestMatch.isPresent()) {
-                    numCopied++;
-                    saveCopyTransMatch(actorId, bestMatch.get(), textFlow,
-                            options);
+                    HTextFlowTarget matchingTarget = bestMatch.get();
+                    // The query above should exclude MACHINE_TRANS, but I'm feeling paranoid
+                    if (matchingTarget.getSourceType() == TranslationSourceType.MACHINE_TRANS) {
+                        log.warn("Unexpected MT result: {}", matchingTarget);
+                    } else {
+                        numCopied++;
+                        saveCopyTransMatch(actorId, matchingTarget, textFlow,
+                                options);
+                    }
                 }
             }
         }
@@ -216,31 +224,15 @@ public class CopyTransWorkFactory implements Serializable {
         final HProjectIteration matchingTargetProjectIteration = matchingTarget
                 .getTextFlow().getDocument().getProjectIteration();
         // lazy evaluation of some conditions
-        Supplier<Boolean> contextMatches = new Supplier<Boolean>() {
-
-            @Override
-            public Boolean get() {
-                return originalTf.getResId()
-                        .equals(matchingTarget.getTextFlow().getResId());
-            }
-        };
-        Supplier<Boolean> projectMatches = new Supplier<Boolean>() {
-
-            public Boolean get() {
-                return originalTf.getDocument().getProjectIteration()
-                        .getProject().getId()
-                        .equals(matchingTargetProjectIteration.getProject()
-                                .getId());
-            }
-        };
-        Supplier<Boolean> docIdMatches = new Supplier<Boolean>() {
-
-            @Override
-            public Boolean get() {
-                return originalTf.getDocument().getDocId().equals(
+        Supplier<Boolean> contextMatches = () -> originalTf.getResId()
+                .equals(matchingTarget.getTextFlow().getResId());
+        Supplier<Boolean> projectMatches = () -> originalTf.getDocument().getProjectIteration()
+                .getProject().getId()
+                .equals(matchingTargetProjectIteration.getProject()
+                        .getId());
+        Supplier<Boolean> docIdMatches =
+                () -> originalTf.getDocument().getDocId().equals(
                         matchingTarget.getTextFlow().getDocument().getDocId());
-            }
-        };
         final ContentState copyState = determineContentState(contextMatches,
                 projectMatches, docIdMatches, options,
                 matchingTarget.getState());
