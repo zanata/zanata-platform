@@ -69,7 +69,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.EntityType;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;

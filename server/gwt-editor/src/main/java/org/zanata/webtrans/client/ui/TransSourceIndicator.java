@@ -22,7 +22,7 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.user.client.ui.Anchor;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

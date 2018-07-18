@@ -18,13 +18,15 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model.type;
+package org.zanata.rest.dto;
 
 import java.io.Serializable;
 import java.util.Collection;
 import com.google.common.collect.ImmutableSet;
 
 /**
+ * INTERNAL API ONLY - SUBJECT TO CHANGE OR REMOVAL WITHOUT NOTICE <br/>
+ *
  * Source of action on how translation are being copied.
  *
  * Usage {@link org.zanata.model.HTextFlowTarget#sourceType} and

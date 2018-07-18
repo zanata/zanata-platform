@@ -23,7 +23,7 @@ package org.zanata.rest.editor.dto.suggestion;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentState;
 import org.zanata.model.*;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import java.util.Date;
 

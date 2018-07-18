@@ -8,7 +8,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.joda.time.DateTime;
 import org.zanata.model.HLocale;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
