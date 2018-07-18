@@ -26,25 +26,6 @@ const postCssLoader = {
   }
 }
 
-// Default options for splitChunks cacheGroups
-const groupsOptions = {
-  chunks: 'all',
-  minSize: 0,
-  minChunks: 1,
-  reuseExistingChunk: true,
-  enforce: true
-}
-
-function recursiveIssuer (m) {
-  if (m.issuer) {
-    return recursiveIssuer(m.issuer)
-  } else if (m.name) {
-    return m.name
-  } else {
-    return false
-  }
-}
-
 /** @typedef
     {import('webpack').Configuration} WebpackConfig
  */
@@ -90,8 +71,8 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: '[name].[hash].cache.css',
-      chunkFilename: '[name].[hash].css'
+      filename: '[name].[chunkhash:8].cache.css',
+      chunkFilename: '[name].[chunkhash:8].css'
     }),
     new webpack.HashedModuleIdsPlugin(),
     new CopyWebpackPlugin([
@@ -116,8 +97,7 @@ module.exports = merge(common, {
   optimization: {
     minimizer: [
       new UglifyJsPlugin({
-        cache: false,
-        parallel: true,
+        cache: true,
         sourceMap: true
       }),
       new OptimizeCSSAssetsPlugin({
@@ -128,27 +108,9 @@ module.exports = merge(common, {
         canPrint: true
       })
     ],
-    // Split CSS chunks by entrypoint
-    // See: https://github.com/webpack-contrib/mini-css-extract-plugin#extracting-css-based-on-entry
     splitChunks: { // CommonsChunkPlugin()
+      chunks: 'all',
       name: 'runtime',
-      cacheGroups: {
-        frontendStyles: {
-          name: 'frontend',
-          test: (m, c, entry = 'frontend') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
-          ...groupsOptions
-        },
-        legacyStyles: {
-          name: 'frontend.legacy',
-          test: (m, c, entry = 'frontend.legacy') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
-          ...groupsOptions
-        },
-        editorStyles: {
-          name: 'editor',
-          test: (m, c, entry = 'editor') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
-          ...groupsOptions
-        },
-      }
     },
     noEmitOnErrors: true // NoEmitOnErrorsPlugin
     // namedModules: true, // NamedModulesPlugin()
