@@ -91,11 +91,10 @@ public class TransUnitTransformer {
             builder.setLastModifiedTime(target.getLastChanged());
             builder.setRevisionComment(target.getRevisionComment());
             org.zanata.webtrans.shared.model.TranslationSourceType type =
-                TranslationSourceType.UNKNOWN;
-            if (target.getSourceType() != null) {
-                type = org.zanata.webtrans.shared.model.TranslationSourceType
-                    .getInstance(target.getSourceType().getAbbr());
-            }
+                target.getSourceType() == null ?
+                    TranslationSourceType.UNKNOWN :
+                    org.zanata.webtrans.shared.model.TranslationSourceType
+                        .getInstance(target.getSourceType().getAbbr());
             builder.setTranslationSourceType(type);
         }
         return builder.build();

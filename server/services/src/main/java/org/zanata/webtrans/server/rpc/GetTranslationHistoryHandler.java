@@ -170,11 +170,11 @@ public class GetTranslationHistoryHandler extends
         @Override
         public TransHistoryItem apply(HTextFlowTargetHistory targetHistory) {
             org.zanata.webtrans.shared.model.TranslationSourceType type =
-                TranslationSourceType.UNKNOWN;
-            if (targetHistory.getSourceType() != null) {
-                type = org.zanata.webtrans.shared.model.TranslationSourceType
-                    .getInstance(targetHistory.getSourceType().getAbbr());
-            }
+                targetHistory.getSourceType() == null ?
+                    TranslationSourceType.UNKNOWN :
+                    org.zanata.webtrans.shared.model.TranslationSourceType
+                        .getInstance(targetHistory.getSourceType().getAbbr());
+
             return new TransHistoryItem(
                 targetHistory.getVersionNum().toString(),
                 targetHistory.getContents(), targetHistory.getState(),

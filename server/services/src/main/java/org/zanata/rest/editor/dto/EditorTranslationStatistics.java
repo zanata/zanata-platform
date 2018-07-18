@@ -56,6 +56,9 @@ public class EditorTranslationStatistics extends TranslationStatistics {
         return statistics;
     }
 
+    /**
+     * @return number of targets which are translated by machine translation.
+     */
     public int getMt() {
         return mt;
     }

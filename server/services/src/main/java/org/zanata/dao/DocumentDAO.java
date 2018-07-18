@@ -196,30 +196,45 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
      * @param sourceType
      * @return
      */
-    public int[] getStatisticsBySourceType(long docId, LocaleId localeId, TranslationSourceType sourceType) {
+    public int[] getStatisticsBySourceType(long docId, LocaleId localeId,
+        @Nullable TranslationSourceType sourceType) {
         int[] result = new int[2];
-        // default to unknown type if sourceType is null
-        TranslationSourceType type = sourceType == null ? TranslationSourceType.UNKNOWN :  sourceType;
         Session session = getSession();
-        String msgCountQueryString =
-            "select count(tft) from HTextFlowTarget tft where tft.textFlow.document.id = :id and tft.locale.localeId = :locale and tft.sourceType = :sourceType and tft.textFlow.obsolete = false";
-        Query msgQuery = session.createQuery(msgCountQueryString)
+        StringBuilder msgCountQueryString = new StringBuilder();
+        msgCountQueryString.append("select count(tft) from HTextFlowTarget tft ")
+            .append("where tft.textFlow.document.id = :id ")
+            .append("and tft.locale.localeId = :locale ")
+            .append("and tft.textFlow.obsolete = false ");
+        if (sourceType != null) {
+            msgCountQueryString.append("and tft.sourceType = :sourceType");
+        }
+        Query msgQuery = session.createQuery(msgCountQueryString.toString())
             .setParameter("id", docId)
             .setParameter("locale", localeId)
-            .setParameter("sourceType", type)
             .setComment("DocumentDAO.getMTStatistics")
             .setCacheable(true);
+        if (sourceType != null) {
+            msgQuery.setParameter("sourceType", sourceType);
+        }
         Long msgCount = (Long) msgQuery.uniqueResult();
         result[0] = msgCount == null ? 0 : msgCount.intValue();
 
-        String wordCountQueryString =
-            "select sum(tft.textFlow.wordCount) from HTextFlowTarget tft where tft.textFlow.document.id = :id and tft.locale.localeId = :locale and tft.sourceType = :sourceType and tft.textFlow.obsolete = false";
-        Query wordQuery = session.createQuery(wordCountQueryString)
+        StringBuilder wordCountQueryString = new StringBuilder();
+        wordCountQueryString.append("select sum(tft.textFlow.wordCount) from HTextFlowTarget tft ")
+            .append("where tft.textFlow.document.id = :id ")
+            .append("and tft.locale.localeId = :locale ")
+            .append("and tft.textFlow.obsolete = false ");
+        if (sourceType != null) {
+            wordCountQueryString.append("and tft.sourceType = :sourceType");
+        }
+        Query wordQuery = session.createQuery(wordCountQueryString.toString())
             .setParameter("id", docId)
             .setParameter("locale", localeId)
-            .setParameter("sourceType", type)
             .setComment("DocumentDAO.getMTStatistics")
             .setCacheable(true);
+        if (sourceType != null) {
+            wordQuery.setParameter("sourceType", sourceType);
+        }
         Long wordCount = (Long) wordQuery.uniqueResult();
         result[1] = wordCount == null ? 0 : wordCount.intValue();
 

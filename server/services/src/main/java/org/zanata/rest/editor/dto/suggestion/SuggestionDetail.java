@@ -48,7 +48,8 @@ public interface SuggestionDetail extends Serializable {
             new SuggestionType("IMPORTED_TM", null);
 
         /**
-         * From machine translation.
+         * From machine translation. Metadata is used as backendId.
+         * Hard coded to Google.
          */
         public static final SuggestionType MT =
             new SuggestionType("MT", "GOOGLE");
@@ -65,6 +66,10 @@ public interface SuggestionDetail extends Serializable {
             return key;
         }
 
+        /**
+         * @return metadata for the suggestion type.
+         * For MT, metadata is used to store the backendId
+         */
         public String getMetadata() {
             return metadata;
         }
