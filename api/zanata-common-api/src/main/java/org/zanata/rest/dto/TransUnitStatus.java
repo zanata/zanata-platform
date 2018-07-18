@@ -25,7 +25,12 @@ public class TransUnitStatus implements Serializable {
         this(null, null, null, null);
     }
 
-    public TransUnitStatus(Long id, String resId, ContentState status, String transSourceType) {
+    public TransUnitStatus(Long id, String resId, ContentState status) {
+        this(id, resId, status, null);
+    }
+
+    public TransUnitStatus(Long id, String resId, ContentState status,
+        String transSourceType) {
         this.id = id;
         this.resId = resId;
         this.status = status;
