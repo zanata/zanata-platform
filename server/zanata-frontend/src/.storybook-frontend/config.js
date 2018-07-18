@@ -40,7 +40,7 @@ addLocaleData({
  */
 addDecorator((story) => (
   <IntlProvider locale={locale} formats={formats}>
-    <div className='bstrapReact' style={{padding: '2em'}}>
+    <div style={{padding: '2em'}}>
       <Icons />
       {story()}
     </div>
