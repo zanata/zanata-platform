@@ -238,7 +238,7 @@ public class TSAdapter extends OkapiFilterAdapter {
             String translatable = getTranslatableText(tu);
             // Ignore if the source is empty
             if (!translatable.isEmpty()) {
-                String id = getIdFor(tu, context + translatable, StringUtils.EMPTY);
+                String id = getIdFor(tu, context + translatable, "");
                 TextFlowTarget tft = translations.get(id);
                 if (tft != null && !encounteredIds.contains(id)) {
                     // Dismiss duplicate numerusforms
