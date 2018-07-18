@@ -82,7 +82,13 @@ public class TextFlowSuggestionDetail implements SuggestionDetail {
     private SuggestionType getSuggestionType(TranslationSourceType sourceType) {
         switch (sourceType) {
             case MACHINE_TRANS:
-                return SuggestionType.MT;
+                /**
+                 * For machine translation. Metadata is used as backendId.
+                 * Hard coded to Google.
+                 *
+                 * TODO: new SuggestionType(MT, tft.getBackendId())
+                 */
+                return new SuggestionType("MT", "GOOGLE");
             default:
                 return SuggestionType.LOCAL_PROJECT;
         }

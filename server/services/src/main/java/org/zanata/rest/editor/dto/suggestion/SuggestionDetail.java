@@ -47,13 +47,6 @@ public interface SuggestionDetail extends Serializable {
         public static final SuggestionType IMPORTED_TM =
             new SuggestionType("IMPORTED_TM", null);
 
-        /**
-         * From machine translation. Metadata is used as backendId.
-         * Hard coded to Google.
-         */
-        public static final SuggestionType MT =
-            new SuggestionType("MT", "GOOGLE");
-
         private String key;
         private String metadata;
 
