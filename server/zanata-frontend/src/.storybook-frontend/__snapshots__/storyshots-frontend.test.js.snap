@@ -6660,10 +6660,12 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
 >
   <mock-icons />
   <Modal
+    closable={true}
     destroyOnClose={true}
     footer={
       Array [
         <Button
+          disabled={false}
           onClick={[Function]}
         >
           Close
@@ -6677,9 +6679,10 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
         </Button>,
       ]
     }
+    maskClosable={true}
     onCancel={[Function]}
     onOk={[Function]}
-    title="Machine Translation Batch Merge"
+    title="Machine Translation Merge"
     visible={true}
   >
     <Alert
