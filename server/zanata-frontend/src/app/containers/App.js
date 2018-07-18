@@ -36,16 +36,14 @@ class App extends Component {
       '/signup': configLinks.registerUrl
     }
     return (
-      <div>
-        <div className='view'>
-          <Icons />
-          <Helmet
-            title='Zanata'
-            titleTemplate='Zanata: %s'
-          />
-          <Nav active={activePath} links={links} loading={loading} />
-          <div className='containerSidebar'>{children}</div>
-        </div>
+      <div className='view'>
+        <Icons />
+        <Helmet
+          title='Zanata'
+          titleTemplate='Zanata: %s'
+        />
+        <Nav active={activePath} links={links} loading={loading} />
+        <div className='containerSidebar'>{children}</div>
       </div>
     )
   }
