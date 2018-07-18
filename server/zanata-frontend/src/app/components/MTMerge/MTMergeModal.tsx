@@ -97,18 +97,21 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
         onCancelMTMerge(cancelUrl)
       }
     }
+    const closable = processStatus ? isProcessEnded(processStatus) : true
     return (
       <Modal
-        title="Machine Translation Batch Merge"
+        title='Machine Translation Merge'
         visible={showMTMerge}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         destroyOnClose={true}
+        maskClosable={closable}
+        closable={closable}
         footer={[
-          <Button key="back" onClick={this.handleCancel}>
+          <Button key='back' onClick={this.handleCancel} disabled={!closable}>
             Close
           </Button>,
-          <Button key="submit" type="primary" onClick={this.handleOk} disabled={!enableSubmit}>
+          <Button key='submit' type='primary' onClick={this.handleOk} disabled={!enableSubmit}>
             Run Merge
           </Button>
         ]}
