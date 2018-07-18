@@ -103,6 +103,7 @@ public class MachineTranslationServiceImpl implements
     private TransactionUtil transactionUtil;
     private TranslationService translationService;
     private VersionStateCache versionStateCache;
+    private AttributionService attributionService;
 
     @SuppressWarnings("unused")
     MachineTranslationServiceImpl() {
@@ -119,7 +120,8 @@ public class MachineTranslationServiceImpl implements
             EntityManager entityManager,
             TransactionUtil transactionUtil,
             TranslationService translationService,
-            VersionStateCache versionStateCache) {
+            VersionStateCache versionStateCache,
+            AttributionService attributionService) {
         this.mtServiceURL = mtServiceURL;
         this.mtUser = mtUser;
         this.mtToken = mtToken;
@@ -131,6 +133,7 @@ public class MachineTranslationServiceImpl implements
         this.transactionUtil = transactionUtil;
         this.translationService = translationService;
         this.versionStateCache = versionStateCache;
+        this.attributionService = attributionService;
     }
 
     @Override
@@ -144,7 +147,7 @@ public class MachineTranslationServiceImpl implements
         String projectSlug = document.getProjectIteration().getProject().getSlug();
 
         MTDocument doc = textFlowsToMTDoc.fromSingleTextFlow(projectSlug,
-                versionSlug, docId, fromLocale, textFlow);
+                versionSlug, docId, fromLocale, textFlow, BACKEND_GOOGLE);
 
         try {
             MTDocument result = getTranslationFromMT(doc, toLocale);
@@ -223,8 +226,18 @@ public class MachineTranslationServiceImpl implements
         for (Iterator<HDocument> iterator = documents.values().iterator();
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
-            addMachineTranslationsToDoc(doc, targetLocale, projectSlug,
-                    versionSlug, options.getSaveState(), options.getOverwriteFuzzy());
+
+            if (!attributionService.supportsAttribution(doc)) {
+                log.warn("Attribution not supported for {}; skipping MT", doc);
+            }
+            String backendId = BACKEND_GOOGLE;
+            boolean added = addMachineTranslationsToDoc(doc, targetLocale,
+                    projectSlug, versionSlug, options.getSaveState(),
+                    options.getOverwriteFuzzy(), backendId);
+            if (added) {
+                attributionService.addAttribution(doc, targetLocale, backendId);
+                entityManager.merge(doc);
+            }
             taskHandle.increaseProgress(1);
         }
         // Clear the cache again to force recalculation (just in case of
@@ -237,9 +250,10 @@ public class MachineTranslationServiceImpl implements
         return AsyncTaskResult.completed();
     }
 
-    private void addMachineTranslationsToDoc(HDocument doc,
+    private boolean addMachineTranslationsToDoc(HDocument doc,
             HLocale targetLocale, String projectSlug,
-            String versionSlug, ContentState saveState, boolean overwriteFuzzy) {
+            String versionSlug, ContentState saveState, boolean overwriteFuzzy,
+            String backendId) {
         DocumentId documentId = new DocumentId(doc.getId(),
                 doc.getDocId());
         List<HTextFlow> textFlowsToTranslate =
@@ -247,17 +261,19 @@ public class MachineTranslationServiceImpl implements
                         documentId, overwriteFuzzy);
         if (textFlowsToTranslate.isEmpty()) {
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
-            return;
+            return false;
         }
 
         MTDocument mtDocument = textFlowsToMTDoc
                 .fromTextFlows(projectSlug, versionSlug,
                         doc.getDocId(), doc.getSourceLocaleId(),
                         textFlowsToTranslate,
-                        TextFlowsToMTDoc::extractPluralIfPresent);
+                        TextFlowsToMTDoc::extractPluralIfPresent,
+                        backendId);
         MTDocument result = getTranslationFromMT(mtDocument,
                 targetLocale.getLocaleId());
-        translateInBatch(textFlowsToTranslate, result, targetLocale, saveState);
+        saveTranslationsInBatches(textFlowsToTranslate, result, targetLocale, saveState);
+        return true;
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
@@ -272,7 +288,7 @@ public class MachineTranslationServiceImpl implements
                 documentId, targetLocale, constraints.build());
     }
 
-    private void translateInBatch(List<HTextFlow> textFlows,
+    private void saveTranslationsInBatches(List<HTextFlow> textFlows,
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
         int batchStart = 0;
@@ -354,14 +370,7 @@ public class MachineTranslationServiceImpl implements
     }
 
     private String getRevisionComment(String backendId) {
-        if (BACKEND_GOOGLE.equals(backendId)) {
-            return "Translated by Google";
-        } else if (BACKEND_DEV.equals(backendId)) {
-            return "Pseudo-translated by MT (DEV)";
-        } else {
-            log.warn("Unexpected MT backendId: {}", backendId);
-            return "Translated by MT backendId: " + backendId;
-        }
+        return attributionService.getAttributionMessage(backendId);
     }
 
 }

@@ -170,7 +170,7 @@ class ViewHeader extends Component {
               onClick={this.handleClearSearch} />
             <div className='inline-flex items-end'>
               {permission.canAddNewEntry && (
-                <div>
+                <React.Fragment>
                   <Button className='btn-link' type='button'
                     aria-label='button'
                     onClick={() => handleImportFileDisplay(true)}>
@@ -180,10 +180,10 @@ class ViewHeader extends Component {
                     </Row>
                   </Button>
                   <ImportModal />
-                </div>)}
+                </React.Fragment>)}
 
               {permission.canDownload && !isEmptyTerms && (
-                <div>
+                <React.Fragment>
                   <Button className='btn-link' type='button'
                     aria-label='button'
                     onClick={() => handleExportFileDisplay(true)}>
@@ -193,10 +193,10 @@ class ViewHeader extends Component {
                     </Row>
                   </Button>
                   <ExportModal />
-                </div>)}
+                </React.Fragment>)}
 
               {permission.canAddNewEntry && (
-                <div>
+                <React.Fragment>
                   <Button className='btn-link' aria-label='button'
                     onClick={() =>
                         handleNewEntryDisplay(true)}>
@@ -206,16 +206,16 @@ class ViewHeader extends Component {
                     </Row>
                   </Button>
                   <NewEntryModal />
-                </div>)}
+                </React.Fragment>)}
 
               {showDeleteAll && (
-                <div>
+                <React.Fragment>
                   <DeleteAllEntriesModal show={deleteAll.show}
                     isDeleting={deleteAll.isDeleting}
                     handleDeleteAllEntriesDisplay={
                       handleDeleteAllEntriesDisplay}
                     handleDeleteAllEntries={handleDeleteAllEntries} />
-                </div>)}
+                </React.Fragment>)}
             </div>
           </div>
         )}>

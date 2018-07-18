@@ -76,9 +76,9 @@ class SuggestionContents extends React.Component {
     })
 
     return (
-      <div>
+      <React.Fragment>
         {contents}
-      </div>
+      </React.Fragment>
     )
   }
 }
