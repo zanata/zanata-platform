@@ -29,7 +29,7 @@ import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;

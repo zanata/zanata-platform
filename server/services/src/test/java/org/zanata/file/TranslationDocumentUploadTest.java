@@ -26,7 +26,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.servlet.annotations.ContextPath;

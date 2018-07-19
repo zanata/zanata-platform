@@ -19,7 +19,7 @@ import org.zanata.webtrans.client.ui.TextContentsDisplay;
 import org.zanata.webtrans.client.ui.TransSourceIndicator;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 

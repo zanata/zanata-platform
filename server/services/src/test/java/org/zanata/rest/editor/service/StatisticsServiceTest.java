@@ -11,7 +11,7 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 

@@ -21,9 +21,11 @@
 
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
 import org.zanata.common.LocaleId;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -63,5 +65,10 @@ public class TransSourceIndicator extends Anchor {
      */
     public static String getMTAttribute(LocaleId srcLocale, LocaleId targetLocale) {
         return targetLocale.getId() + "-x-mtfrom-" + srcLocale.getId();
+    }
+
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        getElement().getStyle().setProperty("cursor", "pointer");
+        return super.addClickHandler(handler);
     }
 }
