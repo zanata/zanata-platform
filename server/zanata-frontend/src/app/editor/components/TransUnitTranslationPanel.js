@@ -359,8 +359,12 @@ export class TranslationItem extends React.Component {
       whiteSpace: 'pre-wrap',
       wordWrap: 'break-word'
     }
+    const langAttr = phrase.transSourceType && phrase.transSourceType === 'MT'
+      ? `${translationLocale.id}-x-mtfrom-und`
+      : translationLocale.id
     const syntaxHighlighter = (this.props.syntaxOn && selected)
       ? <SyntaxHighlighter
+        lang={langAttr}
         language='html'
         style={atelierLakesideLight}
         wrapLines
@@ -369,9 +373,6 @@ export class TranslationItem extends React.Component {
       </SyntaxHighlighter>
       : DO_NOT_RENDER
     const cantEditTranslation = !permissions.translator || dropdownIsOpen
-    const langAttr = phrase.transSourceType && phrase.transSourceType === 'MT'
-      ? `${translationLocale.id}-x-mtfrom-und`
-      : translationLocale.id
     return (
       <div className="TransUnit-item" key={index}>
         {itemHeader}
