@@ -23,7 +23,7 @@ public class TransUnitStatus implements Serializable {
     private Long id;
     private String resId;
     private ContentState status;
-    private String transSourceType;
+    private TranslationSourceType transSourceType;
 
     public TransUnitStatus() {
         this(null, null, null, null);
@@ -34,7 +34,7 @@ public class TransUnitStatus implements Serializable {
     }
 
     public TransUnitStatus(Long id, String resId, ContentState status,
-        String transSourceType) {
+            TranslationSourceType transSourceType) {
         this.id = id;
         this.resId = resId;
         this.status = status;
@@ -68,11 +68,11 @@ public class TransUnitStatus implements Serializable {
         this.status = status;
     }
 
-    public String getTransSourceType() {
+    public TranslationSourceType getTransSourceType() {
         return transSourceType;
     }
 
-    public void setTransSourceType(String transSourceType) {
+    public void setTransSourceType(TranslationSourceType transSourceType) {
         this.transSourceType = transSourceType;
     }
 

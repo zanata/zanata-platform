@@ -22,6 +22,9 @@ package org.zanata.rest.dto;
 
 import java.io.Serializable;
 import java.util.Collection;
+
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonValue;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -58,6 +61,7 @@ public enum TranslationSourceType implements Serializable {
         this.abbr = abbr;
     }
 
+    @JsonCreator
     public static TranslationSourceType getValueOf(String abbr) {
         switch (abbr) {
         case "CT":
@@ -100,6 +104,7 @@ public enum TranslationSourceType implements Serializable {
         return AUTOMATED_ENTRIES.contains(this);
     }
 
+    @JsonValue
     public String getAbbr() {
         return this.abbr;
     }

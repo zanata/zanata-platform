@@ -343,11 +343,9 @@ public class ProjectVersionService implements ProjectVersionResource {
         for (HTextFlow textFlow : textFlows) {
             HTextFlowTarget target = textFlow.getTargets().get(hLocale.getId());
             ContentState state = target.getState();
-            String transSourceType = target.getSourceType() != null ?
-                target.getSourceType().getAbbr() : null;
             statusList.add(
                 new TransUnitStatus(textFlow.getId(), textFlow.getResId(),
-                    state, transSourceType));
+                    state, target.getSourceType()));
         }
         Object entity = new GenericEntity<List<TransUnitStatus>>(statusList){};
         return Response.ok(entity).build();
