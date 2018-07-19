@@ -55,10 +55,12 @@ export class MTMergeOptions extends Component<Props> {
     return (
       <React.Fragment>
         <Alert message="Have you run TM Merge first?" type="warning"
-          showIcon/>
+          showIcon className='mb2'/>
+        <Alert message="Only .po (gettext) and .properties files are supported"
+          type="info" showIcon/>
         {/* Select Languages */}
-        <h3 className="txt-info mt4">
-          <Icon type="global" />
+        <h3 className="txt-info mt4 fw5">
+          <Icon type="global" className="mr2 txt-neutral"/>
           {this.props.allowMultiple ? "Languages" : "Language"}
         </h3>
         {this.props.allowMultiple
@@ -102,11 +104,13 @@ export class MTMergeOptions extends Component<Props> {
 
         {/* Other options */}
         {otherOptions &&
-        <div className="mt4 mb4">
+        <div className="mt3">
           <Card hoverable>
-            <div>
-              <h3 className="txt-info">
-                <span className="mr2">
+            <div className="pb1">
+              <Alert message="MT fill will save translations with validation errors as fuzzy" type="warning"
+                 showIcon/>
+              <h3 className="txt-info mt-toggleHeading">
+                <span className="mr2 fw5">
                   Save as
                 </span>
                 <span className="di">
