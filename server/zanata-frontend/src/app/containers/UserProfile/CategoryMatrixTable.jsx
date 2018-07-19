@@ -42,7 +42,7 @@ const CategoryMatrixTable = ({
   })
 
   return (
-    <div>
+    <React.Fragment>
       <h3 className='txt-muted ttu f6'>
         {categoryName}
       </h3>
@@ -51,7 +51,7 @@ const CategoryMatrixTable = ({
         {rows}
         </tbody>
       </table>
-    </div>
+    </React.Fragment>
   )
 }
 

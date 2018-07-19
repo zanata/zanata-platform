@@ -77,6 +77,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
         configHolder.setFilterByApproved(newHistoryToken.isFilterApproved());
         configHolder.setFilterByRejected(newHistoryToken.isFilterRejected());
         configHolder.setFilterByHasError(newHistoryToken.isFilterHasError());
+        configHolder.setFilterByMT(newHistoryToken.isFilterMT());
 
         DocumentId documentId =
                 documentListPresenter.getDocumentId(newHistoryToken
@@ -190,14 +191,16 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
                         currentHistoryState.isFilterRejected())
                 || !equal(token.isFilterHasError(),
                         currentHistoryState.isFilterHasError())
+                || !equal(token.isFilterMT(), currentHistoryState.isFilterMT())
                 || editorFilterChanged) {
             Log.info("[gwt-history] message filter has changed");
 
             eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
             eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(),
-                    token.isFilterFuzzy(), token.isFilterUntranslated(), token
-                            .isFilterApproved(), token.isFilterRejected(),
-                    token.isFilterHasError(), newEditorToken, false));
+                token.isFilterFuzzy(), token.isFilterUntranslated(), token
+                .isFilterApproved(), token.isFilterRejected(),
+                token.isFilterHasError(), token.isFilterMT(), newEditorToken,
+                false));
         }
     }
 

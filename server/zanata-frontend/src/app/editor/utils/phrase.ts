@@ -17,6 +17,7 @@ export const STATUS_NEEDS_WORK_SERVER = 'needreview'
 export const STATUS_TRANSLATED = 'translated'
 export const STATUS_APPROVED = 'approved'
 export const STATUS_REJECTED = 'rejected'
+export const STATUS_MT = 'mt'
 
 export interface Phrase {
   status?: Status,
@@ -35,6 +36,7 @@ export interface Phrase {
   inProgressSave?: boolean,
   comments?: number | string,
   errors?: boolean,
+  transSourceType?: string
 }
 
 // TODO: Determine why this differs from Phrase naming

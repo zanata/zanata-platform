@@ -208,12 +208,12 @@ public class TransUnitsTablePresenter extends
     @Override
     public void cancelFilter() {
         eventBus.fireEvent(new FilterViewEvent(previousFilterOptions
-                .isFilterTranslated(), previousFilterOptions.isFilterFuzzy(),
-                previousFilterOptions.isFilterUntranslated(),
-                previousFilterOptions.isFilterApproved(), previousFilterOptions
-                        .isFilterRejected(), previousFilterOptions
-                        .isFilterHasError(), previousFilterOptions
-                        .getEditorFilter(), true));
+            .isFilterTranslated(), previousFilterOptions.isFilterFuzzy(),
+            previousFilterOptions.isFilterUntranslated(),
+            previousFilterOptions.isFilterApproved(), previousFilterOptions
+            .isFilterRejected(), previousFilterOptions
+            .isFilterHasError(), previousFilterOptions.isFilterMT(),
+            previousFilterOptions.getEditorFilter(), true));
         display.hideFilterConfirmation();
     }
 
@@ -270,12 +270,13 @@ public class TransUnitsTablePresenter extends
                 translationHistoryPresenter.popupAndShowLoading(messages
                         .concurrentEditTitle());
                 TransHistoryItem latest =
-                        new TransHistoryItem(updatedTransUnit.getVerNum()
-                                .toString(), updatedTransUnit.getTargets(),
-                                updatedTransUnit.getStatus(),
-                                updatedTransUnit.getLastModifiedBy(),
-                                updatedTransUnit.getLastModifiedTime(),
-                                updatedTransUnit.getRevisionComment());
+                    new TransHistoryItem(updatedTransUnit.getVerNum()
+                        .toString(), updatedTransUnit.getTargets(),
+                        updatedTransUnit.getStatus(),
+                        updatedTransUnit.getLastModifiedBy(),
+                        updatedTransUnit.getLastModifiedTime(),
+                        updatedTransUnit.getRevisionComment(),
+                        updatedTransUnit.getTranslationSourceType());
                 translationHistoryPresenter.displayEntries(latest,
                         Collections.emptyList(),
                         Collections.emptyList());

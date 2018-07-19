@@ -68,6 +68,11 @@ const phrase = {
   sources: ['source text']
 }
 
+const locale = {
+  name: 'French',
+  id: 'fr'
+}
+
 /* global describe expect it */
 describe('TransUnitTranslationPanel', () => {
   it('renders Syntax Highlighting markup on selected && syntax enabled', () => {
@@ -85,6 +90,7 @@ describe('TransUnitTranslationPanel', () => {
         selectPhrasePluralIndex={defaultFunc}
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
+        translationLocale={locale}
         translation={'Je ne parle pas français'}
         validationOptions={validations}
         directionClass={''}
@@ -104,6 +110,7 @@ describe('TransUnitTranslationPanel', () => {
           className={' TransUnit-text'}
           disabled={false}
           rows={1}
+          lang='fr'
           value={'Je ne parle pas français'}
           placeholder="Enter a translation…"
           onFocus={defaultFunc}
@@ -111,6 +118,7 @@ describe('TransUnitTranslationPanel', () => {
           onSelect={defaultFunc} />
         <SyntaxHighlighter
           language='html'
+          lang='fr'
           style={atelierLakesideLight}
           wrapLines
           lineStyle={lineStyle}>
@@ -137,6 +145,7 @@ describe('TransUnitTranslationPanel', () => {
         selectPhrasePluralIndex={defaultFunc}
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
+        translationLocale={locale}
         translation={'Je ne parle pas français'}
         validationOptions={validations}
         directionClass={''}
@@ -150,6 +159,7 @@ describe('TransUnitTranslationPanel', () => {
           className={' TransUnit-text'}
           disabled={false}
           rows={1}
+          lang='fr'
           value={'Je ne parle pas français'}
           placeholder="Enter a translation…"
           onFocus={defaultFunc}
@@ -174,6 +184,7 @@ describe('TransUnitTranslationPanel', () => {
         selectPhrasePluralIndex={defaultFunc}
         setTextArea={defaultFunc}
         textChanged={defaultFunc}
+        translationLocale={locale}
         translation={'Je ne parle pas français'}
         validationOptions={validations}
         directionClass={''}
@@ -187,6 +198,7 @@ describe('TransUnitTranslationPanel', () => {
           className={' TransUnit-text'}
           disabled={false}
           rows={1}
+          lang='fr'
           value={'Je ne parle pas français'}
           placeholder="Enter a translation…"
           onFocus={defaultFunc}

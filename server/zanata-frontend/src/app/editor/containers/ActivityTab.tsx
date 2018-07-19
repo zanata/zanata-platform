@@ -66,7 +66,8 @@ const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map
     user: {
       name: historyItem.modifiedByPersonName,
       username: historyItem.modifiedBy
-    }
+    },
+    translationSourceType: historyItem.translationSourceType
   }
 })), latest: latestHistoryAsItem(latest)})
 
@@ -80,7 +81,8 @@ const latestHistoryAsItem = (latest) => ({
   user: {
     name: latest.modifiedByPersonName,
     username: latest.modifiedBy
-  }
+  },
+  translationSourceType: latest.translationSourceType
 })
 
 interface Props {
@@ -125,10 +127,10 @@ class ActivityItemsPager extends React.Component<Props, State> {
         pageCount={pageCount}
       />
     return (
-      <div>
+      <>
         {pager}
         {paginatedActivityItems}
-      </div>
+      </>
     )
   }
   private firstPage = () => {
@@ -207,7 +209,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
     ? DO_NOT_RENDER
     : <CommentBox postComment={postComment} maxLength={commentTextLimit} />
   return (
-    <div>
+    <>
       <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
         <ActivitySelectList selectItem={selectActivityTypeFilter}
           selected={selectedActivites} />
@@ -216,7 +218,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
         {commentBox}
         {ActivityPager}
       </div>
-    </div>
+    </>
   )
 }
 

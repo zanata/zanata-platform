@@ -126,7 +126,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
     public void messageFilterOptionChanged(Boolean translatedChkValue,
             Boolean fuzzyChkValue, Boolean untranslatedChkValue,
             Boolean approvedChkValue, Boolean rejectedChkValue,
-            Boolean hasErrorChkValue) {
+            Boolean hasErrorChkValue, Boolean mtChkValue) {
         UserConfigHolder configHolder = userOptionsService.getConfigHolder();
         configHolder.setFilterByTranslated(translatedChkValue);
         configHolder.setFilterByFuzzy(fuzzyChkValue);
@@ -134,10 +134,11 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
         configHolder.setFilterByApproved(approvedChkValue);
         configHolder.setFilterByRejected(rejectedChkValue);
         configHolder.setFilterByHasError(hasErrorChkValue);
+        configHolder.setFilterByMT(mtChkValue);
 
         pushFilterHistory(translatedChkValue, fuzzyChkValue,
-                untranslatedChkValue, approvedChkValue, rejectedChkValue,
-                hasErrorChkValue, null);
+            untranslatedChkValue, approvedChkValue, rejectedChkValue,
+            hasErrorChkValue, mtChkValue, null);
     }
 
     @Override
@@ -166,13 +167,15 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
                     configurationState.isFilterByUntranslated(),
                     configurationState.isFilterByApproved(),
                     configurationState.isFilterByRejected(),
-                    configurationState.isFilterByHasError());
+                    configurationState.isFilterByHasError(),
+                    configurationState.isFilterByMT());
             pushFilterHistory(configurationState.isFilterByTranslated(),
                     configurationState.isFilterByFuzzy(),
                     configurationState.isFilterByUntranslated(),
                     configurationState.isFilterByApproved(),
                     configurationState.isFilterByRejected(),
-                    configurationState.isFilterByHasError(), null);
+                    configurationState.isFilterByHasError(),
+                    configurationState.isFilterByMT(), null);
         }
 
     }
@@ -181,13 +184,14 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
     public void onFilterView(FilterViewEvent event) {
         if (event.isCancelFilter()) {
             updateFilterStates(event.isFilterTranslated(),
-                    event.isFilterFuzzy(), event.isFilterUntranslated(),
-                    event.isFilterApproved(), event.isFilterRejected(),
-                    event.isFilterHasError());
+                event.isFilterFuzzy(), event.isFilterUntranslated(),
+                event.isFilterApproved(), event.isFilterRejected(),
+                event.isFilterHasError(), event.isFilterMT());
             pushFilterHistory(event.isFilterTranslated(),
-                    event.isFilterFuzzy(), event.isFilterUntranslated(),
-                    event.isFilterApproved(), event.isFilterRejected(),
-                    event.isFilterHasError(), event.getEditorFilter());
+                event.isFilterFuzzy(), event.isFilterUntranslated(),
+                event.isFilterApproved(), event.isFilterRejected(),
+                event.isFilterHasError(), event.isFilterMT(),
+                event.getEditorFilter());
 
         } else {
             // this is fired from HistoryEventHandlerService
@@ -200,19 +204,20 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
     public void updateFilterStates(boolean filterByTranslated,
             boolean filterByFuzzy, boolean filterByUntranslated,
             boolean filterByApproved, boolean filterByRejected,
-            boolean filterByHasError) {
+            boolean filterByHasError, boolean filterByMT) {
         display.setTranslatedFilter(filterByTranslated);
         display.setNeedReviewFilter(filterByFuzzy);
         display.setUntranslatedFilter(filterByUntranslated);
         display.setApprovedFilter(filterByApproved);
         display.setRejectedFilter(filterByRejected);
         display.setHasErrorFilter(filterByHasError);
+        display.setMTFilter(filterByMT);
     }
 
     private void pushFilterHistory(boolean filterByTranslated,
             boolean filterByFuzzy, boolean filterByUntranslated,
             boolean filterByApproved, boolean filterByRejected,
-            boolean filterByHasError, EditorFilter editorFilter) {
+            boolean filterByHasError, boolean filterByMT, EditorFilter editorFilter) {
         HistoryToken token = history.getHistoryToken();
         token.setFilterTranslated(filterByTranslated);
         token.setFilterFuzzy(filterByFuzzy);
@@ -220,6 +225,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
         token.setFilterApproved(filterByApproved);
         token.setFilterRejected(filterByRejected);
         token.setFilterHasError(filterByHasError);
+        token.setFilterMT(filterByMT);
 
         if (editorFilter != null) {
             populateHistoryTokenForEditorFilter(token, editorFilter);

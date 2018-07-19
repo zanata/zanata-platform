@@ -4,7 +4,7 @@ import Sidebar from '.'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
-        <div>
+        <React.Fragment>
           <Sidebar />
-      </div>
+        </React.Fragment>
     ))

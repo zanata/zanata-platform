@@ -66,7 +66,7 @@ import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;

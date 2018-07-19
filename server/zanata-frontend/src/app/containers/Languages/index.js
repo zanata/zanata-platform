@@ -153,12 +153,8 @@ class Languages extends Component {
             }
             <div className='mt3 mb3'>
               {loading
-                ? <div>
-                  <span className='di'>
-                    <LoaderText loading />
-                  </span>
-                </div>
-                : (
+                ? <span className='di'><LoaderText loading /></span>
+              : (
                 <span className='w-100 mt2'>
                   <Col xs={24} sm={23} md={8} className='ml3'>
                     <span>
@@ -204,26 +200,24 @@ class Languages extends Component {
                   </div>
                 }
                 {!loading && !noResults &&
-                  <div>
-                    <table className='table' id='languages-table'>
-                      <thead>
-                        <tr className='dn mt4'>
-                          <th>Language</th>
-                          <th>&nbsp;</th>
-                          <th>&nbsp;</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                       {results.map(function (value, i) {
-                         return <Entry key={i} locale={value}
-                           userLanguageTeams={user.languageTeams}
-                           permission={permission}
-                           handleDelete={resetSearchText}
-                           isDeleting={deleting} />
-                       })}
-                      </tbody>
-                    </table>
-                  </div>}
+                  <table className='table' id='languages-table'>
+                    <thead>
+                      <tr className='dn mt4'>
+                        <th>Language</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                     {results.map(function (value, i) {
+                       return <Entry key={i} locale={value}
+                         userLanguageTeams={user.languageTeams}
+                         permission={permission}
+                         handleDelete={resetSearchText}
+                         isDeleting={deleting} />
+                     })}
+                    </tbody>
+                  </table>}
             </div>
           </div>
         </Layout>

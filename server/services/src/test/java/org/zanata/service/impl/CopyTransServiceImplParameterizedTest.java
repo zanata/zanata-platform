@@ -55,7 +55,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
@@ -82,6 +82,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.zanata.common.ContentState.Approved;
@@ -269,10 +271,10 @@ public class CopyTransServiceImplParameterizedTest {
         projectIteration.getDocuments().put(doc.getDocId(), doc);
         // Create the text Flow
         HTextFlow textFlow = new HTextFlow();
+        textFlow.setDocument(doc);
         textFlow.setContents("Source Content"); // Source content matches
         textFlow.setPlural(false);
         textFlow.setObsolete(false);
-        textFlow.setDocument(doc);
         if (copyTransExecution.contextMatches) {
             textFlow.setResId("same-context");
         } else {
@@ -366,14 +368,26 @@ public class CopyTransServiceImplParameterizedTest {
         }
     }
 
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     private static Set<CopyTransExecution> generateExecutions() {
         Set<CopyTransExecution> allExecutions = new HashSet<>();
         // NB combinations which affect the query parameters
         // (context match/mismatch, etc) are tested in TranslationFinderTest
-        Set<Object[]> paramsSet = cartesianProduct(Arrays.asList(REJECT),
-                Arrays.asList(REJECT), Arrays.asList(REJECT),
-                Arrays.asList(true), Arrays.asList(true), Arrays.asList(true),
-                Arrays.asList(Translated, Approved));
+        Set<Object[]> paramsSet = cartesianProduct(
+                // contextMismatchAction
+                asList(REJECT),
+                // projectMismatchAction
+                asList(REJECT),
+                // documentMismatchAction
+                asList(REJECT),
+                // contextMatches
+                asList(true),
+                // projectMatches
+                asList(true),
+                // documentMatches
+                asList(true),
+                // matchState
+                asList(Translated, Approved));
         for (Object[] params : paramsSet) {
             CopyTransExecution exec = new CopyTransExecution(
                     (HCopyTransOptions.ConditionRuleAction) params[0],

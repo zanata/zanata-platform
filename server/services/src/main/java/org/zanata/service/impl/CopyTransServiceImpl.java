@@ -289,8 +289,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     private void prepareCopyTransHandle(HProjectIteration iteration,
             CopyTransTaskHandle handle) {
         if (!handle.isPrepared()) {
-            // TODO Progress should be handle as long
-            handle.setMaxProgress((int) getMaxProgress(iteration));
+            handle.setMaxProgress(getMaxProgress(iteration));
             handle.setPrepared();
         }
     }
@@ -298,8 +297,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     private void prepareCopyTransHandle(HDocument document,
             CopyTransTaskHandle handle) {
         if (!handle.isPrepared()) {
-            // TODO Progress should be handle as long
-            handle.setMaxProgress((int) getMaxProgress(document));
+            handle.setMaxProgress(getMaxProgress(document));
             handle.setPrepared();
         }
     }

@@ -32,6 +32,7 @@ import 'antd/lib/card/style/css'
 import { profileUrl } from '../../api'
 import { priorities } from '../../utils/reject-trans-util'
 import { statuses } from '../../utils/phrase'
+import TransSourceTypeIndicator from '../TransSourceTypeIndicator/index.tsx'
 
 const statusToWellClass = {
   approved: 'well-approved',
@@ -56,7 +57,11 @@ class ActivityFeedItem extends Component {
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    translationSourceType: PropTypes.shape({
+      metadata: PropTypes.string,
+      abbr: PropTypes.string.isRequired
+    })
   }
 
   getMessage = () => {
@@ -80,6 +85,7 @@ class ActivityFeedItem extends Component {
         {user.username}
       </Link>
     )
+
     const priority = (
       <span className='CriteriaText'>
         <Icon name='warning' className='s0' />
@@ -171,7 +177,7 @@ class ActivityFeedItem extends Component {
               'Title for an item in the activity feed showing a ' +
               'translator added a translation. The inserted section is from ' +
               'ActivityFeedItem.translated.translatedRevision'}
-            defaultMessage='{name} has {translatedRevision}'
+            defaultMessage='{name} has {translatedRevision} '
             values={{
               name,
               translatedRevision
@@ -230,7 +236,8 @@ class ActivityFeedItem extends Component {
     }
   }
   render () {
-    const {content, lastModifiedTime, status, type, user} = this.props
+    const {content, lastModifiedTime, status, type,
+      user, translationSourceType} = this.props
     const isComment = type === 'comment'
     const copyToClipboard = () => {
       var textField = document.createElement('textarea')
@@ -240,6 +247,7 @@ class ActivityFeedItem extends Component {
       document.execCommand('copy')
       textField.remove()
     }
+
     return (
       /* eslint-disable max-len */
       <div className='RevisionBox'>
@@ -262,7 +270,9 @@ class ActivityFeedItem extends Component {
           </span>
         </Card>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
-          className='u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
+          className='small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
+          {translationSourceType && <TransSourceTypeIndicator type={translationSourceType.abbr}
+            metadata={translationSourceType.metadata} />}
       </div>
       /* eslint-enable max-len */
     )

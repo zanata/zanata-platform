@@ -11,8 +11,11 @@ class SuggestionDetailsSummary extends React.Component {
     onClick: PropTypes.func,
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.oneOf(
-          ['IMPORTED_TM', 'LOCAL_PROJECT']).isRequired,
+        type: PropTypes.shape({
+          key: PropTypes.oneOf(
+            ['IMPORTED_TM', 'LOCAL_PROJECT', 'MT']).isRequired,
+          metadata: PropTypes.string
+        }).isRequired,
         transMemorySlug: PropTypes.string,
         projectId: PropTypes.string,
         projectName: PropTypes.string,
@@ -26,7 +29,8 @@ class SuggestionDetailsSummary extends React.Component {
   render () {
     const { matchDetails } = this.props.suggestion
     const topMatch = matchDetails[0]
-    const isTextFlow = topMatch.type === 'LOCAL_PROJECT'
+    const isTextFlow = topMatch.type.key === 'LOCAL_PROJECT' ||
+      topMatch.type.key === 'MT'
 
     const projectIcon = isTextFlow && (
       <li title={topMatch.projectId}>

@@ -51,6 +51,7 @@ public class GetTransUnitActionContext {
     private boolean filterApproved;
     private boolean filterRejected;
     private boolean filterHasError;
+    private boolean filterMT;
     private TransUnitId targetTransUnitId;
     private List<ValidationId> validationIds;
     private EditorFilter editorFilter = EditorFilter.ALL;
@@ -69,6 +70,7 @@ public class GetTransUnitActionContext {
         filterApproved = other.isFilterApproved();
         filterRejected = other.isFilterRejected();
         filterHasError = other.isFilterHasError();
+        filterMT = other.isFilterMT();
         targetTransUnitId = other.getTargetTransUnitId();
         validationIds = other.getValidationIds();
         editorFilter = other.getEditorFilter();
@@ -156,6 +158,16 @@ public class GetTransUnitActionContext {
         return result;
     }
 
+    public boolean isFilterMT() {
+        return filterMT;
+    }
+
+    public GetTransUnitActionContext withFilterMT(boolean filterMT) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterMT = filterMT;
+        return result;
+    }
+
     public TransUnitId getTargetTransUnitId() {
         return targetTransUnitId;
     }
@@ -222,6 +234,7 @@ public class GetTransUnitActionContext {
             add("filterApproved", filterApproved).
             add("filterRejected", filterRejected).
             add("filterHasError", filterHasError).
+            add("filterMT", filterMT).
             add("targetTransUnitId", targetTransUnitId).
             add("editorFilter", editorFilter).
             toString();
@@ -262,6 +275,7 @@ public class GetTransUnitActionContext {
             || filterApproved != newContext.filterApproved
             || filterRejected != newContext.filterRejected
             || filterHasError != newContext.filterHasError
+            || filterMT != newContext.filterMT
             || offset != newContext.offset
             || !document.equals(newContext.document)
             || !Objects.equal(editorFilter, newContext.editorFilter);

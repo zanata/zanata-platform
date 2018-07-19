@@ -85,6 +85,14 @@ public class GetTransUnitActionContextTest {
     }
 
     @Test
+    public void testChangeFilterMT() {
+        GetTransUnitActionContext result = context.withFilterMT(true);
+
+        assertThat(context.isFilterMT()).isFalse();
+        assertThat(result.isFilterMT()).isTrue();
+    }
+
+    @Test
     public void testNeedReloadList() throws Exception {
         verifyNeedReloadTransUnits(context, context.withFilterFuzzy(true),
                 NEEDED);
@@ -125,6 +133,8 @@ public class GetTransUnitActionContextTest {
                 context.withFilterApproved(true), NEEDED);
         verifyNeedReloadNavigationIndex(context,
                 context.withFilterRejected(true), NEEDED);
+        verifyNeedReloadNavigationIndex(context,
+            context.withFilterMT(true), NEEDED);
         verifyNeedReloadNavigationIndex(context,
                 context.changeDocument(documentInfo(99, "")), NEEDED);
         verifyNeedReloadNavigationIndex(context,

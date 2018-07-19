@@ -12,7 +12,8 @@ export const defaultState = {
   rejected: false,
   translated: false,
   needswork: false,
-  untranslated: false
+  untranslated: false,
+  mt: false
 }
 
 export default handleActions({
@@ -34,9 +35,10 @@ export default handleActions({
  * @param filterStatus {import('../state').PhraseFilterStatus}
  */
 function allStatusesSame ({
-  approved, rejected, translated, needswork, untranslated}) {
+  approved, rejected, translated, needswork, untranslated, mt}) {
   return approved === rejected &&
     rejected === translated &&
     translated === needswork &&
-    needswork === untranslated
+    needswork === untranslated &&
+    untranslated === mt
 }

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Cacheable;
@@ -113,6 +114,7 @@ public class HProjectIteration extends SlugEntityBase
             joinColumns = @JoinColumn(name = "projectIterationId"),
             inverseJoinColumns = @JoinColumn(name = "iterationGroupId"))
     private Set<HIterationGroup> groups = Sets.newHashSet();
+
     @ElementCollection
     @JoinTable(name = "HProjectIteration_Validation",
             joinColumns = { @JoinColumn(name = "projectIterationId") })
@@ -121,6 +123,7 @@ public class HProjectIteration extends SlugEntityBase
     private Map<String, String> customizedValidations = Maps.newHashMap();
     @Enumerated(EnumType.STRING)
     private ProjectType projectType;
+
     @Type(type = "entityStatus")
     @NotNull
     @Column(columnDefinition = "char(1)")
@@ -233,8 +236,19 @@ public class HProjectIteration extends SlugEntityBase
         return this.customizedValidations;
     }
 
+    @Nullable
     public ProjectType getProjectType() {
         return this.projectType;
+    }
+
+    @Transient @Nullable
+    public ProjectType getEffectiveProjectType() {
+        ProjectType projectType = getProjectType();
+        if (projectType == null) {
+            // NB some old projects have null defaultProjectType
+            return getProject().getDefaultProjectType();
+        }
+        return projectType;
     }
 
     public EntityStatus getStatus() {

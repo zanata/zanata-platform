@@ -114,4 +114,8 @@ public class XliffAdapter implements FileFormatAdapter {
         return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
     }
 
+    @Override
+    public boolean getRawTranslationUploadAvailable() {
+        return false;
+    }
 }

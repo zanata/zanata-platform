@@ -32,6 +32,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -161,6 +162,16 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
             HTextFlowTarget tft = tf.getTargets().get(as.getId());
             tft.setComment(new HSimpleComment("This is a new comment"));
         }, true);
+    }
+
+    @Test
+    public void getStatisticsBySourceType() {
+        int[] result = documentDAO
+            .getStatisticsBySourceType(1L, as.getLocaleId(),
+                TranslationSourceType.UNKNOWN);
+        assertThat(result).hasSize(2);
+        assertThat(result[0]).isEqualTo(1);
+        assertThat(result[1]).isEqualTo(11);
     }
 
     // TODO set up the dbunit data with a pre-existing comment so that we can use this test

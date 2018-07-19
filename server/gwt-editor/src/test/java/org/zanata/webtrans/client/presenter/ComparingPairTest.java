@@ -29,6 +29,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 import com.google.common.collect.Lists;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,7 +47,8 @@ public class ComparingPairTest {
 
     private static TransHistoryItem newItem(String versionNum) {
         return new TransHistoryItem(versionNum, Lists.newArrayList("a"),
-                ContentState.Approved, "", new Date(), "");
+            ContentState.Approved, "", new Date(), "",
+            TranslationSourceType.MACHINE_TRANS);
     }
 
     @Test

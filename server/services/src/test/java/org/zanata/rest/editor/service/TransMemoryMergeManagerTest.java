@@ -74,23 +74,6 @@ public class TransMemoryMergeManagerTest {
         when(identity.getAccountUsername()).thenReturn("admin");
     }
 
-    @Test
-    public void canCheckIfTaskIsRunning() {
-        assertThat(TransMemoryMergeManager.taskIsNotRunning(null)).isTrue();
-        when(taskHandle.isCancelled()).thenReturn(true);
-    }
-
-    @Test
-    public void taskIsNotRunningIfItsCancelled() {
-        when(taskHandle.isCancelled()).thenReturn(true);
-        assertThat(TransMemoryMergeManager.taskIsNotRunning(taskHandle)).isTrue();
-    }
-
-    @Test
-    public void taskIsNotRunningIfItsDone() {
-        when(taskHandle.isDone()).thenReturn(true);
-        assertThat(TransMemoryMergeManager.taskIsNotRunning(taskHandle)).isTrue();
-    }
 
     @Test
     public void

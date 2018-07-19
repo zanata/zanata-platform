@@ -56,10 +56,10 @@
 
     .hasError {
       border-left: 3px solid #e0575b;
-      padding-right: 5px;
-      opacity: 0.6;
-      transition: .3s;
-      display: inline !important;
+    }
+
+    .mt {
+      border-left: 3px solid #416988;
     }
 
     .filterListToggle {
@@ -95,6 +95,11 @@
     .drop-down:hover {
       background-color: #fff;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+
+    label.others-label {
+      padding-left: 0.4875em;
+      padding-right: 0.4875em;
     }
 
     .drop-down:hover .filterList {
@@ -206,10 +211,22 @@
     </li>
 
     <li class="{style.drop-down}">
-      <g:CheckBox ui:field="hasErrorChk"
-        styleName="{style.hasError} {style.checkbox}">
-        <ui:msg>Invalid</ui:msg>
-      </g:CheckBox>
+      <label class="{style.others-label}">Others</label>
+      <span class="i i--arrow-down txt--lead l--pad-v-quarter {style.filterListToggle}" />
+      <ul class="{style.filterList}">
+        <li>
+          <g:CheckBox ui:field="hasErrorChk"
+            styleName="{style.hasError} {style.checkbox}">
+            <ui:msg>Invalid</ui:msg>
+          </g:CheckBox>
+        </li>
+        <li>
+          <g:CheckBox ui:field="mtChk" title="Machine translations"
+            styleName="{style.mt} {style.checkbox}">
+            <ui:msg>MT</ui:msg>
+          </g:CheckBox>
+        </li>
+      </ul>
     </li>
   </g:HTMLPanel>
 </ui:UiBinder>

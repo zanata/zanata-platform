@@ -64,7 +64,8 @@ export type HeaderDataState = DeepReadonly<{
         rejected: number
         translated: number
         needswork: number
-        untranslated: number
+        untranslated: number,
+        mt: number
       }
       id: string
     }
@@ -150,7 +151,8 @@ export type PhraseFilterStatus = {
   rejected: boolean
   translated: boolean
   needswork: boolean
-  untranslated: boolean
+  untranslated: boolean,
+  mt: boolean
 }
 
 export type Setting = {
