@@ -171,6 +171,7 @@ class TransUnitTranslationPanel extends React.Component {
       intl,
       saveAsMode,
       saveDropdownKey,
+      translationLocale,
       textChanged,
       permissions,
       validationOptions } = this.props
@@ -214,6 +215,7 @@ class TransUnitTranslationPanel extends React.Component {
               selectedPluralIndex={selectedPluralIndex}
               selectPhrasePluralIndex={selectPhrasePluralIndex}
               setTextArea={this.setTextArea}
+              translationLocale={translationLocale}
               textChanged={textChanged}
               translation={translation}
               directionClass={directionClass}
@@ -284,6 +286,10 @@ export class TranslationItem extends React.Component {
      * setTextArea(index, ref)
      */
     setTextArea: PropTypes.func.isRequired,
+    translationLocale: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired,
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string,
     validationOptions: PropTypes.any.isRequired,
@@ -323,9 +329,11 @@ export class TranslationItem extends React.Component {
       onSelectionChange,
       selected,
       selectedPluralIndex,
+      translationLocale,
       translation,
       directionClass,
       permissions,
+      phrase,
       validationMessages
     } = this.props
 
@@ -361,6 +369,9 @@ export class TranslationItem extends React.Component {
       </SyntaxHighlighter>
       : DO_NOT_RENDER
     const cantEditTranslation = !permissions.translator || dropdownIsOpen
+    const langAttr = phrase.transSourceType && phrase.transSourceType === 'MT'
+      ? `${translationLocale.id}-x-mtfrom-und`
+      : translationLocale.id
     return (
       <div className="TransUnit-item" key={index}>
         {itemHeader}
@@ -372,6 +383,7 @@ export class TranslationItem extends React.Component {
           disabled={cantEditTranslation}
           rows={1}
           value={translation}
+          lang={langAttr}
           placeholder="Enter a translation…"
           onFocus={this.setFocusedPlural}
           onChange={this._onChange}
