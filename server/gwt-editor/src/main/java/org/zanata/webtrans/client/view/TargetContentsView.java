@@ -27,6 +27,7 @@ import java.util.Map;
 
 import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.EditorButtonsWidget;
@@ -37,7 +38,6 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import com.google.common.collect.Lists;

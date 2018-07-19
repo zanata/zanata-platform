@@ -71,7 +71,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.WebHook;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.model.type.WebhookType;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;

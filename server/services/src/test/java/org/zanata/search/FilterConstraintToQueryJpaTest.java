@@ -18,7 +18,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.WebHook;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.model.type.WebhookType;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;

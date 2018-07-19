@@ -32,7 +32,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

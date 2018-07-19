@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;

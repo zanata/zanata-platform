@@ -22,6 +22,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.common.ContentState;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
@@ -43,7 +44,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
 
 import java.util.HashMap;
 import java.util.Map;

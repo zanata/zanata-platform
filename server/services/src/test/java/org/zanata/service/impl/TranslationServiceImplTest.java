@@ -42,7 +42,7 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
