@@ -5,10 +5,9 @@ import 'antd/lib/layout/style/css'
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
 import {Icon} from '../../components'
-import Progress from 'antd/lib/progress'
-import 'antd/lib/progress/style/css'
 import Menu from 'antd/lib/menu'
 import 'antd/lib/menu/style/css'
+import VersionProgress from './VersionProgress'
 
 const Option = Select.Option
 
@@ -29,7 +28,7 @@ class VersionPanel extends Component {
           </span>
         </h2>
         <a>Version settings</a>
-        <Progress percent={30} showInfo />
+        <VersionProgress counts={3} />
         <Menu>
           <Menu.Item key='1'>
             <span className='nav-text'>Languages</span>
