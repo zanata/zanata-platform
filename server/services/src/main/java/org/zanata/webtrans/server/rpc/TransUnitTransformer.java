@@ -29,6 +29,7 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -89,6 +90,11 @@ public class TransUnitTransformer {
             }
             builder.setLastModifiedTime(target.getLastChanged());
             builder.setRevisionComment(target.getRevisionComment());
+            TranslationSourceType type =
+                target.getSourceType() == null ?
+                    TranslationSourceType.UNKNOWN :
+                    TranslationSourceType.getValueOf(target.getSourceType().getAbbr());
+            builder.setTranslationSourceType(type);
         }
         return builder.build();
     }

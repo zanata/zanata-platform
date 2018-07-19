@@ -38,16 +38,15 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.HashUtil;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;

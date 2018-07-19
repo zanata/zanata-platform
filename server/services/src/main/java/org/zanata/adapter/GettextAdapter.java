@@ -98,4 +98,9 @@ public class GettextAdapter implements FileFormatAdapter {
             @NotNull String locale) throws IllegalArgumentException {
         return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
     }
+
+    @Override
+    public boolean getRawTranslationUploadAvailable() {
+        return false;
+    }
 }

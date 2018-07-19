@@ -48,6 +48,8 @@ public interface TransFilterDisplay extends WidgetDisplay, EditorSearchFieldList
 
     void setHasErrorFilter(boolean filterByHasError);
 
+    void setMTFilter(boolean filterByMT);
+
     void selectPartialText(String text);
 
     interface Listener {
@@ -56,7 +58,7 @@ public interface TransFilterDisplay extends WidgetDisplay, EditorSearchFieldList
         void messageFilterOptionChanged(Boolean translatedChkValue,
                 Boolean fuzzyChkValue, Boolean untranslatedChkValue,
                 Boolean approvedChkValue, Boolean rejectedChkValue,
-                Boolean hasErrorChkValue);
+                Boolean hasErrorChkValue, Boolean hasMTChkValue);
 
         void onSearchFieldFocused(boolean focused);
     }

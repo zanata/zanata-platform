@@ -12,12 +12,10 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
-        <div className="TransUnit-item">
-          <div className="TransUnit-itemHeader" />
-          <div className="TransUnit-text TransUnit-text--tight">
-            As thick as you are, pay attention!
-          </div>
+      <div className="TransUnit-item">
+        <div className="TransUnit-itemHeader" />
+        <div className="TransUnit-text TransUnit-text--tight">
+          As thick as you are, pay attention!
         </div>
       </div>
     )
@@ -35,7 +33,7 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <React.Fragment>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
             <span className="u-textMeta">Singular Form</span>
@@ -52,7 +50,7 @@ describe('SuggestionContentTest', () => {
             Even you can be caught unawares
           </div>
         </div>
-      </div>
+      </React.Fragment>
     )
     expect(actual).toEqual(expected)
   })
@@ -67,15 +65,13 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
-        <div className="TransUnit-item">
-          <div className="TransUnit-itemHeader" />
-          <TextDiff
-            className="TransUnit-text TransUnit-text--tight Difference"
-            text1="As slick as you are, play attrition?"
-            text2="As thick as you are, pay attention!"
-            simpleMatch={false} />
-        </div>
+      <div className="TransUnit-item">
+        <div className="TransUnit-itemHeader" />
+        <TextDiff
+          className="TransUnit-text TransUnit-text--tight Difference"
+          text1="As slick as you are, play attrition?"
+          text2="As thick as you are, pay attention!"
+          simpleMatch={false} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -94,7 +90,7 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <React.Fragment>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
             <span className="u-textMeta">Singular Form</span>
@@ -115,7 +111,7 @@ describe('SuggestionContentTest', () => {
             text2="Even you can be caught unawares"
             simpleMatch={false} />
         </div>
-      </div>
+      </React.Fragment>
     )
     expect(actual).toEqual(expected)
   })
@@ -129,15 +125,13 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
-        <div className="TransUnit-item">
-          <div className="TransUnit-itemHeader" />
-          <TextDiff
-            className="TransUnit-text TransUnit-text--tight Difference"
-            text1="As slick as you are, play attrition?"
-            text2="As thick as you are, pay attention!"
-            simpleMatch />
-        </div>
+      <div className="TransUnit-item">
+        <div className="TransUnit-itemHeader" />
+        <TextDiff
+          className="TransUnit-text TransUnit-text--tight Difference"
+          text1="As slick as you are, play attrition?"
+          text2="As thick as you are, pay attention!"
+          simpleMatch />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -155,7 +149,7 @@ describe('SuggestionContentTest', () => {
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <React.Fragment>
         <div className="TransUnit-item">
           <div className="TransUnit-itemHeader">
             <span className="u-textMeta">Singular Form</span>
@@ -176,7 +170,7 @@ describe('SuggestionContentTest', () => {
             text2="Even you can be caught unawares"
             simpleMatch />
         </div>
-      </div>
+      </React.Fragment>
     )
     expect(actual).toEqual(expected)
   })

@@ -186,28 +186,26 @@ class Entry extends Component {
                       handleTermFieldUpdate(field, e)}
                     handleUpdateTerm={(entry) =>
                       handleUpdateTerm(entry, false)} />
-                  <div>
-                    <div className='hidden-lesm'>
-                      <Row className='entry-row'>
-                        {updateButton}
-                        {displayUpdateButton && !isSaving ? (
-                          <Button className='btn-link' aria-label='button'
-                            onClick={() => handleResetTerm(entry.id)}>
-                            Cancel
-                          </Button>
-                        ) : ''}
-                      </Row>
-                    </div>
-                    {!transSelected && permission.canDeleteEntry && !isSaving &&
-                    !displayUpdateButton && (
-                      <DeleteEntryModal entry={entry}
-                        isDeleting={isDeleting}
-                        show={this.state.showDeleteModal}
-                        handleDeleteEntryDisplay={(display) =>
-                      this.setShowingDeleteEntryModal(display)}
-                        handleDeleteEntry={handleDeleteTerm} />)
-                    }
+                  <div className='hidden-lesm'>
+                    <Row className='entry-row'>
+                      {updateButton}
+                      {displayUpdateButton && !isSaving ? (
+                        <Button className='btn-link' aria-label='button'
+                          onClick={() => handleResetTerm(entry.id)}>
+                          Cancel
+                        </Button>
+                      ) : ''}
+                    </Row>
                   </div>
+                  {!transSelected && permission.canDeleteEntry && !isSaving &&
+                  !displayUpdateButton && (
+                    <DeleteEntryModal entry={entry}
+                      isDeleting={isDeleting}
+                      show={this.state.showDeleteModal}
+                      handleDeleteEntryDisplay={(display) =>
+                    this.setShowingDeleteEntryModal(display)}
+                      handleDeleteEntry={handleDeleteTerm} />)
+                  }
                 </Row>)
               }
             </td>

@@ -172,7 +172,7 @@ public class AsyncProcessServiceTest {
                 (List<ProcessStatus>) response.getEntity();
         assertThat(statusList).hasSize(1);
         assertThat(statusList.get(0).getUrl())
-                .isEqualTo(baseUriStr + "process/key/keyId");
+                .isEqualTo(baseUriStr + "process/key?keyId=keyId");
     }
 
     /**
@@ -200,7 +200,7 @@ public class AsyncProcessServiceTest {
                 (List<ProcessStatus>) response.getEntity();
         assertThat(statusList).hasSize(1);
         assertThat(statusList.get(0).getUrl())
-                .isEqualTo(baseUriStr + "process/key/keyId");
+                .isEqualTo(baseUriStr + "process/key?keyId=keyId");
     }
 
     @Test

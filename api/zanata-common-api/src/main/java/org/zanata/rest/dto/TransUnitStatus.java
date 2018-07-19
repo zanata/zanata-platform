@@ -1,6 +1,7 @@
 package org.zanata.rest.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
@@ -9,8 +10,12 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentState;
 
+/***
+ * INTERNAL API ONLY - SUBJECT TO CHANGE OR REMOVAL WITHOUT NOTICE <br/>
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({ "id", "resId", "status"})
+@JsonPropertyOrder({ "id", "resId", "status", "transSourceType"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TransUnitStatus implements Serializable {
 
@@ -18,15 +23,22 @@ public class TransUnitStatus implements Serializable {
     private Long id;
     private String resId;
     private ContentState status;
+    private TranslationSourceType transSourceType;
 
     public TransUnitStatus() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     public TransUnitStatus(Long id, String resId, ContentState status) {
+        this(id, resId, status, null);
+    }
+
+    public TransUnitStatus(Long id, String resId, ContentState status,
+            TranslationSourceType transSourceType) {
         this.id = id;
         this.resId = resId;
         this.status = status;
+        this.transSourceType = transSourceType;
     }
 
     @NotNull
@@ -56,28 +68,27 @@ public class TransUnitStatus implements Serializable {
         this.status = status;
     }
 
+    public TranslationSourceType getTransSourceType() {
+        return transSourceType;
+    }
+
+    public void setTransSourceType(TranslationSourceType transSourceType) {
+        this.transSourceType = transSourceType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TransUnitStatus)) return false;
-
-        TransUnitStatus status1 = (TransUnitStatus) o;
-
-        if (id != null ? !id.equals(status1.id) : status1.id != null)
-            return false;
-        if (resId != null ? !resId.equals(status1.resId) :
-            status1.resId != null)
-            return false;
-        if (status != status1.status) return false;
-
-        return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransUnitStatus that = (TransUnitStatus) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(resId, that.resId) &&
+            status == that.status &&
+            Objects.equals(transSourceType, that.transSourceType);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (resId != null ? resId.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        return result;
+        return Objects.hash(id, resId, status, transSourceType);
     }
 }

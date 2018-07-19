@@ -20,7 +20,7 @@ export function matchType (suggestionDetail) {
   if (type === 'IMPORTED_TM') {
     return MATCH_TYPE.IMPORTED
   }
-  if (type === 'LOCAL_PROJECT') {
+  if (type === 'LOCAL_PROJECT' || type === 'MT') {
     if (contentState === 'Translated') {
       return MATCH_TYPE.TRANSLATED
     }

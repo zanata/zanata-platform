@@ -18,7 +18,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -118,13 +118,18 @@ public class GetTranslationHistoryHandler extends
                 usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
         int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
                 hLocale);
+        TranslationSourceType type = TranslationSourceType.UNKNOWN;
+        if (hTextFlowTarget.getSourceType() != null) {
+            type = TranslationSourceType.getValueOf(hTextFlowTarget.getSourceType().getAbbr());
+        }
         return new TransHistoryItem(
-                hTextFlowTarget.getVersionNum().toString(),
-                GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
-                        hTextFlowTarget, nPlurals),
-                hTextFlowTarget.getState(), lastModifiedBy,
-                hTextFlowTarget.getLastChanged(),
-                hTextFlowTarget.getRevisionComment()
+            hTextFlowTarget.getVersionNum().toString(),
+            GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
+                hTextFlowTarget, nPlurals),
+            hTextFlowTarget.getState(), lastModifiedBy,
+            hTextFlowTarget.getLastChanged(),
+            hTextFlowTarget.getRevisionComment(),
+            type
         ).setModifiedByPersonName(
                 nameOrEmptyString(hTextFlowTarget.getLastModifiedBy()));
     }
@@ -162,13 +167,19 @@ public class GetTranslationHistoryHandler extends
 
         @Override
         public TransHistoryItem apply(HTextFlowTargetHistory targetHistory) {
+            TranslationSourceType type =
+                targetHistory.getSourceType() == null ?
+                    TranslationSourceType.UNKNOWN :
+                    TranslationSourceType.getValueOf(targetHistory.getSourceType().getAbbr());
+
             return new TransHistoryItem(
-                    targetHistory.getVersionNum().toString(),
-                    targetHistory.getContents(), targetHistory.getState(),
-                    usernameOrEmptyString(targetHistory.getLastModifiedBy()),
-                    targetHistory.getLastChanged(),
-                    targetHistory.getRevisionComment())
-                    .setModifiedByPersonName(
+                targetHistory.getVersionNum().toString(),
+                targetHistory.getContents(), targetHistory.getState(),
+                usernameOrEmptyString(targetHistory.getLastModifiedBy()),
+                targetHistory.getLastChanged(),
+                targetHistory.getRevisionComment(),
+                type)
+                .setModifiedByPersonName(
                     targetHistory.getLastModifiedBy().getName());
         }
     }

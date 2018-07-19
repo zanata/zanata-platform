@@ -22,6 +22,7 @@
 package org.zanata.model.type;
 
 import org.junit.Test;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

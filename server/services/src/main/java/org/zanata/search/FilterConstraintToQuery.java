@@ -8,6 +8,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.joda.time.DateTime;
 import org.zanata.model.HLocale;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -96,7 +97,7 @@ public class FilterConstraintToQuery {
     private String buildQuery(String selectStatement, String docIdCondition) {
         String obsoleteCondition = eq("tf.obsolete", "0");
         String searchCondition = buildSearchCondition();
-        String stateCondition = buildStateCondition();
+        String stateCondition = buildTargetCondition();
         String otherSourceCondition = buildSourceConditionsOtherThanSearch();
         String otherTargetCondition = buildTargetConditionsOtherThanSearch();
         QueryBuilder query = QueryBuilder.select(selectStatement)
@@ -120,7 +121,7 @@ public class FilterConstraintToQuery {
         String docIdCondition =
                 eq("tf.document.id", Parameters.DocumentId.placeHolder());
         return buildQuery(
-                "distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos, tf.resId as resId",
+                "distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, (tfts.sourceType) as sourceType, tf.pos as pos, tf.resId as resId",
                 docIdCondition);
     }
 
@@ -247,30 +248,37 @@ public class FilterConstraintToQuery {
         return QueryBuilder.and(changedAfter, changedBefore);
     }
 
-    protected String buildStateCondition() {
-        if (constraints.getIncludedStates().hasAllStates()) {
+    protected String buildTargetCondition() {
+        if (constraints.getIncludedStates().hasAllStates() &&
+            !constraints.isIncludedMT()) {
             return null;
         }
         List<String> conjunction = Lists.newArrayList();
         conjunction.add(eq("textFlow", "tf"));
         conjunction.add(eq("locale", Locale.placeHolder()));
-        String textFlowAndLocaleRestriction =
-                and(eq("textFlow", "tf"), eq("locale", Locale.placeHolder()));
-        String stateInListWhereClause = and(textFlowAndLocaleRestriction,
+        if (constraints.isIncludedMT()) {
+            conjunction.add(eq("sourceType", IncludeMT.placeHolder()));
+        }
+        String whereClause = and(conjunction);
+        if (!constraints.getIncludedStates().hasAllStates()) {
+            whereClause = and(whereClause,
                 String.format("state in (%s)", ContentStateList.placeHolder()));
-        String stateInListCondition =
-                QueryBuilder.exists().from("HTextFlowTarget")
-                        .where(stateInListWhereClause).toQueryString();
-        if (constraints.getIncludedStates().hasNew()) {
+        }
+        String condition = QueryBuilder.exists().from("HTextFlowTarget")
+            .where(whereClause).toQueryString();
+
+        if (!constraints.getIncludedStates().hasAllStates() &&
+            constraints.getIncludedStates().hasNew()) {
             String nullTargetCondition = String.format(
-                    "%s not in indices(tf.targets)", Locale.placeHolder());
+                "%s not in indices(tf.targets)", Locale.placeHolder());
             if (hasSearch && constraints.isSearchInSource()) {
-                nullTargetCondition = and(nullTargetCondition, contentCriterion
+                nullTargetCondition =
+                    and(nullTargetCondition, contentCriterion
                         .withEntityAlias("tf").contentsCriterionAsString());
             }
-            return QueryBuilder.or(stateInListCondition, nullTargetCondition);
+            return QueryBuilder.or(condition, nullTargetCondition);
         }
-        return stateInListCondition;
+        return condition;
     }
 
     protected String buildLastModifiedByCondition() {
@@ -318,6 +326,10 @@ public class FilterConstraintToQuery {
             textFlowQuery.setParameterList(ContentStateList.namedParam(),
                     constraints.getIncludedStates().asList());
         }
+        if (constraints.isIncludedMT()) {
+            textFlowQuery.setParameter(IncludeMT.namedParam(),
+                TranslationSourceType.MACHINE_TRANS);
+        }
         addExactMatchParamIfPresent(textFlowQuery, constraints.getResId(),
                 ResId);
         addWildcardSearchParamIfPresent(textFlowQuery,
@@ -363,6 +375,7 @@ public class FilterConstraintToQuery {
     enum Parameters {
         SearchString,
         ContentStateList,
+        IncludeMT,
         Locale,
         DocumentId,
         DocumentIdList,

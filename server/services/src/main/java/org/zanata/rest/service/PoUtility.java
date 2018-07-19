@@ -60,7 +60,7 @@ public class PoUtility {
         return propertiesToHeader(props);
     }
 
-    static String propertiesToHeader(Properties entries) {
+    public static String propertiesToHeader(Properties entries) {
         // String lineSep = System.getProperty("line.separator");
         StringWriter writer = new StringWriter();
         try {

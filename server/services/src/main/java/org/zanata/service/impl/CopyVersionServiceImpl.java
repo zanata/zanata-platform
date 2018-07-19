@@ -52,7 +52,7 @@ import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.po.HPotEntryData;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 import org.zanata.service.VersionStateCache;
@@ -412,9 +412,9 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     @Override
     public HTextFlow copyTextFlow(HDocument newDocument, HTextFlow textFlow)
             throws Exception {
-        HTextFlow copy = JPACopier.<HTextFlow> copyBean(textFlow, "document",
+        HTextFlow copy = new HTextFlow(newDocument, textFlow.getResId());
+        JPACopier.copyBean(textFlow, copy, "document",
                 "content", "targets", "history", "potEntryData");
-        copy.setDocument(newDocument);
         // copy PotEntryData
         if (textFlow.getPotEntryData() != null) {
             HPotEntryData potEntryData = JPACopier.<HPotEntryData> copyBean(
@@ -427,6 +427,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     @Override
     public HTextFlowTarget copyTextFlowTarget(HTextFlow newTf,
             HTextFlowTarget tft) throws Exception {
+        // This includes revisionComment (eg Translated by Google)
         HTextFlowTarget copy = JPACopier.<HTextFlowTarget> copyBean(tft,
                 "textFlow", "reviewComments", "history");
         copy.setTextFlow(newTf);
@@ -435,7 +436,9 @@ public class CopyVersionServiceImpl implements CopyVersionService {
             copy.setComment(new HSimpleComment(tft.getComment().getComment()));
         }
         copy.setRevisionComment(TranslationUtil.getCopyVersionMessage(tft));
-        copy.setSourceType(TranslationSourceType.COPY_VERSION);
+        if (copy.getSourceType() != TranslationSourceType.MACHINE_TRANS) {
+            copy.setSourceType(TranslationSourceType.COPY_VERSION);
+        }
         TranslationUtil.copyEntity(tft, copy);
         // copy review comment
         copy.setReviewComments(

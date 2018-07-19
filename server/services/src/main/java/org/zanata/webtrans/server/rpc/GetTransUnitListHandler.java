@@ -92,6 +92,7 @@ public class GetTransUnitListHandler extends
                 .sourceCommentContains(editorFilter.getSourceComment())
                 .targetCommentContains(editorFilter.getTransComment())
                 .caseSensitive(false).checkInSource(true).checkInTarget(true)
+                .includeMT(action.isFilterMT())
                 .includeStates(action.getFilterStates()).build();
         if (action.isNeedReloadIndex()) {
             GetTransUnitsNavigation getTransUnitsNavigation =

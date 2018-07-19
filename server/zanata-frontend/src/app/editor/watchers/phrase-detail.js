@@ -92,7 +92,7 @@ function transUnitDetailToPhraseDetail (transUnitDetail, locale) {
     fill(emptyTranslations, '')
     const newTranslations =
         status === STATUS_UNTRANSLATED ? emptyTranslations : [...translations]
-
+    const transSourceType = trans && trans.transSourceType
     return {
       id: parseInt(index, 10),
       resId: id,
@@ -110,7 +110,8 @@ function transUnitDetailToPhraseDetail (transUnitDetail, locale) {
       lastModifiedBy: trans && trans.translator && trans.translator.name,
       lastModifiedTime: trans && trans.lastModifiedTime &&
         new Date(trans.lastModifiedTime),
-      errors: false
+      errors: false,
+      transSourceType
     }
   })
 }

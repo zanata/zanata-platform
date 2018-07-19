@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
+import com.allen_sauer.gwt.log.client.Log;
 import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.shared.ui.UserConfigHolder.ConfigurationState;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -49,7 +50,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
 
     @UiField
     CheckBox parentIncompleteChk, untranslatedChk, fuzzyChk, rejectedChk,
-            parentCompleteChk, translatedChk, approvedChk, hasErrorChk;
+            parentCompleteChk, translatedChk, approvedChk, hasErrorChk, mtChk;
 
     private Listener listener;
 
@@ -119,6 +120,11 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
         updateChildCheckbox(hasErrorChk, filterByHasError);
     }
 
+    @Override
+    public void setMTFilter(boolean filterByMT) {
+        updateChildCheckbox(mtChk, filterByMT);
+    }
+
     private void updateChildCheckbox(CheckBox checkbox, boolean value) {
         checkbox.setValue(value);
         updateParentCheckboxes();
@@ -146,13 +152,13 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
     }
 
     @UiHandler({ "translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk",
-            "rejectedChk", "hasErrorChk" })
+            "rejectedChk", "hasErrorChk", "mtChk" })
     public void onFilterOptionsChanged(ValueChangeEvent<Boolean> event) {
         updateParentCheckboxes();
         listener.messageFilterOptionChanged(translatedChk.getValue(),
                 fuzzyChk.getValue(), untranslatedChk.getValue(),
                 approvedChk.getValue(), rejectedChk.getValue(),
-                hasErrorChk.getValue());
+                hasErrorChk.getValue(), mtChk.getValue());
     }
 
     private void updateParentCheckboxes() {
@@ -222,5 +228,6 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
         approvedChk.setValue(state.isFilterByApproved());
         rejectedChk.setValue(state.isFilterByRejected());
         hasErrorChk.setValue(state.isFilterByHasError());
+        mtChk.setValue(state.isFilterByMT());
     }
 }

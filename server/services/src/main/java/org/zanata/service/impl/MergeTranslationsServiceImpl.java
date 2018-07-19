@@ -50,7 +50,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MergeTranslationsService;
@@ -172,11 +172,11 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         return AsyncTaskResult.completed();
     }
 
-    protected int mergeTranslationBatch(HProjectIteration sourceVersion,
+    private int mergeTranslationBatch(HProjectIteration sourceVersion,
             HProjectIteration targetVersion, List<HLocale> supportedLocales,
             boolean useNewerTranslation, int offset, int batchSize) {
         try {
-            return runInTransaction(() -> this.mergeTranslations(
+            return runInTransaction(() -> mergeTranslations(
                     sourceVersion.getId(), targetVersion.getId(), offset,
                     batchSize, useNewerTranslation, supportedLocales));
         } catch (Exception e) {
@@ -198,7 +198,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         Map<DocumentLocaleKey, Map<ContentState, Long>> docStatsMap =
                 Maps.newHashMap();
         Map<DocumentLocaleKey, Long> lastUpdatedTargetId = Maps.newHashMap();
-        ;
         for (HTextFlow[] results : matches) {
             HTextFlow sourceTf = results[0];
             HTextFlow targetTf = results[1];
@@ -218,8 +217,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                     targetTft.setVersionNum(0);
                     targetTf.getTargets().put(hLocale.getId(), targetTft);
                 }
-                if (MergeTranslationsServiceImpl.shouldMerge(sourceTft,
-                        targetTft, useNewerTranslation)) {
+                if (shouldMerge(sourceTft, targetTft, useNewerTranslation)) {
                     foundChange = true;
                     ContentState oldState = targetTft.getState();
                     localeContentStateMap.put(hLocale.getId(), oldState);
@@ -357,23 +355,26 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         return localeServiceImpl.getSupportedLanguageByProjectIteration(
                 projectSlug, versionSlug);
     }
-    // @formatter:off
-    // @formatter:on
 
+    // Rules for which translations should be merged/copied:
+    // |-----------------------|------------------|-------------------------|
+    // |        from           |       to         |      should copy?       |
+    // |-----------------------|------------------|-------------------------|
+    // | Machine Translation   |       any        |      no                 |
+    // |-----------------------|------------------|-------------------------|
+    // | fuzzy/untranslated    |       any        |      no                 |
+    // |-----------------------|------------------|-------------------------|
+    // | different contents/   |       any        |      no                 |
+    // | docId/locale/resId    |                  |                         |
+    // |-----------------------|------------------|-------------------------|
+    // | translated/approved   |   untranslated   |      yes                |
+    // |-----------------------|------------------|-------------------------|
+    // | translated/approved   |       fuzzy      |      yes                |
+    // |-----------------------|------------------|-------------------------|
+    // | translated/approved   |   same as from   | yes if 'from' is newer  |
+    // |                       |                  | and option says to copy |
+    // |-----------------------|------------------|-------------------------|
     /**
-     * Rule of which translation should merge | from | to | copy? |
-     * |-----------------------|------------------|-----------|
-     * |fuzzy/untranslated | any | no |
-     * |-----------------------|------------------|-----------| |different
-     * source text/ | | | |docId/locale/resId | any | no |
-     * |-----------------------|------------------|-----------|
-     * |translated/approved | untranslated | yes |
-     * |-----------------------|------------------|-----------|
-     * |translated/approved | fuzzy | yes |
-     * |-----------------------|------------------|-----------|
-     * |translated/approved | same as from | copy if from is newer and option
-     * says to copy
-     *
      * @param sourceTft
      *            - matched documentId, source text, translated/approved
      *            HTextFlowTarget.
@@ -381,14 +382,20 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
      * @param targetTft
      *            - HTextFlowTarget from target version
      */
-    public static boolean shouldMerge(HTextFlowTarget sourceTft,
+    static boolean shouldMerge(HTextFlowTarget sourceTft,
             HTextFlowTarget targetTft, boolean useNewerTranslation) {
-        // should NOT merge is source tft is not translated/approved
+        // should NOT merge if source tft is not translated/approved
         if (!sourceTft.getState().isTranslated()) {
+            return false;
+        }
+        if (sourceTft.getSourceType() == TranslationSourceType.MACHINE_TRANS) {
             return false;
         }
         // should merge if target is not in translated/approved state
         if (!targetTft.getState().isTranslated()) {
+            // This assumes that caller has already checked
+            // contents/docId/locale/resId in
+            // org.zanata.dao.TextFlowDAO.getSourceByMatchedContext
             return true;
         }
         // should NOT merge if both state and contents are the same

@@ -9,6 +9,8 @@ import projectVersion from './version-reducer'
 import tmx from './tmx-reducer'
 import admin from './admin-reducer'
 
+// If you add a subtree, please update TopLevelState in state.ts
+// TODO use TypeScript's advanced types to type this
 const rootReducer = combineReducers({
   routing,
   explore,

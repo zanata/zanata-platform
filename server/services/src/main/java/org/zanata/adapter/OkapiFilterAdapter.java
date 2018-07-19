@@ -53,12 +53,11 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.FileUtil;
 import org.zanata.util.HashUtil;
-import org.zanata.util.OkapiUtil;
-
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 
 import static net.sf.okapi.common.LocaleId.fromString;
+import static org.zanata.util.OkapiUtil.toOkapiLocale;
 
 /**
  * An adapter that uses a provided {@link IFilter} implementation to parse
@@ -287,7 +286,12 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                 new RawDocument(options.getRawFile(), "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
-            rawDoc.setTargetLocale(OkapiUtil.toOkapiLocale(options.getLocale()));
+            try {
+                rawDoc.setTargetLocale(toOkapiLocale(options.getLocale()));
+            } catch (IllegalArgumentException e) {
+                throw new FileFormatAdapterException(
+                    "Unable to parse translation file", e);
+            }
         }
         return parseTranslationFile(rawDoc, options.getParams());
     }
@@ -345,7 +349,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                     options.getTranslatedDoc().getTranslation().getTextFlowTargets());
 
         try {
-            net.sf.okapi.common.LocaleId localeId = OkapiUtil.toOkapiLocale(options.getTranslatedDoc().getLocale());
+            net.sf.okapi.common.LocaleId localeId = toOkapiLocale(options.getTranslatedDoc().getLocale());
 
             IFilterWriter writer = filter.createFilterWriter();
             writer.setOptions(localeId, getOutputEncoding());
@@ -521,4 +525,8 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
     }
 
+    @Override
+    public boolean getRawTranslationUploadAvailable() {
+        return false;
+    }
 }

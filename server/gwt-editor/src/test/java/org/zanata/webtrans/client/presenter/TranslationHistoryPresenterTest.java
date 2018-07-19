@@ -29,6 +29,8 @@ import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.rest.dto.TranslationSourceType;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
@@ -73,6 +75,8 @@ public class TranslationHistoryPresenterTest {
     private GetTransUnitActionContextHolder contextHolder;
     @Mock
     private KeyShortcutPresenter keyShortcutPresenter;
+    @Mock
+    private UserWorkspaceContext userWorkspaceContext;
     @Captor
     private ArgumentCaptor<KeyShortcut> keyShortcutCapture;
     @Captor
@@ -86,8 +90,9 @@ public class TranslationHistoryPresenterTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         presenter =
-                new TranslationHistoryPresenter(display, eventBus, dispatcher,
-                        messages, contextHolder, keyShortcutPresenter);
+            new TranslationHistoryPresenter(display, eventBus, dispatcher,
+                messages, contextHolder, keyShortcutPresenter,
+                userWorkspaceContext);
         presenter.setCurrentValueHolder(targetContentsPresenter);
 
         doNothing().when(dispatcher).execute(actionCaptor.capture(),
@@ -99,7 +104,8 @@ public class TranslationHistoryPresenterTest {
 
     private static TransHistoryItem historyItem(String versionNum) {
         return new TransHistoryItem(versionNum, Lists.newArrayList("a"),
-                ContentState.Approved, "admin", new Date(), "comment");
+            ContentState.Approved, "admin", new Date(), "comment",
+            TranslationSourceType.MACHINE_TRANS);
     }
 
     @Test
@@ -225,11 +231,12 @@ public class TranslationHistoryPresenterTest {
         long now = new Date().getTime();
         // items in time order
         TransHistoryItem latest =
-                new TransHistoryItem("5", Lists.newArrayList("a"),
-                        ContentState.Approved, "admin", new Date(now - 1000), "comment");
+            new TransHistoryItem("5", Lists.newArrayList("a"),
+                ContentState.Approved, "admin", new Date(now - 1000), "comment",
+                TranslationSourceType.API_UPLOAD);
         TransHistoryItem item =
-                new TransHistoryItem("4", Lists.newArrayList("a"),
-                        ContentState.Approved, "admin", new Date(now - 2000), "comment");
+            new TransHistoryItem("4", Lists.newArrayList("a"),
+                ContentState.Approved, "admin", new Date(now - 2000), "comment", TranslationSourceType.API_UPLOAD);
         ReviewComment comment =
                 new ReviewComment(new ReviewCommentId(1L), "comment", "Administrator",
                         "admin", new Date(now));

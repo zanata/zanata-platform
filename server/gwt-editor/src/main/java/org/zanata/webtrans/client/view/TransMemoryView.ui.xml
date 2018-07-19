@@ -26,7 +26,6 @@
     .legend {
       cursor: pointer;
     }
-
   </ui:style>
 
   <g:HTMLPanel styleName="l--scroll-auto {style.container}">

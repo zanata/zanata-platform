@@ -38,7 +38,8 @@ const defaultState = {
         rejected: 0,
         translated: 0,
         needswork: 0,
-        untranslated: 0
+        untranslated: 0,
+        mt: 0
       },
       id: ''
     },

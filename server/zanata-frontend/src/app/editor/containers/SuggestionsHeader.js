@@ -97,7 +97,7 @@ class SuggestionsHeader extends React.Component {
 
     return (
       <nav className="Editor-suggestionsHeader u-bgHighest u-sPH-3-4">
-        <h2 className="Heading--panel u-textPrimary u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
+        <h2 className="Heading--panel u-textSecondary u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
           <span className="u-textMuted">
             <Icon name="suggestions" className="s0" />
           </span>

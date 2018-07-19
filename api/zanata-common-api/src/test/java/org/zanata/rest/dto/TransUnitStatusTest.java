@@ -16,18 +16,26 @@ public class TransUnitStatusTest {
 
     ObjectMapper om = new ObjectMapper();
 
-    @Test
-    public void testJsonOutput() throws IOException {
-        String json =
+    String jsonInput =
             "{\n" + "    \"id\" : \"100\",\n" + "    \"resId\" : \"rest id\",\n "
-                + "\"status\" : \"NeedReview\"" +
-                "\n}";
+                + "\"status\" : \"NeedReview\", \"transSourceType\" : \"MT\"" + "\n}";
 
-        TransUnitStatus status = om.readValue(json, TransUnitStatus.class);
+    String jsonOutput =
+            "{\"id\":100,\"resId\":\"rest id\",\"status\":\"NeedReview\",\"transSourceType\":\"MT\"}";
 
-        TransUnitStatus expected = new TransUnitStatus(100L, "rest id",
-            ContentState.NeedReview);
+    TransUnitStatus status = new TransUnitStatus(100L, "rest id",
+            ContentState.NeedReview, TranslationSourceType.MACHINE_TRANS);
 
-        assertThat(status, equalTo(expected));
+    @Test
+    public void testJsonReading() throws IOException {
+        TransUnitStatus actual = om.readValue(jsonInput, TransUnitStatus.class);
+        assertThat(actual, equalTo(status));
+    }
+
+    @Test
+    public void testJsonWriting() throws IOException {
+        String actual = om.writeValueAsString(status);
+        assertThat(actual, equalTo(jsonOutput));
+
     }
 }

@@ -132,12 +132,12 @@ class Explore extends Component {
           page={languageTeamPage} />)
 
       content = (
-        <div>
+        <React.Fragment>
           {projectContent}
           {personContent}
           {languageTeamContent}
           {groupContent}
-        </div>)
+        </React.Fragment>)
     }
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (

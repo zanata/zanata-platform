@@ -138,11 +138,12 @@ public class TransUnitsTablePresenterTest {
         boolean viewApproved = true;
         boolean viewRejected = true;
         boolean viewHasError = false;
+        boolean viewMT = false;
         boolean cancelFilter = true;
 
         presenter.onFilterView(new FilterViewEvent(viewTranslated, viewFuzzy,
-                viewUntranslated, viewApproved, viewRejected, viewHasError,
-                EditorFilter.ALL, cancelFilter));
+            viewUntranslated, viewApproved, viewRejected, viewHasError, viewMT,
+            EditorFilter.ALL, cancelFilter));
 
         verifyNoMoreInteractions(eventBus, display, targetContentsPresenter);
     }
@@ -155,7 +156,7 @@ public class TransUnitsTablePresenterTest {
 
         // When: not a cancel event
         presenter.onFilterView(new FilterViewEvent(true, false, true, false,
-                false, false, EditorFilter.ALL, false));
+            false, false, false, EditorFilter.ALL, false));
 
         // Then:
         verify(display).showFilterConfirmation();
@@ -167,8 +168,8 @@ public class TransUnitsTablePresenterTest {
         when(targetContentsPresenter.currentEditorContentHasChanged())
                 .thenReturn(false);
         FilterViewEvent event =
-                new FilterViewEvent(true, false, true, false, false, false,
-                        EditorFilter.ALL, false);
+            new FilterViewEvent(true, false, true, false, false, false, false,
+                EditorFilter.ALL, false);
 
         // When:
         presenter.onFilterView(event);
