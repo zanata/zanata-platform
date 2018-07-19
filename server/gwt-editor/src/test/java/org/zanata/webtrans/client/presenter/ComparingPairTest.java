@@ -29,7 +29,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 import com.google.common.collect.Lists;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

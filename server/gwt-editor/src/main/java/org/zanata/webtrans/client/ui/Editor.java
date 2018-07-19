@@ -8,7 +8,7 @@ import java.util.Map;
 import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.allen_sauer.gwt.log.client.Log;

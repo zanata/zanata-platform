@@ -18,6 +18,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -26,7 +27,6 @@ import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.TranslationSourceType;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
@@ -118,11 +118,9 @@ public class GetTranslationHistoryHandler extends
                 usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
         int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
                 hLocale);
-        org.zanata.webtrans.shared.model.TranslationSourceType type =
-            TranslationSourceType.UNKNOWN;
+        TranslationSourceType type = TranslationSourceType.UNKNOWN;
         if (hTextFlowTarget.getSourceType() != null) {
-            type = org.zanata.webtrans.shared.model.TranslationSourceType
-                .getInstance(hTextFlowTarget.getSourceType().getAbbr());
+            type = TranslationSourceType.getValueOf(hTextFlowTarget.getSourceType().getAbbr());
         }
         return new TransHistoryItem(
             hTextFlowTarget.getVersionNum().toString(),
@@ -169,11 +167,10 @@ public class GetTranslationHistoryHandler extends
 
         @Override
         public TransHistoryItem apply(HTextFlowTargetHistory targetHistory) {
-            org.zanata.webtrans.shared.model.TranslationSourceType type =
+            TranslationSourceType type =
                 targetHistory.getSourceType() == null ?
                     TranslationSourceType.UNKNOWN :
-                    org.zanata.webtrans.shared.model.TranslationSourceType
-                        .getInstance(targetHistory.getSourceType().getAbbr());
+                    TranslationSourceType.getValueOf(targetHistory.getSourceType().getAbbr());
 
             return new TransHistoryItem(
                 targetHistory.getVersionNum().toString(),
