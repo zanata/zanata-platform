@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const c = require('cli-color')
 const webpack = require('webpack')
 const config = require('../webpack.prod.js')
 
@@ -6,6 +7,8 @@ const config = require('../webpack.prod.js')
 require('./createIconsComponent')
 require('./generateIconList')
 require('./extract-messages')
+
+console.log(c.white.bgCyan(' PRODUCTION BUILD '))
 
 webpack(config, (err, stats) => {
   if (err) {
