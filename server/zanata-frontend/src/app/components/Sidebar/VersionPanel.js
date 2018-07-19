@@ -12,18 +12,22 @@ import 'antd/lib/menu/style/css'
 
 const Option = Select.Option
 
+// need boolean prop for showing processing panel
+
 class VersionPanel extends Component {
   render () {
     return (
       <Layout>
-        <span className='di'>
+        <h2 className='di mt3'>
           <Icon name='version' className='s2' /> VERSION
-          <Select placeholder='master' style={{ width: 120 }}>
-            <Option value='draft'>draft</Option>
-            <Option value='proof'>proof</Option>
-            <Option disabled value='master'>master</Option>
-          </Select>
-        </span>
+          <span className='fr'>
+            <Select placeholder='master' style={{ width: 120 }}>
+              <Option value='draft'>draft</Option>
+              <Option value='proof'>proof</Option>
+              <Option disabled value='master'>master</Option>
+            </Select>
+          </span>
+        </h2>
         <a>Version settings</a>
         <Progress percent={30} showInfo />
         <Menu>

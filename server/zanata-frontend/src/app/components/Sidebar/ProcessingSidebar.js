@@ -13,7 +13,7 @@ class ProcessingSidebar extends Component {
   render () {
     return (
       <Layout>
-        <Card title='Task title'>
+        <Card>
           Processing document 1 of 10
           <Progress percent={30} showInfo />
           <Button type='danger' className='btn-danger' size='small'>Stop</Button>
