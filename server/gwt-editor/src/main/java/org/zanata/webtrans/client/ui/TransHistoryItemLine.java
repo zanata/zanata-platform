@@ -62,6 +62,8 @@ public class TransHistoryItemLine extends Composite {
     InlineLabel creationDate;
     @UiField(provided = true)
     InlineHTML revision;
+    @UiField(provided = true)
+    TransSourceIndicator transSourceIndicator;
     @UiField
     Anchor compare;
     @UiField
@@ -113,6 +115,9 @@ public class TransHistoryItemLine extends Composite {
         } else {
             revisionComment = new InlineHTML("");
         }
+
+        transSourceIndicator =
+            new TransSourceIndicator(item.getTranslationSourceType());
 
         initWidget(ourUiBinder.createAndBindUi(this));
 

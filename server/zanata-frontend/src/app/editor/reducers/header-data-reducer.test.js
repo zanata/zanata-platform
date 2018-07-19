@@ -81,7 +81,8 @@ describe('header-data-reducer test', () => {
             rejected: 0,
             translated: 0,
             needswork: 0,
-            untranslated: 0
+            untranslated: 0,
+            mt: 0
           },
           id: ''
         },
@@ -157,7 +158,8 @@ describe('header-data-reducer test', () => {
             rejected: 0,
             translated: 0,
             needswork: 0,
-            untranslated: 0
+            untranslated: 0,
+            mt: 0
           },
           id: ''
         },
@@ -182,7 +184,7 @@ describe('header-data-reducer test', () => {
     })
     expect(selected.context.selectedLocale).toEqual('de')
   })
-  it('can recieve locale messages', () => {
+  it('can receive locale messages', () => {
     const withMessages = headerDataReducer(undefined, {
       type: LOCALE_MESSAGES_SUCCESS,
       payload: EXAMPLE_LOCALE_MESSAGES
@@ -205,7 +207,8 @@ describe('header-data-reducer test', () => {
           translated: 80,
           translatedOnly: 80,
           unit: 'WORD',
-          untranslated: 4468
+          untranslated: 4468,
+          mt: 1
         },
         {
           approved: 0,
@@ -218,7 +221,8 @@ describe('header-data-reducer test', () => {
           translated: 8,
           translatedOnly: 8,
           unit: 'MESSAGE',
-          untranslated: 480
+          untranslated: 480,
+          mt: 1
         }
       ]
     })
@@ -228,7 +232,8 @@ describe('header-data-reducer test', () => {
       rejected: 0,
       total: 495,
       translated: 8,
-      untranslated: 480
+      untranslated: 480,
+      mt: 1
     })
   })
 })

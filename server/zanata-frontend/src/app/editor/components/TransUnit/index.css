@@ -319,10 +319,20 @@ h3.TransUnit-heading {
 }
 
 .TransUnit-metaDataComments,
-.TransUnit-metaDataErrors {
+.TransUnit-metaDataErrors,
+.TransUnit-metaDataMT{
   position: absolute;
   right: 0;
   left: 0;
+}
+.TransUnit-metaDataComments,
+.TransUnit-metaDataMT button{
+  width: 17px;
+  height: 17px;
+  font-size: 0.6rem;
+  background: white; 
+  border-radius: 50%;
+  box-shadow: -0.2px -0.2px 1px;
 }
 
 .TransUnit-metaDataComments {
@@ -331,6 +341,10 @@ h3.TransUnit-heading {
 
 .TransUnit-metaDataErrors {
   top: calc(var(--TransUnit-rhythm) * 1.75);
+}
+
+.TransUnit-metaDataMT {
+  top: calc(var(--TransUnit-rhythm) * 2.75);
 }
 
 .TransUnit-metaDataErrorsIcon {

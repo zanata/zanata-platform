@@ -12,8 +12,10 @@ import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
+import org.zanata.webtrans.client.ui.TransSourceIndicator;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.TranslationSourceType;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.common.base.Joiner;
@@ -285,7 +287,7 @@ public class TransMemoryView extends Composite implements
             panel.addStyleName(style.approved());
         } else if (object.getMatchType() == MatchType.TranslatedInternal) {
             panel.addStyleName(style.translated());
-        //} else if (object.getMatchType() == MatchType.Imported) {
+            //} else if (object.getMatchType() == MatchType.Imported) {
             // TODO Add a style for imported/TMX matches
         }
 
@@ -340,7 +342,17 @@ public class TransMemoryView extends Composite implements
                     SIMILARITY_COL, "txt--align-center");
 
             Anchor infoCell = new Anchor();
-            if (item.getMatchType() == MatchType.Imported) {
+            if (item.isMachineTranslation()) {
+                TransSourceIndicator info = new TransSourceIndicator(
+                    TranslationSourceType.MACHINE_TRANS);
+                info.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        listener.showTMDetails(item);
+                    }
+                });
+                infoCell = info;
+            } else if (item.getMatchType() == MatchType.Imported) {
                 String originStr = Joiner.on(", ").join(item.getOrigins());
                 infoCell.setText(ShortString.shorten(originStr, 10));
                 infoCell.setTitle(originStr);

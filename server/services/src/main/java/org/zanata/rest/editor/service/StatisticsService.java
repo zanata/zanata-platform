@@ -32,10 +32,12 @@ import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.rest.editor.dto.EditorTranslationStatistics;
 import org.zanata.rest.editor.service.resource.StatisticResource;
 import com.google.common.collect.Lists;
 
@@ -62,13 +64,24 @@ public class StatisticsService implements StatisticResource {
         if (doc == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        LocaleId locId = new LocaleId(localeId);
         ContainerTranslationStatistics docStats =
-                getDocStatistics(doc.getId(), new LocaleId(localeId));
-        TranslationStatistics docWordStatistic =
-                docStats.getStats(localeId, StatUnit.WORD);
-        TranslationStatistics docMsgStatistic =
-                docStats.getStats(localeId, StatUnit.MESSAGE);
-        Object entity = new GenericEntity<List<TranslationStatistics>>(
+                getDocStatistics(doc.getId(), locId);
+        int[] mtStats = documentDAO
+            .getStatisticsBySourceType(doc.getId(), locId,
+                TranslationSourceType.MACHINE_TRANS);
+
+        EditorTranslationStatistics docWordStatistic =
+            EditorTranslationStatistics
+                .getInstance(docStats.getStats(localeId, StatUnit.WORD));
+        docWordStatistic.setMt(mtStats[1]);
+
+        EditorTranslationStatistics docMsgStatistic =
+            EditorTranslationStatistics
+                .getInstance(docStats.getStats(localeId, StatUnit.MESSAGE));
+        docMsgStatistic.setMt(mtStats[0]);
+
+        Object entity = new GenericEntity<List<EditorTranslationStatistics>>(
                 Lists.newArrayList(docWordStatistic, docMsgStatistic)) {};
         return Response.ok(entity).build();
     }

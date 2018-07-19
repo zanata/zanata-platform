@@ -20,14 +20,12 @@ public class TransUnitStatusTest {
     public void testJsonOutput() throws IOException {
         String json =
             "{\n" + "    \"id\" : \"100\",\n" + "    \"resId\" : \"rest id\",\n "
-                + "\"status\" : \"NeedReview\"" +
-                "\n}";
+                + "\"status\" : \"NeedReview\", \"transSourceType\" : \"MT\"" + "\n}";
 
         TransUnitStatus status = om.readValue(json, TransUnitStatus.class);
 
         TransUnitStatus expected = new TransUnitStatus(100L, "rest id",
-            ContentState.NeedReview);
-
+            ContentState.NeedReview, "MT");
         assertThat(status, equalTo(expected));
     }
 }
