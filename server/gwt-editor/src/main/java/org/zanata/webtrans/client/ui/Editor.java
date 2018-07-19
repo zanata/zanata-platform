@@ -37,6 +37,8 @@ public class Editor extends Composite implements ToggleEditor {
 
     private final TransUnitId id;
 
+    private final Map<String, String> attributes;
+
     private TargetContentsDisplay.Listener listener;
 
     @UiField
@@ -89,9 +91,10 @@ public class Editor extends Composite implements ToggleEditor {
 
     public Editor(String displayString, final int index,
         final TargetContentsDisplay.Listener listener, final TransUnitId id,
-        final TranslationSourceType translationSourceType) {
+        final TranslationSourceType translationSourceType, final Map<String, String> attributes) {
         this.listener = listener;
         this.index = index;
+        this.attributes = attributes;
         this.id = id;
         onCodeMirrorFocusCallback = new Command() {
             @Override
@@ -104,6 +107,7 @@ public class Editor extends Composite implements ToggleEditor {
         } else {
             textArea = new EditorTextArea(displayString);
         }
+        setTextAreaAttributes();
 
         transSourceIndicator = new TransSourceIndicator(translationSourceType);
 
@@ -117,6 +121,15 @@ public class Editor extends Composite implements ToggleEditor {
             setViewMode(ViewMode.EDIT);
         }
         setText(displayString);
+    }
+
+    private void setTextAreaAttributes() {
+        if (attributes != null) {
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
+                textArea.asWidget().getElement()
+                    .setAttribute(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     @Override
@@ -251,6 +264,7 @@ public class Editor extends Composite implements ToggleEditor {
             textArea.setCursorPos(cursorPos);
             textArea.setEditing(true);
         }
+        setTextAreaAttributes();
         textAreaWrapper.add(textArea);
         textArea.refresh();
     }

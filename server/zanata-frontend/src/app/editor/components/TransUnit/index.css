@@ -326,6 +326,7 @@ h3.TransUnit-heading {
   left: 0;
 }
 .TransUnit-metaDataComments,
+.TransUnit-metaDataErrors,
 .TransUnit-metaDataMT button{
   width: 17px;
   height: 17px;

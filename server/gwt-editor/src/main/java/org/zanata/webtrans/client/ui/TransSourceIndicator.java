@@ -24,6 +24,7 @@ package org.zanata.webtrans.client.ui;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.TranslationSourceType;
 
 /**
@@ -33,6 +34,8 @@ public class TransSourceIndicator extends Anchor {
 
     // Hard coded to Google temporarily
     public static final String MT_TITLE = "Translated by Google";
+
+    public static final String MT_HTML_ATTR = "lang";
 
     public TransSourceIndicator(TranslationSourceType translationSourceType) {
         super();
@@ -51,6 +54,17 @@ public class TransSourceIndicator extends Anchor {
         } else {
             setVisible(false);
         }
+    }
+
+    /**
+     * Generate MT attribute for HTML markup
+     * e.g. fr-x-mtfrom-en
+     * @param srcLocale
+     * @param targetLocale
+     * @return
+     */
+    public static String getMTAttribute(LocaleId srcLocale, LocaleId targetLocale) {
+        return targetLocale.getId() + "-x-mtfrom-" + srcLocale.getId();
     }
 
     public HandlerRegistration addClickHandler(ClickHandler handler) {

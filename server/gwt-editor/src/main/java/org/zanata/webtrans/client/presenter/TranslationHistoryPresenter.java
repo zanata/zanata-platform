@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
@@ -21,6 +22,7 @@ import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCriterionId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
@@ -51,6 +53,7 @@ public class TranslationHistoryPresenter extends
     private final WebTransMessages messages;
     private final GetTransUnitActionContextHolder contextHolder;
     private final KeyShortcutPresenter keyShortcutPresenter;
+    private final UserWorkspaceContext userWorkspaceContext;
     private TargetContentsPresenter targetContentsPresenter;
     private TransUnitId transUnitId;
     private ComparingPair comparingPair = ComparingPair.empty();
@@ -60,7 +63,8 @@ public class TranslationHistoryPresenter extends
             EventBus eventBus, CachingDispatchAsync dispatcher,
             WebTransMessages messages,
             GetTransUnitActionContextHolder contextHolder,
-            KeyShortcutPresenter keyShortcutPresenter) {
+            KeyShortcutPresenter keyShortcutPresenter,
+            UserWorkspaceContext userWorkspaceContext) {
         super(display, eventBus);
         this.display = display;
         this.eventBus = eventBus;
@@ -68,6 +72,7 @@ public class TranslationHistoryPresenter extends
         this.messages = messages;
         this.contextHolder = contextHolder;
         this.keyShortcutPresenter = keyShortcutPresenter;
+        this.userWorkspaceContext = userWorkspaceContext;
 
         display.setListener(this);
         eventBus.addHandler(ReviewCommentEvent.TYPE, this);
@@ -187,6 +192,17 @@ public class TranslationHistoryPresenter extends
     @Override
     public boolean isItemInComparison(TransHistoryItem item) {
         return comparingPair.contains(item);
+    }
+
+    @Override
+    public LocaleId getSrcLocale() {
+        return userWorkspaceContext.getSelectedDoc().getSourceLocale();
+    }
+
+    @Override
+    public LocaleId getTargetLocale() {
+        return userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
+            .getLocaleId();
     }
 
     @Override
