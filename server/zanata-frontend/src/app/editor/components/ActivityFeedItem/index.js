@@ -61,7 +61,7 @@ class ActivityFeedItem extends Component {
     translationSourceType: PropTypes.shape({
       metadata: PropTypes.string,
       abbr: PropTypes.string.isRequired
-    }).isRequired
+    })
   }
 
   getMessage = () => {
@@ -271,8 +271,8 @@ class ActivityFeedItem extends Component {
         </Card>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
           className='small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
-        <TransSourceTypeIndicator type={translationSourceType.abbr}
-          metadata={translationSourceType.metadata} />
+          {translationSourceType && <TransSourceTypeIndicator type={translationSourceType.abbr}
+            metadata={translationSourceType.metadata} />}
       </div>
       /* eslint-enable max-len */
     )
