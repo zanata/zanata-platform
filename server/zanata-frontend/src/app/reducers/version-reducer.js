@@ -240,7 +240,7 @@ const version = handleActions({
       notification: {
         $set: {
           severity: SEVERITY.SUCCESS,
-          message: 'MT Merge cancelled successfuly',
+          message: 'MT Merge cancelled successfully',
         }
       }
     })

@@ -50,8 +50,7 @@ const commentFilter: Filter = ({reviewComments}) => reviewComments.map((value) =
     user: {
       name: value.commenterName,
       username: value.username
-    },
-    translationSourceType: value.translationSourceType
+    }
   }
 })
 

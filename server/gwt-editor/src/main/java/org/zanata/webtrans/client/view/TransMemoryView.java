@@ -358,7 +358,15 @@ public class TransMemoryView extends Composite implements
 
             Anchor infoCell = new Anchor();
             if (item.isMachineTranslation()) {
-                infoCell = new TransSourceIndicator(TranslationSourceType.MACHINE_TRANS);
+                TransSourceIndicator info = new TransSourceIndicator(
+                    TranslationSourceType.MACHINE_TRANS);
+                info.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        listener.showTMDetails(item);
+                    }
+                });
+                infoCell = info;
             } else if (item.getMatchType() == MatchType.Imported) {
                 String originStr = Joiner.on(", ").join(item.getOrigins());
                 infoCell.setText(ShortString.shorten(originStr, 10));
