@@ -43,6 +43,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
+import org.zanata.webtrans.shared.model.TranslationSourceType;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.zanata.webtrans.client.ui.TransSourceIndicator.MT_HTML_ATTR;
+import static org.zanata.webtrans.client.ui.TransSourceIndicator.getMTAttribute;
 
 public class TransHistoryItemLine extends Composite {
     private static TransHistoryItemLineUiBinder ourUiBinder = GWT
@@ -98,9 +105,16 @@ public class TransHistoryItemLine extends Composite {
                     stateRenderer.render(item.getStatus())));
         }
 
+        Map<String, String> attributes = new HashMap<>();
+        if (TranslationSourceType.MACHINE_TRANS
+            .equals(item.getTranslationSourceType())) {
+            attributes.put(MT_HTML_ATTR, getMTAttribute(
+                listener.getSrcLocale(), listener.getTargetLocale()));
+        }
         targetContents =
-                new InlineHTML(template.targetContent(TextContentsDisplay
-                        .asSyntaxHighlight(item.getContents()).toSafeHtml()));
+            new InlineHTML(template.targetContent(TextContentsDisplay
+                .asSyntaxHighlight(item.getContents(), attributes)
+                .toSafeHtml()));
         if (!Strings.isNullOrEmpty(item.getOptionalTag())) {
             revision =
                 new InlineHTML(template.targetRevision(item.getVersionNum(),

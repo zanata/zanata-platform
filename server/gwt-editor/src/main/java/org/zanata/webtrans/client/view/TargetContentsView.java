@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,8 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
@@ -54,11 +57,15 @@ import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import static org.zanata.webtrans.client.ui.TransSourceIndicator.MT_HTML_ATTR;
+import static org.zanata.webtrans.client.ui.TransSourceIndicator.getMTAttribute;
+
 public class TargetContentsView extends Composite implements
         TargetContentsDisplay {
     private static final int COLUMNS = 1;
     private static Binder binder = GWT.create(Binder.class);
     private final EventBus eventBus;
+    private final UserWorkspaceContext userWorkspaceContext;
 
     @UiField
     Grid editorGrid;
@@ -94,8 +101,9 @@ public class TargetContentsView extends Composite implements
     @Inject
     public TargetContentsView(
             Provider<ValidationMessagePanelView> validationMessagePanelViewProvider,
-            EventBus eventBus) {
+            EventBus eventBus, UserWorkspaceContext userWorkspaceContext) {
         this.eventBus = eventBus;
+        this.userWorkspaceContext = userWorkspaceContext;
         buttons = new EditorButtonsWidget();
         validationPanel = validationMessagePanelViewProvider.get();
         rootPanel = binder.createAndBindUi(this);
@@ -142,10 +150,17 @@ public class TargetContentsView extends Composite implements
         }
         editorGrid.resize(cachedTargets.size(), COLUMNS);
         int rowIndex = 0;
+        Map<String, String> attributes = new HashMap<>();
+        if (TranslationSourceType.MACHINE_TRANS.equals(transUnit.getTranslationSourceType())) {
+            attributes.put(MT_HTML_ATTR, getMTAttribute(
+                userWorkspaceContext.getSelectedDoc().getSourceLocale(),
+                userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
+                    .getLocaleId()));
+        }
         for (String target : cachedTargets) {
             Editor editor =
                 new Editor(target, rowIndex, listener, transUnit.getId(),
-                    transUnit.getTranslationSourceType());
+                    transUnit.getTranslationSourceType(), attributes);
             editor.ensureDebugId(transUnit.getRowIndex() + "-");
             editorGrid.setWidget(rowIndex, 0, editor);
             editors.add(editor);

@@ -1,9 +1,13 @@
 package org.zanata.webtrans.client.view;
 
+import static org.zanata.webtrans.client.ui.TransSourceIndicator.MT_HTML_ATTR;
+import static org.zanata.webtrans.client.ui.TransSourceIndicator.getMTAttribute;
 import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.client.keys.ShortcutContext;
@@ -16,6 +20,7 @@ import org.zanata.webtrans.client.ui.TransSourceIndicator;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TranslationSourceType;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.common.base.Joiner;
@@ -102,6 +107,7 @@ public class TransMemoryView extends Composite implements
     private final Label loadingLabel, noResultFoundLabel;
 
     private final DiffColorLegendPanel diffLegendPanel;
+    private final UserWorkspaceContext userWorkspaceContext;
 
     private TranslationMemoryDisplay.Listener listener;
 
@@ -114,8 +120,10 @@ public class TransMemoryView extends Composite implements
 
     @Inject
     public TransMemoryView(SearchTypeRenderer searchTypeRenderer,
-            final DiffColorLegendPanel diffLegendPanel) {
+        final DiffColorLegendPanel diffLegendPanel,
+        final UserWorkspaceContext userWorkspaceContext) {
         this.diffLegendPanel = diffLegendPanel;
+        this.userWorkspaceContext = userWorkspaceContext;
 
         searchType =
                 new EnumListBox<SearchType>(SearchType.class,
@@ -279,21 +287,28 @@ public class TransMemoryView extends Composite implements
         return panel;
     }
 
-    private SimplePanel createTargetPanel(TransMemoryResultItem object) {
+    private SimplePanel createTargetPanel(TransMemoryResultItem item) {
         SimplePanel panel = new SimplePanel();
         // display multiple target strings
 
-        if (object.getMatchType() == MatchType.ApprovedInternal) {
+        if (item.getMatchType() == MatchType.ApprovedInternal) {
             panel.addStyleName(style.approved());
-        } else if (object.getMatchType() == MatchType.TranslatedInternal) {
+        } else if (item.getMatchType() == MatchType.TranslatedInternal) {
             panel.addStyleName(style.translated());
             //} else if (object.getMatchType() == MatchType.Imported) {
             // TODO Add a style for imported/TMX matches
         }
 
+        Map<String, String> attributes = new HashMap<>();
+        if (item.isMachineTranslation()) {
+            attributes.put(MT_HTML_ATTR, getMTAttribute(
+                userWorkspaceContext.getSelectedDoc().getSourceLocale(),
+                userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
+                    .getLocaleId()));
+        }
         SafeHtml safeHtml =
                 TextContentsDisplay.asSyntaxHighlight(
-                        object.getTargetContents()).toSafeHtml();
+                        item.getTargetContents(), attributes).toSafeHtml();
         panel.setWidget(new InlineHTML(safeHtml));
         return panel;
     }
