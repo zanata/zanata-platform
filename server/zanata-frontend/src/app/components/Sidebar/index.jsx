@@ -8,6 +8,8 @@ import 'antd/lib/menu/style/css'
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
 import ProcessingSidebar from './ProcessingSidebar'
+import VersionPanel from './VersionPanel'
+
 const { Content, Sider } = Layout
 const Option = Select.Option
 
@@ -49,6 +51,7 @@ class Sidebar extends Component {
             </Select>
           </div>
           <ProcessingSidebar />
+          <VersionPanel />
         </Sider>
         <Content>Content</Content>
       </Layout>
