@@ -604,6 +604,21 @@ public class VersionHomeAction extends AbstractSortAction
                                 hLocale));
     }
 
+    public boolean isUserAllowedToUploadTranslationFile(HLocale locale) {
+        return isFileUploadAllowed(locale) &&
+                isUserAllowedToTranslateOrReview(locale);
+    }
+
+    public boolean canUploadRawFileTranslation(String documentName) {
+        try {
+            return translationFileServiceImpl
+                    .getAdapterFor(getDocumentTypes(documentName).get(0))
+                    .getRawTranslationUploadAvailable();
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            return false;
+        }
+    }
+
     private boolean isVersionActive() {
         return getVersion().getProject().getStatus() == EntityStatus.ACTIVE
                 || getVersion().getStatus() == EntityStatus.ACTIVE;
@@ -956,13 +971,23 @@ public class VersionHomeAction extends AbstractSortAction
     public String uploadTranslationFile(HLocale hLocale) {
         identity.checkPermission("modify-translation", hLocale,
                 getVersion().getProject());
+        if (translationFileUpload.getFileName() == null) {
+            setMessage(FacesMessage.SEVERITY_ERROR,
+                    "Cannot upload files of this type");
+            resetPageData();
+            return "failure";
+        }
         try {
             // process the file
             String fileName = translationFileUpload.fileName;
             if (!needDocumentTypeSelection(fileName)) {
                 // Get documentType for this file name
-                DocumentType documentType = getDocumentTypes(fileName).get(0);
-                translationFileUpload.setDocumentType(documentType.name());
+                List<DocumentType> types = getDocumentTypes(fileName);
+                if (types.size() <= 0) {
+                    throw new ZanataServiceException(
+                            "Cannot upload files of this type");
+                }
+                translationFileUpload.setDocumentType(types.get(0).name());
             }
             Optional<String> docType =
                     Optional.fromNullable(translationFileUpload.documentType);

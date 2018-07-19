@@ -79,6 +79,11 @@ public class TSAdapter extends OkapiFilterAdapter {
         return new TsFilter();
     }
 
+    @Override
+    public boolean getRawTranslationUploadAvailable() {
+        return true;
+    }
+
     // ExtraComment takes precedence
     private final String COMMENT_REGEX = "<extracomment>(.+)</extracomment>|<comment>(.+)</comment>";
 
