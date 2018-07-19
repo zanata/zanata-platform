@@ -33,7 +33,11 @@ import org.zanata.rest.dto.resource.Resource
 import org.zanata.rest.dto.resource.TextFlow
 import org.zanata.rest.dto.resource.TextFlowTarget
 import org.zanata.rest.dto.resource.TranslationsResource
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStreamReader
+import java.io.OutputStream
 import java.net.URI
 
 /**
@@ -62,6 +66,7 @@ class JsonAdapter : FileFormatAdapter {
         val resources = document.textFlows
         val flatMap = jsonFileToFlattenedMap(options.rawFile)
         for ((key, value) in flatMap) {
+            // Ignore numbers and other untranslatable objects
             if (value is String) {
                 val textFlow = TextFlow(key, options.locale, value)
                 textFlow.isPlural = false
@@ -83,6 +88,7 @@ class JsonAdapter : FileFormatAdapter {
         val translations = transRes.textFlowTargets
         val flatMap = jsonFileToFlattenedMap(options.rawFile)
         for ((key, value) in flatMap) {
+            // Ignore numbers and other untranslatable objects
             if (value is String) {
                 val textFlowTarget = TextFlowTarget(key).apply {
                     contents = listOf(value)
@@ -117,14 +123,8 @@ class JsonAdapter : FileFormatAdapter {
             output.writer().use {
                 it.write(flattenedMapToJson(flatMap))
             }
-        } catch (exception: Exception) {
-            when(exception) {
-                is IOException -> {
-                    throw FileFormatAdapterException(
-                            "Cannot create the translated file")
-                }
-                else -> throw exception
-            }
+        } catch (exception: IOException) {
+            throw FileFormatAdapterException("Cannot create the translated file")
         }
     }
 
