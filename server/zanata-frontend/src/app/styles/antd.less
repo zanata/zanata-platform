@@ -198,14 +198,19 @@ h1 {
   font-size: 2.25rem !important;
 }
 
-h2,
-h3 {
+h2
+ {
   color: @info-color;
   letter-spacing: -0.05em;
 }
 
+h3,
 h4 {
   color: @info-color;
+}
+
+.blue {
+  color: @info-color !important;
 }
 
 .scrollView h2 {
@@ -746,6 +751,14 @@ span.svg {
   background-color: @info-color;
 }
 
+.ant-alert-info .ant-alert-icon {
+  color: @info-color;
+}
+
+.ant-alert-warning .ant-alert-icon {
+  color: @warning-color;
+}
+
 table {
   width: 100% !important;
   font-size: 1rem;
@@ -794,6 +807,7 @@ table {
 
 .transSwitch.ant-switch {
   background-color: @unsure-color;
+  vertical-align: baseline;
 }
 
 .transSwitch.ant-switch.ant-switch-checked {
@@ -802,7 +816,9 @@ table {
 }
 
 .transSwitch.ant-switch .ant-switch-inner {
-  font-size: 14px;
+  font-size: 18px;
+  color: #546677;
+  font-weight: 500;
 }
 
 .ant-checkbox-wrapper {
@@ -857,7 +873,7 @@ table {
   border: none !important;
   background-color: initial !important;
   padding: initial !important;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .ant-modal-title {
