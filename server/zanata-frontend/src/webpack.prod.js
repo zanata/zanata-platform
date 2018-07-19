@@ -26,6 +26,25 @@ const postCssLoader = {
   }
 }
 
+// Default options for splitChunks cacheGroups
+const groupsOptions = {
+  chunks: 'all',
+  minSize: 0,
+  minChunks: 1,
+  reuseExistingChunk: true,
+  enforce: true
+}
+
+function recursiveIssuer (m) {
+  if (m.issuer) {
+    return recursiveIssuer(m.issuer)
+  } else if (m.name) {
+    return m.name
+  } else {
+    return false
+  }
+}
+
 /** @typedef
     {import('webpack').Configuration} WebpackConfig
  */
@@ -109,8 +128,13 @@ module.exports = merge(common, {
       })
     ],
     splitChunks: { // CommonsChunkPlugin()
-      chunks: 'all',
+      // chunks: 'all',
       name: 'runtime',
+      legacyStyles: {
+        name: 'frontend.legacy',
+        test: (m, c, entry = 'frontend.legacy') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
+        ...groupsOptions
+      },
     },
     noEmitOnErrors: true // NoEmitOnErrorsPlugin
     // namedModules: true, // NamedModulesPlugin()
