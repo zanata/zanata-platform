@@ -230,6 +230,7 @@ public class MachineTranslationServiceImpl implements
 
             if (!attributionService.supportsAttribution(doc)) {
                 log.warn("Attribution not supported for {}; skipping MT", doc);
+                continue;
             }
             String requestedBackend = BACKEND_GOOGLE;
             String backendId = addMachineTranslationsToDoc(doc, targetLocale,
