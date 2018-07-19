@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -57,7 +58,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.MachineTranslationPrefill;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MachineTranslationService;
@@ -229,12 +230,13 @@ public class MachineTranslationServiceImpl implements
 
             if (!attributionService.supportsAttribution(doc)) {
                 log.warn("Attribution not supported for {}; skipping MT", doc);
+                continue;
             }
-            String backendId = BACKEND_GOOGLE;
-            boolean added = addMachineTranslationsToDoc(doc, targetLocale,
+            String requestedBackend = BACKEND_GOOGLE;
+            String backendId = addMachineTranslationsToDoc(doc, targetLocale,
                     projectSlug, versionSlug, options.getSaveState(),
-                    options.getOverwriteFuzzy(), backendId);
-            if (added) {
+                    options.getOverwriteFuzzy(), requestedBackend);
+            if (backendId != null) {
                 attributionService.addAttribution(doc, targetLocale, backendId);
                 entityManager.merge(doc);
             }
@@ -250,7 +252,7 @@ public class MachineTranslationServiceImpl implements
         return AsyncTaskResult.completed();
     }
 
-    private boolean addMachineTranslationsToDoc(HDocument doc,
+    private @Nullable String addMachineTranslationsToDoc(HDocument doc,
             HLocale targetLocale, String projectSlug,
             String versionSlug, ContentState saveState, boolean overwriteFuzzy,
             String backendId) {
@@ -261,7 +263,7 @@ public class MachineTranslationServiceImpl implements
                         documentId, overwriteFuzzy);
         if (textFlowsToTranslate.isEmpty()) {
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
-            return false;
+            return null;
         }
 
         MTDocument mtDocument = textFlowsToMTDoc
@@ -273,7 +275,7 @@ public class MachineTranslationServiceImpl implements
         MTDocument result = getTranslationFromMT(mtDocument,
                 targetLocale.getLocaleId());
         saveTranslationsInBatches(textFlowsToTranslate, result, targetLocale, saveState);
-        return true;
+        return result.getBackendId();
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(

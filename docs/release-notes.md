@@ -1,3 +1,10 @@
+## 4.6.0
+##### Breaking Changes
+JSON files were previously uploaded using a content hash for the ID.
+These will now use an object path for the ID, and updating an existing document may lose its translations.
+Users can utilize the Copy Translations or TM Merge features to restore them.
+-----------------------
+
 ## 4.5.0
 ##### Changes
  * [ZNTA-2552](https://zanata.atlassian.net/browse/ZNTA-2552) - Cookie consent popup

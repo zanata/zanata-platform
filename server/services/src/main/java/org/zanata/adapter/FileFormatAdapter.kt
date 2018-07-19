@@ -113,4 +113,9 @@ interface FileFormatAdapter {
                 .name) + "." + transExt
     }
 
+    val rawTranslationUploadAvailable: Boolean
+        get() {
+            return false
+        }
+
 }

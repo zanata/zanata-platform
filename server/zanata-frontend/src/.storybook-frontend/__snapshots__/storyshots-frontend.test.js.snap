@@ -6518,14 +6518,21 @@ exports[`Frontend Storyshots MTMerge single 1`] = `
 >
   <mock-icons />
   <Alert
+    className="mb2"
     message="Have you run TM Merge first?"
     showIcon={true}
     type="warning"
   />
+  <Alert
+    message="Only .po (gettext) and .properties files are supported"
+    showIcon={true}
+    type="info"
+  />
   <h3
-    className="txt-info mt4"
+    className="txt-info mt4 fw5"
   >
     <Icon
+      className="mr2 txt-neutral"
       type="global"
     />
     Language
@@ -6619,17 +6626,24 @@ exports[`Frontend Storyshots MTMerge single 1`] = `
     </div>
   </div>
   <div
-    className="mt4 mb4"
+    className="mt3"
   >
     <Card
       hoverable={true}
     >
-      <div>
+      <div
+        className="pb1"
+      >
+        <Alert
+          message="MT fill will save translations with validation errors as fuzzy"
+          showIcon={true}
+          type="warning"
+        />
         <h3
-          className="txt-info"
+          className="txt-info mt-toggleHeading"
         >
           <span
-            className="mr2"
+            className="mr2 fw5"
           >
             Save as
           </span>
@@ -6660,10 +6674,12 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
 >
   <mock-icons />
   <Modal
+    closable={true}
     destroyOnClose={true}
     footer={
       Array [
         <Button
+          disabled={false}
           onClick={[Function]}
         >
           Close
@@ -6677,20 +6693,28 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
         </Button>,
       ]
     }
+    maskClosable={true}
     onCancel={[Function]}
     onOk={[Function]}
-    title="Machine Translation Batch Merge"
+    title="Machine Translation Merge"
     visible={true}
   >
     <Alert
+      className="mb2"
       message="Have you run TM Merge first?"
       showIcon={true}
       type="warning"
     />
+    <Alert
+      message="Only .po (gettext) and .properties files are supported"
+      showIcon={true}
+      type="info"
+    />
     <h3
-      className="txt-info mt4"
+      className="txt-info mt4 fw5"
     >
       <Icon
+        className="mr2 txt-neutral"
         type="global"
       />
       Language
@@ -6784,17 +6808,24 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
       </div>
     </div>
     <div
-      className="mt4 mb4"
+      className="mt3"
     >
       <Card
         hoverable={true}
       >
-        <div>
+        <div
+          className="pb1"
+        >
+          <Alert
+            message="MT fill will save translations with validation errors as fuzzy"
+            showIcon={true}
+            type="warning"
+          />
           <h3
-            className="txt-info"
+            className="txt-info mt-toggleHeading"
           >
             <span
-              className="mr2"
+              className="mr2 fw5"
             >
               Save as
             </span>

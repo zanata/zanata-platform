@@ -16,9 +16,12 @@ import Root from '../containers/Root'
 import NeedSlugMessage from '../containers/NeedSlugMessage'
 import { fetchSettings } from '../actions/settings-actions'
 
+import '../index.css'
 // Set the path that webpack will try to load extra chunks from
 // This is needed to load intl-polyfill
 __webpack_public_path__ = serverUrl || '/' // eslint-disable-line
+
+import '../index.css'
 
 /**
  * Top level of the Zanata editor app.

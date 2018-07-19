@@ -169,6 +169,7 @@ public class UserOptionsService {
         configHolder.setFilterByApproved(UserConfigHolder.DEFAULT_FILTER);
         configHolder.setFilterByRejected(UserConfigHolder.DEFAULT_FILTER);
         configHolder.setFilterByHasError(UserConfigHolder.DEFAULT_FILTER);
+        configHolder.setFilterByMT(UserConfigHolder.DEFAULT_FILTER);
         configHolder.setEnabledValidationIds(new ArrayList<ValidationId>());
         configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
         configHolder

@@ -69,15 +69,31 @@ export const getFilterString = createSelectorCreator(defaultMemoize, isEqual)(
 export const getFilteredPhrases = createSelector(
   getCurrentDocPhrases, getFilter,
   (phrases, { status }) => {
-    if (status.all) {
+    if (status.all && !status.mt) {
       return phrases
     }
+    const allStatuses = allStatusesSame(status)
     // @ts-ignore any
     return phrases.filter(phrase => {
-      return status[phrase.status]
+      if (status.mt) {
+        return phrase.transSourceType === 'MT' &&
+          (!allStatuses ? status[phrase.status] : true)
+      } else {
+        return status[phrase.status]
+      }
     })
   }
 )
+
+// @ts-ignore any
+function allStatusesSame (
+  // @ts-ignore any
+  {approved, rejected, translated, needswork, untranslated}) {
+  return approved === rejected &&
+    rejected === translated &&
+    translated === needswork &&
+    needswork === untranslated
+}
 
 const getCurrentPagePhrases = createSelector(
   getFilteredPhrases, getPageIndex, getCountPerPage,

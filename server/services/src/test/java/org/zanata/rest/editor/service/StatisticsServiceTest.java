@@ -11,6 +11,7 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 
@@ -45,6 +46,13 @@ public class StatisticsServiceTest {
         setId(document, 1L);
         when(documentDAO.getByProjectIterationAndDocId("a", "1", "authors"))
                 .thenReturn(document);
+
+        int[] mtStats = new int[2];
+        mtStats[0] = 1;
+        mtStats[1] = 2;
+        when(documentDAO.getStatisticsBySourceType(1L, LocaleId.DE,
+                TranslationSourceType.MACHINE_TRANS)).thenReturn(mtStats);
+
         ContainerTranslationStatistics statistics =
                 new ContainerTranslationStatistics();
         statistics.addStats(new TranslationStatistics(new TransUnitWords(10, 0,

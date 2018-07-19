@@ -45,7 +45,7 @@ import org.zanata.exception.DocumentUploadException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;

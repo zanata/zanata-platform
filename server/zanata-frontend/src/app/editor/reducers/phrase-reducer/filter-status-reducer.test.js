@@ -26,7 +26,8 @@ describe('filter-status-reducer test', () => {
       rejected: false,
       translated: false,
       needswork: false,
-      untranslated: false
+      untranslated: false,
+      mt: false
     })
   })
 
@@ -55,7 +56,11 @@ describe('filter-status-reducer test', () => {
       type: UPDATE_STATUS_FILTER,
       payload: 'untranslated'
     })
-    const includeAll = filterStatusReducer(includeUntranslated, {
+    const includeMT = filterStatusReducer(includeUntranslated, {
+      type: UPDATE_STATUS_FILTER,
+      payload: 'mt'
+    })
+    const includeAll = filterStatusReducer(includeMT, {
       type: UPDATE_STATUS_FILTER,
       payload: 'needswork'
     })
@@ -66,7 +71,8 @@ describe('filter-status-reducer test', () => {
       rejected: false,
       translated: false,
       needswork: false,
-      untranslated: false
+      untranslated: false,
+      mt: false
     })
     expect(approvedAndTranslated).toEqual({
       all: false,
@@ -74,7 +80,8 @@ describe('filter-status-reducer test', () => {
       rejected: false,
       translated: true,
       needswork: false,
-      untranslated: false
+      untranslated: false,
+      mt: false
     })
     expect(includeNeedsWork).toEqual({
       all: false,
@@ -82,7 +89,8 @@ describe('filter-status-reducer test', () => {
       rejected: false,
       translated: true,
       needswork: true,
-      untranslated: false
+      untranslated: false,
+      mt: false
     })
     expect(excludeNeedsWork).toEqual({
       all: false,
@@ -90,7 +98,8 @@ describe('filter-status-reducer test', () => {
       rejected: false,
       translated: true,
       needswork: false,
-      untranslated: false
+      untranslated: false,
+      mt: false
     })
     expect(includeRejected).toEqual({
       all: false,
@@ -98,7 +107,8 @@ describe('filter-status-reducer test', () => {
       rejected: true,
       translated: true,
       needswork: false,
-      untranslated: false
+      untranslated: false,
+      mt: false
     })
     expect(includeUntranslated).toEqual({
       all: false,
@@ -106,7 +116,17 @@ describe('filter-status-reducer test', () => {
       rejected: true,
       translated: true,
       needswork: false,
-      untranslated: true
+      untranslated: true,
+      mt: false
+    })
+    expect(includeMT).toEqual({
+      all: false,
+      approved: true,
+      rejected: true,
+      translated: true,
+      needswork: false,
+      untranslated: true,
+      mt: true
     })
     expect(includeAll).toEqual({
       all: true,
@@ -114,7 +134,8 @@ describe('filter-status-reducer test', () => {
       rejected: false,
       translated: false,
       needswork: false,
-      untranslated: false
+      untranslated: false,
+      mt: false
     })
   })
 })

@@ -150,4 +150,8 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
                 + "." + transExt;
     }
 
+    @Override
+    public boolean getRawTranslationUploadAvailable() {
+        return false;
+    }
 }

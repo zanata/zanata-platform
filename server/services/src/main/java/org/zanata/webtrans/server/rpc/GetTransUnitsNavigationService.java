@@ -33,6 +33,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
@@ -77,11 +78,12 @@ public class GetTransUnitsNavigationService {
         private static final long serialVersionUID = 1L;
 
         public SimpleHTextFlow(Long id, String resId, ContentState contentState,
-                HLocale hLocale) {
+                HLocale hLocale, TranslationSourceType sourceType) {
             super(null, resId);
             setId(id);
             HTextFlowTarget target = new HTextFlowTarget(this, hLocale);
             target.setState(contentState);
+            target.setSourceType(sourceType);
             getTargets().put(hLocale.getId(), target);
         }
     }
@@ -90,6 +92,7 @@ public class GetTransUnitsNavigationService {
         public static final String ID = "id";
         public static final String CONTENT_STATE = "state";
         public static final String RESID = "resId";
+        public static final String TRANS_SOURCE_TYPE = "sourceType";
         private static final long serialVersionUID = 1L;
         private final HLocale hLocale;
 
@@ -104,6 +107,7 @@ public class GetTransUnitsNavigationService {
             Long id = null;
             ContentState state = null;
             String resId = null;
+            TranslationSourceType type = null;
             for (int i = 0, aliasesLength =
                     aliases.length; i < aliasesLength; i++) {
                 String columnName = aliases[i];
@@ -118,9 +122,12 @@ public class GetTransUnitsNavigationService {
                 if (columnName.equals(RESID)) {
                     resId = (String) tuple[i];
                 }
+                if (columnName.equals(TRANS_SOURCE_TYPE)) {
+                    type = (TranslationSourceType) tuple[i];
+                }
             }
             log.debug(" {} - {}", id, state);
-            return new SimpleHTextFlow(id, resId, state, hLocale);
+            return new SimpleHTextFlow(id, resId, state, hLocale, type);
         }
 
         @Override

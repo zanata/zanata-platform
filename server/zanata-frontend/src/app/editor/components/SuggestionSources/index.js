@@ -11,7 +11,11 @@ class SuggestionSources extends React.Component {
   static propTypes = {
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.string.isRequired,
+        type: PropTypes.shape({
+          key: PropTypes.oneOf(
+            ['IMPORTED_TM', 'LOCAL_PROJECT', 'MT']).isRequired,
+          metadata: PropTypes.string
+        }).isRequired,
         contentState: PropTypes.string
       })),
       sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired
