@@ -72,7 +72,7 @@ module.exports = merge(common, {
       // Options similar to the same options in webpackOptions.output
       // both options are optional
       filename: '[name].[chunkhash:8].cache.css',
-      chunkFilename: '[name].[chunkhash:8].css'
+      chunkFilename: '[name].[chunkhash:8].cache.css'
     }),
     new webpack.HashedModuleIdsPlugin(),
     new CopyWebpackPlugin([
