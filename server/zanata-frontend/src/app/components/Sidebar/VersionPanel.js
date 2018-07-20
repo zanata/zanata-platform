@@ -1,5 +1,7 @@
 import React from 'react'
 import { Component } from 'react'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 import Select from 'antd/lib/select'
@@ -25,7 +27,7 @@ class VersionPanel extends Component {
     }
     return (
       <Layout>
-        <h2 className='di mt3'>
+        <h2 className='di mt3 txt-primary'>
           <Icon name='version' className='s2' /> VERSION
           <span className='fr'>
             <Select placeholder='master' style={{ width: 120 }}>
@@ -35,17 +37,19 @@ class VersionPanel extends Component {
             </Select>
           </span>
         </h2>
-        <a>Version settings</a>
+        <Button type="primary" size="small" className="w-80 center">
+          Version settings
+        </Button>
         <VersionProgress counts={counts} />
         <Menu>
           <Menu.Item key='1'>
-            <span className='nav-text'>Languages</span>
+            <span>Languages</span>
           </Menu.Item>
           <Menu.Item key='2'>
-            <span className='nav-text'>Documents</span>
+            <span>Documents</span>
           </Menu.Item>
           <Menu.Item key='3'>
-            <span className='nav-text'>Groups</span>
+            <span>Groups</span>
           </Menu.Item>
         </Menu>
       </Layout>

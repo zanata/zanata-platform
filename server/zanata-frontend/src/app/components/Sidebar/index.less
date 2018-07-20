@@ -61,6 +61,27 @@
   background-color: @progress-bg;
 }
 
-.pvSidebar .ant-menu {
-  background-color: #EEF2F5;
+.pvSidebar {
+
+  .ant-menu {
+    background-color: #EEF2F5;
+    border-right: 0;
+  }
+
+  .ant-menu-item {
+    color: @info-color;
+    font-weight: 600;
+  }
+
+  .ant-menu-item:active, .ant-menu-item:hover,
+  .ant-menu-item:focus,  .ant-menu-item-selected,
+  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected{
+    background-color: @info-color;
+    color: #fff;
+  }
+
+}
+
+.ant-layout-content {
+  padding: 2rem;
 }

@@ -6916,10 +6916,10 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
         className="ant-layout-sider-children"
       >
         <h1
-          className="di"
+          className="di txt-info"
         >
           <mock-icon
-            className="s4"
+            className="s3 mr1 mt1"
             name="project"
           />
           Zanata Server
@@ -6934,8 +6934,8 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
         >
           <li
             aria-disabled={undefined}
-            aria-selected={false}
-            className="ant-menu-item"
+            aria-selected={true}
+            className="ant-menu-item ant-menu-item-selected"
             onClick={[Function]}
             onMouseEnter={[Function]}
             onMouseLeave={[Function]}
@@ -6944,11 +6944,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             title={undefined}
           >
             <mock-icon
-              className="s1"
+              className="s1 v-mid mr1"
               name="users"
             />
             <span
-              className="nav-text"
+              className="v-mid"
             >
               People
             </span>
@@ -6965,11 +6965,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             title={undefined}
           >
             <mock-icon
-              className="s1"
+              className="s1 v-mid mr1"
               name="glossary"
             />
             <span
-              className="nav-text"
+              className="v-mid"
             >
               Glossary
             </span>
@@ -6986,11 +6986,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             title={undefined}
           >
             <mock-icon
-              className="s1"
+              className="s1 v-mid mr1"
               name="info"
             />
             <span
-              className="nav-text"
+              className="v-mid"
             >
               About
             </span>
@@ -7007,11 +7007,11 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             title={undefined}
           >
             <mock-icon
-              className="s1"
+              className="s1 v-mid mr1"
               name="settings"
             />
             <span
-              className="nav-text"
+              className="v-mid"
             >
               Settings
             </span>
@@ -7127,7 +7127,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
           className="ant-layout"
         >
           <h2
-            className="di mt3"
+            className="di mt3 txt-primary"
           >
             <mock-icon
               className="s2"
@@ -7199,11 +7199,15 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
               </div>
             </span>
           </h2>
-          <a>
+          <Button
+            className="w-80 center"
+            size="small"
+            type="primary"
+          >
             Version settings
-          </a>
+          </Button>
           <div
-            className="progress-custom w-100"
+            className="progress-custom w-100 mt3 mb3"
           >
             <span
               className="progress-bar-custom progress-bar-approved"
@@ -7265,9 +7269,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
               style={Object {}}
               title={undefined}
             >
-              <span
-                className="nav-text"
-              >
+              <span>
                 Languages
               </span>
             </li>
@@ -7282,9 +7284,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
               style={Object {}}
               title={undefined}
             >
-              <span
-                className="nav-text"
-              >
+              <span>
                 Documents
               </span>
             </li>
@@ -7299,9 +7299,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
               style={Object {}}
               title={undefined}
             >
-              <span
-                className="nav-text"
-              >
+              <span>
                 Groups
               </span>
             </li>

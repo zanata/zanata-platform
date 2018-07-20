@@ -28,21 +28,21 @@ class Sidebar extends Component {
             <Icon name='project' className='s3 mr1 mt1' />
             {projectTitle}
           </h1>
-          <Menu>
+          <Menu defaultSelectedKeys={['1']}>
             <Menu.Item key='1'>
-              <Icon name='users' className='s1 v-mid mr2' />
+              <Icon name='users' className='s1 v-mid mr1' />
               <span className='v-mid'>People</span>
             </Menu.Item>
             <Menu.Item key='2'>
-              <Icon name='glossary' className='s1 v-mid mr2' />
+              <Icon name='glossary' className='s1 v-mid mr1' />
               <span className='v-mid'>Glossary</span>
             </Menu.Item>
             <Menu.Item key='3'>
-              <Icon name='info' className='s1 v-mid mr2' />
+              <Icon name='info' className='s1 v-mid mr1' />
               <span className='v-mid'>About</span>
             </Menu.Item>
             <Menu.Item key='4'>
-              <Icon name='settings' className='s1 v-mid mr2' />
+              <Icon name='settings' className='s1 v-mid mr1' />
               <span className='v-mid'>Settings</span>
             </Menu.Item>
           </Menu>
