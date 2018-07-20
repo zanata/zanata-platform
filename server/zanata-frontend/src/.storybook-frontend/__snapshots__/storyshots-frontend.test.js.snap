@@ -7310,7 +7310,7 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
     <div
       className="ant-layout-content"
     >
-      Content
+      Test this
     </div>
   </div>
 </div>
