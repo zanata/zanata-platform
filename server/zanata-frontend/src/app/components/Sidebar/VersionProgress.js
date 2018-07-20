@@ -13,7 +13,8 @@ class ProgressItem extends React.Component {
   }
 
   render () {
-    const className = cx('progress-bar-custom', 'progress-bar-' + this.props.state)
+    const className = cx('progress-bar-custom', 'progress-bar-' +
+      this.props.state)
     const style = {
       width: this.props.width + '%'
     }

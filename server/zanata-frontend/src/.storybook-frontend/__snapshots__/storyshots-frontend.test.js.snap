@@ -6890,7 +6890,14 @@ exports[`Frontend Storyshots ProgressBar default 1`] = `
 `;
 
 exports[`Frontend Storyshots Sidebar default 1`] = `
-<div>
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
   <div
     className="ant-layout ant-layout-has-sider"
   >
@@ -6911,23 +6918,10 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
         <h1
           className="di"
         >
-          <span
-            className=""
-          >
-            <svg
-              className="s4"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "<use xlink:href=\\"#Icon-project\\" />",
-                }
-              }
-              style={
-                Object {
-                  "fill": "currentColor",
-                }
-              }
-            />
-          </span>
+          <mock-icon
+            className="s4"
+            name="project"
+          />
           Zanata Server
         </h1>
         <ul
@@ -6949,23 +6943,10 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             style={Object {}}
             title={undefined}
           >
-            <span
-              className=""
-            >
-              <svg
-                className="s1"
-                dangerouslySetInnerHTML={
-                  Object {
-                    "__html": "<use xlink:href=\\"#Icon-users\\" />",
-                  }
-                }
-                style={
-                  Object {
-                    "fill": "currentColor",
-                  }
-                }
-              />
-            </span>
+            <mock-icon
+              className="s1"
+              name="users"
+            />
             <span
               className="nav-text"
             >
@@ -6983,23 +6964,10 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             style={Object {}}
             title={undefined}
           >
-            <span
-              className=""
-            >
-              <svg
-                className="s1"
-                dangerouslySetInnerHTML={
-                  Object {
-                    "__html": "<use xlink:href=\\"#Icon-glossary\\" />",
-                  }
-                }
-                style={
-                  Object {
-                    "fill": "currentColor",
-                  }
-                }
-              />
-            </span>
+            <mock-icon
+              className="s1"
+              name="glossary"
+            />
             <span
               className="nav-text"
             >
@@ -7017,23 +6985,10 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             style={Object {}}
             title={undefined}
           >
-            <span
-              className=""
-            >
-              <svg
-                className="s1"
-                dangerouslySetInnerHTML={
-                  Object {
-                    "__html": "<use xlink:href=\\"#Icon-info\\" />",
-                  }
-                }
-                style={
-                  Object {
-                    "fill": "currentColor",
-                  }
-                }
-              />
-            </span>
+            <mock-icon
+              className="s1"
+              name="info"
+            />
             <span
               className="nav-text"
             >
@@ -7051,23 +7006,10 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
             style={Object {}}
             title={undefined}
           >
-            <span
-              className=""
-            >
-              <svg
-                className="s1"
-                dangerouslySetInnerHTML={
-                  Object {
-                    "__html": "<use xlink:href=\\"#Icon-settings\\" />",
-                  }
-                }
-                style={
-                  Object {
-                    "fill": "currentColor",
-                  }
-                }
-              />
-            </span>
+            <mock-icon
+              className="s1"
+              name="settings"
+            />
             <span
               className="nav-text"
             >
@@ -7142,180 +7084,167 @@ exports[`Frontend Storyshots Sidebar default 1`] = `
         <div
           className="ant-layout"
         >
-          <div
-            className="ant-card ant-card-bordered"
-          >
+          <Card>
+            Processing document 1 of 10
             <div
-              className="ant-card-head"
+              className="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
             >
-              <div
-                className="ant-card-head-wrapper"
-              >
+              <div>
                 <div
-                  className="ant-card-head-title"
+                  className="ant-progress-outer"
                 >
-                  Task title
-                </div>
-              </div>
-            </div>
-            <div
-              className="ant-card-body"
-              style={undefined}
-            >
-              Processing document 1 of 10
-              <div
-                className="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
-              >
-                <div>
                   <div
-                    className="ant-progress-outer"
+                    className="ant-progress-inner"
                   >
                     <div
-                      className="ant-progress-inner"
-                    >
-                      <div
-                        className="ant-progress-bg"
-                        style={
-                          Object {
-                            "height": 8,
-                            "width": "30%",
-                          }
+                      className="ant-progress-bg"
+                      style={
+                        Object {
+                          "height": 8,
+                          "width": "30%",
                         }
-                      />
-                    </div>
+                      }
+                    />
                   </div>
-                  <span
-                    className="ant-progress-text"
-                  >
-                    30%
-                  </span>
                 </div>
+                <span
+                  className="ant-progress-text"
+                >
+                  30%
+                </span>
               </div>
-              <Button
-                className="btn-danger"
-                size="small"
-                type="danger"
-              >
-                Stop
-              </Button>
             </div>
-          </div>
+            <Button
+              className="btn-danger"
+              size="small"
+              type="danger"
+            >
+              Stop
+            </Button>
+          </Card>
         </div>
         <div
           className="ant-layout"
         >
-          <span
-            className="di"
+          <h2
+            className="di mt3"
           >
-            <span
-              className=""
-            >
-              <svg
-                className="s2"
-                dangerouslySetInnerHTML={
-                  Object {
-                    "__html": "<use xlink:href=\\"#Icon-version\\" />",
-                  }
-                }
-                style={
-                  Object {
-                    "fill": "currentColor",
-                  }
-                }
-              />
-            </span>
+            <mock-icon
+              className="s2"
+              name="version"
+            />
              VERSION
-            <div
-              className="ant-select ant-select-enabled"
-              onBlur={[Function]}
-              onClick={[Function]}
-              onContextMenu={undefined}
-              onFocus={[Function]}
-              onMouseDown={[Function]}
-              onMouseEnter={undefined}
-              onMouseLeave={undefined}
-              onTouchStart={[Function]}
-              style={
-                Object {
-                  "width": 120,
-                }
-              }
+            <span
+              className="fr"
             >
               <div
-                aria-autocomplete="list"
-                aria-expanded={false}
-                aria-haspopup="true"
-                className="ant-select-selection
-            ant-select-selection--single"
-                onKeyDown={[Function]}
-                role="combobox"
-                tabIndex={0}
+                className="ant-select ant-select-enabled"
+                onBlur={[Function]}
+                onClick={[Function]}
+                onContextMenu={undefined}
+                onFocus={[Function]}
+                onMouseDown={[Function]}
+                onMouseEnter={undefined}
+                onMouseLeave={undefined}
+                onTouchStart={[Function]}
+                style={
+                  Object {
+                    "width": 120,
+                  }
+                }
               >
                 <div
-                  className="ant-select-selection__rendered"
+                  aria-autocomplete="list"
+                  aria-expanded={false}
+                  aria-haspopup="true"
+                  className="ant-select-selection
+            ant-select-selection--single"
+                  onKeyDown={[Function]}
+                  role="combobox"
+                  tabIndex={0}
                 >
                   <div
-                    className="ant-select-selection__placeholder"
+                    className="ant-select-selection__rendered"
+                  >
+                    <div
+                      className="ant-select-selection__placeholder"
+                      onClick={[Function]}
+                      onMouseDown={[Function]}
+                      style={
+                        Object {
+                          "WebkitUserSelect": "none",
+                          "display": "block",
+                          "userSelect": "none",
+                        }
+                      }
+                      unselectable="unselectable"
+                    >
+                      master
+                    </div>
+                  </div>
+                  <span
+                    className="ant-select-arrow"
                     onClick={[Function]}
-                    onMouseDown={[Function]}
                     style={
                       Object {
                         "WebkitUserSelect": "none",
-                        "display": "block",
                         "userSelect": "none",
                       }
                     }
                     unselectable="unselectable"
                   >
-                    master
-                  </div>
+                    <b />
+                  </span>
                 </div>
-                <span
-                  className="ant-select-arrow"
-                  onClick={[Function]}
-                  style={
-                    Object {
-                      "WebkitUserSelect": "none",
-                      "userSelect": "none",
-                    }
-                  }
-                  unselectable="unselectable"
-                >
-                  <b />
-                </span>
               </div>
-            </div>
-          </span>
+            </span>
+          </h2>
           <a>
             Version settings
           </a>
           <div
-            className="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
+            className="progress-custom w-100"
           >
-            <div>
-              <div
-                className="ant-progress-outer"
-              >
-                <div
-                  className="ant-progress-inner"
-                >
-                  <div
-                    className="ant-progress-bg"
-                    style={
-                      Object {
-                        "height": 8,
-                        "width": "30%",
-                      }
-                    }
-                  />
-                </div>
-              </div>
-              <span
-                className="ant-progress-text"
-              >
-                30%
-              </span>
-            </div>
+            <span
+              className="progress-bar-custom progress-bar-approved"
+              style={
+                Object {
+                  "width": "15%",
+                }
+              }
+            />
+            <span
+              className="progress-bar-custom progress-bar-translated"
+              style={
+                Object {
+                  "width": "40%",
+                }
+              }
+            />
+            <span
+              className="progress-bar-custom progress-bar-needswork"
+              style={
+                Object {
+                  "width": "20%",
+                }
+              }
+            />
+            <span
+              className="progress-bar-custom progress-bar-rejected"
+              style={
+                Object {
+                  "width": "5%",
+                }
+              }
+            />
+            <span
+              className="progress-bar-custom progress-bar-untranslated"
+              style={
+                Object {
+                  "width": "20%",
+                }
+              }
+            />
           </div>
           <ul
             aria-activedescendant=""
