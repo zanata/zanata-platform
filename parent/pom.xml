@@ -1002,8 +1002,25 @@
       </activation>
       <properties>
         <!-- for ossindex: -->
-        <audit.failOnError>false</audit.failOnError>
+        <audit.failOnError>true</audit.failOnError>
         <audit.quiet>true</audit.quiet>
+
+        <!-- TODO ignore by ID, not GAV (need https://github.com/OSSIndex/ossindex-maven-plugin/pull/20) -->
+        <!-- solr: ignore https://ossindex.net/resource/cve/8404719967 since we don't cluster solr -->
+        <!-- wildfly: due to https://github.com/OSSIndex/ossindex-maven-plugin/issues/19 -->
+        <!-- picketlink*, jgroups: because we use the app server's version (scope=provided)-->
+        <!-- ognl is test only (via concordion) -->
+        <audit.ignore>
+          org.apache.solr:solr-core:5.3.1,
+          org.apache.solr:solr-solrj:5.3.1,
+          org.wildfly.core:wildfly-server:2.0.10.Final,
+          org.jgroups:jgroups,
+          org.picketlink:picketlink-common,
+          org.picketlink:picketlink-federation,
+          ognl:ognl:2.6.9,
+        </audit.ignore>
+
+        <!--<audit.warnOnIgnore>true</audit.warnOnIgnore>-->
       </properties>
       <build>
         <plugins>
@@ -1497,7 +1514,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>3.0.4</version>
+        <version>3.5.0</version>
       </dependency>
       <dependency>
         <groupId>com.pyx4j</groupId>
@@ -1577,6 +1594,31 @@
           </exclusion>
         </exclusions>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>4.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.santuario</groupId>
+        <artifactId>xmlsec</artifactId>
+        <version>2.0.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.7.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.11.0</version>
+      </dependency>
+
       <!-- Optional dependencies for using Spock -->
       <dependency> <!-- enables mocking of classes (in addition to interfaces) -->
         <groupId>cglib</groupId>
