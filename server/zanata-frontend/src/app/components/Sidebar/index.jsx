@@ -24,23 +24,26 @@ class Sidebar extends Component {
           width='300'
           className='pvSidebar'
           collapsedWidth='0'>
-          <h1 className='di'><Icon name='project' className='s4' />{projectTitle}</h1>
+          <h1 className='di txt-info'>
+            <Icon name='project' className='s3 mr1 mt1' />
+            {projectTitle}
+          </h1>
           <Menu>
             <Menu.Item key='1'>
-              <Icon name='users' className='s1' />
-              <span className='nav-text'>People</span>
+              <Icon name='users' className='s1 v-mid mr2' />
+              <span className='v-mid'>People</span>
             </Menu.Item>
             <Menu.Item key='2'>
-              <Icon name='glossary' className='s1' />
-              <span className='nav-text'>Glossary</span>
+              <Icon name='glossary' className='s1 v-mid mr2' />
+              <span className='v-mid'>Glossary</span>
             </Menu.Item>
             <Menu.Item key='3'>
-              <Icon name='info' className='s1' />
-              <span className='nav-text'>About</span>
+              <Icon name='info' className='s1 v-mid mr2' />
+              <span className='v-mid'>About</span>
             </Menu.Item>
             <Menu.Item key='4'>
-              <Icon name='settings' className='s1' />
-              <span className='nav-text'>Settings</span>
+              <Icon name='settings' className='s1 v-mid mr2' />
+              <span className='v-mid'>Settings</span>
             </Menu.Item>
           </Menu>
           <div className='mt3 mb3'>
