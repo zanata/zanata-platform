@@ -13,20 +13,16 @@ class ProgressItem extends React.Component {
   }
 
   render () {
-    const className = cx('progress-bar', 'Progressbar-' + this.props.state)
+    const className = cx('progress-bar-custom', 'progress-bar-' + this.props.state)
     const style = {
-      marginLeft: this.props.start + '%',
       width: this.props.width + '%'
     }
     return (
-        <span className={className} style={style} />
+      <span className={className} style={style} />
     )
   }
 }
 
-/**
- * Bar showing translation progress
- */
 class VersionProgress extends React.Component {
   static propTypes = {
     size: PropTypes.string,
@@ -53,7 +49,7 @@ class VersionProgress extends React.Component {
   }
 
   render () {
-    const className = cx('progress')
+    const className = cx('progress-custom w-100')
 
     const { counts } = this.props
 
@@ -75,28 +71,28 @@ class VersionProgress extends React.Component {
     starts.untranslated = starts.rejected + widths.rejected
 
     return (
-        <div className={className}>
-          <ProgressItem
-              state="approved"
-              start={starts.approved}
-              width={widths.approved} />
-          <ProgressItem
-              state="translated"
-              start={starts.translated}
-              width={widths.translated} />
-          <ProgressItem
-              state="needswork"
-              start={starts.needswork}
-              width={widths.needswork} />
-          <ProgressItem
-              state="rejected"
-              start={starts.rejected}
-              width={widths.rejected} />
-          <ProgressItem
-              state="untranslated"
-              start={starts.untranslated}
-              width={widths.untranslated} />
-        </div>
+      <div className={className}>
+        <ProgressItem
+          state="approved"
+          start={starts.approved}
+          width={widths.approved} />
+        <ProgressItem
+          state="translated"
+          start={starts.translated}
+          width={widths.translated} />
+        <ProgressItem
+          state="needswork"
+          start={starts.needswork}
+          width={widths.needswork} />
+        <ProgressItem
+          state="rejected"
+          start={starts.rejected}
+          width={widths.rejected} />
+        <ProgressItem
+          state="untranslated"
+          start={starts.untranslated}
+          width={widths.untranslated} />
+      </div>
     )
   }
 }

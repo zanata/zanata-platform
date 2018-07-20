@@ -15,6 +15,14 @@ const Option = Select.Option
 
 class VersionPanel extends Component {
   render () {
+    const counts = {
+      total: 20,
+      approved: 3,
+      translated: 8,
+      needswork: 4,
+      rejected: 1,
+      untranslated: 4
+    }
     return (
       <Layout>
         <h2 className='di mt3'>
@@ -28,7 +36,7 @@ class VersionPanel extends Component {
           </span>
         </h2>
         <a>Version settings</a>
-        <VersionProgress counts={3} />
+        <VersionProgress counts={counts} />
         <Menu>
           <Menu.Item key='1'>
             <span className='nav-text'>Languages</span>
