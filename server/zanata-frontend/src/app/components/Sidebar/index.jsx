@@ -1,5 +1,7 @@
 import React from 'react'
 import { Component } from 'react'
+import * as PropTypes from 'prop-types'
+
 import Layout from 'antd/lib/layout/'
 import 'antd/lib/layout/style/css'
 import Icon from '../../components/Icon'
@@ -10,13 +12,17 @@ import 'antd/lib/select/style/css'
 import ProcessingSidebar from './ProcessingSidebar'
 import VersionPanel from './VersionPanel'
 
-const { Content, Sider } = Layout
+const { Sider, Content } = Layout
 const Option = Select.Option
 
 class Sidebar extends Component {
+  static propTypes = {
+    content: PropTypes.string.isRequired
+  }
   /* eslint-disable react/jsx-no-bind, no-return-assign */
   render () {
     const projectTitle = 'Zanata Server'
+    const content = this.props.content
     return (
       <Layout>
         <Sider breakpoint='sm'
@@ -56,7 +62,9 @@ class Sidebar extends Component {
           <ProcessingSidebar />
           <VersionPanel />
         </Sider>
-        <Content>Content</Content>
+        <Content>
+          {content}
+        </Content>
       </Layout>
     )
     /* eslint-enable react/jsx-no-bind, no-return-assign */

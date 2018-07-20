@@ -4,7 +4,5 @@ import Sidebar from '.'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
-        <React.Fragment>
-          <Sidebar />
-        </React.Fragment>
+       <Sidebar content='Test this' />
     ))
