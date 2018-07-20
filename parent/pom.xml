@@ -198,7 +198,7 @@
       correspond with required.jvm.
     -->
     <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
-    <required.maven>3.3.9</required.maven>
+    <required.maven>3.5.0</required.maven>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -1514,7 +1514,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>3.5.0</version>
+        <version>${required.maven}</version>
       </dependency>
       <dependency>
         <groupId>com.pyx4j</groupId>
@@ -1617,6 +1617,12 @@
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>2.11.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.24</version>
       </dependency>
 
       <!-- Optional dependencies for using Spock -->
