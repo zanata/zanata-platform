@@ -20,6 +20,35 @@ body.bodyStyle {
   h1.l--push-all-0 {
     line-height: initial !important;
   }
+  #copy-trans-modal {
+    .button--group input[type="radio"] + .button--success {
+      color: @success-color !important;
+      background-color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"] + .button--unsure {
+      color: @unsure-color !important;
+      background-color: #f0f0f0 !important;
+    }
+    .button--group input[type="radio"] + .button--danger {
+      color: @error-color !important;
+      background-color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--success {
+      background-color: @success-color !important;
+      color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--unsure {
+      background-color: @unsure-color !important;
+      color: #f0f0f0 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--danger {
+      background-color: @error-color !important;
+      color: #f7f7f7 !important;
+    }
+    .modal__footer {
+      height: auto !important;
+    }
+  }
   .autocomplete {
   position: inherit !important;
   z-index: 9999 !important;
