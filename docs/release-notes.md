@@ -1,4 +1,18 @@
 ## 4.6.0
+##### Magpie Translation (MT)
+[Magpie Translation (MT)](https://github.com/zanata/zanata-mt/) provides the results from machine translation
+services.
+To enable MT, edits `standalone.xml` with following system properties:
+
+```xml
+<system-properties>
+  ...
+  <property name="mt.service.url" value="https://your.mt.service:8080"/>
+  <property name="mt.service.user" value="your_mt_service_username"/>
+  <property name="mt.service.token" value="token"/>
+</system-properties>
+```
+
 ##### Breaking Changes
 JSON files were previously uploaded using a content hash for the ID.
 These will now use an object path for the ID, and updating an existing document may lose its translations.
