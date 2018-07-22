@@ -51,7 +51,7 @@ const TeaserListHeader = ({
                 onClick={() => {
                   updatePage(type, currentPage, totalPage, false)
                 }} />
-              <span>{currentPage} of {totalPage}</span>
+              <span className='txt-primary'>{currentPage} of {totalPage}</span>
               <Button icon='right' className='btn-link'
                 disabled={currentPage === totalPage} aria-label='button'
                 onClick={() => {
