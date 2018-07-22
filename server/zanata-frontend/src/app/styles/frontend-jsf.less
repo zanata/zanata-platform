@@ -20,10 +20,36 @@ body.bodyStyle {
   h1.l--push-all-0 {
     line-height: initial !important;
   }
-  .copy-proj-type, .copy-proj-val {
-    height: 3rem !important;
+  #copy-trans-modal {
+    .button--group input[type="radio"] + .button--success {
+      color: @success-color !important;
+      background-color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"] + .button--unsure {
+      color: @unsure-color !important;
+      background-color: #f0f0f0 !important;
+    }
+    .button--group input[type="radio"] + .button--danger {
+      color: @error-color !important;
+      background-color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--success {
+      background-color: @success-color !important;
+      color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--unsure {
+      background-color: @unsure-color !important;
+      color: #f0f0f0 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--danger {
+      background-color: @error-color !important;
+      color: #f7f7f7 !important;
+    }
+    .modal__footer {
+      height: auto !important;
+    }
   }
-  .use-global, .remove-locale {
+  .use-global, .remove-locale, .copy-proj-type, .copy-proj-val {
     height: 3rem !important;
   }
   .flex-btn-group {
