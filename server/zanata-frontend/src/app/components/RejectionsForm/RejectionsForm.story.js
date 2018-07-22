@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // @ts-nocheck
 import React from 'react'
 import { storiesOf } from '@storybook/react'
