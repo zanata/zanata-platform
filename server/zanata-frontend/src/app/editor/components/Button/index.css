@@ -108,7 +108,7 @@ not conflict with the other frontend code
 
 .Button--highlight,
 .ant-btn.Button--highlight{
-  color: var(--Button-color-text-invert);
+  color: var(--Button-color-text-invert) !important;
   background-color: var(--Button-color-highlight) !important;
 }
 
