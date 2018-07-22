@@ -14,42 +14,43 @@ const linkname = 'Our awesome webpage'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
-        <React.Fragment>
-          <Sidebar />
-          <div className='flexTab'>
-            <p>This sidebar example has the active tag applied to both the People
-              and Languages pages to provide examples of how this design handles
-              sidebar links.</p>
-          </div>
+      <React.Fragment>
+        <Sidebar />
+        <div className='flexTab'>
+          <p>This sidebar example has the active tag applied to both the People
+            and Languages pages to provide examples of how this design handles
+            sidebar links.
+          </p>
+        </div>
       </React.Fragment>
     ))
     .add('AboutPage', () => (
-        <React.Fragment>
-          <Sidebar />
-          <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
-        </React.Fragment>
+      <React.Fragment>
+        <Sidebar />
+        <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
+      </React.Fragment>
     ))
     .add('PeoplePage', () => (
-        <React.Fragment>
-          <Sidebar />
-          <PeoplePage />
-        </React.Fragment>
+      <React.Fragment>
+        <Sidebar />
+        <PeoplePage />
+      </React.Fragment>
     ))
     .add('GroupsPage', () => (
-        <React.Fragment>
-          <Sidebar />
-          <GroupsPage />
-        </React.Fragment>
+      <React.Fragment>
+        <Sidebar />
+        <GroupsPage />
+      </React.Fragment>
     ))
     .add('LanguagesPage', () => (
-        <React.Fragment>
-          <Sidebar />
-          <LanguagesPage />
-        </React.Fragment>
+      <React.Fragment>
+        <Sidebar />
+        <LanguagesPage />
+      </React.Fragment>
     ))
     .add('DocumentsPage', () => (
-        <React.Fragment>
-          <Sidebar />
-          <DocumentsPage />
-        </React.Fragment>
+      <React.Fragment>
+        <Sidebar />
+        <DocumentsPage />
+      </React.Fragment>
     ))

@@ -1,6 +1,6 @@
 import React from 'react'
 import IconButton from '.'
-import { storiesOf } from '@storybook/react';
+import { storiesOf } from '@storybook/react'
 
 /*
  * See .storybook/README.md for info on the component storybook.
@@ -9,14 +9,14 @@ import { storiesOf } from '@storybook/react';
 const clickFun = function (_e) {}
 
 storiesOf('IconButton', module)
-  .add('markup', () =>(
+  .add('markup', () => (
     <IconButton
       icon="mail"
       title="Mozart"
       onClick={clickFun}
       className="push-me" />)
   )
-  .add('markup (disabled)', () =>(
+  .add('markup (disabled)', () => (
     <IconButton
       icon="mail"
       title="Tea"
