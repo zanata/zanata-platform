@@ -14,14 +14,15 @@
   <h:form id="settings-languages-form" styleClass="l--push-bottom-0" onsubmit="return false">
     <h:panelGroup layout="block"  id="settings-languages-list">
 
-      <button styleClass="button--small l--push-bottom-half" jsfc="a4j:commandButton"
+      <button styleClass="button--small l--push-bottom-half use-global"
+              jsfc="a4j:commandButton"
         value="#{msgs['jsf.Language.useGlobal']}"
         rendered="#{projectHome.overrideLocales}"
         action="#{projectHome.useDefaultLocales()}"
         render="settings-languages-form"/>
 
       <button jsfc="a4j:commandButton"
-        styleClass="button--small l--push-bottom-half l--push-left-half"
+        styleClass="button--small remove-locale l--push-bottom-half l--push-left-half"
         value="#{msgs['jsf.localeAlias.RemoveAllAliases']}"
         rendered="#{not empty projectHome.localeAliases}"
         action="#{projectHome.removeAllLocaleAliases()}"
@@ -100,7 +101,7 @@
                 <div id="language-actions-#{locale.localeId}"
                   class="l--push-right-quarter reveal__target">
                   <div class="dropdown dropdown--small dropdown--right dropdown--single js-dropdown">
-                    <div class="button--group">
+                    <div class="button--group flex-btn-group">
                       <zanata:ajax-command-button
                         oncomplete="refreshStatistics();"
                         action="#{projectHome.disableLocale(locale)}"
