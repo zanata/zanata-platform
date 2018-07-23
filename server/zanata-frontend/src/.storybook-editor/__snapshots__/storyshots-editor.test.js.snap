@@ -786,7 +786,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     style={undefined}
   >
     <mock-button
-      className="Button Button--small u-rounded Button--secondary mr2 mb2 is-active"
+      className="Button Button--small u-rounded Button--secondary filterButtons is-active"
       onClick={[Function]}
       size="small"
     >
@@ -798,7 +798,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
       All
     </mock-button>
     <mock-button
-      className="Button Button--small u-rounded Button--secondary mr2 mb2"
+      className="Button Button--small u-rounded Button--secondary filterButtons"
       onClick={[Function]}
       size="small"
     >
@@ -810,7 +810,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
       Comments
     </mock-button>
     <mock-button
-      className="Button Button--small u-rounded Button--secondary mr2 mb2"
+      className="Button Button--small u-rounded Button--secondary filterButtons"
       onClick={[Function]}
       size="small"
     >
