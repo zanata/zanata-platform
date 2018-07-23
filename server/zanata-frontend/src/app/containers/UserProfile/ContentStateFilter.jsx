@@ -19,21 +19,18 @@ const ContentStateFilter = ({
 }) => {
   const { CheckableTag } = Tag
 
-  function onChange (e, option) {
-    handleFilterChanged(option)
-  }
-
   const optionItems = ContentStates.map(function (option, index) {
     const active = selectedContentState === option
-    /* eslint-disable react/jsx-no-bind */
+    const onChange = () => {
+      handleFilterChanged(option)
+    }
     return (
       <CheckableTag key={option} checked={active}
-        onChange={(e) => onChange(e, option)}
+        onChange={onChange}
         className={ContentStateStyles[index] + ' f6'}>
         {option}
       </CheckableTag>
     )
-    /* eslint-enable react/jsx-no-bind */
   })
   return (
     <React.Fragment>
