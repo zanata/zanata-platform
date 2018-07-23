@@ -81,13 +81,28 @@ class Languages extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { notification } = this.props
+    const {
+      notification,
+      totalCount,
+      size,
+      page,
+      handlePageChanged
+    } = this.props
     if (notification && prevProps.notification !== notification) {
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
         duration: notification.duration
       })
+    }
+    /* Reset to the first page when changing pagination size
+     * results higher than max page value */
+    if (prevProps.size !== size) {
+      const totalPage = Math.floor(totalCount / size) +
+        (totalCount % size > 0 ? 1 : 0)
+      if (page > totalPage) {
+        handlePageChanged(1)
+      }
     }
   }
 
