@@ -6,8 +6,7 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
-import { Icon, LoaderText, Select, Notification } from '../../components/'
-import { Button, Row } from 'react-bootstrap'
+import { Icon, LoaderText, Select } from '../../components/'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -25,6 +24,18 @@ import {
 } from '../../actions/glossary-actions'
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
+
+/* eslint-disable */
 
 /**
  * Root component for Glossary page
@@ -69,7 +80,7 @@ class Glossary extends Component {
     pageSize: PropTypes.string
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const paramProjectSlug = this.props.params.projectSlug
     const projectSlug = (!paramProjectSlug || paramProjectSlug === 'undefined')
       ? undefined : paramProjectSlug
@@ -80,10 +91,18 @@ class Glossary extends Component {
   /**
    * Force component to update when changes between project glossary to glossary
    */
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const projectSlug = this.props.params.projectSlug
+    const { notification } = this.props
     if (prevProps.params.projectSlug !== projectSlug) {
       this.props.handleInitLoad(projectSlug)
+    }
+    if (notification && prevProps.notification !== notification) {
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: notification.duration
+      })
     }
   }
 
@@ -100,7 +119,7 @@ class Glossary extends Component {
    * this function, but this stops working properly unless binding is done
    * inline in the JSX. Hope you have a good garbage collector.
    */
-  renderItem (index, key) {
+  renderItem(index, key) {
     const {
       handleSelectTerm,
       handleTermFieldUpdate,
@@ -149,7 +168,7 @@ class Glossary extends Component {
     )
   }
 
-  render () {
+  render() {
     const {
       terms,
       termsLoading,
@@ -171,7 +190,7 @@ class Glossary extends Component {
     const currentPage = page ? parseInt(page) : 1
     const displayPaging = totalPage > 1
     const pageSizeOption = map(PAGE_SIZE_SELECTION, (size) => {
-      return {label: size, value: size}
+      return { label: size, value: size }
     })
     const headerTitle = project ? 'Project Glossary' : 'Glossary'
     let list
@@ -190,83 +209,86 @@ class Glossary extends Component {
         className='reactList'
         ref={(c) => { this.list = c }} />)
     } else {
-      list = (<div className='loader-loadingContainer'>
-        <span className='u-textLoadingMuted'>
+      list = (<React.Fragment>
+        <p className='txt-muted tc'>
           <Icon name='glossary' />
-        </span>
-        <p className='glossaryText-muted'>No content</p>
-      </div>)
+        </p>
+        <p className='txt-muted b tc'>No content</p>
+      </React.Fragment>)
     }
 
     return (
-      <div>
-        {notification &&
-          (<Notification severity={notification.severity}
-            message={notification.message}
-            details={notification.details}
-            show={!!notification} />
-          )
-        }
+      <React.Fragment>
         <Helmet title={headerTitle} />
         <div className='wideView' id='glossary'>
-          <ViewHeader title={headerTitle} />
-          <div className='glossaryHeader'>
-            <Row>
-              {termCount > 0 &&
-                <Row>
-                  <span className='hidden-lesm glossaryRow'>Show</span>
-                  <Select options={pageSizeOption}
-                    placeholder='Terms per page'
-                    value={intPageSize}
-                    name='glossary-page'
-                    className='glossarySelect'
-                    searchable={false}
-                    clearable={false}
-                    onChange={handlePageSizeChange} />
-                </Row>
-              }
-              {displayPaging &&
-                <div className='u-pullRight glossaryPaging'>
-                  <Button bsStyle='link' disabled={currentPage <= 1}
-                    title='First page'
-                    onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
-                    <Icon name='previous' className='s1' />
-                  </Button>
-                  <Button bsStyle='link' disabled={currentPage <= 1}
-                    title='Previous page'
-                    onClick={
-                    () => { gotoPreviousPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-left' className='s1' />
-                  </Button>
-                  <span className='u-textNeutral-top'>
-                    {currentPage} of {totalPage}
-                  </span>
-                  <Button bsStyle='link' disabled={currentPage === totalPage}
-                    title='Next page'
-                    onClick={() => { gotoNextPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-right' className='s1' />
-                  </Button>
-                  <Button bsStyle='link' disabled={currentPage === totalPage}
-                    title='Last page'
-                    onClick={() => { gotoLastPage(currentPage, totalPage) }}>
-                    <Icon name='next' className='s1' />
-                  </Button>
-                  <span className='textNeutralTotal'
-                    title='Total glossary terms'>
-                    <Row>
-                      <Icon name='glossary' className='s1' /> {termCount}
-                    </Row>
-                  </span>
-                </div>
+          <Layout>
+            <ViewHeader title={headerTitle} />
+              <Row>
+                {termCount > 0 &&
+                  <Row>
+                    <Col span={1} offset={1}>
+                      <Select options={pageSizeOption}
+                        placeholder='Terms per page'
+                        value={intPageSize}
+                        name='glossary-page'
+                        className='glossarySelect'
+                        searchable={false}
+                        clearable={false}
+                        onChange={handlePageSizeChange} />
+                    </Col>
+                  </Row>
                 }
-            </Row>
-          </div>
-
-          <div className='glossaryList'>
-            {list}
-          </div>
+                {displayPaging &&
+                  <div className='fr glossaryPaging'>
+                    <Button aria-label='button'
+                      className='btn-link' disabled={currentPage <= 1}
+                      title='First page' icon='left'
+                      onClick={() => {
+                        gotoFirstPage(currentPage, totalPage)
+                      }}
+                    />
+                    <Button aria-label='button'
+                      className='btn-link' disabled={currentPage <= 1}
+                      title='Previous page' icon='left'
+                      onClick={
+                        () => {
+                          gotoPreviousPage(currentPage, totalPage)
+                        }}
+                    />
+                    <span className='txt-neutral'>
+                      {currentPage} of {totalPage}
+                    </span>
+                    <Button aria-label='button'
+                      className='btn-link'
+                      disabled={currentPage === totalPage}
+                      title='Next page' icon='right'
+                      onClick={() => {
+                        gotoNextPage(currentPage, totalPage)
+                      }}
+                    />
+                    <Button aria-label='button'
+                      className='btn-link'
+                      disabled={currentPage === totalPage}
+                      title='Last page' icon='right'
+                      onClick={() => {
+                        gotoLastPage(currentPage, totalPage)
+                      }}
+                    />
+                    <span className='txt-neutral'
+                      title='Total glossary terms'>
+                      <Row>
+                        <Icon name='glossary' className='s1' /> {termCount}
+                      </Row>
+                    </span>
+                  </div>
+                }
+              </Row>
+            <div className='glossaryList'>
+              {list}
+            </div>
+          </Layout>
         </div>
-      </div>
+      </React.Fragment>
     )
     /* eslint-enable react/jsx-no-bind */
   }

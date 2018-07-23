@@ -2,7 +2,6 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../../components'
 import cx from 'classnames'
-import { Row } from 'react-bootstrap'
 
 /**
  * Display metadata for suggestion source.
@@ -12,8 +11,11 @@ class SuggestionDetailsSummary extends React.Component {
     onClick: PropTypes.func,
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.oneOf(
-          ['IMPORTED_TM', 'LOCAL_PROJECT']).isRequired,
+        type: PropTypes.shape({
+          key: PropTypes.oneOf(
+            ['IMPORTED_TM', 'LOCAL_PROJECT', 'MT']).isRequired,
+          metadata: PropTypes.string
+        }).isRequired,
         transMemorySlug: PropTypes.string,
         projectId: PropTypes.string,
         projectName: PropTypes.string,
@@ -27,21 +29,18 @@ class SuggestionDetailsSummary extends React.Component {
   render () {
     const { matchDetails } = this.props.suggestion
     const topMatch = matchDetails[0]
-    const isTextFlow = topMatch.type === 'LOCAL_PROJECT'
+    const isTextFlow = topMatch.type.key === 'LOCAL_PROJECT' ||
+      topMatch.type.key === 'MT'
 
     const projectIcon = isTextFlow && (
       <li title={topMatch.projectId}>
-        <Row>
-          <Icon name="project" className="n1" /> {topMatch.projectName}
-        </Row>
+        <Icon name="project" className="n1" /> {topMatch.projectName}
       </li>
     )
 
     const versionIcon = isTextFlow && (
       <li>
-        <Row>
-          <Icon name="version" className="n1" /> {topMatch.version}
-        </Row>
+        <Icon name="version" className="n1" /> {topMatch.version}
       </li>
     )
 
@@ -50,27 +49,21 @@ class SuggestionDetailsSummary extends React.Component {
       : ''
     const documentIcon = isTextFlow && (
       <li className="DocName" title={documentPath + topMatch.documentName}>
-        <Row>
-          <Icon name="document" className="n1" />
-          <span className="ellipsis">{topMatch.documentName}</span>
-        </Row>
+        <Icon name="document" className="n1" />
+        <span className="ellipsis">{topMatch.documentName}</span>
       </li>
     )
 
     const importIcon = isTextFlow ? undefined : (
       <li>
-        <Row>
-          <Icon name="import" className="n1" /> {topMatch.transMemorySlug}
-        </Row>
+        <Icon name="import" className="n1" /> {topMatch.transMemorySlug}
       </li>
     )
 
     const remainingIcon = matchDetails.length > 1 && (
       <li>
-        <Row>
-          <Icon name="translate" className="n1"
-          /> {matchDetails.length - 1} more occurrences
-        </Row>
+        <Icon name="translate" className="n1"
+        /> {matchDetails.length - 1} more occurrences
       </li>
     )
 

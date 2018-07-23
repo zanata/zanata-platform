@@ -106,10 +106,10 @@ public class GlossaryCSVReaderTest {
     }
 
     private void assertEntry(Map.Entry<LocaleId, List<GlossaryEntry>> entry) {
-        assertThat(entry.getValue().get(0).getDescription()
-                .startsWith("testing of hello"));
-        assertThat(entry.getValue().get(1).getDescription()
-                .startsWith("testing of morning"));
+        assertThat(entry.getValue().get(0).getDescription())
+                .startsWith("testing of hello");
+        assertThat(entry.getValue().get(1).getDescription())
+                .startsWith("testing of morning");
         assertThat(entry.getValue().get(0).getPos()).isEqualTo("verb");
         assertThat(entry.getValue().get(1).getPos()).isEqualTo("noun");
     }

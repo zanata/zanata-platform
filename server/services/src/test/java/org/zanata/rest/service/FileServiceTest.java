@@ -46,7 +46,7 @@ import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.seam.security.CurrentUserImpl;

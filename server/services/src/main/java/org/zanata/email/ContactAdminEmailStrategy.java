@@ -23,20 +23,20 @@ package org.zanata.email;
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
 import static org.zanata.email.Addresses.getReplyTo;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class ContactAdminEmailStrategy extends EmailStrategy {
+public class ContactAdminEmailStrategy extends VelocityEmailStrategy {
     private final String fromLoginName;
     private final String fromName;
     private final String replyEmail;
     private final String userSubject;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getBodyResourceName() {
@@ -59,21 +59,20 @@ public class ContactAdminEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
-                .put("htmlMessage", safeHTML);
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
-            "replyEmail", "userSubject", "htmlMessage" })
+            "replyEmail", "userSubject", "userMessage" })
     public ContactAdminEmailStrategy(final String fromLoginName,
             final String fromName, final String replyEmail,
-            final String userSubject, final String htmlMessage) {
+            final String userSubject, final String userMessage) {
         this.fromLoginName = fromLoginName;
         this.fromName = fromName;
         this.replyEmail = replyEmail;
         this.userSubject = userSubject;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }

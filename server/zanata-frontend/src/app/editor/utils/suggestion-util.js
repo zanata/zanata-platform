@@ -14,12 +14,13 @@ export const MATCH_TYPE = {
  * @param suggestionDetail with .type and .contentState
  * @returns String, one of: 'imported', 'translated', 'approved'
  */
+// @ts-ignore any
 export function matchType (suggestionDetail) {
   const { contentState, type } = suggestionDetail
   if (type === 'IMPORTED_TM') {
     return MATCH_TYPE.IMPORTED
   }
-  if (type === 'LOCAL_PROJECT') {
+  if (type === 'LOCAL_PROJECT' || type === 'MT') {
     if (contentState === 'Translated') {
       return MATCH_TYPE.TRANSLATED
     }

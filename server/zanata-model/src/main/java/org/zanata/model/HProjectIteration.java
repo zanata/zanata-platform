@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Cacheable;
@@ -62,12 +63,14 @@ import org.zanata.model.type.EntityType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 @Entity
 @Cacheable
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Access(AccessType.FIELD)
+@GraphQLType(name = "ProjectIteration")
 public class HProjectIteration extends SlugEntityBase
         implements Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType,
         HasUserFriendlyToString {
@@ -111,6 +114,7 @@ public class HProjectIteration extends SlugEntityBase
             joinColumns = @JoinColumn(name = "projectIterationId"),
             inverseJoinColumns = @JoinColumn(name = "iterationGroupId"))
     private Set<HIterationGroup> groups = Sets.newHashSet();
+
     @ElementCollection
     @JoinTable(name = "HProjectIteration_Validation",
             joinColumns = { @JoinColumn(name = "projectIterationId") })
@@ -119,12 +123,11 @@ public class HProjectIteration extends SlugEntityBase
     private Map<String, String> customizedValidations = Maps.newHashMap();
     @Enumerated(EnumType.STRING)
     private ProjectType projectType;
+
     @Type(type = "entityStatus")
     @NotNull
     @Column(columnDefinition = "char(1)")
     private EntityStatus status = EntityStatus.ACTIVE;
-    @Column(nullable = true)
-    private Boolean requireTranslationReview = false;
 
     @Override
     public Iterator<DocumentWithId> iterator() {
@@ -136,13 +139,6 @@ public class HProjectIteration extends SlugEntityBase
     @Transient
     public EntityType getEntityType() {
         return EntityType.HProjectIteration;
-    }
-
-    public Boolean getRequireTranslationReview() {
-        if (requireTranslationReview == null) {
-            return Boolean.FALSE;
-        }
-        return requireTranslationReview;
     }
 
     @Override
@@ -200,11 +196,6 @@ public class HProjectIteration extends SlugEntityBase
         this.status = status;
     }
 
-    public void setRequireTranslationReview(
-            final Boolean requireTranslationReview) {
-        this.requireTranslationReview = requireTranslationReview;
-    }
-
     public HProject getProject() {
         return this.project;
     }
@@ -245,8 +236,19 @@ public class HProjectIteration extends SlugEntityBase
         return this.customizedValidations;
     }
 
+    @Nullable
     public ProjectType getProjectType() {
         return this.projectType;
+    }
+
+    @Transient @Nullable
+    public ProjectType getEffectiveProjectType() {
+        ProjectType projectType = getProjectType();
+        if (projectType == null) {
+            // NB some old projects have null defaultProjectType
+            return getProject().getDefaultProjectType();
+        }
+        return projectType;
     }
 
     public EntityStatus getStatus() {

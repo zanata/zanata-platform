@@ -6,6 +6,7 @@ import { DEFAULT_LOCALE } from '../../config'
 
 describe('context-reducer test', () => {
   it('generates initial state', () => {
+    // @ts-ignore undefined state
     const initial = contextReducer(undefined, { type: 'an action' })
     expect(initial).toEqual({
       sourceLocale: DEFAULT_LOCALE

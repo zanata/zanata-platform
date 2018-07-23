@@ -13,6 +13,7 @@ import update from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
 import { dashboardUrl, projectPageUrl } from '../api'
 
+/** @type {import('./state').HeaderDataState} */
 const defaultState = {
   user: {
     name: '',
@@ -37,7 +38,8 @@ const defaultState = {
         rejected: 0,
         translated: 0,
         needswork: 0,
-        untranslated: 0
+        untranslated: 0,
+        mt: 0
       },
       id: ''
     },
@@ -47,15 +49,18 @@ const defaultState = {
   permissions: {
     reviewer: false,
     translator: false
-  }
+  },
+  localeMessages: undefined
 }
 
+// @ts-ignore any
 const gravatarUrl = (hash, size) => {
   return `https://www.gravatar.com/avatar/${hash}?d=mm&r=g&s=${size}`
 }
 
 const headerDataReducer = handleActions({
   [HEADER_DATA_FETCHED]: (state, { payload: {
+    // @ts-ignore
     documents, locales, versionSlug, projectInfo, myInfo } }) => {
     const projectSlug = projectInfo.id
     return update(state, {

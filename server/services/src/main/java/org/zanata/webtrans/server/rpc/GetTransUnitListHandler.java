@@ -21,6 +21,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.context.RequestScoped;
@@ -90,6 +92,7 @@ public class GetTransUnitListHandler extends
                 .sourceCommentContains(editorFilter.getSourceComment())
                 .targetCommentContains(editorFilter.getTransComment())
                 .caseSensitive(false).checkInSource(true).checkInTarget(true)
+                .includeMT(action.isFilterMT())
                 .includeStates(action.getFilterStates()).build();
         if (action.isNeedReloadIndex()) {
             GetTransUnitsNavigation getTransUnitsNavigation =
@@ -201,9 +204,10 @@ public class GetTransUnitListHandler extends
     private GetTransUnitListResult transformToTransUnits(
             GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows,
             int targetOffset, int targetPage) {
-        List<TransUnit> units =
-                Lists.transform(textFlows, new HTextFlowToTransUnitFunction(
-                        hLocale, transUnitTransformer));
+        List<TransUnit> units = textFlows.stream()
+                .map(new HTextFlowToTransUnitFunction(
+                        hLocale, transUnitTransformer))
+                .collect(Collectors.toList());
         int gotoRow = 0;
         if (action.getTargetTransUnitId() != null) {
             int row = Iterables.indexOf(units, new FindByTransUnitIdPredicate(
@@ -212,10 +216,8 @@ public class GetTransUnitListHandler extends
                 gotoRow = row;
             }
         }
-        // stupid GWT RPC can't handle
-        // com.google.common.collect.Lists$TransformingRandomAccessList
         return new GetTransUnitListResult(action.getDocumentId(),
-                Lists.newArrayList(units), gotoRow, targetOffset, targetPage);
+                units, gotoRow, targetOffset, targetPage);
     }
 
     @Override

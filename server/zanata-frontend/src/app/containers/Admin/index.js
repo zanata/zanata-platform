@@ -23,12 +23,17 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
+import { getDswid } from '../../utils/UrlHelper'
 import {connect} from 'react-redux'
 import TMXExportModal from '../../components/TMX/TMXExportModal'
-import { isAdmin } from '../../config'
-import { Grid, Col, ListGroup, ListGroupItem } from 'react-bootstrap'
-import { Icon } from '../../components'
+import { Link, Icon } from '../../components'
 import Helmet from 'react-helmet'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+
+const dswid = getDswid()
 
 import {
   showExportTMXModal
@@ -43,139 +48,118 @@ class Admin extends Component {
   }
 
   render () {
-    if (!isAdmin) {
-      return (
-        <div>
-          <Helmet title='Administration' />
-          <div className='wideView' id='admin'>
-            <div className='u-centerBlock'>
-              <p>You are not authorised to access to this page</p>
-            </div>
-          </div>
-        </div>
-      )
-    }
     return (
-      <div>
+      <React.Fragment>
         <Helmet title='Administration' />
         <div className='page wideView' id='admin'>
           <div className='u-centerBlock'>
-            <Grid>
-              <h1>Administration</h1>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Server_configuration_home'
-                    href='/admin/server_configuration'>
-                    <Icon name='settings' className='s2' />
-                    Server configuration
-                  </ListGroupItem>
-                </ListGroup>
+            <h1>Administration</h1>
+            <Row gutter={6}>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Admin_Server_configuration_home'
+                  link={'/admin/server_settings' + dswid}
+                  className='list-group-item'>
+                  <Icon name='settings' className='s2' />
+                  Server settings
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_users_home'
-                    href='/admin/usermanager'>
-                    <Icon name='user' className='s2' />
-                    Manage users
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Admin_Manage_users_home'
+                  className='list-group-item'
+                  link='/admin/usermanager' useHref>
+                  <Icon name='user' className='s2' />
+                  Manage users
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_roles_home'
-                    href='/admin/rolemanager'>
-                    <Icon name='users' className='s2' />
-                    Manage roles
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Admin_Manage_roles_home'
+                  className='list-group-item'
+                  link='/admin/rolemanager' useHref>
+                  <Icon name='users' className='s2' />
+                  Manage roles
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_search_home'
-                    href='/admin/search'>
-                    <Icon name='search' className='s2' />
-                    Manage search
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Admin_Manage_search_home'
+                  className='list-group-item'
+                  link='/admin/search' useHref>
+                  <Icon name='search' className='s2' />
+                  Manage search
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Role_Assignment_Rules_home'
-                    href='/admin/rolerules'>
-                    <Icon name='assign' className='s2' />
-                    Role assignment rules
-                  </ListGroupItem>
-                </ListGroup>
+            </Row>
+            <Row gutter={6}>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Admin_Role_Assignment_Rules_home'
+                  className='list-group-item'
+                  link='/admin/rolerules' useHref>
+                  <Icon name='assign' className='s2' />
+                  Role assignment rules
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Translation_Memory_home'
-                    href='/tm/home.xhtml'>
-                    <Icon name='tm' className='s2' />
-                    Translation memory
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Translation_Memory_home'
+                  className='list-group-item'
+                  link='/tm' useHref>
+                  <Icon name='tm' className='s2' />
+                  Translation memory
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Process_Management_home'
-                    href='/admin/processmanager'>
-                    <Icon name='clock' className='s2' />
-                    Process manager
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Process_Management_home'
+                  className='list-group-item'
+                  link='/admin/processmanager' useHref>
+                  <Icon name='clock' className='s2 mr2' />
+                  Process manager
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Manage_stats_home'
-                    href='/admin/stats'>
-                    <Icon name='piestats' className='s2' />
-                    Overall statistics
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Admin_Manage_stats_home'
+                  className='list-group-item'
+                  link='/admin/stats' useHref>
+                  <Icon name='piestats' className='s2 mr2' />
+                  Overall statistics
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Admin_Monitoring_home'
-                    href='/admin/monitoring'>
-                    <Icon name='servmon' className='s2' />
-                    Server monitoring
-                  </ListGroupItem>
-                </ListGroup>
+            </Row>
+            <Row gutter={6}>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Admin_Monitoring_home'
+                  className='list-group-item'
+                  link='/admin/monitoring' useHref>
+                  <Icon name='servmon' className='s2 mr2' />
+                  Server monitoring
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='Cache_Stats_Home'
-                    href='/admin/cachestats'>
-                    <Icon name='document' className='s2' />
-                    Cache statistics
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='Cache_Stats_Home'
+                  className='list-group-item'
+                  link='/admin/cachestats' useHref>
+                  <Icon name='document' className='s2 mr2' />
+                  Cache statistics
+                </Link>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='exportTMXAllLink'
-                    href='#'
-                    onClick={this.props.toggleTMXExportModal}>
-                    <Icon name='export' className='s2' />
-                    Export all to TMX
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <a id='exportTMXAllLink'
+                  className='list-group-item'
+                  href='#'
+                  onClick={this.props.toggleTMXExportModal}>
+                  <Icon name='export' className='s2 mr2' />
+                  Export all to TMX
+                </a>
               </Col>
-              <Col xs={12} sm={5} lg={3}>
-                <ListGroup>
-                  <ListGroupItem id='reviewCriteria'
-                    href='/admin/review'>
-                    <Icon name='tick' className='s2' />
-                    Review criteria
-                  </ListGroupItem>
-                </ListGroup>
+              <Col xs={24} sm={12} lg={6}>
+                <Link id='reviewCriteria'
+                  className='list-group-item' link='/admin/review'>
+                  <Icon name='tick' className='s2 mr2' />
+                  Review criteria
+                </Link>
               </Col>
-            </Grid>
+            </Row>
             <TMXExportModal />
           </div>
         </div>
-      </div>
+      </React.Fragment>
     )
   }
 }

@@ -28,21 +28,15 @@ milestone()
 
 PullRequests.ensureJobDescription(env, manager, steps)
 
+@Field
+boolean allFuncTestsDefault
+//noinspection GroovyPointlessBoolean
+allFuncTestsDefault = manager.build.project.description?.contains('allFuncTests') || false
+
 // initialiser must be run separately (bindings not available during compilation phase)
-@Field
-def pipelineLibraryScmGit
-
-@Field
-def mainScmGit
-
-@Field
-def notify
-
 // we can't set these values yet, because we need a node to look at the environment
 @Field
 def defaultNodeLabel
-@Field
-def jobName
 
 // Define project properties: general properties for the Pipeline-defined jobs.
 // 1. discard old artifacts and build logs
@@ -52,16 +46,8 @@ def jobName
 // we need a node to access env.DEFAULT_NODE.
 node {
   echo "running on node ${env.NODE_NAME}"
-  pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
-  pipelineLibraryScmGit.init(PIPELINE_LIBRARY_BRANCH)
-  mainScmGit = new ScmGit(env, steps, PROJ_URL)
-  mainScmGit.init(env.BRANCH_NAME)
-  notify = new Notifier(env, steps, currentBuild,
-    pipelineLibraryScmGit, mainScmGit, (env.GITHUB_COMMIT_CONTEXT) ?: 'Jenkinsfile',
-  )
   defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
   // eg github-zanata-org/zanata-platform/update-Jenkinsfile
-  jobName = env.JOB_NAME
   def projectProperties = [
     [
       $class: 'BuildDiscarderProperty',
@@ -79,18 +65,18 @@ node {
       $class: 'ParametersDefinitionProperty',
       parameterDefinitions: [
         [
-                $class: 'LabelParameterDefinition',
-                // Specify the default node in Jenkins env var DEFAULT_NODE
-                // (eg kvm), or leave blank to build on any node.
-                defaultValue: defaultNodeLabel,
-                description: 'Jenkins node label to use for build',
-                name: 'LABEL'
+          $class: 'LabelParameterDefinition',
+          // Specify the default node in Jenkins env var DEFAULT_NODE
+          // (eg kvm), or leave blank to build on any node.
+          defaultValue: defaultNodeLabel,
+          description: 'Jenkins node label to use for build',
+          name: 'LABEL'
         ],
         [
-                $class: 'BooleanParameterDefinition',
-                defaultValue: false,
-                description: 'Run all functional tests?',
-                name: 'allFuncTests'
+          $class: 'BooleanParameterDefinition',
+          defaultValue: allFuncTestsDefault,
+          description: 'Run all functional tests?',
+          name: 'allFuncTests'
         ],
       ]
     ],
@@ -145,7 +131,7 @@ boolean resolveAllFuncTests() {
     echo "allFuncTests param is null; using default value."
   }
   // paramVal may be a String, so compare as Strings
-  def result = (paramVal ?: false).toString().equals("true")
+  def result = (paramVal ?: allFuncTestsDefault).toString().equals("true")
   echo "allFuncTests: $result"
 
   return result
@@ -153,6 +139,9 @@ boolean resolveAllFuncTests() {
 
 @Field
 def mainlineBranches = ['master', 'release', 'legacy']
+
+// Seems it does not require to be in node{} to get env
+// But need to be run after node
 @Field
 def gwtOpts = '-Dchromefirefox'
 if (env.BRANCH_NAME in mainlineBranches) {
@@ -162,7 +151,7 @@ if (env.BRANCH_NAME in mainlineBranches) {
 String getLockName() {
   if (env.BRANCH_NAME in mainlineBranches) {
     // Each mainline branch pipeline will have its own lock.
-    return jobName
+    return env.JOB_NAME
   } else if (env.BRANCH_NAME.startsWith('PR-')) {
     // Pull requests 1, 101, 201, xx01 will all share the same lock name.
     // Barring collisions, this means each PR gets its own lock, with a
@@ -183,10 +172,28 @@ String getLockName() {
 
 // use timestamps for Jenkins logs
 timestamps {
+  // Init the notifier
+  def pipelineLibraryScmGit
+
+  def mainScmGit
+
+  def notify
+
   // allocate a node for build+unit tests
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
     currentBuild.displayName = currentBuild.displayName + " {${env.NODE_NAME}}"
+    // Init the notifier
+    pipelineLibraryScmGit = new ScmGit(env, steps, 'https://github.com/zanata/zanata-pipeline-library')
+    pipelineLibraryScmGit.init(PIPELINE_LIBRARY_BRANCH)
+
+    mainScmGit = new ScmGit(env, steps, PROJ_URL)
+    mainScmGit.init(env.BRANCH_NAME)
+
+    notify = new Notifier(env, steps, currentBuild,
+        pipelineLibraryScmGit, mainScmGit, (env.GITHUB_COMMIT_CONTEXT) ?: 'Jenkinsfile',
+    )
+
     // generate logs in colour
     ansicolor {
       try {
@@ -224,16 +231,18 @@ timestamps {
           // suspected concurrency problems)
           // -Dmaven.test.failure.ignore: Continue building other modules
           // even after test failures.
-          sh """./run-clean.sh ./mvnw -e -V -T 1 \
+          sh """./run-clean.sh ./mvnw -e -V --builder singlethreaded \
             -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             clean install jxr:aggregate \
             --batch-mode -Dstyle.color=never \
             --update-snapshots \
             -DstaticAnalysisCI \
+            -Doptimise \
             $gwtOpts \
             -Dkotlin.compiler.incremental=false \
             -DskipFuncTests \
             -DskipArqTests \
+            -Dmaven.compiler.failOnWarning \
             -Dmaven.test.failure.ignore \
             -Ddepcheck \
           """
@@ -267,7 +276,7 @@ timestamps {
           // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
-          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv,target/dependencies/**"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv,**/target/dependencies/**,**/target/test-output/**,**/reports/scan_node_modules.xml"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
@@ -293,16 +302,18 @@ timestamps {
 
           step([$class: 'WarningsPublisher',
                 consoleParsers: [
-                        [parserName: 'Java Compiler (javac)'],
-                        [parserName: 'kotlin'],
-//                        [parserName: 'JavaDoc'],
-//                        [parserName: 'Maven'], // ~279 warnings, but too variable
+                        // we use maven.compiler.failOnWarning instead
+                        // [parserName: 'Java Compiler (javac)'],
+                        // we use arg -Werror instead
+                        // [parserName: 'kotlin'],
+                        [parserName: 'JavaDoc'],
+                        [parserName: 'Maven'], // ~279 warnings, but too variable
                         // TODO check integration test warnings (EAP and WildFly)
-                        //[parserName: 'appserver log messages'], // 119 warnings
-                        //[parserName: 'browser warnings'],       // 0 warnings
+                        [parserName: 'appserver log messages'], // 119 warnings
+                        [parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '0',
-                unstableTotalHigh: '0',
+//                unstableTotalAll: '0',
+//                unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
 //          step([$class: 'WarningsPublisher',
@@ -356,8 +367,8 @@ timestamps {
       stage('Integration tests') {
         // define tasks which will run in parallel
         def tasks = [
-                "WILDFLY" : { integrationTests('wildfly8') },
-                "JBOSSEAP": { integrationTests('jbosseap6') },
+                "WILDFLY" : { integrationTests('wildfly8', notify) },
+                "JBOSSEAP": { integrationTests('jbosseap6', notify) },
                 // abort other tasks (for faster feedback) as soon as one fails
                 // disabled; not currently handled by pipeline-unit
 //              failFast: true
@@ -380,7 +391,7 @@ timestamps {
   }
 }
 
-void integrationTests(String appserver) {
+void integrationTests(String appserver, def notify) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
@@ -433,7 +444,7 @@ void integrationTests(String appserver) {
         """
 
           def mvnResult = sh returnStatus: true, script: """\
-            ./run-clean.sh ./mvnw -e -V -T 1 \
+            ./run-clean.sh ./mvnw -e -V --builder singlethreaded \
             -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
             install \
             --batch-mode -Dstyle.color=never \

@@ -7,6 +7,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -40,6 +42,7 @@ import org.zanata.util.UrlUtil;
 import org.zanata.util.Zanata;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -66,17 +69,29 @@ import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 @RunWith(Enclosed.class)
 public class TranslationFinderTest {
 
-    static boolean searchIndexesCreated = false;
+    private static void createDataAndIndexes(EntityManager em,
+            SearchIndexManager searchIndexManager) throws Exception {
+        new DBUnitDataSetRunner(em)
+                .runDataSetOperations(
+                        new DataSetOperation(
+                                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                                DatabaseOperation.CLEAN_INSERT),
+                        new DataSetOperation(
+                                "org/zanata/test/model/LocalesData.dbunit.xml",
+                                DatabaseOperation.CLEAN_INSERT),
+                        new DataSetOperation(
+                                "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
+                                DatabaseOperation.CLEAN_INSERT));
+        searchIndexManager.reindex(true, true, false);
+    }
 
-    static void recreateSearchIndexes(SearchIndexManager searchIndexManager)
-            throws Exception {
-        // NB: Only create the indexes once per test run. This assumes the
-        // test doesn't change the data at all. If it were to do that, the
-        // search indexes would need to be recreated
-        if (!searchIndexesCreated) {
-            searchIndexManager.reindex(true, true, false);
-            searchIndexesCreated = true;
-        }
+    public static void deleteDataAndIndexes(EntityManager em) {
+        new DBUnitDataSetRunner(em)
+                .runDataSetOperations(
+                        new DataSetOperation(
+                                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                                DatabaseOperation.DELETE_ALL));
+        ZanataJpaTest.purgeLuceneIndexes(em);
     }
 
     @RunWith(Parameterized.class)
@@ -161,29 +176,24 @@ public class TranslationFinderTest {
         @Before
         @InRequestScope
         public void before() throws Exception {
-            new DBUnitDataSetRunner(jpaRule.getEntityManager())
-                    .runDataSetOperations(
-                            new DataSetOperation(
-                                    "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT),
-                            new DataSetOperation(
-                                    "org/zanata/test/model/LocalesData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT),
-                            new DataSetOperation(
-                                    "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT));
-            recreateSearchIndexes(searchIndexManager);
+            createDataAndIndexes(jpaRule.getEntityManager(), searchIndexManager);
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
             when(identity.hasPermission(any(HProjectIteration.class),
                     ArgumentMatchers.matches("read"))).thenReturn(true);
         }
-        // @Ignore
-        // @Test
-        // @InRequestScope
+
+        @After
+        @InRequestScope
+        public void after() {
+            deleteDataAndIndexes(jpaRule.getEntityManager());
+        }
 
         /**
          * Use this test to individually test scenarios.
          */
+        // @Ignore
+        // @Test
+        // @InRequestScope
         public void individualTest() {
             testExecution(TranslationMemoryServiceImpl.class,
                     new Execution(false, true, true, true, true, true));
@@ -196,6 +206,7 @@ public class TranslationFinderTest {
         public void testTextFlowTargetDAO() {
             testExecution(TextFlowTargetDAO.class, execution);
         }
+
         // currently 64 combinations
         // TODO reduce the combinations, or reduce the cost per execution
 
@@ -227,7 +238,7 @@ public class TranslationFinderTest {
             queryDoc.setProjectIteration(queryProjIter);
             queryDoc.setFullPath(execution.getDocument());
             // Create the text Flow
-            HTextFlow queryTextFlow = new HTextFlow();
+            HTextFlow queryTextFlow = new HTextFlow(queryDoc, execution.getContext());
             // TODO test that the query textflow is excluded from results
             // (when the query textflow has been persisted and indexed)
             queryTextFlow.setId(-999L);
@@ -235,8 +246,6 @@ public class TranslationFinderTest {
                                                                // matches
             queryTextFlow.setPlural(false);
             queryTextFlow.setObsolete(false);
-            queryTextFlow.setDocument(queryDoc);
-            queryTextFlow.setResId(execution.getContext());
             // For all the executions whose queries are expected to find a
             // match,
             // the target which is expected to match is HTextFlowTarget 100
@@ -314,20 +323,15 @@ public class TranslationFinderTest {
         @Before
         @InRequestScope
         public void before() throws Exception {
-            new DBUnitDataSetRunner(jpaRule.getEntityManager())
-                    .runDataSetOperations(
-                            new DataSetOperation(
-                                    "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT),
-                            new DataSetOperation(
-                                    "org/zanata/test/model/LocalesData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT),
-                            new DataSetOperation(
-                                    "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT));
-            recreateSearchIndexes(searchIndexManager);
+            createDataAndIndexes(jpaRule.getEntityManager(), searchIndexManager);
             when(identity.hasPermission(any(HProjectIteration.class),
                     ArgumentMatchers.matches("read"))).thenReturn(true);
+        }
+
+        @After
+        @InRequestScope
+        public void after() {
+            deleteDataAndIndexes(jpaRule.getEntityManager());
         }
 
         @Test

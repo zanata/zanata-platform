@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.NeedReview;
 import static org.zanata.common.ContentState.New;
@@ -32,8 +33,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
+
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocStatsEvent;
@@ -46,7 +49,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ValidationService;
 import org.zanata.service.VersionStateCache;
@@ -60,11 +63,10 @@ import com.google.common.collect.Maps;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Named("copyTransWorkFactory")
-@javax.enterprise.context.Dependent
+@Dependent
 public class CopyTransWorkFactory implements Serializable {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(CopyTransWorkFactory.class);
+    private static final Logger log =
+            getLogger(CopyTransWorkFactory.class);
     private static final long serialVersionUID = 3709610236866704460L;
 
     // Inject textFlowTargetDAO (@DatabaseSearch) for Hibernate-based query
@@ -84,15 +86,14 @@ public class CopyTransWorkFactory implements Serializable {
 
     public Integer runCopyTransInNewTx(HLocale targetLocale,
             HCopyTransOptions options, HDocument document,
-            boolean requireTranslationReview, List<HTextFlow> copyTargets)
+            List<HTextFlow> copyTargets)
             throws Exception {
         return runInTransaction(() -> runCopyTrans(targetLocale, options,
-                document, requireTranslationReview, copyTargets));
+                document, copyTargets));
     }
 
     public Integer runCopyTrans(HLocale targetLocale, HCopyTransOptions options,
-            HDocument document, boolean requireTranslationReview,
-            List<HTextFlow> copyTargets) {
+            HDocument document, List<HTextFlow> copyTargets) {
         int numCopied = 0;
         boolean checkContext = false;
         boolean checkProject = false;
@@ -112,17 +113,22 @@ public class CopyTransWorkFactory implements Serializable {
         }
         Long actorId = authenticatedAccount.getPerson().getId();
         for (HTextFlow textFlow : copyTargets) {
-            if (shouldFindMatch(textFlow, targetLocale,
-                    requireTranslationReview)) {
+            if (shouldFindMatch(textFlow, targetLocale)) {
                 Optional<HTextFlowTarget> bestMatch =
                         translationFinder.searchBestMatchTransMemory(textFlow,
                                 targetLocale.getLocaleId(),
                                 document.getLocale().getLocaleId(),
                                 checkContext, checkDocument, checkProject);
                 if (bestMatch.isPresent()) {
-                    numCopied++;
-                    saveCopyTransMatch(actorId, bestMatch.get(), textFlow,
-                            options, requireTranslationReview);
+                    HTextFlowTarget matchingTarget = bestMatch.get();
+                    // The query above should exclude MACHINE_TRANS, but I'm feeling paranoid
+                    if (matchingTarget.getSourceType() == TranslationSourceType.MACHINE_TRANS) {
+                        log.warn("Unexpected MT result: {}", matchingTarget);
+                    } else {
+                        numCopied++;
+                        saveCopyTransMatch(actorId, matchingTarget, textFlow,
+                                options);
+                    }
                 }
             }
         }
@@ -165,9 +171,6 @@ public class CopyTransWorkFactory implements Serializable {
      *
      * @param pairs
      *            List of evaluated rules and their result.
-     * @param requireTranslationReview
-     *            Whether the project to copy the translation to requires
-     *            translations to be reviewed.
      * @param matchingTargetState
      *            The initial state of the matching translation (the translation
      *            that will be copied over).
@@ -175,12 +178,10 @@ public class CopyTransWorkFactory implements Serializable {
      *         indicates that the translation should not copied.
      */
     static ContentState determineContentStateFromRuleList(
-            List<MatchRulePair> pairs, boolean requireTranslationReview,
-            ContentState matchingTargetState) {
-        assert matchingTargetState == Translated
-                || matchingTargetState == Approved;
-        return determineContentStateFromMatchRules(pairs,
-                requireTranslationReview ? matchingTargetState : Translated);
+            List<MatchRulePair> pairs, ContentState matchingTargetState) {
+        assert matchingTargetState == Translated ||
+            matchingTargetState == Approved;
+        return determineContentStateFromMatchRules(pairs, Translated);
     }
 
     /**
@@ -197,9 +198,6 @@ public class CopyTransWorkFactory implements Serializable {
      *            copy-target text flows.
      * @param options
      *            The copy trans options that are effective.
-     * @param requireTranslationReview
-     *            Whether the project to copy the translation to requires
-     *            translations to be reviewed.
      * @param matchingTargetState
      *            he initial state of the matching translation (the translation
      *            that will be copied over).
@@ -208,7 +206,7 @@ public class CopyTransWorkFactory implements Serializable {
      */
     static ContentState determineContentState(Supplier<Boolean> contextMatches,
             Supplier<Boolean> projectMatches, Supplier<Boolean> docIdMatches,
-            HCopyTransOptions options, boolean requireTranslationReview,
+            HCopyTransOptions options,
             ContentState matchingTargetState) {
         List<MatchRulePair> rules = ImmutableList.of(
                 new MatchRulePair(contextMatches,
@@ -217,44 +215,26 @@ public class CopyTransWorkFactory implements Serializable {
                         options.getProjectMismatchAction()),
                 new MatchRulePair(docIdMatches,
                         options.getDocIdMismatchAction()));
-        return determineContentStateFromRuleList(rules,
-                requireTranslationReview, matchingTargetState);
+        return determineContentStateFromRuleList(rules, matchingTargetState);
     }
 
     private void saveCopyTransMatch(Long actorId,
             final HTextFlowTarget matchingTarget, final HTextFlow originalTf,
-            final HCopyTransOptions options,
-            final boolean requireTranslationReview) {
+            final HCopyTransOptions options) {
         final HProjectIteration matchingTargetProjectIteration = matchingTarget
                 .getTextFlow().getDocument().getProjectIteration();
         // lazy evaluation of some conditions
-        Supplier<Boolean> contextMatches = new Supplier<Boolean>() {
-
-            @Override
-            public Boolean get() {
-                return originalTf.getResId()
-                        .equals(matchingTarget.getTextFlow().getResId());
-            }
-        };
-        Supplier<Boolean> projectMatches = new Supplier<Boolean>() {
-
-            public Boolean get() {
-                return originalTf.getDocument().getProjectIteration()
-                        .getProject().getId()
-                        .equals(matchingTargetProjectIteration.getProject()
-                                .getId());
-            }
-        };
-        Supplier<Boolean> docIdMatches = new Supplier<Boolean>() {
-
-            @Override
-            public Boolean get() {
-                return originalTf.getDocument().getDocId().equals(
+        Supplier<Boolean> contextMatches = () -> originalTf.getResId()
+                .equals(matchingTarget.getTextFlow().getResId());
+        Supplier<Boolean> projectMatches = () -> originalTf.getDocument().getProjectIteration()
+                .getProject().getId()
+                .equals(matchingTargetProjectIteration.getProject()
+                        .getId());
+        Supplier<Boolean> docIdMatches =
+                () -> originalTf.getDocument().getDocId().equals(
                         matchingTarget.getTextFlow().getDocument().getDocId());
-            }
-        };
         final ContentState copyState = determineContentState(contextMatches,
-                projectMatches, docIdMatches, options, requireTranslationReview,
+                projectMatches, docIdMatches, options,
                 matchingTarget.getState());
         boolean hasValidationError = validationTranslations(copyState,
                 matchingTargetProjectIteration, originalTf.getContents(),
@@ -320,24 +300,18 @@ public class CopyTransWorkFactory implements Serializable {
      * Indicates if a given text flow should have a match found for a given
      * target locale, or if it is already good enough.
      */
-    private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale,
-            boolean requireTranslationReview) {
+    private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale) {
         // TODO getTargets will fill up Hibernate cache for large textflows
         // and locales. Check which one is more efficient
         HTextFlowTarget targetForLocale =
                 textFlow.getTargets().get(locale.getId());
 
-        // HTextFlowTarget targetForLocale =
-        // textFlowTargetDAO.getTextFlowTarget(
-        // textFlow, locale);
         if (targetForLocale == null
                 || targetForLocale.getState() == ContentState.NeedReview) {
             return true;
-        } else if (requireTranslationReview
-                && targetForLocale.getState() != ContentState.Approved) {
+        } else if (targetForLocale.getState() != ContentState.Approved) {
             return true;
-        } else if (!requireTranslationReview
-                && targetForLocale.getState() != ContentState.Translated) {
+        } else if (targetForLocale.getState() != ContentState.Translated) {
             return true;
         } else {
             return false;

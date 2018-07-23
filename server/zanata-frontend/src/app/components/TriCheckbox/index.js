@@ -17,6 +17,7 @@ class TriCheckbox extends Component {
     useDefaultStyle: true
   }
 
+  // @ts-ignore any
   setNativeComponent = (nativeComponent) => {
     this.nativeComponent = nativeComponent
     if (nativeComponent) {
@@ -24,6 +25,7 @@ class TriCheckbox extends Component {
     }
   }
 
+  // @ts-ignore any
   componentWillReceiveProps (nextProps) {
     if (this.nativeComponent &&
       (nextProps.indeterminate !== this.props.indeterminate)) {
@@ -36,7 +38,7 @@ class TriCheckbox extends Component {
     // eslint-disable-next-line no-unused-vars
     const { indeterminate, useDefaultStyle, className, ...otherProps } =
       this.props
-    const classes = cx({'triCheckbox bstrapReact': useDefaultStyle}, className)
+    const classes = cx({'triCheckbox': useDefaultStyle}, className)
     return (
       <input
         className={classes}

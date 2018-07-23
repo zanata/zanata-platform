@@ -28,8 +28,6 @@ import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 
-import com.google.common.base.Optional;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
@@ -54,9 +52,10 @@ public class PlainTextAdapterTest extends AbstractAdapterTest<PlainTextAdapter> 
         // NB parameters copied from okapi-filter-plaintext: /net/sf/okapi/filters/plaintext/okf_plaintext_paragraphs.fprm
         // TODO we need a way of using Okapi's pre-defined filter configurations by name (okf_plaintext_paragraphs)
         Resource resource =
-                adapter.parseDocumentFile(getTestFile("plaintext.txt").toURI(),
+                adapter.parseDocumentFile(new FileFormatAdapter.ParserOptions(
+                        getTestFile("plaintext.txt").toURI(),
                         LocaleId.EN,
-                        Optional.of("#v1\n" +
+                        "#v1\n" +
                                 "unescapeSource.b=true\n" +
                                 "trimLeading.b=false\n" +
                                 "trimTrailing.b=false\n" +

@@ -30,7 +30,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -163,8 +163,18 @@ public interface TranslationService extends Serializable {
 
         int getBaseVersionNum();
 
+        /**
+         * Previous state of the target TextFlowTarget
+         */
         ContentState getBaseContentState();
 
+        /**
+         * New state of the target TextFlowTarget
+         */
+        ContentState getNewContentState();
+
         String getErrorMessage();
+
+        double getSimilarityPercent();
     }
 }

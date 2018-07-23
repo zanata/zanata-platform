@@ -8,11 +8,17 @@
     "rules": {
         "align": false,
         "arrow-parens": false,
+        // with or without semicolons is accepted for now
         "semicolon": false,
         "max-classes-per-file": false,
+        // public/private/protected are not available in JS, so for
+        // consistency we won't require them in TS. Consider turning
+        // this on if and when we eliminate JS files.
+        "member-access": false,
         "trailing-comma": [false],
         "quotemark": [false],
         "space-before-function-paren": false,
+        "no-consecutive-blank-lines": [true, 2],
         "ordered-imports": false,
         "object-literal-sort-keys": false,
         "only-arrow-functions": false,
@@ -20,6 +26,9 @@
         // "no-unused-expression": [true, "allow-fast-null-checks"],
         "interface-name": [true, "never-prefix"],
         "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"]
+    },
+    "linterOptions": {
+      "exclude": ["**/*.js*", ".storybook*/**.js*"]
     },
     "rulesDirectory": []
 }

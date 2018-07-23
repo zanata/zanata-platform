@@ -64,8 +64,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoTargetHeader;
-import org.zanata.model.type.TranslationSourceType;
-import org.zanata.seam.security.CurrentUserImpl;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
@@ -86,6 +85,7 @@ import javax.transaction.UserTransaction;
 @RunWith(CdiUnitRunner.class)
 @SupportDeltaspikeCore
 @AdditionalClasses({
+        LocaleDAO.class,
         VersionStateCacheImpl.class,
         // needed by service locator
         TransactionUtilImpl.class
@@ -473,8 +473,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(newVersion.getProjectType()).isEqualTo(
                 existingVersion.getProjectType());
         assertThat(newVersion.getStatus()).isEqualTo(expectedStatus);
-        assertThat(newVersion.getRequireTranslationReview()).isEqualTo(
-                existingVersion.getRequireTranslationReview());
     }
 
     private void assertDocument(HDocument existingDoc, HDocument newDoc) {

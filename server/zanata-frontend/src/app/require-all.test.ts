@@ -27,6 +27,7 @@ test('can require all local js files', () => {
       return newName
     },
     // parse all matching source files
+    // @ts-ignore any
     require: _name => true
   })
   const count = Object.keys(modules).length
@@ -47,5 +48,6 @@ test('can require all local js files', () => {
     throw new Error('Modules were loaded as strings, not required/parsed')
   }
 
-  // console.log('Loaded ' + count + ' modules.')
+  // tslint:disable-next-line no-console
+  console.log('Loaded ' + count + ' modules.')
 })

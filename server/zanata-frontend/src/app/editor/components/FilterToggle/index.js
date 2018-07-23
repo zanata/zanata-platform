@@ -21,7 +21,6 @@
 
 import cx from 'classnames'
 import { Icon } from '../../../components'
-import { Row } from 'react-bootstrap'
 import React from 'react'
 import * as PropTypes from 'prop-types'
 
@@ -64,11 +63,9 @@ class FilterToggle extends React.Component {
         <label className="Toggle-label"
           htmlFor={this.props.id}
           title={this.props.title}>
-          <Row>
-            {dot}
-            {this.props.count}
-            <span className="u-hiddenVisually">{this.props.title}</span>
-          </Row>
+          {dot}
+          {this.props.count}
+          <span className="u-hiddenVisually">{this.props.title}</span>
         </label>
       </div>
     )

@@ -46,7 +46,12 @@ describe('review-trans-reducer', () => {
       type: GET_ALL_CRITERIA_FAILURE,
       payload: 'text'
     })).toEqual({
-      notification: 'Failed to retrieve review criteria. undefined',
+      notification: {
+        description: undefined,
+        message: 'Failed to retrieve review criteria.',
+        severity: 'error',
+        duration: null
+      },
       criteria: [],
       showReviewModal: false
     })

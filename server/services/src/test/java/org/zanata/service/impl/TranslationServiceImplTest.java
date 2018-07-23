@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -40,7 +41,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
@@ -49,26 +51,29 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import com.google.common.collect.Lists;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.zanata.service.TranslationService.TranslationResult;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({
         LocaleServiceImpl.class,
-        ValidationServiceImpl.class,
         CurrentUserImpl.class
 })
 public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
@@ -80,7 +85,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
     @Produces @Mock TranslationStateCache translationStateCache;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
     @Produces @Mock LockManagerService lockManagerService;
-    @Produces @Mock Messages messages;
+    @Produces Messages messages = new Messages(Locale.ENGLISH);
+    @Produces @Mock ValidationServiceImpl validationService;
 
     @Override
     @Produces
@@ -121,24 +127,27 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
-    public void translate() throws Exception {
+    public void saveTranslationWithSuccessfulValidation() {
+        when(validationService.validateWithServerRules(any(), any(), any(), any())).thenReturn(emptyList());
+
         TransUnitId transUnitId = new TransUnitId(1L);
-        List<String> newContents = new ArrayList<String>(2);
-        newContents.add("translated 1");
-        newContents.add("translated 2");
+        List<String> newContents = asList("translated 1", "translated 2");
         TransUnitUpdateRequest translateReq =
                 new TransUnitUpdateRequest(transUnitId, newContents,
                     ContentState.Approved, 1,
                     TranslationSourceType.UNKNOWN.getAbbr());
 
         List<TranslationResult> result =
-                transService.translate(new LocaleId("de"),
-                        Lists.newArrayList(translateReq));
+                transService.translate(LocaleId.DE,
+                        asList(translateReq));
 
-        assertThat(result.get(0).isTranslationSuccessful()).isTrue();
+        assertThat(result.get(0).isTranslationSuccessful())
+                .as("translation successful").isTrue();
         assertThat(result.get(0).getBaseVersionNum()).isEqualTo(1);
         assertThat(result.get(0).getBaseContentState())
                 .isEqualTo(ContentState.Translated);
+        assertThat(result.get(0).getNewContentState())
+                .isEqualTo(ContentState.Approved);
         assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum())
                 .isEqualTo(2); // moved up a version
         assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType())
@@ -147,30 +156,115 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
-    public void translateMultiple() throws Exception {
+    public void doNotSaveInvalidTranslationOverExistingTranslation() {
+        when(validationService.validateWithServerRules(any(), any(), any(), any())).thenReturn(singletonList("validation error"));
+
+        TransUnitId transUnitId = new TransUnitId(1L);
+        List<String> newContents = asList("translated 1", "translated 2");
+        TransUnitUpdateRequest translateReq =
+                new TransUnitUpdateRequest(transUnitId, newContents,
+                        ContentState.Approved, 1,
+                        TranslationSourceType.UNKNOWN.getAbbr());
+
+        List<TranslationResult> result =
+                transService.translate(LocaleId.DE,
+                        asList(translateReq));
+
+        assertThat(result.get(0).isTranslationSuccessful())
+                .as("translation successful").isFalse();
+    }
+
+    @Test
+    @InRequestScope
+    public void saveNewTranslationAsFuzzyIfInvalid() {
+        when(validationService.validateWithServerRules(any(), any(), any(), any())).thenReturn(singletonList("validation error"));
+
+        // This is the translation of TF 1 for DE
+        HTextFlowTarget tft = em.find(HTextFlowTarget.class, 2L);
+        em.remove(tft);
+
+        TransUnitId transUnitId = new TransUnitId(1L);
+        List<String> newContents = asList("translated 1", "translated 2");
+        TransUnitUpdateRequest translateReq =
+                new TransUnitUpdateRequest(transUnitId, newContents,
+                        ContentState.Approved, 0,
+                        TranslationSourceType.UNKNOWN.getAbbr());
+
+        List<TranslationResult> result =
+                transService.translate(LocaleId.DE,
+                        asList(translateReq));
+
+        assertThat(result.get(0).isTranslationSuccessful())
+                .as("translation successful").isTrue();
+        assertThat(result.get(0).getBaseVersionNum()).isEqualTo(0);
+        assertThat(result.get(0).getBaseContentState())
+                .isEqualTo(ContentState.New);
+        assertThat(result.get(0).getNewContentState())
+                .isEqualTo(ContentState.NeedReview);
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum())
+                .isEqualTo(1); // moved up a version
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType())
+                .isEqualTo(TranslationSourceType.UNKNOWN);
+    }
+
+    @Test
+    @InRequestScope
+    public void replaceFuzzyTranslationWithInvalid() {
+        when(validationService.validateWithServerRules(any(), any(), any(), any())).thenReturn(singletonList("validation error"));
+
+        // This is the translation of TF 1 for DE
+        HTextFlowTarget tft = em.find(HTextFlowTarget.class, 2L);
+        tft.setState(ContentState.NeedReview);
+        // this will increment the versionNum to 2
+        em.merge(tft);
+
+        TransUnitId transUnitId = new TransUnitId(1L);
+        List<String> newContents = asList("translated 1", "translated 2");
+        TransUnitUpdateRequest translateReq =
+                new TransUnitUpdateRequest(transUnitId, newContents,
+                        ContentState.Approved, 2,
+                        TranslationSourceType.UNKNOWN.getAbbr());
+
+        List<TranslationResult> result =
+                transService.translate(LocaleId.DE,
+                        asList(translateReq));
+
+        assertThat(result.get(0).isTranslationSuccessful())
+                .as("translation successful").isTrue();
+        assertThat(result.get(0).getBaseVersionNum()).isEqualTo(2);
+        assertThat(result.get(0).getBaseContentState())
+                .isEqualTo(ContentState.NeedReview);
+        assertThat(result.get(0).getNewContentState())
+                // NOT Approved (since validation failed)
+                .isEqualTo(ContentState.NeedReview);
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum())
+                .isEqualTo(3); // moved up a version
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType())
+                .isEqualTo(TranslationSourceType.UNKNOWN);
+    }
+
+    @Test
+    @InRequestScope
+    public void translateMultiple() {
         List<TransUnitUpdateRequest> translationReqs =
                 new ArrayList<TransUnitUpdateRequest>();
 
         // Request 1
         TransUnitId transUnitId = new TransUnitId(1L);
-        List<String> newContents = new ArrayList<String>(2);
-        newContents.add("translated 1");
-        newContents.add("translated 2");
+        List<String> newContents1 = asList("translated 1", "translated 2");
         translationReqs.add(new TransUnitUpdateRequest(transUnitId,
-                newContents, ContentState.Approved, 1,
+                newContents1, ContentState.Approved, 1,
                 TranslationSourceType.COPY_VERSION.getAbbr()));
 
         // Request 2 (different documents)
         transUnitId = new TransUnitId(2L);
-        newContents = new ArrayList<String>(2);
-        newContents.add("translated 1");
-        newContents.add("translated 2");
+        List<String> newContents2 = asList("translated 1", "translated 2");
         translationReqs.add(new TransUnitUpdateRequest(transUnitId,
-                newContents, ContentState.NeedReview, 0,
+                newContents2, ContentState.NeedReview, 0,
                 TranslationSourceType.COPY_TRANS.getAbbr()));
 
         List<TranslationResult> results =
-                transService.translate(new LocaleId("de"), translationReqs);
+                transService.translate(LocaleId.DE, translationReqs);
 
         // First result
         TranslationResult result = results.get(0);
@@ -197,11 +291,9 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
-    public void incorrectBaseVersion() throws Exception {
+    public void incorrectBaseVersion() {
         TransUnitId transUnitId = new TransUnitId(2L);
-        List<String> newContents = new ArrayList<String>(2);
-        newContents.add("translated 1");
-        newContents.add("translated 2");
+        List<String> newContents = asList("translated 1", "translated 2");
         TransUnitUpdateRequest translateReq =
                 new TransUnitUpdateRequest(transUnitId, newContents,
                         ContentState.Approved, 1,
@@ -209,9 +301,9 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
 
         // Should not pass as the base version (1) does not match
         List<TransUnitUpdateRequest> translationRequests =
-                Lists.newArrayList(translateReq);
+                asList(translateReq);
         List<TranslationResult> result =
-                transService.translate(new LocaleId("de"), translationRequests);
+                transService.translate(LocaleId.DE, translationRequests);
 
         assertThat(result.get(0).isTranslationSuccessful()).isFalse();
     }
@@ -222,13 +314,13 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         // untranslated
         TransUnitId transUnitId = new TransUnitId(3L);
         TransUnitUpdateRequest translateReq =
-                new TransUnitUpdateRequest(transUnitId, Lists.newArrayList("a",
+                new TransUnitUpdateRequest(transUnitId, asList("a",
                         "b"), ContentState.Approved, 0,
                         TranslationSourceType.MERGE_VERSION.getAbbr());
 
         List<TranslationResult> result =
-                transService.translate(new LocaleId("de"),
-                        Lists.newArrayList(translateReq));
+                transService.translate(LocaleId.DE,
+                        asList(translateReq));
 
         verify(identity).checkPermission(eq("translation-review"),
                 isA(HProject.class), isA(HLocale.class));

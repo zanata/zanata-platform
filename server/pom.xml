@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.5.0-SNAPSHOT</version>
+    <version>4.6.0-rc-2-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -20,16 +20,16 @@
 
   <properties>
     <byteman.version>2.1.2</byteman.version>
+    <detekt.skip>false</detekt.skip>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.2.30</kotlin.version>
+    <kotlin.version>1.2.50</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 <!-- We can use these if we don't want the lang/API version set by the compiler version:
     <kotlin.compiler.languageVersion>1.2</kotlin.compiler.languageVersion>
     <kotlin.compiler.apiVersion>1.2</kotlin.compiler.apiVersion>
 -->
-    <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
@@ -69,7 +69,7 @@
     <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
     <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
     <shrinkwrap.desc.version>2.0.0</shrinkwrap.desc.version>
-    <maven.model.version>3.3.9</maven.model.version>
+    <jetty.version>9.2.15.v20160210</jetty.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
@@ -110,7 +110,7 @@
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
-    <jackson2.version>2.8.9</jackson2.version>
+    <jackson2.version>2.9.5</jackson2.version>
 
     <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
     <server.jvmargs>
@@ -146,13 +146,31 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.6</version>
+        <version>3.7</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.1</version>
+        <version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interpolation</artifactId>
+        <version>1.24</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-sec-dispatcher</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.3.3</version>
       </dependency>
 
       <dependency>
@@ -334,12 +352,12 @@
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib-jre7</artifactId>
+        <artifactId>kotlin-stdlib-jdk7</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib-jre8</artifactId>
+        <artifactId>kotlin-stdlib-jdk8</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
       <dependency>
@@ -347,6 +365,12 @@
         <artifactId>kotlin-test-junit</artifactId>
         <version>${kotlin.version}</version>
         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jetbrains.kotlinx</groupId>
+        <artifactId>kotlinx-html-jvm</artifactId>
+        <version>0.6.9</version>
       </dependency>
 
       <dependency>
@@ -385,13 +409,19 @@
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
-        <version>5.1</version>
+        <version>6.0</version>
       </dependency>
 
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-commons</artifactId>
-        <version>5.1</version>
+        <version>6.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-tree</artifactId>
+        <version>6.0</version>
       </dependency>
 
       <dependency>
@@ -456,7 +486,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.4.1</version>
+        <version>4.5.1</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -466,51 +496,72 @@
       </dependency>
 
       <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-webapp</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlets</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4.1</version>
+        <version>4.4.3</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
-        <version>${maven.model.version}</version>
+        <version>3.3.9</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model-builder</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-repository-metadata</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-settings</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-settings-builder</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
@@ -523,12 +574,6 @@
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-http-lightweight</artifactId>
         <version>2.6</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>3.0.24</version>
       </dependency>
 
       <dependency>
@@ -1700,6 +1745,11 @@
         </exclusions>
       </dependency>
       <dependency>
+        <groupId>io.leangen.graphql</groupId>
+        <artifactId>spqr</artifactId>
+        <version>0.9.7</version>
+      </dependency>
+      <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jandex</artifactId>
         <version>2.0.1.Final</version>
@@ -1711,6 +1761,13 @@
         <version>1.0.5.Final</version>
         <scope>test</scope>
       </dependency>
+
+      <dependency>
+    <groupId>com.github.wnameless</groupId>
+    <artifactId>json-flattener</artifactId>
+    <version>0.5.0</version>
+</dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -1770,6 +1827,12 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+    </repository>
+    <!-- for kotlinx.html -->
+    <repository>
+      <id>jcenter</id>
+      <name>jcenter</name>
+      <url>https://jcenter.bintray.com</url>
     </repository>
   </repositories>
 
@@ -1838,6 +1901,7 @@
           </execution>
         </executions>
         <configuration>
+          <args>-Xprogressive</args>
           <compilerPlugins>
             <plugin>all-open</plugin>
             <plugin>no-arg</plugin>
@@ -2005,6 +2069,7 @@
                 <allowedRepository>jboss-public-repository-group</allowedRepository>
                 <allowedRepository>okapi-cloudbees-release</allowedRepository>
                 <allowedRepository>google-maven-snapshot-repository</allowedRepository>
+                <allowedRepository>jcenter</allowedRepository>
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
@@ -2037,21 +2102,31 @@
             </configuration>
           </execution>
           <execution>
-            <!-- This can be run separately with mvn antrun:run@detekt -->
+            <!-- This can be run separately with mvn antrun:run@detekt -pl '!:zanata-frontend' -->
             <id>detekt</id>
             <!-- Profiles should use 'test' to activate this -->
             <phase>none</phase>
             <goals><goal>run</goal></goals>
             <configuration>
+              <skip>${detekt.skip}</skip>
               <target name="detekt">
-                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
-                    classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                <java taskname="detekt" dir="${basedir}"
+                    fork="true"
+                    failonerror="true"
+                    classname="io.gitlab.arturbosch.detekt.cli.Main"
+                    classpathref="maven.plugin.classpath">
                   <arg value="--config-resource"/>
                   <arg value="zanata-build-tools/detekt.yml"/>
-                  <arg value="--project"/>
-                  <arg value="${basedir}/src"/>
+                  <arg value="--input"/>
+                  <arg value="${basedir}/src/main"/>
                   <arg value="--filters"/>
                   <arg value=".*test.*"/>
+                  <arg value="--output"/>
+                  <arg value="${basedir}/target/reports"/>
+                  <!--<arg value="&#45;&#45;outputname"/>-->
+                  <!--<arg value="detekt-report"/>-->
+                  <arg value="--baseline"/>
+                  <arg value="${basedir}/reports/baseline.xml"/>
                 </java>
               </target>
             </configuration>
@@ -2066,12 +2141,12 @@
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M11</version>
+            <version>1.0.0.RC7</version>
           </dependency>
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M11</version>
+            <version>1.0.0.RC7</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -2176,13 +2251,6 @@
           </configuration>
         </plugin>
         <plugin>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${maven.javadoc.version}</version>
-          <configuration>
-            <additionalparam>${javadoc.opts}</additionalparam>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>1.8</version>
@@ -2210,16 +2278,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>doclint-java8-disable</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <properties>
-        <javadoc.opts>-Xdoclint:none</javadoc.opts>
-      </properties>
-    </profile>
-
     <profile>
       <!-- This profile runs a single integration test with
         -Dit.test=<integration-test-name>, skipping unit tests. -->
@@ -2284,9 +2342,6 @@
           <name>!excludeFrontend</name>
         </property>
       </activation>
-      <properties>
-        <required.maven>3.1.0</required.maven>
-      </properties>
       <modules>
         <module>zanata-frontend</module>
       </modules>
@@ -2334,6 +2389,15 @@
                 <phase>test</phase>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <configuration>
+              <args>
+                <arg>-Werror</arg>
+              </args>
+            </configuration>
           </plugin>
         </plugins>
       </build>

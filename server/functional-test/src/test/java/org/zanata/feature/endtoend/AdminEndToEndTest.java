@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.endtoend;
 
+import java.util.List;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -29,6 +31,7 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.RoleAssignmentsPage;
+import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
@@ -61,7 +64,8 @@ public class AdminEndToEndTest extends ZanataTestCase {
     public void adminEndToEndTest() {
 
         // Change admin contact address
-        AdministrationPage administrationPage = setUpAdminContactEmail();
+        AdministrationPage administrationPage =
+                setUpAdminContactEmail().goToAdministration();
 
         // Add a new user to the system
         ManageUserPage manageUserPage = addNewUser(administrationPage);
@@ -89,7 +93,7 @@ public class AdminEndToEndTest extends ZanataTestCase {
         updateTheHomePage(dashboardBasePage);
     }
 
-    private AdministrationPage setUpAdminContactEmail() {
+    private ServerConfigurationPage setUpAdminContactEmail() {
         return new LoginWorkFlow()
                 .signIn(ADMINUSER, ADMINUSER)
                 .goToAdministration()
@@ -106,11 +110,18 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .enterEmail(EMAIL)
                 .clickRole("user")
                 .saveUser();
+        // TODO should we? manageUserPage.removeNotifications();
         manageUserPage.waitForNotificationsGone();
         manageUserPage.reload();
-        assertThat(manageUserPage.getUserList()).contains(USERNAME);
-        WiserMessage email = hasEmailRule.getMessages().get(0);
-        assertThat(email.getEnvelopeReceiver()).contains(EMAIL);
+        assertThat(manageUserPage.getUserList())
+                .as("Manage users page contains new user")
+                .contains(USERNAME);
+        List<WiserMessage> messages = hasEmailRule.getMessages();
+        assertThat(messages).as("one message").hasSize(1);
+        WiserMessage email = messages.get(0);
+        assertThat(email.getEnvelopeReceiver())
+                .as("Outbox contains an email to the new user")
+                .contains(EMAIL);
         return manageUserPage;
     }
 
@@ -120,7 +131,9 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .enterConfirmPassword(PASSWORD)
                 .clickEnabled()
                 .saveUser();
-        assertThat(manageUserPage.isUserEnabled(USERNAME)).isTrue();
+        assertThat(manageUserPage.isUserEnabled(USERNAME))
+                .as("The new user is enabled")
+                .isTrue();
         return manageUserPage;
     }
 
@@ -133,8 +146,12 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .send(MorePage.class)
                 .logout();
         WiserMessage email = hasEmailRule.getMessages().get(1);
-        assertThat(email.getEnvelopeReceiver()).contains(ADMINEMAIL);
-        assertThat(email.getData()).contains(inputMessage.getBytes());
+        assertThat(email.getEnvelopeReceiver())
+                .as("There is an email to the administrator")
+                .contains(ADMINEMAIL);
+        assertThat(email.getData())
+                .as("The email contains the user's message")
+                .contains(inputMessage.getBytes());
         return homePage;
     }
 
@@ -148,7 +165,9 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .enterIdentityPattern(USERROLEREGEX)
                 .selectRole("admin")
                 .saveRoleAssignment();
-        assertThat(roleAssignmentsPage.getRulesByPattern()).contains(USERROLEREGEX);
+        assertThat(roleAssignmentsPage.getRulesByPattern())
+                .as("The role rule was created")
+                .contains(USERROLEREGEX);
         return roleAssignmentsPage;
     }
 
@@ -164,7 +183,9 @@ public class AdminEndToEndTest extends ZanataTestCase {
                         .signIn(USERNAME, PASSWORD);
             }
         }
-        assertThat(dashboardBasePage.isAdministrator()).isTrue();
+        assertThat(dashboardBasePage.isAdministrator())
+                .as("The new user is now an administrator")
+                .isTrue();
         return dashboardBasePage;
     }
 
@@ -174,7 +195,9 @@ public class AdminEndToEndTest extends ZanataTestCase {
                 .goToEditPageContent()
                 .enterText("This is some stuff right here")
                 .update();
-        assertThat(homePage.getMainBodyContent()).contains("This is some stuff right here");
+        assertThat(homePage.getMainBodyContent())
+                .as("The home page was updated with the new text")
+                .contains("This is some stuff right here");
         return homePage;
     }
 }

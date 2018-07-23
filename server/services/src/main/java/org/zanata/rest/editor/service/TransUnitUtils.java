@@ -73,8 +73,9 @@ public class TransUnitUtils implements Serializable {
         if (hTft != null) {
             EditorTextFlowTarget target = new EditorTextFlowTarget(hTf.getResId());
             resourceUtils.transferToTextFlowTarget(hTft, target,
-                    Optional.of("Editor"));
+                    false);
             target.setLastModifiedTime(hTft.getLastChanged());
+            target.setTransSourceType(hTft.getSourceType().getAbbr());
             tu.put(hTft.getLocaleId().toString(), target);
         } else {
             tu.put(localeId.toString(), new TextFlowTarget(hTf.getResId()));

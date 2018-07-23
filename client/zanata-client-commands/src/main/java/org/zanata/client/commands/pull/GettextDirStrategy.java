@@ -24,10 +24,8 @@ package org.zanata.client.commands.pull;
 import java.io.File;
 import java.io.IOException;
 
-import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.dto.LocaleMappedTranslatedDoc;
 import org.zanata.common.io.FileDetails;
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a
@@ -40,11 +38,11 @@ public class GettextDirStrategy extends AbstractGettextPullStrategy {
     }
 
     @Override
-    public FileDetails writeTransFile(Resource doc, String docName,
-            LocaleMapping locMapping, TranslationsResource targetDoc)
+    public FileDetails writeTransFile(String docName,
+            LocaleMappedTranslatedDoc translatedDoc)
             throws IOException {
-        File transFile = getTransFileToWrite(docName, locMapping);
-        return getPoWriter().writePoToFile(transFile, doc, targetDoc);
+        File transFile = getTransFileToWrite(docName, translatedDoc.getLocale());
+        return getPoWriter().writePoToFile(transFile, translatedDoc.getSource(), translatedDoc.getTranslation());
     }
 
 }

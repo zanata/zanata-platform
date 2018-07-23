@@ -1,8 +1,8 @@
-
+/* global describe it expect */
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Icon } from '../../../components'
-import { Row } from 'react-bootstrap'
+
 import SuggestionDetailsSummary from '.'
 
 describe('SuggestionDetailsSummaryTest', () => {
@@ -12,11 +12,14 @@ describe('SuggestionDetailsSummaryTest', () => {
         suggestion={{
           matchDetails: [
             {
-              type: 'IMPORTED_TM',
+              type: {
+                key: 'IMPORTED_TM',
+                metadata: ''
+              },
               transMemorySlug: 'champagne'
             }
           ]
-        }}/>
+        }} />
     )
     // Note: slug wrapped as a string here to work around assertion
     //       library, which considers ' champagne' different from
@@ -25,9 +28,7 @@ describe('SuggestionDetailsSummaryTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
-            <Row>
-              <Icon name="import" className="n1"/> {'champagne'}
-            </Row>
+            <Icon name="import" className="n1" /> {'champagne'}
           </li>
         </ul>
       </div>
@@ -41,7 +42,10 @@ describe('SuggestionDetailsSummaryTest', () => {
         suggestion={{
           matchDetails: [
             {
-              type: 'LOCAL_PROJECT',
+              type: {
+                key: 'LOCAL_PROJECT',
+                metadata: ''
+              },
               projectId: 'sausages',
               projectName: 'Sausages',
               version: 'the-wurst-version',
@@ -49,27 +53,21 @@ describe('SuggestionDetailsSummaryTest', () => {
               documentName: 'i-rote-this.txt'
             }
           ]
-        }}/>
+        }} />
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li title="sausages">
-            <Row>
-              <Icon name="project" className="n1"/> {'Sausages'}
-            </Row>
+            <Icon name="project" className="n1" /> {'Sausages'}
           </li>
           <li>
-            <Row>
-              <Icon name="version" className="n1"/> {'the-wurst-version'}
-            </Row>
+            <Icon name="version" className="n1" /> {'the-wurst-version'}
           </li>
           <li className="DocName" title="what-a-brat/i-rote-this.txt">
-            <Row>
-              <Icon name="document" className="n1"/>
-              <span className="ellipsis">{'i-rote-this.txt'}</span>
-            </Row>
+            <Icon name="document" className="n1" />
+            <span className="ellipsis">{'i-rote-this.txt'}</span>
           </li>
         </ul>
       </div>
@@ -81,7 +79,10 @@ describe('SuggestionDetailsSummaryTest', () => {
     // different type from top match so it is obvious
     // if display is based on the wrong one
     const remainingMatch = {
-      type: 'LOCAL_PROJECT',
+      type: {
+        key: 'LOCAL_PROJECT',
+        metadata: ''
+      },
       projectId: 'sausages',
       projectName: 'Sausages',
       version: 'the-wurst-version',
@@ -94,14 +95,17 @@ describe('SuggestionDetailsSummaryTest', () => {
         suggestion={{
           matchDetails: [
             {
-              type: 'IMPORTED_TM',
+              type: {
+                key: 'IMPORTED_TM',
+                metadata: ''
+              },
               transMemorySlug: 'champagne'
             },
             remainingMatch,
             remainingMatch,
             remainingMatch
           ]
-        }}/>
+        }} />
     )
 
     // Note: some of the expected text output must be wrapped in
@@ -112,15 +116,11 @@ describe('SuggestionDetailsSummaryTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
-            <Row>
-              <Icon name="import" className="n1"/> {'champagne'}
-            </Row>
+            <Icon name="import" className="n1" /> {'champagne'}
           </li>
           <li>
-            <Row>
-              <Icon name="translate" className="n1"
-              /> {3}{' more occurrences'}
-            </Row>
+            <Icon name="translate" className="n1"
+            /> {3}{' more occurrences'}
           </li>
         </ul>
       </div>

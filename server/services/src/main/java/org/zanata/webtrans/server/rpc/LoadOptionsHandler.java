@@ -69,8 +69,7 @@ public class LoadOptionsHandler extends
         HAccount account =
                 accountDAO.findById(authenticatedAccount.getId(), true);
         Map<String, HAccountOption> options = account.getEditorOptions();
-        HashMap<String, HAccountOption> filteredOptions =
-                new HashMap<String, HAccountOption>();
+        HashMap<String, HAccountOption> filteredOptions = new HashMap<>();
 
         List<String> prefixes = asGwtPrefixes(action.getPrefixes());
         for (Entry<String, HAccountOption> entry : options.entrySet()) {
@@ -203,14 +202,12 @@ public class LoadOptionsHandler extends
     }
 
     private List<String> asGwtPrefixes(List<String> prefixes) {
-        List<String> gwtPrefixes = new ArrayList<String>();
+        List<String> gwtPrefixes = new ArrayList<>();
         if (prefixes == null || prefixes.isEmpty()) {
             // at least need to filter for .gwt
             gwtPrefixes.add("gwt.");
         } else {
-            for (String prefix : prefixes) {
-                gwtPrefixes.add("gwt." + prefix);
-            }
+            gwtPrefixes.addAll(prefixes);
         }
         return gwtPrefixes;
     }

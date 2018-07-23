@@ -23,17 +23,17 @@ package org.zanata.adapter;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Nonnull;
+
+import org.jetbrains.annotations.NotNull;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 
 import static org.zanata.adapter.AdapterUtils.readStream;
 
@@ -46,20 +46,13 @@ import static org.zanata.adapter.AdapterUtils.readStream;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class GettextAdapter implements FileFormatAdapter {
-    @Override
-    public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
-            Optional<String> params)
+    @Override @Nonnull
+    public Resource parseDocumentFile(@Nonnull ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
-        if (sourceLocale == null) {
-            throw new IllegalArgumentException("Source locale cannot be null");
-        }
-        if (fileUri == null) {
-            throw new IllegalArgumentException("Document URI cannot be null");
-        }
         PoReader2 reader = new PoReader2();
-        BufferedInputStream inputStream = readStream(fileUri);
+        BufferedInputStream inputStream = readStream(options.getRawFile());
         Resource doc = reader.extractTemplate(new InputSource(inputStream),
-                sourceLocale, "");
+                options.getLocale(), "");
         try {
             inputStream.close();
         } catch (IOException e) {
@@ -67,37 +60,47 @@ public class GettextAdapter implements FileFormatAdapter {
         return doc;
     }
 
+    @NotNull
     @Override
-    public TranslationsResource parseTranslationFile(URI fileUri,
-            LocaleId sourceLocaleId, String localeId, Optional<String> params)
-            throws FileFormatAdapterException, IllegalArgumentException {
-        if (StringUtils.isEmpty(localeId)) {
-            throw new IllegalArgumentException(
-                    "locale id string cannot be null or empty");
-        }
+    public TranslationsResource parseTranslationFile(
+            @NotNull ParserOptions options)
+            throws FileFormatAdapterException {
         PoReader2 reader = new PoReader2();
-        BufferedInputStream inputStream = readStream(fileUri);
-        TranslationsResource resource =
-                reader.extractTarget(new InputSource(inputStream));
-        try {
-            inputStream.close();
+        TranslationsResource resource;
+        try (BufferedInputStream inputStream = readStream(
+                options.getRawFile())) {
+            resource = reader.extractTarget(new InputSource(inputStream));
         } catch (IOException e) {
+            throw new FileFormatAdapterException("IOException", e);
         }
         return resource;
     }
 
     @Override
-    public void writeTranslatedFile(OutputStream output, URI originalFile,
-            Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params)
+    public void writeTranslatedFile(@NotNull OutputStream output,
+            @NotNull WriterOptions options, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
-        PoWriter2 writer = new PoWriter2(true, true);
+        PoWriter2 writer = new PoWriter2.Builder().encodeTabs(true)
+                .mapIdToMsgctxt(true).approvedOnly(approvedOnly)
+                .create();
         try {
-            writer.writePo(output, Charsets.UTF_8.name(), resource,
-                    translationsResource);
+            writer.writePo(output, Charsets.UTF_8.name(), options.getTranslatedDoc().getSource(),
+                    options.getTranslatedDoc().getTranslation());
         } catch (IOException e) {
             throw new FileFormatAdapterException(
                     "Unable to generate translated file", e);
         }
+    }
+
+    @NotNull
+    @Override
+    public String generateTranslationFilename(@NotNull HDocument document,
+            @NotNull String locale) throws IllegalArgumentException {
+        return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
+    }
+
+    @Override
+    public boolean getRawTranslationUploadAvailable() {
+        return false;
     }
 }

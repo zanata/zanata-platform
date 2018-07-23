@@ -2,10 +2,8 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import SelectButtonList from '../../components/SelectButtonList'
 import {
-  filterButtons, filterActivityTypes
+  filterButtons, filterActivityPropType as idType
 } from '../../utils/activity-util'
-
-const idType = PropTypes.oneOf(filterActivityTypes)
 
 class ActivitySelectList extends React.Component {
   static propTypes = {
@@ -16,7 +14,8 @@ class ActivitySelectList extends React.Component {
   render () {
     return (
       <SelectButtonList items={filterButtons}
-        className="Button--secondary" selected={this.props.selected}
+        className='Button--secondary filterButtons'
+        selected={this.props.selected}
         selectItem={this.props.selectItem}
       />
     )

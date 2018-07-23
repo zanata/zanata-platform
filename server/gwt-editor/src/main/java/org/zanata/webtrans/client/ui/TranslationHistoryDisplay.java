@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
+import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
 import org.zanata.webtrans.shared.model.ComparableByDate;
 import org.zanata.webtrans.shared.model.ReviewComment;
@@ -45,6 +46,10 @@ public interface TranslationHistoryDisplay extends WidgetDisplay {
         void compareClicked(TransHistoryItem item);
 
         boolean isItemInComparison(TransHistoryItem item);
+
+        LocaleId getSrcLocale();
+
+        LocaleId getTargetLocale();
 
     }
 }

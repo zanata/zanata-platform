@@ -2,9 +2,11 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import * as ReactDOM from 'react-dom'
-import { LoaderText, Icon } from '../../components'
-import { Button, Tooltip, Overlay } from 'react-bootstrap'
+import { LoaderText } from '../../components'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 /**
  * Confirmation modal dialog for delete all glossary entries
@@ -24,47 +26,44 @@ class DeleteAllEntriesModal extends Component {
       handleDeleteAllEntriesDisplay,
       handleDeleteAllEntries
     } = this.props
-
+    const deleteAllEntries = () => handleDeleteAllEntriesDisplay(false)
+    const deleteAll = (
+      <span>
+        <p className='tc'>
+        Are you sure you want to delete&nbsp;
+          <strong>all entries</strong>&nbsp;?
+          <br />
+          <Button className='tc btn-default btn-sm mr3 mt3' aria-label='button'
+            onClick={deleteAllEntries}>
+            Cancel
+          </Button>
+          <Button type='danger' className='tc btn-sm btn-danger'
+            aria-label='button' disabled={isDeleting}
+            onClick={handleDeleteAllEntries}>
+            <LoaderText loading={isDeleting} size='n1'
+              loadingText='Deleting'>
+              Delete
+            </LoaderText>
+          </Button>
+        </p>
+      </span>
+    )
     /* eslint-disable react/jsx-no-bind */
     return (
       <div className='u-block'>
-        <Overlay
-          placement='bottom'
-          target={() => ReactDOM.findDOMNode(this)}
-          rootClose
-          className='bstrapReact'
-          show={show}
-          onHide={() => handleDeleteAllEntriesDisplay(false)}>
-          <Tooltip id='delete-entries' title='Delete all glossary entries'
-            className='bstrapReact'>
-            <p>
-              Are you sure you want to delete&nbsp;
-              <strong>all entries</strong>&nbsp;?
-            </p>
-            <span className='button-spacing'>
-              <Button bsStyle='default' className='btn-sm'
-                onClick={() => handleDeleteAllEntriesDisplay(false)}>
-                Cancel
-              </Button>
-              <Button bsStyle='danger' className='btn-sm' type='button'
-                disabled={isDeleting}
-                onClick={handleDeleteAllEntries}>
-                <LoaderText loading={isDeleting} size='n1'
-                  loadingText='Deleting'>
-                  Delete
-                </LoaderText>
-              </Button>
-            </span>
-          </Tooltip>
-        </Overlay>
-        <Button bsStyle='link' type='button'
-          onClick={() => handleDeleteAllEntriesDisplay(true)}
-          disabled={isDeleting}>
-          <span>
-            <Icon name='trash' className='s1' parentClassName='iconDelete' />
+        <Tooltip
+          placement='left'
+          visible={show}
+          title={deleteAll}
+          className='tc'
+          trigger='click'
+          arrowPointAtCenter>
+          <Button className='btn-link icon-delete' aria-label='button'
+            onClick={() => handleDeleteAllEntriesDisplay(true)}
+            disabled={isDeleting} icon='delete'>
             <span className='hidden-lesm'>Delete</span>
-          </span>
-        </Button>
+          </Button>
+        </Tooltip>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */

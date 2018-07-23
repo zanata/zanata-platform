@@ -14,33 +14,39 @@ class SuggestionTranslationDetails extends React.Component {
       copying: PropTypes.bool.isRequired,
       matchType: PropTypes.string.isRequired,
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.string.isRequired,
+        type: PropTypes.shape({
+          key: PropTypes.oneOf(
+            ['IMPORTED_TM', 'LOCAL_PROJECT', 'MT']).isRequired,
+          metadata: PropTypes.string
+        }).isRequired,
         contentState: PropTypes.string
       })),
       similarityPercent: PropTypes.number
     })
   }
 
+  // @ts-ignore any
   user = (suggestion) => {
     const topMatch = suggestion.matchDetails[0]
     return topMatch.lastModifiedBy || 'Anonymous'
   }
 
+  // @ts-ignore any
   lastChanged = (suggestion) => {
     const topMatch = suggestion.matchDetails[0]
-    if (topMatch.type === 'IMPORTED_TM') {
+    if (topMatch.type.key === 'IMPORTED_TM') {
       return topMatch.lastChanged
     }
-    if (topMatch.type === 'LOCAL_PROJECT') {
+    if (topMatch.type.key === 'LOCAL_PROJECT' || topMatch.type.key === 'MT') {
       return topMatch.lastModifiedDate
     }
     console.error('match type not recognized for looking up date: ' +
-                  topMatch.type)
+                  topMatch.type.key)
   }
 
   render () {
     const { copySuggestion, suggestion } = this.props
-    const { copying, matchType, similarityPercent } = suggestion
+    const { copying, matchType, similarityPercent, matchDetails } = suggestion
     const label = copying ? 'Copied' : 'Copy Translation'
     const user = this.user(suggestion)
     // TODO convert these to Date in the api module instead
@@ -54,7 +60,8 @@ class SuggestionTranslationDetails extends React.Component {
           <SuggestionUpdateMessage
             matchType={matchType}
             user={user}
-            lastChanged={lastChanged} />
+            lastChanged={lastChanged}
+            transSourceType={matchDetails[0].type} />
         </div>
         <div className="u-floatRight u-sm-floatNone">
           <ul className="u-listInline u-sizeLineHeight-1">

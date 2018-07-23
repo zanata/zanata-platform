@@ -2,7 +2,7 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 
 /**
- * @type { React.StatelessComponent<{children}> }
+ * @type { React.StatelessComponent<{children: any}> }
  */
 const ModalTitle = ({
   children,

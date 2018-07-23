@@ -20,6 +20,7 @@ const CategoryMatrixTable = ({
   key // TODO what's this for?
 }) => {
   let categoryMatrix = {}
+  /** @type {any[]} */
   let rows = []
 
   matrixData.forEach(function (matrix) {
@@ -41,16 +42,16 @@ const CategoryMatrixTable = ({
   })
 
   return (
-    <div>
-      <h3 className='zeta txt--uppercase txt--understated'>
+    <React.Fragment>
+      <h3 className='txt-muted ttu f6'>
         {categoryName}
       </h3>
-      <table className='l--push-bottom-half'>
+      <table>
         <tbody>
         {rows}
         </tbody>
       </table>
-    </div>
+    </React.Fragment>
   )
 }
 

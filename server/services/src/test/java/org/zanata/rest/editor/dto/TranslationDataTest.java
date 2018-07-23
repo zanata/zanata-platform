@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.zanata.common.ContentState;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +23,9 @@ public class TranslationDataTest {
                         "    \"revision\" : \"10000\",\n" +
                         "\"plural\" : false,\n" +
                         "\"revisionComment\" : \"comment\",\n" +
-                        "     \"status\" : \"NeedReview\" " +
+                        "\"status\" : \"NeedReview\",\n" +
+                        "\"lastModifiedBy\" : \"aeng\",\n" +
+                        "\"lastModifiedDate\" : \"0\" " +
                         "\n}";
 
         TranslationData translationData = om.readValue(json, TranslationData.class);
@@ -33,6 +36,8 @@ public class TranslationDataTest {
         expected.setPlural(false);
         expected.setStatus(ContentState.NeedReview);
         expected.setRevisionComment("comment");
+        expected.setLastModifiedBy("aeng");
+        expected.setLastModifiedDate(new Date(0));
 
         assertThat(translationData).isEqualTo(expected);
     }

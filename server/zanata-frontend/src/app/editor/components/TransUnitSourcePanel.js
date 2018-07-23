@@ -3,7 +3,8 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import TransUnitSourceHeader from './TransUnitSourceHeader'
 import { LoaderText } from '../../components'
-import IconButton from './IconButton'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import { getFilterString } from '../selectors'
 import { connect } from 'react-redux'
 
@@ -35,7 +36,7 @@ class TransUnitSourcePanel extends React.Component {
     const isLoading = !this.props.phrase.sources
 
     const sources = isLoading
-      ? <span className="u-textMeta">
+      ? <span className="u-textNeutral">
         <LoaderText loading />
       </span>
       : this.props.phrase.sources.map(
@@ -51,12 +52,12 @@ class TransUnitSourcePanel extends React.Component {
           /* eslint-disable max-len */
             ? <ul className="u-floatRight u-listHorizontal">
               <li>
-                <IconButton
+                <Button
                   icon="copy"
                   title={'Copy ' + this.props.sourceLocale.name +
                     ' (' + this.props.sourceLocale.id + ')'}
                   onClick={copySource}
-                  className="u-floatRight Link Link--neutral u-sizeHeight-1 u-sizeWidth-1 u-textCenter" />
+                  className="u-floatRight Link Link--neutral u-sizeHeight-1 u-sizeWidth-1 tc" />
               </li>
             </ul>
             /* eslint-enable max-len */

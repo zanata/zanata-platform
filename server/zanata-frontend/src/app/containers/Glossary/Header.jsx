@@ -1,7 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { Row } from 'react-bootstrap'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 
 /**
  * Page top header with Zanata logo
@@ -18,7 +19,7 @@ const Header = ({
     <div className='glossaryHeader-wrapper'>
       <div className='glossaryHeader-base'>
         <div className='innerView'>
-          <h1 className='glossaryHeader-title'>
+          <h1>
             <Row>
               {icon}{title || 'Title'}
               {extraHeadingElements}

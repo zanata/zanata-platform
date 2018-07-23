@@ -17,11 +17,11 @@ const counts = {
  */
 storiesOf('ProgressBar', module)
   .add('Small', () => (
-    <ProgressBar size='small' counts={counts}/>
+    <ProgressBar size='small' counts={counts} />
   ))
   .add('Medium (default)', () => (
-    <ProgressBar counts={counts}/>
+    <ProgressBar counts={counts} />
   ))
   .add('Large', () => (
-    <ProgressBar size='large' counts={counts}/>
+    <ProgressBar size='large' counts={counts} />
   ))

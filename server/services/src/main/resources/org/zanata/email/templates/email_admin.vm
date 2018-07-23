@@ -2,6 +2,6 @@
 
 <p>$msgs.format("jsf.email.admin.UserMessageIntro", $fromName, $fromLoginName)</p>
 <hr/>
-$htmlMessage
+$safeHtmlMessage
 <hr/>
 <p>$msgs.format("jsf.email.ReplyInstructions", $fromName, $replyEmail)</p>

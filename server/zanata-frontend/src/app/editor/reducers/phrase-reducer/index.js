@@ -1,4 +1,5 @@
 // @ts-nocheck
+import React from 'react'
 import { handleActions } from 'redux-actions'
 import update from 'immutability-helper'
 import phraseFilterReducer, { defaultState as defaultFilterState }
@@ -8,6 +9,7 @@ import {
   CLAMP_PAGE,
   UPDATE_PAGE
 } from '../../actions/controls-header-actions'
+import { SEVERITY } from '../../../actions/common-actions'
 import { COPY_GLOSSARY_TERM } from '../../actions/glossary-action-types'
 import {
   CANCEL_EDIT,
@@ -22,11 +24,18 @@ import {
   PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
   SAVE_FINISHED,
+  SAVE_FAILED,
   SAVE_INITIATED,
+  SAVE_CONFLICT,
+  SAVE_CONFLICT_RESOLVED_LATEST,
+  SAVE_CONFLICT_RESOLVED_ORIGINAL,
   SELECT_PHRASE,
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
-  UNDO_EDIT
+  TOGGLE_CONCURRENT_MODAL,
+  TOGGLE_SAVE_WITH_ERROR_MODAL,
+  UNDO_EDIT,
+  VALIDATION_ERRORS
 } from '../../actions/phrases-action-types'
 import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
 import {
@@ -35,11 +44,14 @@ import {
   getMaxPageIndex
 } from '../../selectors'
 import { hasAdvancedFilter } from '../../utils/filter-util'
+import { transUnitStatusToPhraseStatus } from '../../utils/status-util'
 import { replaceRange } from '../../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS
 } from '../../actions/phrase-navigation-actions'
-import { findIndex } from 'lodash'
+import { findIndex, isEmpty } from 'lodash'
+
+/* eslint-disable max-len */
 
 // FIXME this reducer is too big. See if it can be split up.
 
@@ -49,6 +61,7 @@ function clamp (number, lower, upper) {
   return Math.max(lower, Math.min(number, upper))
 }
 
+/** @type {import('../state').PhrasesState} */
 export const defaultState = {
   fetchingList: false,
   fetchingFilteredList: false,
@@ -61,6 +74,8 @@ export const defaultState = {
 
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
+  notification: undefined,
+  showConflictModal: false,
   selectedPhraseId: undefined,
   /* Cursor/selection position within the currently editing translation, used
    * for inserting terms from glossary etc. */
@@ -102,21 +117,22 @@ export const phraseReducer = handleActions({
     }
   }),
 
-  [COPY_FROM_ALIGNED_SOURCE]: state => updatePhrase(
-    state, state.selectedPhraseId,
+  [COPY_FROM_ALIGNED_SOURCE]: (state, {getState}) => updatePhrase(
+    state, getSelectedDocId(getState()), state.selectedPhraseId,
     {$apply: phrase => copyFromSource(phrase, phrase.selectedPluralIndex)
   }),
 
-  [COPY_FROM_SOURCE]: (state, { payload: { phraseId, sourceIndex } }) =>
-    updatePhrase(state, phraseId,
+  [COPY_FROM_SOURCE]: (state, {getState, payload: {phraseId, sourceIndex}}) =>
+    updatePhrase(state, getSelectedDocId(getState()), phraseId,
       {$apply: (phrase) => copyFromSource(phrase, sourceIndex)}),
 
-  [COPY_GLOSSARY_TERM]: (state, { payload }) => updatePhrase(
-    state, state.selectedPhraseId, {$apply: phrase =>
+  [COPY_GLOSSARY_TERM]: (state, { getState, payload }) => updatePhrase(
+    state, getSelectedDocId(getState()), state.selectedPhraseId,
+    {$apply: phrase =>
       insertTextAtRange(phrase, payload, state.selectedTextRange)}),
 
-  [COPY_SUGGESTION]: (state, { payload }) => updatePhrase(
-    state, state.selectedPhraseId,
+  [COPY_SUGGESTION]: (state, { getState, payload }) => updatePhrase(
+    state, getSelectedDocId(getState()), state.selectedPhraseId,
     {$apply: phrase => copyFromSuggestion(phrase, payload)
   }),
 
@@ -127,7 +143,8 @@ export const phraseReducer = handleActions({
     ? update(state, { fetchingFilteredList: {$set: true} })
     : update(state, { fetchingList: {$set: true} }),
 
-  [PENDING_SAVE_INITIATED]: (state, { payload }) => updatePhrase(state, payload,
+  [PENDING_SAVE_INITIATED]: (state, { getState, payload }) =>
+    updatePhrase(state, getSelectedDocId(getState()), payload,
     { pendingSave: {$set: undefined} }),
 
   [PHRASE_LIST_SUCCESS]: (state, {
@@ -176,31 +193,133 @@ export const phraseReducer = handleActions({
   [PHRASE_TEXT_SELECTION_RANGE]: (state, { payload }) =>
     update(state, { selectedTextRange: {$set: payload} }),
 
-  [QUEUE_SAVE]: (state, { payload: { phraseId, saveInfo } }) =>
-    updatePhrase(state, phraseId, { pendingSave: {$set: saveInfo} }),
+  [QUEUE_SAVE]: (state, {getState, payload: {phraseId, saveInfo}}) =>
+    updatePhrase(state, getSelectedDocId(getState()), phraseId,
+      {pendingSave: {$set: saveInfo}}),
 
-  [SAVE_FINISHED]: (state, { payload: { phraseId, status, revision } }) =>
-    updatePhrase(state, phraseId, {
-      inProgressSave: {$set: undefined},
-      // FIXME check whether this should be translations from the action
-      translations: {$set: state.detail[phraseId].newTranslations},
-      // TODO same as inProgressSave.status unless the server adjusted it
-      status: {$set: status},
-      revision: {$set: revision}
+  [SAVE_FINISHED]: (state, {getState, payload: {phraseId, status, revision}}) =>
+    updatePhrase(state, getSelectedDocId(getState()), phraseId,
+      {
+        inProgressSave: {$set: undefined},
+        // FIXME check whether this should be translations from the action
+        translations: {$set: state.detail[phraseId].newTranslations},
+        // TODO same as inProgressSave.status unless the server adjusted it
+        status: {$set: status},
+        revision: {$set: revision}
+      }),
+
+  [SAVE_FAILED]: (state, { getState, payload: { phraseId, saveInfo, response } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Save Translation Failed`,
+          description:
+            <p>
+              Unable to save phraseId {phraseId}
+              {isEmpty(saveInfo.translations)
+                ? null
+                : ` as ${saveInfo.translations[0]}`}
+              <br />
+              Status {response.status} {response.statusText}
+            </p>,
+          duration: null
+        }
+      },
+      detail: {
+        [phraseId]: {
+          inProgressSave: { $set: undefined }
+        }
+      }
     }),
 
-  [SAVE_INITIATED]: (state, { payload: { phraseId, saveInfo } }) =>
-    updatePhrase(state, phraseId, { inProgressSave: {$set: saveInfo} }),
+  [SAVE_CONFLICT]: (state, { getState, payload: { phraseId, saveInfo, response } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          key: response.lastModifiedDate,
+          severity: SEVERITY.ERROR,
+          message: 'Concurrent edit detected',
+          description: 'Please resolve conflicts',
+          duration: null
+        }
+      },
+      detail: {
+        [phraseId]: {
+          conflict: { $set: { response, saveInfo } },
+          inProgressSave: { $set: undefined }
+        }
+      }
+    }),
+
+  [SAVE_CONFLICT_RESOLVED_LATEST]: (state, { getState, payload: {
+    phraseId, saveInfo, revision } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.INFO,
+          message: 'Concurrent edit successfully resolved',
+          description: `Using the Latest edit`,
+          duration: 3.5
+        }
+      },
+      detail: {
+        [phraseId]: {
+          revision: {$set: revision},
+          conflict: { $set: undefined },
+          inProgressSave: { $set: undefined },
+          newTranslations: {
+            $set: [saveInfo.content]
+          },
+          status: { $set: transUnitStatusToPhraseStatus(saveInfo.status) },
+          translations: {
+            $set: [saveInfo.content]
+          }
+        }
+      }
+    }),
+
+  [SAVE_CONFLICT_RESOLVED_ORIGINAL]: (state, { getState, payload: {
+    phraseId, saveInfo, revision } }) =>
+    update(state, {
+      notification: {
+        $set: {
+          severity: SEVERITY.INFO,
+          message: 'Concurrent edit successfully resolved',
+          description: `Using the Original edit`,
+          duration: 3.5
+        }
+      },
+      detail: {
+        [phraseId]: {
+          revision: { $set: revision },
+          conflict: { $set: undefined },
+          inProgressSave: { $set: undefined },
+          status: { $set: saveInfo.status },
+          translations: {
+            $set: state.detail[phraseId].newTranslations
+          }
+        }
+      }
+    }),
+
+  [TOGGLE_CONCURRENT_MODAL]: (state) =>
+    update(state, {
+      showConflictModal: {$set: !state.showConflictModal}
+    }),
+
+  [SAVE_INITIATED]: (state, {getState, payload: {phraseId, saveInfo}}) =>
+    updatePhrase(state, getSelectedDocId(getState()), phraseId,
+      {inProgressSave: {$set: saveInfo}}),
 
   // TODO see if this is possible without using global state
   [SELECT_PHRASE]: (state, { getState, payload }) =>
     selectPhrase(state, getState(), payload),
 
   [SELECT_PHRASE_SPECIFIC_PLURAL]:
-    (state, { getState, payload: {phraseId, index} }) =>
-      selectPhrase(
-        updatePhrase(state, phraseId, { selectedPluralIndex: {$set: index} }),
-        getState(), phraseId),
+    (state, {getState, payload: {phraseId, index}}) => selectPhrase(
+      updatePhrase(state, getSelectedDocId(getState()), phraseId,
+        {selectedPluralIndex: {$set: index}}), getState(), phraseId),
 
   [SET_SAVE_AS_MODE]: (state, { payload }) =>
     update(state, { saveAsMode: {$set: payload} }),
@@ -210,17 +329,29 @@ export const phraseReducer = handleActions({
       detail: { [id]: { newTranslations: { [index]: {$set: text} } } }
     }),
 
-  [UNDO_EDIT]: (state) => updatePhrase(state, state.selectedPhraseId,
-    {$apply: (phrase) => update(phrase, {
-      newTranslations: {$set: [...phrase.translations]}
-    })
-  }),
+  [UNDO_EDIT]: (state, {getState}) => updatePhrase(state,
+    getSelectedDocId(getState()), state.selectedPhraseId,
+    {
+      $apply: (phrase) => update(phrase, {
+        newTranslations: {$set: [...phrase.translations]}
+      })
+    }),
 
   [MOVE_NEXT]: (state, { getState }) =>
     changeSelectedIndex(state, getState(), index => index + 1),
 
   [MOVE_PREVIOUS]: (state, { getState }) =>
-    changeSelectedIndex(state, getState(), index => index - 1)
+    changeSelectedIndex(state, getState(), index => index - 1),
+
+  [VALIDATION_ERRORS]: (state, { payload: { phraseId, hasValidationError } }) =>
+    update(state, {
+      detail: { [phraseId]: { errors: { $set: hasValidationError } } }
+    }),
+
+  [TOGGLE_SAVE_WITH_ERROR_MODAL]: (state, { payload: { phraseId, showValidationErrorModal } }) =>
+    update(state, {
+      detail: { [phraseId]: { showValidationErrorModal: { $set: showValidationErrorModal } } }
+    })
 }, defaultState)
 
 /**
@@ -375,14 +506,26 @@ function decideSelectedPhrase (state, phraseList) {
 *
 * Returns state with just the indicated phrase changed.
 */
-function updatePhrase (state, phraseId, commands) {
+function updatePhrase (state, docId, phraseId, commands) {
+  const phraseList = state.inDoc[docId]
+  const phraseIndex = phraseList.findIndex(x => x.id === phraseId)
+  const updatedPhrase = update(state.detail[phraseId], commands)
+
   return update(state, {
     detail: {
-      [phraseId]: {$apply: (phrase) => {
-        return update(phrase, commands)
-      }}
+      [phraseId]: {$set: updatedPhrase}
+    },
+    inDoc: {
+      [docId]: {
+        $set: update(phraseList,
+          {[phraseIndex]: {status: {$set: updatedPhrase.status}}})
+      }
     }
   })
+}
+
+function getSelectedDocId (state) {
+  return state.headerData.context.selectedDoc.id
 }
 
 export default composeReducers(

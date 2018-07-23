@@ -6,7 +6,8 @@ import { includes } from 'lodash'
 import DeleteEntry from './DeleteEntry'
 import { Loader, Icon }
  from '../../components'
-import { Label } from 'react-bootstrap'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
 import { getLanguageUrl } from '../../utils/UrlHelper'
 
 class Entry extends Component {
@@ -47,26 +48,26 @@ class Entry extends Component {
     const url = getLanguageUrl(localeDetails.localeId)
 
     return (
-      <tr name='language-entry' className='bstrapReact'>
+      <tr name='language-entry'>
         <td>
           <a href={url} id={'language-name-' + localeDetails.localeId}>
             <span name='language-name'>
               {localeDetails.localeId} [{localeDetails.nativeName}]
             </span>
             {localeDetails.enabledByDefault &&
-              <Label className='label-primary'>
+              <Tag color='03A6D7'>
                 DEFAULT
-              </Label>
+              </Tag>
             }
             {!localeDetails.enabled &&
-              <Label className='label-info'>
+              <Tag color='cyan'>
                 DISABLED
-              </Label>
+              </Tag>
             }
             {isUserInTeam &&
-              <Label className='label-success'>
+              <Tag color='62c876'>
                 Member
-              </Label>
+              </Tag>
             }
           </a>
           <br />
@@ -75,13 +76,12 @@ class Entry extends Component {
           </span>
         </td>
         <td>
-          <span className='u-textMuted'>
-            <Icon name='user' className='s1' parentClassName='iconUser' />
+          <span className='txt-muted'>
+            <Icon name='user' className='s1 mr1' />
             {locale.memberCount} &nbsp;
             {permission.canAddLocale &&
-              <span>
-                <Icon name='notification' className='s1'
-                  parentClassName='iconUser' />
+              <span className='ml2'>
+                <Icon name='notification' className='s1 mr1' />
                 {locale.requestCount}
               </span>
             }

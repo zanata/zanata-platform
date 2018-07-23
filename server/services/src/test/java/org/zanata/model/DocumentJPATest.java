@@ -8,14 +8,12 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.security.ZanataIdentity;
-import com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,20 +63,18 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
         HProject project = em.find(HProject.class, 1l);
         assertThat(project).isNotNull();
 
-        List<HProjectIteration> projectTargets = project.getProjectIterations();
-        assertThat(projectTargets.size()).isEqualTo(3)
-                .as("Project should have 3 targets");
-
-        List<Long> iterationIds = Lists.transform(projectTargets,
-                input -> input.getId());
-        assertThat(iterationIds).contains(1L, 2L, 900L);
+        List<HProjectIteration> iterations = project.getProjectIterations();
+        assertThat(iterations)
+                .hasSize(3)
+                .extracting(HProjectIteration::getId)
+                .contains(1L, 2L, 900L);
     }
 
     @Test
     public void checkPositionsNotNull() throws Exception {
         EntityManager em = getEm();
         HProject project = em.find(HProject.class, 1l);
-        // assertThat( project, notNullValue() );
+        assertThat(project).isNotNull();
 
         HDocument hdoc =
                 new HDocument("fullpath", ContentType.TextPlain, en_US);
@@ -127,15 +123,12 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
         assertThat(flow2.isObsolete()).isFalse();
     }
 
-    // FIXME this test only works if resources-dev is on the classpath.
-    // workaround (disabled history)
     @SuppressWarnings("unchecked")
-    @Ignore
     @Test
     public void ensureHistoryOnTextFlow() {
         EntityManager em = getEm();
         HProject project = em.find(HProject.class, 1l);
-        // assertThat( project, notNullValue() );
+        assertThat(project).isNotNull();
 
         HDocument hdoc =
                 new HDocument("fullpath", ContentType.TextPlain, en_US);
@@ -168,9 +161,9 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
                 em.createQuery(
                         "from HTextFlowTargetHistory h where h.textFlowTarget =:target")
                         .setParameter("target", target).getResultList();
-        assertThat(hist).isNotNull();
-        assertThat(hist.size()).isNotEqualTo(0);
-
+        assertThat(hist)
+                .isNotNull()
+                .isNotEmpty();
     }
 
 }

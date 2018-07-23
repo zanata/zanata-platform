@@ -4,6 +4,7 @@ import { SET_SIDEBAR_VISIBILITY } from '../actions/action-types'
 import {
   CHANGE_UI_LOCALE,
   TOGGLE_GLOSSARY,
+  TOGGLE_ACTIVITY,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
   UI_LOCALES_FETCHED
@@ -12,7 +13,7 @@ import {
   SUGGESTION_PANEL_HEIGHT_CHANGE
 } from '../actions/suggestions-action-types'
 
-import uiReducer, { GLOSSARY_TAB, identity } from './ui-reducer'
+import uiReducer, { GLOSSARY_TAB, ACTIVITY_TAB, identity } from './ui-reducer'
 
 describe('ui-reducer test', () => {
   it('can pass test', () => {
@@ -28,7 +29,7 @@ describe('ui-reducer test', () => {
         },
         sidebar: {
           visible: true,
-          selectedTab: GLOSSARY_TAB
+          selectedTab: ACTIVITY_TAB
         },
         suggestions: {
           heightPercent: 0.3
@@ -71,11 +72,12 @@ describe('ui-reducer test', () => {
   })
 
   it('can toggle glossary', () => {
-    const closedGlossary = uiReducer(undefined, { type: TOGGLE_GLOSSARY })
-    const openedGlossary = uiReducer(closedGlossary, { type: TOGGLE_GLOSSARY })
+    // @ts-ignore
+    const openedGlossary = uiReducer(undefined, { type: TOGGLE_GLOSSARY })
+    const closedGlossary = uiReducer(openedGlossary, { type: TOGGLE_GLOSSARY })
     expect(closedGlossary.panels.sidebar).toEqual({
-      visible: false,
-      selectedTab: GLOSSARY_TAB
+      visible: true,
+      selectedTab: ACTIVITY_TAB
     })
     expect(openedGlossary.panels.sidebar).toEqual({
       visible: true,
@@ -83,7 +85,22 @@ describe('ui-reducer test', () => {
     })
   })
 
+  it('can toggle activity', () => {
+    // @ts-ignore
+    const closedActivity = uiReducer(undefined, { type: TOGGLE_ACTIVITY })
+    const openedActivity = uiReducer(closedActivity, { type: TOGGLE_ACTIVITY })
+    expect(closedActivity.panels.sidebar).toEqual({
+      visible: true,
+      selectedTab: GLOSSARY_TAB
+    })
+    expect(openedActivity.panels.sidebar).toEqual({
+      visible: true,
+      selectedTab: ACTIVITY_TAB
+    })
+  })
+
   it('can toggle header', () => {
+    // @ts-ignore
     const closedHeader = uiReducer(undefined, { type: TOGGLE_HEADER })
     const openedHeader = uiReducer(closedHeader, { type: TOGGLE_HEADER })
     expect(closedHeader.panels.navHeader.visible).toEqual(false)
@@ -91,6 +108,7 @@ describe('ui-reducer test', () => {
   })
 
   it('can toggle key shortcuts modal', () => {
+    // @ts-ignore
     const openedKeyShortcuts = uiReducer(undefined, {
       type: TOGGLE_KEY_SHORTCUTS
     })

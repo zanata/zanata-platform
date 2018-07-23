@@ -17,6 +17,7 @@ export const STATUS_NEEDS_WORK_SERVER = 'needreview'
 export const STATUS_TRANSLATED = 'translated'
 export const STATUS_APPROVED = 'approved'
 export const STATUS_REJECTED = 'rejected'
+export const STATUS_MT = 'mt'
 
 export interface Phrase {
   status?: Status,
@@ -29,9 +30,23 @@ export interface Phrase {
   lastModifiedTime?: string,
   selectedPluralIndex?: number,
   sources?: string[],
+  showValidationErrorModal?: boolean,
   translations?: string[],
   newTranslations?: string[],
   inProgressSave?: boolean,
   comments?: number | string,
   errors?: boolean,
+  transSourceType?: string
+}
+
+// TODO: Determine why this differs from Phrase naming
+export interface SelectedPhrase {
+  msgctxt?: string,
+  resId: string,
+  sourceComment?: number | string,
+  sourceFlags?: string,
+  sourceReferences?: string,
+  lastModifiedBy?: string,
+  lastModifiedTime?: string,
+  revision?: number
 }

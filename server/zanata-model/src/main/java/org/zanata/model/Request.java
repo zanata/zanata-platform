@@ -40,6 +40,7 @@ import org.zanata.model.type.RequestState;
 import org.zanata.model.type.RequestStateType;
 import org.zanata.model.type.RequestType;
 import org.zanata.model.type.RequestTypeType;
+import io.leangen.graphql.annotations.GraphQLIgnore;
 
 /**
  * Entity for general request in Zanata.
@@ -52,6 +53,7 @@ import org.zanata.model.type.RequestTypeType;
         @TypeDef(name = "requestType", typeClass = RequestTypeType.class) })
 @Table(uniqueConstraints = @UniqueConstraint(name = "UK_entityId_validTo",
         columnNames = { "entityId", "validTo" }))
+@GraphQLIgnore
 public class Request extends TimeEntityBase {
     private static final long serialVersionUID = -7765625863647796620L;
     @Type(type = "requestState")

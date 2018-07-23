@@ -6,7 +6,8 @@ import {
   copyFromAlignedSource,
   undoEdit,
   cancelEdit,
-  savePhraseWithStatus } from './phrases-actions'
+  savePhraseWithStatus,
+  toggleSaveErrorModal } from './phrases-actions'
 import { moveNext, movePrevious } from './phrase-navigation-actions'
 import { copySuggestionN } from './suggestions-actions'
 import { toggleReviewModal } from './review-trans-actions'
@@ -236,10 +237,18 @@ function makeRowNavigationActionCreator (operation) {
         event.preventDefault()
         event.stopPropagation()
         const phrase = detail[selectedPhraseId]
-        if (hasTranslationChanged(phrase)) {
-          dispatch(saveAsCurrentActionCreator(event))
+        const translationChanged = hasTranslationChanged(phrase)
+        // Catch saving with validation errors
+        if (translationChanged && phrase.errors) {
+          dispatch(toggleSaveErrorModal(phrase.id, true))
+        } else {
+          // Save if translation edited
+          if (translationChanged) {
+            dispatch(saveAsCurrentActionCreator(event))
+          }
+          // Move to next row
+          dispatch(operation())
         }
-        dispatch(operation())
       }
     }
   }

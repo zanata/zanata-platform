@@ -61,7 +61,7 @@ export const prepareStats = (statistics) => {
     })
     .pick([
       'total', 'untranslated', 'rejected',
-      'needswork', 'translated', 'approved'
+      'needswork', 'translated', 'approved', 'mt'
     ])
     .mapValues((numStr) => {
       return parseInt(numStr, 10)

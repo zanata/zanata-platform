@@ -85,8 +85,8 @@ public class MultiFileUploadTest extends ZanataTestCase {
                         .submitUpload()
                         .clickUploadDone()
                         .gotoDocumentTab();
-        assertThat(versionDocumentsPage.expectSourceDocsContains(testFileName))
-                .as("Document shows in table");
+        // check that document shows in table
+        versionDocumentsPage.expectSourceDocsContains(testFileName);
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -138,7 +138,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
                         .pressUploadFileButton();
         versionDocumentsTab = createAndAddToQueue(versionDocumentsTab);
         versionDocumentsTab.assertNoCriticalErrors();
-        assertThat(versionDocumentsTab.getErrors().isEmpty());
+        assertThat(versionDocumentsTab.getErrors().isEmpty()).isTrue();
     }
 
     @SuppressWarnings("deprecation")
@@ -153,9 +153,9 @@ public class MultiFileUploadTest extends ZanataTestCase {
                         "testfile",
                         "." + extension,
                         testString);
-                assertThat(testFile.exists());
+                assertThat(testFile.exists()).isTrue();
                 versionDocumentsTab = versionDocumentsTab.enterFilePath(testFile.getPath());
-                assertThat(versionDocumentsTab.getErrors().isEmpty());
+                assertThat(versionDocumentsTab.getErrors().isEmpty()).isTrue();
             }
         }
         return versionDocumentsTab;

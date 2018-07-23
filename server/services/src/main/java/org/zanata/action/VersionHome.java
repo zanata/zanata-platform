@@ -23,8 +23,9 @@ package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import java.util.ArrayList;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -40,7 +41,6 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -77,6 +77,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Named("versionHome")
@@ -134,21 +135,17 @@ public class VersionHome extends SlugHome<HProjectIteration>
     private String copyFromVersionSlug;
     @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
     private final Function<HProjectIteration, VersionItem> VERSION_ITEM_FN =
-            new Function<HProjectIteration, VersionItem>() {
-
-                @Override
-                public VersionItem apply(HProjectIteration input) {
-                    boolean selected = StringUtils
-                            .isNotEmpty(copyFromVersionSlug)
-                            && copyFromVersionSlug.equals(input.getSlug());
-                    return new VersionItem(selected, input);
-                }
+            iter -> {
+                boolean selected = StringUtils
+                        .isNotEmpty(copyFromVersionSlug)
+                        && copyFromVersionSlug.equals(iter.getSlug());
+                return new VersionItem(selected, iter);
             };
 
     private void setDefaultCopyFromVersion() {
         List<VersionItem> otherVersions = getOtherVersions();
         if (!otherVersions.isEmpty()
-                && StringUtils.isEmpty(copyFromVersionSlug)) {
+                && isEmpty(copyFromVersionSlug)) {
             this.copyFromVersionSlug =
                     otherVersions.get(0).getVersion().getSlug();
             copyFromVersion = true;
@@ -175,7 +172,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
             if (projectType != null) {
                 selectedProjectType = projectType.name();
             }
-            if (StringUtils.isEmpty(copyFromVersionSlug)) {
+            if (isEmpty(copyFromVersionSlug)) {
                 setDefaultCopyFromVersion();
             }
         } else {
@@ -214,12 +211,11 @@ public class VersionHome extends SlugHome<HProjectIteration>
             List<HProjectIteration> versionList =
                     projectIterationDAO.getByProjectSlug(getProjectSlug(),
                             EntityStatus.ACTIVE, EntityStatus.READONLY);
-            Collections.sort(versionList,
-                    ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
+            versionList.sort(ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
             List<VersionItem> versionItems =
-                    Lists.transform(versionList, VERSION_ITEM_FN);
-            if (StringUtils.isEmpty(copyFromVersionSlug)
-                    && !versionItems.isEmpty()) {
+                    versionList.stream().map(VERSION_ITEM_FN)
+                            .collect(Collectors.toList());
+            if (isEmpty(copyFromVersionSlug) && !versionItems.isEmpty()) {
                 versionItems.get(0).setSelected(true);
             }
             return versionItems;
@@ -262,10 +258,12 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 .using("slug", getProjectSlug()).load();
         validateProjectState(project);
         if (versionId == null) {
+            HProject targetProject = projectDAO.getBySlug(getProjectSlug());
+            validateProjectState(targetProject);
             HProjectIteration iteration = (HProjectIteration) session
                     .byNaturalId(HProjectIteration.class)
                     .using("slug", getSlug())
-                    .using("project", projectDAO.getBySlug(getProjectSlug()))
+                    .using("project", targetProject)
                     .load();
             validateIterationState(iteration);
             versionId = iteration.getId();
@@ -300,18 +298,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
     private void setMessage(String message) {
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 message);
-    }
-
-    @Transactional
-    public void updateRequireTranslationReview(String key, boolean checked) {
-        identity.checkPermission(getInstance(), "update");
-        getInstance().setRequireTranslationReview(checked);
-        update();
-        if (checked) {
-            setMessage(msgs.get("jsf.iteration.requireReview.enabled"));
-        } else {
-            setMessage(msgs.get("jsf.iteration.requireReview.disabled"));
-        }
     }
 
     public List<ValidationAction> getValidationList() {
@@ -562,36 +548,27 @@ public class VersionHome extends SlugHome<HProjectIteration>
      */
     @SuppressWarnings("deprecation")
     public String getAcceptedSourceFileExtensions() {
-        List<String> supportedTypes = Lists.transform(
-                ProjectType.getSupportedSourceFileTypes(getProjectType()),
-                new Function<DocumentType, String>() {
-
-                    @Override
-                    public String apply(DocumentType docType) {
-                        return Joiner.on(",")
-                                .join(docType.getSourceExtensions());
-                    }
-                });
+        List<String> supportedTypes =
+                ProjectType.getSupportedSourceFileTypes(getProjectType())
+                        .stream().map(docType -> Joiner.on(",")
+                        .join(docType.getSourceExtensions()))
+                        .collect(Collectors.toList());
         return Joiner.on(", ").join(supportedTypes);
     }
 
     @SuppressWarnings("deprecation")
     public String getAcceptedSourceFile() {
-        List<String> supportedTypes = Lists.transform(
-                ProjectType.getSupportedSourceFileTypes(getProjectType()),
-                new Function<DocumentType, String>() {
-
-                    @Override
-                    public String apply(DocumentType docType) {
-                        return docType.name() + "[" + Joiner.on(",")
-                                .join(docType.getSourceExtensions()) + "]";
-                    }
-                });
+        List<String> supportedTypes =
+                ProjectType.getSupportedSourceFileTypes(getProjectType())
+                        .stream()
+                        .map(docType -> docType.name() + "[" + Joiner.on(",")
+                                .join(docType.getSourceExtensions()) + "]")
+                        .collect(Collectors.toList());
         return Joiner.on(", ").join(supportedTypes);
     }
 
     private void updateProjectType() {
-        if (!StringUtils.isEmpty(selectedProjectType)
+        if (!isEmpty(selectedProjectType)
                 && !selectedProjectType.equals("null")) {
             ProjectType projectType = ProjectType.valueOf(selectedProjectType);
             getInstance().setProjectType(projectType);
@@ -846,7 +823,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
             List<HLocale> locales =
                     localeServiceImpl.getSupportedLanguageByProjectIteration(
                             getProjectSlug(), getSlug());
-            Collections.sort(locales, ComparatorUtil.LOCALE_COMPARATOR);
+            locales.sort(ComparatorUtil.LOCALE_COMPARATOR);
             return locales;
         }
         return Lists.newArrayList();
@@ -957,9 +934,8 @@ public class VersionHome extends SlugHome<HProjectIteration>
         // only include those not already in the project version
         List<HLocale> filteredList = activeLocales.stream()
                 .filter(hLocale -> !getEnabledLocales().contains(hLocale))
-                .collect(
-                        Collectors.toList());
-        Collections.sort(filteredList, ComparatorUtil.LOCALE_COMPARATOR);
+                .sorted(ComparatorUtil.LOCALE_COMPARATOR)
+                .collect(Collectors.toList());
         return filteredList;
     }
 

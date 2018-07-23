@@ -22,7 +22,9 @@ package org.zanata.page;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -88,10 +90,14 @@ public class CorePage extends AbstractPage {
     public List<String> getErrors() {
         log.info("Query page errors");
         List<String> oldError = WebElementUtil.elementsToText(getDriver(),
-                By.xpath("//span[@class=\'errors\']"));
+                By.xpath("//span[@class=\'errors\']"))
+                .stream().filter(s -> StringUtils.isNotBlank(s))
+                .collect(Collectors.toList());
         // app-error is a pseudo class we put in just for this
         List<String> newError = WebElementUtil.elementsToText(getDriver(),
-                By.className("app-error"));
+                By.className("app-error"))
+                .stream().filter(s -> StringUtils.isNotBlank(s))
+                .collect(Collectors.toList());
         List<String> allErrors = Lists.newArrayList();
         allErrors.addAll(oldError);
         allErrors.addAll(newError);

@@ -1,65 +1,68 @@
 package org.zanata.rest.service.raw;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
-import static com.jayway.awaitility.Awaitility.waitAtMost;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
-import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
-import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
-import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.jayway.awaitility.Duration;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
-import org.zanata.RestTest;
-import org.zanata.provider.DBUnitProvider;
+import org.zanata.common.ContentState;
+import org.zanata.rest.ResourceRequestEnvironment;
+import org.zanata.common.LocaleId;
 import org.zanata.provider.DBUnitProvider.DataSetOperation;
 import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.test.TranslationsResourceTestData;
-import com.jayway.awaitility.Duration;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.jayway.awaitility.Awaitility.waitAtMost;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
+import static org.zanata.test.ResourceTestData.getTestDocWithTextFlow;
+import static org.zanata.util.RawRestTestUtils.*;
 
 /**
  * @Auther pahuang
  */
-public class AsyncResourceRestITCase extends RestTest {
+public class AsyncResourceRestITCase extends SourceAndTranslationResourceRestBase {
+    private AsynchronousProcessClient asynchronousProcessResource;
+
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AsyncResourceRestITCase.class);
 
+    private static final EnumSet<ProcessStatus.ProcessStatusCode> DONE_STATUS =
+            EnumSet.of(Failed,
+                    ProcessStatus.ProcessStatusCode.Finished,
+                    ProcessStatus.ProcessStatusCode.NotAccepted);
+
+    private StringSet extGettextComment = new StringSet("gettext;comment");
+
     private static final String DOCUMENTS_DATA_DBUNIT_XML =
             "org/zanata/test/model/DocumentsData.dbunit.xml";
-    private static final String LOCALE_DATA_DBUNIT_XML =
-            "org/zanata/test/model/LocalesData.dbunit.xml";
-    private static final String PROJECTS_DATA_DBUNIT_XML =
-            "org/zanata/test/model/ProjectsData.dbunit.xml";
-    private static final String ACCOUNT_DATA_DBUNIT_XML =
-            "org/zanata/test/model/AccountData.dbunit.xml";
-
+    private static final String TEXT_FLOW_DATA_DB_UNIT_XML =
+            "org/zanata/test/model/TextFlowTestData.dbunit.xml";
     @Override
     protected void prepareDBUnitOperations() {
-        addBeforeTestOperation(new DataSetOperation(ACCOUNT_DATA_DBUNIT_XML,
-                DatabaseOperation.CLEAN_INSERT));
+        super.prepareDBUnitOperations();
+
         addBeforeTestOperation(new DataSetOperation(DOCUMENTS_DATA_DBUNIT_XML,
                 DatabaseOperation.CLEAN_INSERT));
-        addBeforeTestOperation(new DataSetOperation(PROJECTS_DATA_DBUNIT_XML,
+
+        addBeforeTestOperation(new DataSetOperation(TEXT_FLOW_DATA_DB_UNIT_XML,
                 DatabaseOperation.CLEAN_INSERT));
-        addBeforeTestOperation(new DataSetOperation(LOCALE_DATA_DBUNIT_XML,
-                DatabaseOperation.CLEAN_INSERT));
-        addBeforeTestOperation(new DataSetOperation(
-                "org/zanata/test/model/TextFlowTestData.dbunit.xml"));
-        addAfterTestOperation(new DBUnitProvider.DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                DatabaseOperation.DELETE_ALL));
     }
 
     @Test
@@ -67,259 +70,283 @@ public class AsyncResourceRestITCase extends RestTest {
     @Deprecated
     public void testPutGetResourceWithExtensionDeprecated() throws Exception {
         final Resource resource = getTestDocWithTextFlow();
-        final AtomicReference<String> processId = new AtomicReference<>(null);
-        new ResourceRequest(
-                getRestEndpointUrl(
-                        "async/projects/p/sample-project/iterations/i/1.0/r/"
-                                + resource.getName()),
-                "PUT", getAuthorizedEnvironment()) {
 
-            @Override
-            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("ext", "gettext").
-                        queryParam("ext", "comment").
-                        queryParam("copyTrans", false).request();
-            }
+        ProcessStatus status = getAsynchronousProcessResource().startSourceDocCreationOrUpdate(resource.getName(), "sample-project", "1.0",
+                resource, extGettextComment, true);
 
-            @Override
-            public void invoke(Invocation.Builder builder) {
-                Entity<String> entity = Entity
-                        .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
-                Response response = builder.buildPut(entity).invoke();
-                onResponse(response);
-            }
+        waitUntilFinished(status);
 
+        Response resourceResponse = getSourceDocResource().getResource(resource.getName(), extGettextComment);
 
-            @Override
-            protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(200);
-                String entityString = response.readEntity(String.class);
+        Resource serverResource = getResourceFromResponse(resourceResponse);
 
-                assertJaxbUnmarshal(entityString, ProcessStatus.class);
-                ProcessStatus status =
-                        jaxbUnmarshal(entityString, ProcessStatus.class);
-                assertThat(status.getUrl()).isNotNull();
-                processId.set(status.getUrl());
-            }
-        }.run();
-        waitAtMost(Duration.TEN_SECONDS).catchUncaughtExceptions()
-                .pollInterval(Duration.ONE_SECOND)
-                .until(asyncPushFinishCallable(processId.get()));
-        new ResourceRequest(
-                getRestEndpointUrl(
-                        "projects/p/sample-project/iterations/i/1.0/r/"
-                                + resource.getName()),
-                "GET", getAuthorizedEnvironment()) {
+        ResourceTestUtil.clearRevs(resource);
+        ResourceTestUtil.clearRevs(serverResource);
 
-            @Override
-            protected Invocation.Builder prepareRequest(
-                    ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("ext", "gettext").
-                        queryParam("ext", "comment").request();
-            }
+        log.debug("expect:" + resource.toString());
+        log.debug("actual:" + serverResource.toString());
 
-            @Override
-            protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(200);
-                String entityString = response.readEntity(String.class);
-                Resource get = jaxbUnmarshal(entityString, Resource.class);
-                Resource base = getTestDocWithTextFlow();
-                ResourceTestUtil.clearRevs(base);
-                ResourceTestUtil.clearRevs(get);
-                log.debug("expect:" + base.toString());
-                log.debug("actual:" + get.toString());
-                assertThat(get.toString()).isEqualTo(base.toString());
-            }
-        }.run();
-    }
+        assertThat(serverResource.toString()).isEqualTo(resource.toString());
+     }
 
     @Test
     @RunAsClient
     public void testPutGetResourceWithExtension() throws Exception {
         final Resource resource = getTestDocWithTextFlow();
-        final AtomicReference<String> processId = new AtomicReference<>(null);
-        new ResourceRequest(
-                getRestEndpointUrl(
-                        "async/projects/p/sample-project/iterations/i/1.0/resource"),
-                "PUT", getAuthorizedEnvironment()) {
 
-            @Override
-            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("docId", resource.getName()).
-                        queryParam("ext", "gettext").
-                        queryParam("ext", "comment").
-                        queryParam("copyTrans", false).request();
-            }
+        ProcessStatus status = getAsynchronousProcessResource().startSourceDocCreationOrUpdateWithDocId("sample-project", "1.0", resource, extGettextComment, resource.getName());
 
-            @Override
-            public void invoke(Invocation.Builder builder) {
-                Entity<String> entity = Entity
-                        .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
-                Response response = builder.buildPut(entity).invoke();
-                onResponse(response);
-            }
+        waitUntilFinished(status);
 
+        Response resourceResponse = getSourceDocResource().getResourceWithDocId(resource.getName(), extGettextComment);
 
-            @Override
-            protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(200);
-                String entityString = response.readEntity(String.class);
+        Resource serverResource = getResourceFromResponse(resourceResponse);
 
-                assertJaxbUnmarshal(entityString, ProcessStatus.class);
-                ProcessStatus status =
-                        jaxbUnmarshal(entityString, ProcessStatus.class);
-                assertThat(status.getUrl()).isNotNull();
-                processId.set(status.getUrl());
-            }
-        }.run();
-        waitAtMost(Duration.TEN_SECONDS).catchUncaughtExceptions()
-                .pollInterval(Duration.ONE_SECOND)
-                .until(asyncPushFinishCallable(processId.get()));
-        new ResourceRequest(
-                getRestEndpointUrl(
-                        "projects/p/sample-project/iterations/i/1.0/r/"
-                                + resource.getName()),
-                "GET", getAuthorizedEnvironment()) {
+        ResourceTestUtil.clearRevs(resource);
+        ResourceTestUtil.clearRevs(serverResource);
 
-            @Override
-            protected Invocation.Builder prepareRequest(
-                    ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("ext", "gettext").
-                        queryParam("ext", "comment").request();
-            }
+        log.debug("expect:" + resource.toString());
+        log.debug("actual:" + serverResource.toString());
 
-            @Override
-            protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(200);
-                String entityString = response.readEntity(String.class);
-                Resource get = jaxbUnmarshal(entityString, Resource.class);
-                Resource base = getTestDocWithTextFlow();
-                ResourceTestUtil.clearRevs(base);
-                ResourceTestUtil.clearRevs(get);
-                log.debug("expect:" + base.toString());
-                log.debug("actual:" + get.toString());
-                assertThat(get.toString()).isEqualTo(base.toString());
-            }
-        }.run();
+        assertThat(serverResource.toString()).isEqualTo(resource.toString());
     }
 
     @Test
     @RunAsClient
     @Deprecated
-    public void testPutGetTranslationWithExtensionDeprecate() throws Exception {
-        final TranslationsResource resource =
+    public void testPutGetTranslationWithExtensionDeprecate() {
+        final TranslationsResource uploadedResource =
                 TranslationsResourceTestData.getTestTextFlowTargetComment();
-        final AtomicReference<String> processId = new AtomicReference<>(null);
-        new ResourceRequest(
-                getRestEndpointUrl(
-                        "async/projects/p/sample-project/iterations/i/1.0/r/my,path,document.txt/translations/en"),
-                "PUT", getAuthorizedEnvironment()) {
 
-            @Override
-            protected Invocation.Builder prepareRequest(
-                    ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("ext", "gettext").
-                        queryParam("ext", "comment").
-                        queryParam("merge", "auto").request();
-            }
+        ProcessStatus status = getAsynchronousProcessResource().startTranslatedDocCreationOrUpdate("my,path,document.txt", "sample-project", "1.0", LocaleId.EN,
+                uploadedResource, extGettextComment, "auto", false);
 
-            @Override
-            public void invoke(Invocation.Builder builder) {
-                Entity<String> entity = Entity
-                        .entity(jaxbMarhsal(resource),
-                                MediaType.APPLICATION_XML_TYPE);
-                Response response = builder.buildPut(entity).invoke();
-                onResponse(response);
-            }
+        waitUntilFinished(status);
 
-            @Override
-            protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(200);
-                String entityString = response.readEntity(String.class);
-                assertJaxbUnmarshal(entityString, ProcessStatus.class);
-                ProcessStatus status =
-                        jaxbUnmarshal(entityString, ProcessStatus.class);
-                assertThat(status.getUrl()).isNotNull();
-                processId.set(status.getUrl());
-            }
-        }.run();
-        waitAtMost(Duration.TEN_SECONDS).catchUncaughtExceptions()
-                .pollInterval(Duration.ONE_SECOND)
-                .until(asyncPushFinishCallable(processId.get()));
+        Response getResponse = getTransResource()
+                .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, true, null);
+
+        assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
+        assertThat(serverResource.getTextFlowTargets().size()).isEqualTo(uploadedResource.getTextFlowTargets().size());
     }
 
     @Test
     @RunAsClient
-    public void testPutGetTranslationWithExtension() throws Exception {
-        final TranslationsResource resource =
+    public void testPutGetTranslationWithExtension() {
+        final TranslationsResource uploadedResource =
                 TranslationsResourceTestData.getTestTextFlowTargetComment();
+
+        ProcessStatus status = getAsynchronousProcessResource().startTranslatedDocCreationOrUpdateWithDocId("sample-project", "1.0", LocaleId.DE, uploadedResource,
+                "my/path/document.txt", extGettextComment, "auto", false);
+
+        waitUntilFinished(status);
+
+        Response getResponse = getTransResource()
+                        .getTranslationsWithDocId(LocaleId.DE, "my/path/document.txt", null, false, true, null);
+
+        assertThat(getResponse.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        TranslationsResource serverResource = getTranslationsResourceFromResponse(getResponse);
+        assertThat(serverResource.getTextFlowTargets().size()).isEqualTo(uploadedResource.getTextFlowTargets().size());
+    }
+
+    private void waitUntilFinished(
+            final ProcessStatus status) {
         final AtomicReference<String> processId = new AtomicReference<>(null);
-        new ResourceRequest(
-                getRestEndpointUrl(
-                        "async/projects/p/sample-project/iterations/i/1.0/resource/translations/en"),
-                "PUT", getAuthorizedEnvironment()) {
 
-            @Override
-            protected Invocation.Builder prepareRequest(
-                    ResteasyWebTarget webTarget) {
-                return webTarget.queryParam("docId", "my/path/document.txt").
-                        queryParam("ext", "gettext").
-                        queryParam("ext", "comment").
-                        queryParam("merge", "auto").request();
-            }
+        assertThat(status.getUrl()).isNotNull();
+        processId.set(status.getUrl());
 
-            @Override
-            public void invoke(Invocation.Builder builder) {
-                Entity<String> entity = Entity
-                        .entity(jaxbMarhsal(resource),
-                                MediaType.APPLICATION_XML_TYPE);
-                Response response = builder.buildPut(entity).invoke();
-                onResponse(response);
-            }
-
-            @Override
-            protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(200);
-                String entityString = response.readEntity(String.class);
-                assertJaxbUnmarshal(entityString, ProcessStatus.class);
-                ProcessStatus status =
-                        jaxbUnmarshal(entityString, ProcessStatus.class);
-                assertThat(status.getUrl()).isNotNull();
-                processId.set(status.getUrl());
-            }
-        }.run();
         waitAtMost(Duration.TEN_SECONDS).catchUncaughtExceptions()
-                .pollInterval(Duration.ONE_SECOND)
+                .pollInterval(Duration.FIVE_HUNDRED_MILLISECONDS)
                 .until(asyncPushFinishCallable(processId.get()));
     }
 
     private Callable<Boolean> asyncPushFinishCallable(final String processId) {
-        return new Callable<Boolean>() {
+        return () -> {
+            ProcessStatus processStatus = getAsynchronousProcessResource().getProcessStatus(processId);
+            ProcessStatus.ProcessStatusCode statusCode = processStatus.getStatusCode();
 
-            @Override
-            public Boolean call() throws Exception {
-                new ResourceRequest(getRestEndpointUrl("async/" + processId),
-                        "GET", getAuthorizedEnvironment()) {
-
-                    @Override
-                    protected Invocation.Builder prepareRequest(
-                            ResteasyWebTarget webTarget) {
-                        return webTarget.request();
-                    }
-
-                    @Override
-                    protected void onResponse(Response response) {
-                        assertThat(response.getStatus()).isEqualTo(200);
-                        String entityString = response.readEntity(String.class);
-                        assertJaxbUnmarshal(entityString, ProcessStatus.class);
-                        ProcessStatus status =
-                                jaxbUnmarshal(entityString, ProcessStatus.class);
-                        assertThat(status.getStatusCode()).isEqualTo(
-                                ProcessStatus.ProcessStatusCode.Finished);
-                    }
-                }.run();
-                return true;
-            }
+            return DONE_STATUS.contains(statusCode);
         };
+    }
+
+    public AsynchronousProcessClient getAsynchronousProcessResource() {
+        if (asynchronousProcessResource == null) {
+            asynchronousProcessResource = new AsynchronousProcessClient();
+        }
+        return asynchronousProcessResource;
+    }
+
+    public class AsynchronousProcessClient implements AsynchronousProcessResource {
+        @Override
+        public ProcessStatus startSourceDocCreation(String idNoSlash, String projectSlug, String iterationSlug, Resource resource, Set<String> extensions, boolean copytrans) {
+            throw new UnsupportedOperationException(
+                    "Not supported. Use startSourceDocCreationOrUpdate instead.");
+        }
+
+        @Override
+        public ProcessStatus startSourceDocCreationOrUpdate(String idNoSlash, String projectSlug, String iterationSlug, Resource resource, Set<String> extensions, boolean copytrans) {
+            Response response = new PutResourceRequest(
+                    getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/r/" + idNoSlash),
+                    "PUT", getAuthorizedEnvironment(), resource) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .queryParam("ext", extensions.toArray())
+                            .queryParam("copyTrans", copytrans)
+                            .request(MediaType.APPLICATION_XML_TYPE);
+                }
+            }.runWithResult();
+
+            return getProcessStatusFromResponse(response);
+        }
+
+        @Override
+        public ProcessStatus startSourceDocCreationOrUpdateWithDocId(String projectSlug, String iterationSlug, Resource resource, Set<String> extensions, String docId) {
+            Response response = new PutResourceRequest(
+                    getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/resource"),
+                    "PUT", getAuthorizedEnvironment(), resource) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .queryParam("docId", docId)
+                            .queryParam("ext", extensions.toArray())
+                            .request(MediaType.APPLICATION_XML_TYPE);
+                }
+            }.runWithResult();
+
+            return getProcessStatusFromResponse(response);
+        }
+
+        @Override
+        public ProcessStatus startTranslatedDocCreationOrUpdate(String idNoSlash, String projectSlug, String iterationSlug, LocaleId locale, TranslationsResource translatedDoc, Set<String> extensions, String merge, boolean assignCreditToUploader) {
+            Response response = new PutTranslationsResourceRequest(
+                    getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/r/" + idNoSlash + "/translations/" + locale.toString()),
+                    "PUT", getAuthorizedEnvironment(), translatedDoc) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .queryParam("ext", extensions.toArray())
+                            .queryParam("merge", merge)
+                            .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
+                            .request(MediaType.APPLICATION_XML_TYPE);
+                }
+            }.runWithResult();
+
+            return getProcessStatusFromResponse(response);        }
+
+        @Override
+        public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(String projectSlug, String iterationSlug, LocaleId locale, TranslationsResource translatedDoc, String docId, Set<String> extensions, String merge, boolean assignCreditToUploader) {
+            Response response = new PutTranslationsResourceRequest(
+                    getRestEndpointUrl("/async/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/resource/translations/" + locale.toString()),
+                    "PUT", getAuthorizedEnvironment(), translatedDoc) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .queryParam("docId", docId)
+                            .queryParam("ext", extensions.toArray())
+                            .queryParam("merge", merge)
+                            .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
+                            .request(MediaType.APPLICATION_XML_TYPE);
+                }
+            }.runWithResult();
+
+            return getProcessStatusFromResponse(response);
+        }
+
+        @Override
+        public ProcessStatus getProcessStatus(String processId) {
+            Response response = new ResourceRequest(
+                    getRestEndpointUrl("/async/" + processId),
+                    "GET", getAuthorizedEnvironment()) {
+                @Override
+                protected Invocation.Builder prepareRequest(
+                        ResteasyWebTarget webTarget) {
+                    return webTarget
+                            .request().header(HttpHeaders.ACCEPT,
+                                    MediaType.APPLICATION_XML_TYPE);
+                }
+
+                @Override
+                protected void onResponse(Response response) {
+                }
+            }.runWithResult();
+
+            return getProcessStatusFromResponse(response);
+        }
+
+        private ProcessStatus getProcessStatusFromResponse(Response response) {
+            String entityString = response.readEntity(String.class);
+            assertJaxbUnmarshal(entityString, ProcessStatus.class);
+            ProcessStatus status =
+                    jaxbUnmarshal(entityString, ProcessStatus.class);
+
+            return status;
+        }
+    }
+
+    private abstract class PutResourceRequest extends ResourceRequest {
+        private final Resource resource ;
+
+        public PutResourceRequest(String resourceUrl, String method, Resource resource) {
+            super(resourceUrl, method);
+
+            this.resource = resource;
+        }
+
+        protected PutResourceRequest(String resourceUrl, String method,
+                                     ResourceRequestEnvironment environment, Resource resource) {
+            super(resourceUrl, method, environment);
+
+            this.resource = resource;
+        }
+        @Override
+        public Response invokeWithResponse(
+                Invocation.Builder builder) {
+            Entity<String> entity = Entity
+                    .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
+
+            return builder.buildPut(entity).invoke();
+        }
+
+        @Override
+        protected void onResponse(Response response) {
+            // No processing required when putting a translations resource
+        }
+    }
+
+    private abstract class PutTranslationsResourceRequest extends ResourceRequest {
+        private final TranslationsResource resource ;
+
+        public PutTranslationsResourceRequest(String resourceUrl, String method, TranslationsResource resource) {
+            super(resourceUrl, method);
+
+            this.resource = resource;
+        }
+
+        protected PutTranslationsResourceRequest(String resourceUrl, String method,
+                                     ResourceRequestEnvironment environment, TranslationsResource resource) {
+            super(resourceUrl, method, environment);
+
+            this.resource = resource;
+        }
+        @Override
+        public Response invokeWithResponse(
+                Invocation.Builder builder) {
+            Entity<String> entity = Entity
+                    .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
+
+            return builder.buildPut(entity).invoke();
+        }
+
+        @Override
+        protected void onResponse(Response response) {
+            // No processing required when putting a translations resource
+        }
     }
 }

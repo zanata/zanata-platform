@@ -8,7 +8,8 @@ import {
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
   STATUS_APPROVED,
-  STATUS_REJECTED
+  STATUS_REJECTED,
+  STATUS_MT
 } from '../../utils/status-util'
 import {
   resetStatusFilter,
@@ -29,7 +30,8 @@ export class PhraseStatusFilter extends Component {
       rejected: PropTypes.bool.isRequired,
       translated: PropTypes.bool.isRequired,
       needswork: PropTypes.bool.isRequired,
-      untranslated: PropTypes.bool.isRequired
+      untranslated: PropTypes.bool.isRequired,
+      mt: PropTypes.bool.isRequired
     }).isRequired,
 
     counts: PropTypes.shape({
@@ -39,7 +41,8 @@ export class PhraseStatusFilter extends Component {
       rejected: PropTypes.number,
       translated: PropTypes.number,
       needswork: PropTypes.number,
-      untranslated: PropTypes.number
+      untranslated: PropTypes.number,
+      mt: PropTypes.number
     }).isRequired,
 
     // DO NOT RENAME, the translation string extractor looks specifically
@@ -56,7 +59,8 @@ export class PhraseStatusFilter extends Component {
       rejected: 0,
       translated: 0,
       needswork: 0,
-      untranslated: 0
+      untranslated: 0,
+      mt: 0
     }
   }
 
@@ -65,6 +69,7 @@ export class PhraseStatusFilter extends Component {
   filterTranslated = () => this.props.onFilterChange(STATUS_TRANSLATED)
   filterNeedsWork = () => this.props.onFilterChange(STATUS_NEEDS_WORK)
   filterUntranslated = () => this.props.onFilterChange(STATUS_UNTRANSLATED)
+  filterMT = () => this.props.onFilterChange(STATUS_MT)
 
   render () {
     const { gettextCatalog, resetFilter } = this.props
@@ -126,6 +131,15 @@ export class PhraseStatusFilter extends Component {
             title={gettextCatalog.getString('Untranslated')}
             count={this.props.counts.untranslated} />
         </li>
+        <li className="u-ltemd-hidden u-sMV-1-4">
+          <FilterToggle
+            id="filter-phrases-mt"
+            className="u-text-color-secondary"
+            isChecked={this.props.filter.mt}
+            onChange={this.filterMT}
+            title={gettextCatalog.getString('MT')}
+            count={this.props.counts.mt} />
+        </li>
   {/* A couple of parts of the Angular template that were not being used yet
         <li ng-show="appCtrl.PRODUCTION" class="u-sML-1-4">
           <button class="Link--neutral u-sizeHeight-1_1-2"
@@ -149,8 +163,11 @@ export class PhraseStatusFilter extends Component {
 
 const mapStateToProps = ({
   // TODO move counts to a more appropriate place in state
+  // @ts-ignore any
   headerData: { context: { selectedDoc: { counts } } },
+  // @ts-ignore any
   phrases: { filter: { status } },
+  // @ts-ignore any
   ui: { gettextCatalog }}) => {
   return {
     counts,
@@ -159,9 +176,11 @@ const mapStateToProps = ({
   }
 }
 
+// @ts-ignore any
 function mapDispatchToProps (dispatch) {
   return {
     resetFilter: () => dispatch(resetStatusFilter()),
+    // @ts-ignore any
     onFilterChange: (status) => dispatch(updateStatusFilter(status))
   }
 }

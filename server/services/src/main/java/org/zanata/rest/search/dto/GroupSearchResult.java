@@ -22,7 +22,6 @@ package org.zanata.rest.search.dto;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.zanata.common.EntityStatus;
 import org.zanata.rest.dto.SearchResult;
 
 /**
@@ -33,7 +32,6 @@ import org.zanata.rest.dto.SearchResult;
 public class GroupSearchResult extends SearchResult {
     private static final long serialVersionUID = 3866221934953793995L;
     private String title;
-    private EntityStatus status;
 
     public GroupSearchResult() {
         this.setType(SearchResultType.Group);
@@ -45,13 +43,5 @@ public class GroupSearchResult extends SearchResult {
 
     public void setTitle(final String title) {
         this.title = title;
-    }
-
-    public EntityStatus getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(final EntityStatus status) {
-        this.status = status;
     }
 }

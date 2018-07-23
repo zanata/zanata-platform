@@ -7,11 +7,11 @@ export const ProjectVersionVertical = ({projectSlug, versionSlug}) => {
   return (
     <ul>
       <li className='list-group-item' title='target project' >
-        <Icon name='project' className='s0' parentClassName='iconTMX' />
+        <Icon name='project' className='s0 v-mid mr1' />
         {projectSlug}
       </li>
       <li className='list-group-item' title='target version'>
-        <Icon name='version' className='s0' parentClassName='iconTMX' />
+        <Icon name='version' className='s0 v-mid mr1' />
         {versionSlug}
       </li>
     </ul>
@@ -26,13 +26,11 @@ ProjectVersionVertical.propTypes = projectVersionDisplayPropTypes
 export const ProjectVersionHorizontal = ({projectSlug, versionSlug}) => {
   return (
     <span>
-      <span className="item">
-        <Icon name='project' className='s1'
-          parentClassName='iconTMX' />{projectSlug}
+      <span className="item mr4">
+        <Icon name='project' className='s1 v-mid mr1' />{projectSlug}
       </span>
-      <span className="item">
-        <Icon name='version' className='s1'
-          parentClassName='iconTMX' />{versionSlug}
+      <span className="item mr4">
+        <Icon name='version' className='s1 v-mid mr1' />{versionSlug}
       </span>
     </span>
   )

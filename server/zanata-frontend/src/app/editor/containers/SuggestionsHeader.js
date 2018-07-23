@@ -22,10 +22,12 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../components'
-import IconButton from '../components/IconButton'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import IconButtonToggle from '../components/IconButtonToggle'
 import SuggestionSearchInput from '../components/SuggestionSearchInput'
 import ToggleSwitch from '../components/ToggleSwitch'
+import Tooltip from 'antd/lib/tooltip'
 
 /**
  * Header of the suggestions panel, with some controls and
@@ -58,6 +60,7 @@ class SuggestionsHeader extends React.Component {
     }
   }
 
+  // @ts-ignore any
   setSearchInput = (ref) => {
     this.searchInput = ref
   }
@@ -94,14 +97,14 @@ class SuggestionsHeader extends React.Component {
 
     return (
       <nav className="Editor-suggestionsHeader u-bgHighest u-sPH-3-4">
-        <h2 className="Heading--panel u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
+        <h2 className="Heading--panel u-textSecondary u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
           <span className="u-textMuted">
             <Icon name="suggestions" className="s0" />
           </span>
           Suggestions
         </h2>
-        <div className="u-floatRight">
-          <ul className="u-listHorizontal u-textCenter">
+        <div className="fr">
+          <ul className="u-listHorizontal tc">
           {/*
             <li className="u-smv-1-4">
               <a className="Link--neutral u-sizeHeight-1_1-2"
@@ -128,12 +131,13 @@ class SuggestionsHeader extends React.Component {
                 disabled={!this.props.phraseSelected} />
             </li>
             <li>
-              <IconButton
-                icon="cross"
-                title="Close suggestions"
-                onClick={this.props.closeSuggestions}
-                className="Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1_1-2"
-              />
+              <Tooltip title="Close suggestions">
+                <Button
+                  icon="close"
+                  onClick={this.props.closeSuggestions}
+                  className="Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1_1-2"
+                />
+              </Tooltip>
             </li>
           </ul>
         </div>

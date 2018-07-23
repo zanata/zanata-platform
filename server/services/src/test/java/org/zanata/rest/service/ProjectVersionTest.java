@@ -143,12 +143,14 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
     public void versionTMMergeReturnsBadRequestIfMatchThresholdIsNotValid() {
         String projectSlug = "sample-project";
         String versionSlug = "2.0";
-        VersionTMMerge request1 = new VersionTMMerge(LocaleId.FR, 79,
+        // the minimum threshold is 75, so we use 74
+        VersionTMMerge request1 = new VersionTMMerge(LocaleId.FR, 74,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);
         assertThat(service.prefillWithTM(projectSlug, versionSlug, request1)
                 .getStatus()).isEqualTo(BAD_REQUEST.getStatusCode());
 
+        // the maximum threshold is 100, so we use 101
         VersionTMMerge request2 = new VersionTMMerge(LocaleId.FR, 101,
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 InternalTMSource.SELECT_ALL);

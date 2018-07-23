@@ -1,6 +1,6 @@
 // @ts-nocheck
 /* eslint-disable spaced-comment */
-/* @flow */ // TODO convert to TS
+// TODO convert to TS
 import cx from 'classnames'
 import EditorSearchInput from '../components/EditorSearchInput'
 import IconButtonToggle from '../components/IconButtonToggle'
@@ -8,8 +8,12 @@ import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
 import PhraseStatusFilter from '../components/PhraseStatusFilter'
 import React from 'react'
+import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { injectIntl, intlShape, defineMessages } from 'react-intl'
 import {
+  getSidebarTab,
+  getActivityVisible,
   getGlossaryVisible,
   getInfoPanelVisible,
   getKeyShortcutsVisible,
@@ -17,42 +21,87 @@ import {
   getShowSettings,
   getSuggestionsPanelVisible
 } from '../reducers'
+import { ACTIVITY_TAB, GLOSSARY_TAB } from '../reducers/ui-reducer'
 import { toggleShowSettings } from '../actions'
 import {
+  toggleActivity,
   toggleGlossary,
   toggleInfoPanel,
   toggleHeader,
   toggleKeyboardShortcutsModal
 } from '../actions/header-actions'
 import { toggleSuggestions } from '../actions/suggestions-actions'
+import {
+  firstPage,
+  nextPage,
+  previousPage,
+  lastPage
+} from '../actions/controls-header-actions'
+import { getMaxPageIndex } from '../selectors'
 
-/*::
-type props = {
-  +toggleKeyboardShortcutsModal: () => void,
-  +toggleGlossary: () => void,
-  +toggleInfoPanel: () => void,
-  +toggleHeader: () => void,
-  +toggleShowSettings: () => void,
-  +toggleSuggestions: () => void,
-
-  +glossaryVisible: bool,
-  +infoPanelVisible: bool,
-  +keyShortcutsVisible: bool,
-  +navHeaderVisible: bool,
-  +showSettings: bool,
-  +suggestionsVisible: bool,
-
-  +gettextCatalog: {
-    getString: (string) => string
+/* React-Intl I18n messages.
+ * Consumed as Strings rather than FormattedMessage span elements.
+ * see: https://github.com/yahoo/react-intl/wiki/API#definemessages
+ * and: https://github.com/yahoo/react-intl/wiki/API#injectintl */
+export const messages = defineMessages({
+  suggestHide: {
+    id: 'ControlsHeader.suggestion.hide',
+    defaultMessage: 'Hide suggestions panel'
+  },
+  suggestShow: {
+    id: 'ControlsHeader.suggestion.show',
+    defaultMessage: 'Show suggestions panel'
+  },
+  activityHide: {
+    id: 'ControlsHeader.activity.hide',
+    defaultMessage: 'Hide activity tab'
+  },
+  activityShow: {
+    id: 'ControlsHeader.activity.show',
+    defaultMessage: 'Show activity tab'
+  },
+  glossaryHide: {
+    id: 'ControlsHeader.glossary.hide',
+    defaultMessage: 'Hide glossary tab'
+  },
+  glossaryShow: {
+    id: 'ControlsHeader.glossary.show',
+    defaultMessage: 'Show glossary tab'
+  },
+  sidebarHide: {
+    id: 'ControlsHeader.sidebar.hide',
+    defaultMessage: 'Hide sidebar'
+  },
+  sidebarShow: {
+    id: 'ControlsHeader.sidebar.Show',
+    defaultMessage: 'Show sidebar'
+  },
+  keyShortcuts: {
+    id: 'ControlsHeader.keyboardshortcuts',
+    defaultMessage: 'Keyboard Shortcuts'
+  },
+  settings: {
+    id: 'ControlsHeader.settings',
+    defaultMessage: 'Settings'
+  },
+  menubarHide: {
+    id: 'ControlsHeader.menubar.hide',
+    defaultMessage: 'Hide Menubar'
+  },
+  menubarShow: {
+    id: 'ControlsHeader.menubar.show',
+    defaultMessage: 'Show Menubar'
   }
-}
-*/
+})
 
 /**
  * Header row with editor controls (filtering, paging, etc.)
  */
 export const ControlsHeader = ({
-  /* eslint-disable react/prop-types */
+  intl,
+  activitySelected,
+  activityVisible,
+  glossarySelected,
   glossaryVisible,
   infoPanelVisible,
   keyShortcutsVisible,
@@ -60,15 +109,20 @@ export const ControlsHeader = ({
   showSettings,
   suggestionsVisible,
   toggleKeyboardShortcutsModal,
+  toggleActivity,
   toggleGlossary,
   toggleInfoPanel,
   toggleHeader,
   toggleShowSettings,
   toggleSuggestions,
-  gettextCatalog,
-  permissions
-  /* eslint-enable react/prop-types */
- }/*: props*/) => {
+  permissions,
+  firstPage,
+  previousPage,
+  nextPage,
+  lastPage,
+  pageCount,
+  pageNumber
+  }) => {
   return (
     /* eslint-disable max-len */
     <nav className="flex flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of">
@@ -82,24 +136,53 @@ export const ControlsHeader = ({
         <EditorSearchInput />
       </div>
       <div className="u-floatRight controlHeader-right">
-        <ul className="u-listHorizontal u-textCenter">
+        <ul className="u-listHorizontal tc">
           <li className="u-sMV-1-4">
-            <Pager />
+            <Pager
+              firstPage={firstPage}
+              previousPage={previousPage}
+              nextPage={nextPage}
+              lastPage={lastPage}
+              pageCount={pageCount}
+              pageNumber={pageNumber}
+            />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
               icon="suggestions"
               title={suggestionsVisible
-                ? gettextCatalog.getString('Hide suggestions panel')
-                : gettextCatalog.getString('Show suggestions panel')}
+                ? intl.formatMessage(messages.suggestHide)
+                : intl.formatMessage(messages.suggestShow)}
               onClick={toggleSuggestions}
               active={suggestionsVisible} />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
+              icon="clock"
+              title={activityVisible
+                ? intl.formatMessage(messages.activityHide)
+                : intl.formatMessage(messages.activityShow)}
+              onClick={infoPanelVisible
+                ? toggleActivity : activitySelected
+                ? toggleInfoPanel : function () {
+                  toggleInfoPanel()
+                  toggleActivity()
+                }}
+              active={activityVisible}
+            />
+          </li>
+          <li className="u-sM-1-8">
+            <IconButtonToggle
               icon="glossary"
-              title={glossaryVisible ? 'Hide glossary' : 'Show glossary'}
-              onClick={toggleGlossary}
+              title={glossaryVisible
+                ? intl.formatMessage(messages.glossaryHide)
+                : intl.formatMessage(messages.glossaryShow)}
+              onClick={infoPanelVisible
+                ? toggleGlossary : glossarySelected
+                ? toggleInfoPanel : function () {
+                  toggleInfoPanel()
+                  toggleGlossary()
+                }}
               active={glossaryVisible}
             />
           </li>
@@ -108,39 +191,22 @@ export const ControlsHeader = ({
               icon="info"
               className="hide-sidebar-toggle"
               title={infoPanelVisible
-                ? gettextCatalog.getString('Hide sidebar')
-                : gettextCatalog.getString('Show sidebar')}
+                ? intl.formatMessage(messages.sidebarHide)
+                : intl.formatMessage(messages.sidebarShow)}
               onClick={toggleInfoPanel}
               active={infoPanelVisible} />
           </li>
-          {/* extra items from the angular template that were not being
-           displayed
-          <li ng-show="appCtrl.PRODUCTION">
-            <button class="Link--neutral u-sizeHeight-1_1-2"
-              title="{{'Details'|translate}}">
-              <icon name="info" title="{{'Details'|translate}}"
-                    class="u-sizeWidth-1_1-2"></icon>
-            </button>
-          </li>
-          <li ng-show="appCtrl.PRODUCTION">
-            <button class="Link--neutral u-sizeHeight-1_1-2"
-            title="{{'Editor Settings'|translate}}">
-              <icon name="settings" title="{{'Editor Settings'|translate}}"
-                    class="u-sizeWidth-1_1-2"></icon>
-            </button>
-          </li>
-    */}
           <li className="u-sm-hidden u-sM-1-8">
             <IconButtonToggle
               icon="keyboard"
-              title={gettextCatalog.getString('Keyboard Shortcuts')}
+              title={intl.formatMessage(messages.keyShortcuts)}
               onClick={toggleKeyboardShortcutsModal}
               active={keyShortcutsVisible} />
           </li>
           <li className="u-sM-1-8">
             <IconButtonToggle
               icon="settings"
-              title={gettextCatalog.getString('Settings')}
+              title={intl.formatMessage(messages.settings)}
               onClick={toggleShowSettings}
               active={showSettings} />
           </li>
@@ -148,8 +214,8 @@ export const ControlsHeader = ({
             <IconButtonToggle
               icon="chevron-up-double"
               title={navHeaderVisible
-                ? gettextCatalog.getString('Hide Menubar')
-                : gettextCatalog.getString('Show Menubar')}
+                ? intl.formatMessage(messages.menubarHide)
+                : intl.formatMessage(messages.menubarShow)}
               onClick={toggleHeader}
               active={!navHeaderVisible}
               className={cx({'is-rotated': !navHeaderVisible})} />
@@ -161,27 +227,69 @@ export const ControlsHeader = ({
   )
 }
 
+ControlsHeader.propTypes = {
+  intl: intlShape.isRequired,
+  activitySelected: PropTypes.bool.isRequired,
+  activityVisible: PropTypes.bool.isRequired,
+  glossarySelected: PropTypes.bool.isRequired,
+  glossaryVisible: PropTypes.bool.isRequired,
+  infoPanelVisible: PropTypes.bool.isRequired,
+  keyShortcutsVisible: PropTypes.bool.isRequired,
+  navHeaderVisible: PropTypes.bool.isRequired,
+  showSettings: PropTypes.bool.isRequired,
+  suggestionsVisible: PropTypes.bool.isRequired,
+  toggleKeyboardShortcutsModal: PropTypes.func.isRequired,
+  toggleActivity: PropTypes.func.isRequired,
+  toggleGlossary: PropTypes.func.isRequired,
+  toggleInfoPanel: PropTypes.func.isRequired,
+  toggleHeader: PropTypes.func.isRequired,
+  toggleShowSettings: PropTypes.func.isRequired,
+  toggleSuggestions: PropTypes.func.isRequired,
+  permissions: PropTypes.shape({
+    reviewer: PropTypes.bool.isRequired,
+    translator: PropTypes.bool.isRequired
+  }).isRequired,
+  firstPage: PropTypes.func.isRequired,
+  previousPage: PropTypes.func.isRequired,
+  nextPage: PropTypes.func.isRequired,
+  lastPage: PropTypes.func.isRequired,
+  pageNumber: PropTypes.number.isRequired,
+  pageCount: PropTypes.number
+}
+
 function mapStateToProps (state) {
-  const { ui: { gettextCatalog } } = state
+  const { phrases } = state
+  const pageCount = getMaxPageIndex(state) + 1
+  const pageNumber = Math.min(pageCount, phrases.paging.pageIndex + 1)
   return {
+    pageCount: pageCount,
+    pageNumber: pageNumber,
+    activitySelected: getSidebarTab(state) === ACTIVITY_TAB,
+    glossarySelected: getSidebarTab(state) === GLOSSARY_TAB,
+    activityVisible: getActivityVisible(state),
     glossaryVisible: getGlossaryVisible(state),
     infoPanelVisible: getInfoPanelVisible(state),
     keyShortcutsVisible: getKeyShortcutsVisible(state),
     navHeaderVisible: getNavHeaderVisible(state),
     suggestionsVisible: getSuggestionsPanelVisible(state),
     showSettings: getShowSettings(state),
-    gettextCatalog,
     permissions: state.headerData.permissions
   }
 }
 
 const mapDispatchToProps = {
   toggleShowSettings,
+  toggleActivity,
   toggleGlossary,
   toggleInfoPanel,
   toggleSuggestions,
   toggleKeyboardShortcutsModal,
-  toggleHeader
+  toggleHeader,
+  firstPage,
+  previousPage,
+  nextPage,
+  lastPage
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ControlsHeader)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  injectIntl(ControlsHeader))

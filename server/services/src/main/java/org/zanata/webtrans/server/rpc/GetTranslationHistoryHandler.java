@@ -2,6 +2,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -17,7 +18,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -117,29 +118,34 @@ public class GetTranslationHistoryHandler extends
                 usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
         int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(),
                 hLocale);
+        TranslationSourceType type = TranslationSourceType.UNKNOWN;
+        if (hTextFlowTarget.getSourceType() != null) {
+            type = TranslationSourceType.getValueOf(hTextFlowTarget.getSourceType().getAbbr());
+        }
         return new TransHistoryItem(
-                hTextFlowTarget.getVersionNum().toString(),
-                GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
-                        hTextFlowTarget, nPlurals),
-                hTextFlowTarget.getState(), lastModifiedBy,
-                hTextFlowTarget.getLastChanged(),
-                hTextFlowTarget.getRevisionComment()
+            hTextFlowTarget.getVersionNum().toString(),
+            GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
+                hTextFlowTarget, nPlurals),
+            hTextFlowTarget.getState(), lastModifiedBy,
+            hTextFlowTarget.getLastChanged(),
+            hTextFlowTarget.getRevisionComment(),
+            type
         ).setModifiedByPersonName(
                 nameOrEmptyString(hTextFlowTarget.getLastModifiedBy()));
     }
 
-    protected List<ReviewComment>
-    getReviewComments(TransUnitId transUnitId, HLocale hLocale) {
-        List<HTextFlowTargetReviewComment> hComments =
-                textFlowTargetReviewCommentsDAO.getReviewComments(
-                        transUnitId,
-                        hLocale.getLocaleId());
-        return Lists.transform(hComments, input -> new ReviewComment(
-                new ReviewCommentId(input.getId()),
-                input.getCommentText(), input.getCommenterUsername(),
-                input.getCommenterName(),
-                input.getCreationDate()
-        ));
+    protected List<ReviewComment> getReviewComments(
+            TransUnitId transUnitId, HLocale hLocale) {
+        return textFlowTargetReviewCommentsDAO.getReviewComments(
+                transUnitId, hLocale.getLocaleId())
+                .stream()
+                .map(comment -> new ReviewComment(new ReviewCommentId(
+                        comment.getId()),
+                        comment.getCommentText(),
+                        comment.getCommenterUsername(),
+                        comment.getCommenterName(),
+                        comment.getCreationDate()
+        )).collect(Collectors.toList());
     }
 
     private static String usernameOrEmptyString(HPerson lastModifiedBy) {
@@ -161,13 +167,19 @@ public class GetTranslationHistoryHandler extends
 
         @Override
         public TransHistoryItem apply(HTextFlowTargetHistory targetHistory) {
+            TranslationSourceType type =
+                targetHistory.getSourceType() == null ?
+                    TranslationSourceType.UNKNOWN :
+                    TranslationSourceType.getValueOf(targetHistory.getSourceType().getAbbr());
+
             return new TransHistoryItem(
-                    targetHistory.getVersionNum().toString(),
-                    targetHistory.getContents(), targetHistory.getState(),
-                    usernameOrEmptyString(targetHistory.getLastModifiedBy()),
-                    targetHistory.getLastChanged(),
-                    targetHistory.getRevisionComment())
-                    .setModifiedByPersonName(
+                targetHistory.getVersionNum().toString(),
+                targetHistory.getContents(), targetHistory.getState(),
+                usernameOrEmptyString(targetHistory.getLastModifiedBy()),
+                targetHistory.getLastChanged(),
+                targetHistory.getRevisionComment(),
+                type)
+                .setModifiedByPersonName(
                     targetHistory.getLastModifiedBy().getName());
         }
     }

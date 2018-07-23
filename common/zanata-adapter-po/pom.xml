@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>common</artifactId>
-    <version>4.5.0-SNAPSHOT</version>
+    <version>4.6.0-rc-2-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
 
@@ -38,6 +38,11 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
@@ -45,6 +50,12 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

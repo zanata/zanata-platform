@@ -13,7 +13,7 @@ class NeedSlugMessage extends React.Component {
   render () {
     /* eslint-disable max-len */
     return (
-      <div>
+      <React.Fragment>
         <p>Need a URL in the form <code>
           .../project/translate/project-slug/v/version-slug/doc-id-with-slashes?lang=locale-id
         </code></p>
@@ -22,12 +22,13 @@ class NeedSlugMessage extends React.Component {
             project/translate/my-project/v/my-version/document.txt?lang=fr
         </Link>
         </p>
-      </div>
+      </React.Fragment>
     )
     /* eslint-enable max-len */
   }
 }
 
+// @ts-ignore any
 const mapStateToProps = (state) => {
   return state
 }

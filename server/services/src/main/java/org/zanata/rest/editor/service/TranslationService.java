@@ -21,6 +21,7 @@
 package org.zanata.rest.editor.service;
 
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -34,6 +35,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.dto.TranslationData;
@@ -70,10 +72,7 @@ public class TranslationService implements TranslationResource {
     @Inject
     private LocaleService localeServiceImpl;
 
-    /**
-     * See {@link org.zanata.model.type.TranslationSourceType#JS_EDITOR_ENTRY}
-     */
-    private final String sourceType = "JS";
+    private static final String SOURCE_TYPE_JS_EDITOR = TranslationSourceType.JS_EDITOR_ENTRY.getAbbr();
 
     @Override
     @SuppressFBWarnings({"SLF4J_FORMAT_SHOULD_BE_CONST"})
@@ -91,21 +90,13 @@ public class TranslationService implements TranslationResource {
                     .build();
         }
         HLocale locale = localeServiceImpl.getByLocaleId(localeId);
-        List<Object[]> results =
-                textFlowDAO.getTextFlowAndTarget(idList, locale.getId());
-        for (Object[] result : results) {
-            HTextFlow hTextFlow = (HTextFlow) result[0];
-            TransUnit tu;
-            if (result.length < 2 || result[1] == null) {
-                tu = transUnitUtils.buildTargetTransUnit(hTextFlow, null,
-                        locale.getLocaleId());
-            } else {
-                HTextFlowTarget hTarget = (HTextFlowTarget) result[1];
-                tu = transUnitUtils.buildTargetTransUnit(hTextFlow, hTarget,
-                        locale.getLocaleId());
-            }
+        textFlowDAO.getTextFlowAndMaybeTarget(idList, locale.getId()).forEach(p -> {
+            HTextFlow hTextFlow = p.component1();
+            @Nullable HTextFlowTarget hTarget = p.component2();
+            TransUnit tu = transUnitUtils.buildTargetTransUnit(hTextFlow,
+                    hTarget, locale.getLocaleId());
             transUnits.put(hTextFlow.getId().toString(), tu);
-        }
+        });
         return Response.ok(transUnits).build();
     }
 
@@ -126,7 +117,7 @@ public class TranslationService implements TranslationResource {
         TransUnitUpdateRequest request = new TransUnitUpdateRequest(
                 new TransUnitId(requestData.getId().longValue()),
                 requestData.getContents(), requestData.getStatus(),
-                requestData.getRevision(), sourceType);
+                requestData.getRevision(), SOURCE_TYPE_JS_EDITOR);
         if (revisionComment != null) {
             request.addRevisionComment(revisionComment);
         }
@@ -134,7 +125,21 @@ public class TranslationService implements TranslationResource {
                 .translate(new LocaleId(localeId), Lists.newArrayList(request));
         TranslationResult result = translationResults.get(0);
         if (result.isVersionNumConflict()) {
-            return Response.status(Response.Status.CONFLICT).build();
+            HTextFlowTarget latest = result.getTranslatedTextFlowTarget();
+            // Include latest translator username, last changed date in response
+            String lastModifiedByUserName = latest.getLastModifiedBy()
+                    != null && latest.getLastModifiedBy().hasAccount()
+                    ? latest.getLastModifiedBy().getAccount().getUsername()
+                    : "";
+            requestData.setContents(latest.getContents());
+            requestData.setRevision(latest.getVersionNum());
+            requestData.setLastModifiedBy(lastModifiedByUserName);
+            requestData.setLastModifiedDate(latest.getLastChanged());
+            return Response
+                    .status(Response.Status.CONFLICT)
+                    .entity(requestData)
+                    .type("application/problem+json")
+                    .build();
         } else if (!result.isTranslationSuccessful()) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .build();

@@ -1,3 +1,4 @@
+/* global describe expect it */
 // @ts-nocheck
 import React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -5,53 +6,9 @@ import * as ReactDOMServer from 'react-dom/server'
 import * as TestUtils from 'react-dom/test-utils'
 import { Icon } from '../../../components'
 import IconButton from '.'
+import Button from 'antd/lib/button'
 
 describe('IconButtonTest', () => {
-  it('IconButton markup', () => {
-    const clickFun = function (_e) {}
-
-    const actual = ReactDOMServer.renderToStaticMarkup(<IconButton
-      icon="classical"
-      title="Mozart"
-      onClick={clickFun}
-      className="push-me" />)
-
-    const expected = ReactDOMServer.renderToStaticMarkup(
-      <button
-        className="push-me"
-        onClick={clickFun}
-        title="Mozart">
-        <Icon
-          name="classical" title="Mozart"
-          className="s1" />
-      </button>
-    )
-    expect(actual).toEqual(expected)
-  })
-
-  it('IconButton markup (disabled)', () => {
-    const clickFun = function (_e) {}
-    const actual = ReactDOMServer.renderToStaticMarkup(<IconButton
-      icon="tea"
-      title="Tea"
-      onClick={clickFun}
-      className="drink-me"
-      disabled={true}/>)
-
-    const expected = ReactDOMServer.renderToStaticMarkup(
-      <button
-        className="drink-me is-disabled"
-        disabled="true"
-        onClick={clickFun}
-        title="Tea">
-        <Icon
-          name="tea"
-          title="Tea"
-          className="s1" />
-      </button>
-    )
-    expect(actual).toEqual(expected)
-  })
 
   it('IconButton click event', () => {
     let clickEvent = 'freshing'
@@ -63,7 +20,7 @@ describe('IconButtonTest', () => {
       <IconButton
         icon="iced-tea"
         title="Iced Tea"
-        onClick={clickFun}/>
+        onClick={clickFun} />
     )
     // simulate click event
     TestUtils.Simulate.click(
@@ -80,10 +37,10 @@ describe('IconButtonTest', () => {
 
     const refreshButton = TestUtils.renderIntoDocument(
       <IconButton
+        disabled
         icon="iced-tea"
         title="Iced Tea"
-        onClick={clickFun}
-        disabled={true}/>
+        onClick={clickFun} />
     )
     // throws if onClick is not bound
     try {

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
@@ -39,6 +40,7 @@ import org.hibernate.HibernateException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
@@ -67,7 +69,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.type.EntityType;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
@@ -84,9 +86,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -179,22 +179,35 @@ public class TranslationServiceImpl implements TranslationService {
         List<TextFlowTargetStateChange> targetStates = Lists.newArrayList();
         Map<ContentState, Long> contentStateDeltas = Maps.newHashMap();
         for (TransUnitUpdateRequest request : translationRequests) {
+            ContentState newContentState = request.getNewContentState();
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class,
                     request.getTransUnitId().getValue());
             TranslationResultImpl result = new TranslationResultImpl();
+            result.similarityPercent = request.getSimilarityPercent();
             if (runValidation) {
                 String validationMessage = validateTranslations(
-                        request.getNewContentState(), projectIteration,
+                        newContentState, projectIteration,
                         request.getTransUnitId().toString(),
                         hTextFlow.getContents(), request.getNewContents());
-                if (!StringUtils.isEmpty(validationMessage)) {
-                    log.warn(validationMessage);
-                    result.isSuccess = false;
-                    result.errorMessage = validationMessage;
-                    results.add(result);
-                    continue;
+                boolean failedValidation = !StringUtils.isEmpty(validationMessage);
+                if (failedValidation) {
+                    ContentState existingState =
+                            getTranslationState(hLocale, hTextFlow);
+                    if (existingState.isTranslated()) {
+                        // don't replace an existing translation with an invalid translation
+                        log.warn(validationMessage);
+                        result.isSuccess = false;
+                        result.errorMessage = validationMessage;
+                        results.add(result);
+                        continue;
+                    } else {
+                        // if TFT was untranslated or fuzzy, use the new
+                        // translation, but mark as fuzzy
+                        newContentState = ContentState.NeedReview;
+                    }
                 }
             }
+            result.newContentState = newContentState;
             HTextFlowTarget hTextFlowTarget =
                     textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
             // if hTextFlowTarget is created, any further hibernate fetch will
@@ -215,7 +228,7 @@ public class TranslationServiceImpl implements TranslationService {
                     ContentState currentState = hTextFlowTarget.getState();
                     result.targetChanged =
                             translate(hTextFlowTarget, request.getNewContents(),
-                                    request.getNewContentState(), nPlurals,
+                                    newContentState, nPlurals,
                                     new TranslationDetails(request));
                     // fire event after flush
                     if (result.targetChanged
@@ -262,18 +275,21 @@ public class TranslationServiceImpl implements TranslationService {
         return results;
     }
 
+    @NotNull
+    private ContentState getTranslationState(HLocale hLocale,
+            HTextFlow hTextFlow) {
+        HTextFlowTarget hTextFlowTarget =
+                textFlowTargetDAO.getTextFlowTarget(hTextFlow, hLocale);
+        return hTextFlowTarget != null ? hTextFlowTarget.getState()
+                : ContentState.New;
+    }
+
     private void validateReviewPermissionIfApplicable(
             List<TransUnitUpdateRequest> translationRequests,
             HProjectIteration projectIteration, HLocale hLocale) {
-        Optional<TransUnitUpdateRequest> hasReviewRequest = Iterables.tryFind(
-                translationRequests, new Predicate<TransUnitUpdateRequest>() {
-
-                    @Override
-                    public boolean apply(TransUnitUpdateRequest input) {
-                        return isReviewState(input.getNewContentState());
-                    }
-                });
-        if (hasReviewRequest.isPresent()) {
+        boolean hasReviewRequest = translationRequests.stream()
+                .anyMatch(it -> isReviewState(it.getNewContentState()));
+        if (hasReviewRequest) {
             identity.checkPermission("translation-review",
                     projectIteration.getProject(), hLocale);
         }
@@ -694,15 +710,11 @@ public class TranslationServiceImpl implements TranslationService {
         // so that it can lazily load associated objects
         HProjectIteration iteration =
                 projectIterationDAO.findById(projectIterationId);
+        List<String> resIds = batch.stream()
+                .map(TextFlowTarget::getResId)
+                .collect(Collectors.toList());
         Map<String, HTextFlow> resIdToTextFlowMap =
-                textFlowDAO.getByDocumentAndResIds(document, Lists.transform(
-                        batch, new Function<TextFlowTarget, String>() {
-
-                            @Override
-                            public String apply(TextFlowTarget input) {
-                                return input.getResId();
-                            }
-                        }));
+                textFlowDAO.getByDocumentAndResIds(document, resIds);
         final int numPlurals = resourceUtils.getNumPlurals(document, locale);
         List<TextFlowTargetStateChange> targetStates = Lists.newArrayList();
         Map<ContentState, Long> contentStateDeltas = Maps.newHashMap();
@@ -829,7 +841,12 @@ public class TranslationServiceImpl implements TranslationService {
         private boolean isVersionNumConflict = false;
         private int baseVersion;
         private ContentState baseContentState;
+        private ContentState newContentState;
         private String errorMessage;
+        private double similarityPercent;
+
+        TranslationResultImpl() {
+        }
 
         @Override
         public boolean isTranslationSuccessful() {
@@ -862,9 +879,21 @@ public class TranslationServiceImpl implements TranslationService {
         }
 
         @Override
+        public ContentState getNewContentState() {
+            return newContentState;
+        }
+
+        @Override
         public String getErrorMessage() {
             return errorMessage;
         }
+
+        @Override
+        public double getSimilarityPercent() {
+            return similarityPercent;
+        }
+
+
     }
 
     @Override

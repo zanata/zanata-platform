@@ -23,15 +23,27 @@
   --Editor-color-rejected: #FFA800;
 }
 
+/* const height = this.props.headerOpen ? '91%' : '93%'
+const margin = this.props.headerOpen ? '6rem' : '3rem' */
+
 .sidebar-editor {
   border-left: solid 1px var(--Sidebar-border);
   float: right !important;
-  height: 99.5% !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  margin-top: 90px !important;
   position: static !important;
   width: 35%;
+  background-color: #fff;
+}
+
+.sidebar-editor-contract {
+  height: 91% !important;
+  margin-top: 8.4rem !important;
+}
+
+.sidebar-editor-expand {
+  height: 95.3% !important;
+  margin-top: 3rem !important;
 }
 
 .sidebar-editor :focus {
@@ -56,6 +68,14 @@
 
 .SidebarEditor-heading svg {
   vertical-align: sub;
+}
+
+.SidebarEditor-heading .u-pullRight button span {
+  vertical-align: super;
+}
+
+.filterButtons {
+  margin-right: 1rem;
 }
 
 ul.SidebarEditor-details {
@@ -188,7 +208,7 @@ table th {
 }
 
 table tbody tr {
-  height: 2em;
+  height: 2rem;
 }
 
 table.GlossaryDetails-table {
@@ -196,7 +216,7 @@ table.GlossaryDetails-table {
 }
 
 table.GlossaryDetails-table tbody td {
-  font-size: 1em;
+  font-size: 1rem;
   white-space: inherit;
 }
 
@@ -216,7 +236,7 @@ table.GlossaryDetails-table thead th {
 
 .GlossaryDetails-panel.panel .panel-body {
   height: inherit;
-  max-height: 10em;
+  max-height: 10rem;
   overflow: auto;
 }
 
@@ -239,7 +259,7 @@ table.GlossaryDetails-table thead th {
 }
 
 .icon-comment svg {
-  margin-right: 0.1375em;
+  margin-right: 0.1375rem;
 }
 
 .Glossary-noResults svg, .Search-enterText svg {
@@ -281,7 +301,7 @@ table td button.gButton--link {
   font-style: normal;
   font-weight: 400;
   letter-spacing: normal;
-  line-height: 1.333em;
+  line-height: 1.333rem;
   position: absolute;
   text-align: left;
   text-decoration: none;
@@ -304,7 +324,7 @@ table td button.gButton--link {
 }
 
 .tooltip.top {
-  margin-top: -.75em;
+  margin-top: -0.75rem;
   padding: var(--Sidebar-spacing-small) 0;
 }
 
@@ -314,7 +334,7 @@ table td button.gButton--link {
   border-radius: 3px;
   color: #fff;
   max-width: 15rem;
-  padding: 0.5em;
+  padding: 0.5rem;
   text-align: center;
 }
 
@@ -336,7 +356,7 @@ span.loader span div {
   border-radius: 5px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-  margin-bottom: 1.3em;
+  margin-bottom: 1.3rem;
 }
 
 .panel-default, .well blockquote {
@@ -345,7 +365,7 @@ span.loader span div {
 
 .panel-body {
   color: var(--Sidebar-panel-dark);
-  padding: 0.85em;
+  padding: 0.85rem;
 }
 
 .panel-title {
@@ -358,7 +378,7 @@ span.loader span div {
 .panel.panel-side {
   background-color: #fff !important;
   border: solid 1px var(--Sidebar-border) !important;
-  padding: 0.5em;
+  padding: 0.5rem;
 }
 
 .panel-heading {
@@ -367,14 +387,14 @@ span.loader span div {
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   color: var(--Sidebar-color-highlight);
-  font-size: 1.1em !important;
+  font-size: 1.1rem !important;
   font-weight: 600;
 }
 
 .panel-body h3 {
   color: var(--Sidebar-color-highlight);
   margin-bottom: 0.714rem;
-  margin-top: 0.5em;
+  margin-top: 0.5rem;
 }
 
 .InlineSearch {
@@ -389,10 +409,6 @@ span.loader span div {
 
 .sidebar-editor select {
   color: var(--Sidebar-color-text);
-}
-
-.SidebarActivity .btn-toolbar {
-  margin-left: 1.5rem;
 }
 
 .SidebarToggle-hide span {
@@ -421,18 +437,6 @@ li .checkbox input {
   margin-right: var(--Sidebar-spacing-small) !important;
 }
 
-.btn-toolbar .Button--primary {
-  margin-right: 0.75rem;
-}
-
-.btn-toolbar .Button--secondary {
-  margin-left: 0.75rem;
-}
-
-.btn-toolbar .Button--secondary .n1, .btn-toolbar .Button--primary .n1  {
-  vertical-align: middle;
-}
-
 .Button--spacing {
   margin-bottom: var(--Sidebar-spacing-small);
   margin-right: var(--Sidebar-spacing-small);
@@ -444,11 +448,7 @@ li .checkbox input {
 
 select.SettingsSelect {
   color: var(--Sidebar-color-text);
-  margin-bottom: 1em;
-}
-
-#SidebarEditorTabs-pane2 {
-  background-color: var(--Sidebar-tabpane);
+  margin-bottom: 1rem;
 }
 
 .SidebarActivity {
@@ -456,30 +456,29 @@ select.SettingsSelect {
   padding-top: 0.5rem;
 }
 
+h1.SidebarEditor-heading {
+  font-size: 1rem;
+}
+
 h1.SidebarEditor-heading button svg {
   fill: var(--Sidebar-panel-dark) !important;
 }
 
 .RevisionBox {
+  font-size: var(--Sidebar-small-text);
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
-  margin-top: 3rem;
+  margin-top: 1rem;
+  border-bottom: solid 1px #f7f7f7;
+  padding-bottom: 1rem;
 }
 
-.RevisionBox p {
+.RevisionBox .content {
   color: var(--Sidebar-color-text);
   margin-top: 1rem;
   padding-bottom: 0.375rem;
-
-}
-
-.RevisionBox {
-  font-size: var(--Sidebar-small-text);
-  margin-bottom: 1.5rem;
-  margin-left: 1rem;
-  margin-top: 3rem;
 }
 
 .RevisionBox img {
@@ -489,19 +488,28 @@ h1.SidebarEditor-heading button svg {
   width: 1rem;
 }
 
-.RevisionBox p.small .n1 {
+.RevisionBox .content.small .n1 {
   vertical-align: sub;
 }
 
-.RevisionBox p.small.u-textMuted {
+.RevisionBox .content.small.u-textMuted {
   font-size: 0.75rem;
   margin-left: 0.75rem;
   margin-top: 0.375rem !important;
 }
 
-.RevisionBox p .s0 {
+.RevisionBox .content .s0 {
   padding-right: 0.375rem;
   vertical-align: sub;
+}
+
+td.info-icon .ant-btn.Button--link {
+  color: var(--Sidebar-color-highlight);
+}
+
+td.info-icon .ant-btn.Button--link:hover,
+td.info-icon .ant-btn.Button--link:focus {
+  color: var(--Sidebar-panel-dark);
 }
 
 img.ActivityAvatar {
@@ -511,7 +519,7 @@ img.ActivityAvatar {
   width: 1.2rem;
 }
 
-.RevisionBox .well {
+.RevisionBox .card {
   background-color: var(--Sidebar-well);
   margin-left: 0.75rem;
   padding: 0.75rem;
@@ -533,7 +541,7 @@ img.ActivityAvatar {
   border-left: solid 5px var(--Editor-color-approved);
 }
 
-.RevisionBox .well-sm {
+.RevisionBox .ant-card {
   background-color: rgba(255, 255, 255, 0.35) !important;
 }
 
@@ -542,7 +550,6 @@ img.ActivityAvatar {
 }
 
 .TransUnit-commentBox {
-  margin-top: 1rem;
   padding: 0.75rem;
 }
 
@@ -561,6 +568,10 @@ img.ActivityAvatar {
 
 .SettingsHeading {
   font-weight: 500;
+}
+
+.sidebar-editor .hide-md {
+  padding-left: 0.375rem;
 }
 
 h2.SettingsHeading {
@@ -583,11 +594,31 @@ h3.SettingsHeading {
   vertical-align: sub;
 }
 
+.ant-tabs {
+  color: var(--Sidebar-panel-dark);
+}
+
+.ant-tabs-nav .ant-tabs-tab-active {
+  color: var(--Sidebar-color-text);
+}
+
+.ant-tabs-nav .ant-tabs-tab-hover {
+  color: var(--Sidebar-color-highlight) !important;
+}
+
+.ant-tabs-ink-bar {
+  background-color: var(--Sidebar-color-text);
+}
+
+.SidebarEditor-wrapper .ant-btn-sm {
+  height: auto;
+}
+
 /* Media queries */
 
 @media (max-width: 740px) {
   table td button.Button--link {
-    margin-right: 1em;
+    margin-right: 1rem;
     vertical-align: middle;
   }
 }
@@ -606,5 +637,17 @@ h3.SettingsHeading {
   }
   .InlineSearch .form-group select.form-control {
     vertical-align: sub;
+  }
+}
+
+@media (min-width:609px) {
+ .sidebar-editor-contract {
+   margin-top: 6rem !important;
+ }
+}
+
+@media (min-width:960px) and (max-width: 995px) {
+  .sidebar-editor-contract {
+    margin-top: 8.4rem !important;
   }
 }

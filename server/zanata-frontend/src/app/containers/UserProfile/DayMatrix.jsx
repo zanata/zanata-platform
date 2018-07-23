@@ -2,21 +2,23 @@ import * as PropTypes from 'prop-types'
 import React from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 /**
  * Clickable date and word count component for daily statistics
  */
 const cssClass = {
-  total: 'primary',
-  approved: 'info',
-  translated: 'success',
-  needswork: 'warning'
+  total: 'btn-primary',
+  approved: 'btn-info',
+  translated: 'btn-success',
+  needswork: 'btn-warning'
 }
 
 /** @type
-    { React.StatelessComponent<{key?, dateLabel?, date?, wordCount?,
-      selectedDay?, selectedContentState?, handleSelectedDayChanged?}>
+    { React.StatelessComponent<{key?: any, dateLabel?: any, date?: any,
+      wordCount?: any, selectedDay?: any, selectedContentState?: any,
+      handleSelectedDayChanged?: any}>
     } */
 const DayMatrix = ({
   dateLabel,
@@ -37,11 +39,12 @@ const DayMatrix = ({
   return (
     <td>
       {date
-        ? <Button
-          bsStyle={btnStyle}
+        ? <Button aria-label='button'
           onClick={() => handleSelectedDayChanged(date)}
-          className={date === selectedDay ? 'active ' : ''}
+          className={date === selectedDay ? btnStyle +
+            ' btn-default active' : btnStyle + ' btn-default'}
           disabled={dateIsInFuture || !date}
+          // @ts-ignore
           title={wordCount + ' words'}>
           <div className='cal-date'>{date ? dateLabel : '\u00a0'}</div>
           <div className='cal-info'>

@@ -19,7 +19,6 @@ class FrontendAssetsTest {
   "editor.js": "editor.c6d86c21.cache.js",
   "frontend.css": "frontend.e8af8b0a.cache.css",
   "frontend.js": "frontend.e8af8b0a.cache.js",
-  "frontend.legacy.css": "frontend.legacy.a31f9460.cache.css",
   "frontend.legacy.js": "frontend.legacy.a31f9460.cache.js",
   "intl-polyfill.js": "intl-polyfill.04142315.cache.js",
   "runtime.js": "runtime.e8b751b7.cache.js"
@@ -69,6 +68,8 @@ class FrontendAssetsTest {
     fun willThrowExceptionIfManifestFileIsNotFound() {
         assertThatThrownBy { FrontendAssets(servletContext) }
                 .isInstanceOf(IllegalStateException::class.java)
-                .hasMessage("can not load manifest.json from META-INF/resources/manifest.json. Did you forget to build and include zanata frontend?")
+                // "Cannot load manifest.json from META-INF/resources/manifest.json.
+                // Did you forget to build and include zanata-frontend?"
+                .hasMessageContaining("manifest.json")
     }
 }

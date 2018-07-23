@@ -62,6 +62,7 @@ public class HistoryToken {
     private boolean filterApproved;
     private boolean filterRejected;
     private boolean filterHasError;
+    private boolean filterMT;
 
     public HistoryToken() {
         view = DEFAULT_VIEW;
@@ -282,8 +283,16 @@ public class HistoryToken {
         this.filterHasError = filterHasError;
     }
 
+    public void setFilterMT(boolean filterMT) {
+        this.filterMT = filterMT;
+    }
+
     public boolean isFilterHasError() {
         return filterHasError;
+    }
+
+    public boolean isFilterMT() {
+        return filterMT;
     }
 
     public void setResId(String resId) {
@@ -345,6 +354,7 @@ public class HistoryToken {
     public void clearEditorFilterAndSearch() {
         filterFuzzy = false;
         filterHasError = false;
+        filterMT = false;
         filterTranslated = false;
         filterUntranslated = false;
         filterApproved = false;

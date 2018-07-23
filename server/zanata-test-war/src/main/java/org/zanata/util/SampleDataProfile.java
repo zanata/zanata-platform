@@ -78,15 +78,15 @@ public class SampleDataProfile implements Serializable {
         // TODO probably should delete cache as well
     }
 
+    // see also org.zanata.ZanataJpaTest.purgeLuceneIndexes(javax.persistence.EntityManager)
     private void purgeLuceneIndexes() {
         FullTextEntityManager em =
                 Search.getFullTextEntityManager(
                         entityManagerFactory.createEntityManager());
         try {
-            em.purgeAll(HGlossaryTerm.class);
-            em.purgeAll(HProject.class);
-            em.purgeAll(TransMemoryUnit.class);
-            em.purgeAll(HTextFlowTarget.class);
+            // purge all @Indexed subclasses of Object
+            em.purgeAll(Object.class);
+            em.flushToIndexes();
         } finally {
             em.close();
         }

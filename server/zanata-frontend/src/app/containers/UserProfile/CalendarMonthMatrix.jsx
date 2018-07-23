@@ -5,7 +5,8 @@ import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
 import utilsDate from '../../utils/DateHelper'
-import { Button } from 'react-bootstrap'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 const classes = {
   calendar: {
@@ -18,8 +19,9 @@ const classes = {
   }
 }
 /** @type
-    { React.StatelessComponent<{matrixData, selectedDay, selectedContentState,
-      dateRange, handleSelectedDayChanged}> } */
+    { React.StatelessComponent<{matrixData: any, selectedDay: any,
+      selectedContentState: any, dateRange: any, handleSelectedDayChanged: any
+    }> } */
 const CalendarMonthMatrix = ({
   matrixData,
   selectedDay,
@@ -34,6 +36,7 @@ const CalendarMonthMatrix = ({
   const calClass = 'userProfile-activityGraph' + classes.calendar
       .types[selectedContentState.toLowerCase().replace(' ', '')]
 
+  // @ts-ignore any
   let days = []
   let result = []
 
@@ -46,8 +49,10 @@ const CalendarMonthMatrix = ({
     )
   }
 
+  // @ts-ignore any
   matrixData.forEach((entry) => {
     const date = entry['date']
+    // @ts-ignore any
     days.push(
       <DayMatrix key={date}
         selectedContentState={selectedContentState}
@@ -61,6 +66,7 @@ const CalendarMonthMatrix = ({
 
   while (days.length) {
     const dayColumns = days.splice(0, 7)
+    // @ts-ignore any
     const key = utilsDate.shortDate(dateRange.startDate) + '-' +
       utilsDate.shortDate(dateRange.endDate) + '-week' + result.length
     result.push(
@@ -87,19 +93,14 @@ const CalendarMonthMatrix = ({
   return (
     <div id='userProfile-activityTable'>
       <div className='userProfile-activityTable-inner'>
-        <div>
-          <h3 className='u-textUppercaseBold'>
-            {header}
-          </h3>
-        </div>
+        <h3 className='u-textUppercaseBold'>
+          {header}
+        </h3>
         {selectedDay &&
-        (<div>
-          <Button bsStyle='link'
-            className='btn-clear'
-            onClick={() => handleSelectedDayChanged(null)}>
+        (<Button className='btn-link btn-clear' aria-label='button'
+          onClick={() => handleSelectedDayChanged(null)}>
             Clear selection
-          </Button>
-        </div>)}
+        </Button>)}
       </div>
       <table className={calClass}>
         <thead>

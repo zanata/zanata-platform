@@ -15,6 +15,14 @@ export const STATUS_NEEDS_WORK_SERVER = phrases.STATUS_NEEDS_WORK_SERVER
 export const STATUS_TRANSLATED = phrases.STATUS_TRANSLATED
 export const STATUS_APPROVED = phrases.STATUS_APPROVED
 export const STATUS_REJECTED = phrases.STATUS_REJECTED
+export const STATUS_MT = phrases.STATUS_MT
+
+export const SERVER_STATUS_NEW = 'New'
+export const SERVER_STATUS_UNTRANSLATED = 'Untranslated'
+export const SERVER_STATUS_NEEDS_WORK = 'NeedReview'
+export const SERVER_STATUS_TRANSLATED = 'Translated'
+export const SERVER_STATUS_APPROVED = 'Approved'
+export const SERVER_STATUS_REJECTED = 'Rejected'
 
 /**
  * Get a string representing the status that should be
@@ -23,11 +31,11 @@ export const STATUS_REJECTED = phrases.STATUS_REJECTED
  * Restricts the status to only valid values, based on
  * which translations are currently entered.
  */
-export function defaultSaveStatus (phrase: Phrase) {
+export function defaultSaveStatus(phrase: Phrase) {
   if (hasNoTranslation(phrase)) {
     // only possible state is untranslated
     return STATUS_UNTRANSLATED
-  } else if (hasEmptyTranslation(phrase)) {
+  } else if (hasEmptyTranslation(phrase) || phrase.errors) {
     return STATUS_NEEDS_WORK
   } else if (hasTranslationChanged(phrase)) {
     // TODO may also need to handle 'approved' and 'rejected'
@@ -40,6 +48,7 @@ export function defaultSaveStatus (phrase: Phrase) {
   }
 }
 
+// @ts-ignore any
 export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
   const all = allValidSaveStatuses(phrase, permissions)
   return without(all, defaultSaveStatus(phrase))
@@ -50,6 +59,7 @@ export function nonDefaultValidSaveStatuses (phrase: Phrase, permissions) {
  * that would be valid to save the current new
  * translations of a phrase.
  */
+// @ts-ignore any
 function allValidSaveStatuses (phrase: Phrase, permissions): Status[] {
   if (!permissions.translator && !permissions.reviewer) {
     // User does not have privileges for any operations.
@@ -58,7 +68,7 @@ function allValidSaveStatuses (phrase: Phrase, permissions): Status[] {
   if (hasNoTranslation(phrase)) {
     // only possible state is untranslated
     return [STATUS_UNTRANSLATED]
-  } else if (hasEmptyTranslation(phrase)) {
+  } else if (hasEmptyTranslation(phrase) || phrase.errors) {
     return [STATUS_NEEDS_WORK]
   } else if
     (phrase.status === STATUS_REJECTED && !hasTranslationChanged(phrase)) {
@@ -88,4 +98,13 @@ export function transUnitStatusToPhraseStatus (mixedCaseStatus: string) {
   }
   // remaining status should be ok just lowercased
   return status
+}
+
+export function phraseStatusToTransUnitStatus (status: Status) {
+  return status === STATUS_NEEDS_WORK ? SERVER_STATUS_NEEDS_WORK
+    : status === STATUS_TRANSLATED ? SERVER_STATUS_TRANSLATED
+    : status === STATUS_APPROVED ? SERVER_STATUS_APPROVED
+    : status === STATUS_REJECTED ? SERVER_STATUS_REJECTED
+    : status === STATUS_UNTRANSLATED ? SERVER_STATUS_UNTRANSLATED
+    : SERVER_STATUS_NEW
 }

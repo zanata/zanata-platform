@@ -3,8 +3,9 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import CancellableProgressBar from './CancellableProgressBar'
-import { ProgressBar } from 'react-bootstrap'
+import Progress from 'antd/lib/progress'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
+import { ProcessStatus } from '../../utils/prop-types-util';
 
 const callback = () => {}
 
@@ -21,12 +22,12 @@ describe('CancellableProgressBar', () => {
         queryProgress={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div className='bstrapReact'>
-        <ProgressBar now={0}label={' 0%'} />
-        <button type='button' className='btn-danger btn btn-primary'>
-          Cancel TM Merge
+      <React.Fragment>
+        <Progress percent={0} showInfo />
+        <button type='button' className='ant-btn btn-danger ant-btn-danger'>
+          <span>Cancel TM Merge</span>
         </button>
-      </div>
+      </React.Fragment>
     )
     expect(actual).toEqual(expected)
   })
@@ -42,35 +43,39 @@ describe('CancellableProgressBar', () => {
         processStatus={cancelledStatus} buttonLabel='Cancel TM Merge'
         queryProgress={callback} />
     )).toEqual(ReactDOMServer.renderToStaticMarkup(
-      <div className='bstrapReact'>
-        <ProgressBar now={0}label={' 0%'} />
-        <button disabled type='button' className='btn-danger btn btn-primary'>
-          Cancel TM Merge
+      <React.Fragment>
+        <Progress percent={0} showInfo />
+        <button disabled type='button' className='ant-btn btn-danger ant-btn-danger'>
+          <span>Cancel TM Merge</span>
         </button>
-      </div>
+      </React.Fragment>
     ))
   })
 
   it('detects loading process cancellation', () => {
     // Testing the isProcessEnded utils function
+    /** @type {ProcessStatus} */
     const cancelledStatus1 = {
       url: '/rest/process/key/TMMergeForVerKey-1-ja',
       percentageComplete: 0,
       statusCode: 'Cancelled'
     }
     expect(isProcessEnded(cancelledStatus1)).toEqual(true)
+    /** @type {ProcessStatus} */
     const cancelledStatus2 = {
       url: '/rest/process/key/TMMergeForVerKey-1-ja',
       percentageComplete: 66,
       statusCode: 'Cancelled'
     }
     expect(isProcessEnded(cancelledStatus2)).toEqual(true)
+    /** @type {ProcessStatus} */
     const cancelledStatus3 = {
       url: '/rest/process/key/TMMergeForVerKey-1-ja',
       percentageComplete: 100,
       statusCode: 'Cancelled'
     }
     expect(isProcessEnded(cancelledStatus3)).toEqual(true)
+    /** @type {ProcessStatus} */
     const notCancelled = {
       url: '/rest/process/key/TMMergeForVerKey-1-ja',
       // This should not affect the status code logic

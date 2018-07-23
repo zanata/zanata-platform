@@ -167,6 +167,12 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
+    public void getTMFuzzyBands() {
+        assertThat(databaseBackedConfig.getTMFuzzyBands()).isEqualTo("80 90");
+    }
+
+    @Test
+    @InRequestScope
     public void isDisplayUserEmail() {
         assertThat(databaseBackedConfig.isDisplayUserEmail()).isTrue();
     }

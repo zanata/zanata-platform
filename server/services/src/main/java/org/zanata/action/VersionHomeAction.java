@@ -47,6 +47,7 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.exception.AuthorizationException;
@@ -70,7 +71,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.WebHook;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.model.type.WebhookType;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
@@ -603,6 +604,21 @@ public class VersionHomeAction extends AbstractSortAction
                                 hLocale));
     }
 
+    public boolean isUserAllowedToUploadTranslationFile(HLocale locale) {
+        return isFileUploadAllowed(locale) &&
+                isUserAllowedToTranslateOrReview(locale);
+    }
+
+    public boolean canUploadRawFileTranslation(String documentName) {
+        try {
+            return translationFileServiceImpl
+                    .getAdapterFor(getDocumentTypes(documentName).get(0))
+                    .getRawTranslationUploadAvailable();
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            return false;
+        }
+    }
+
     private boolean isVersionActive() {
         return getVersion().getProject().getStatus() == EntityStatus.ACTIVE
                 || getVersion().getStatus() == EntityStatus.ACTIVE;
@@ -798,9 +814,8 @@ public class VersionHomeAction extends AbstractSortAction
         }
     }
 
-    private Optional<String> getOptionalParams() {
-        return Optional.fromNullable(
-                Strings.emptyToNull(sourceFileUpload.getAdapterParams()));
+    private String getOptionalParams() {
+        return Strings.nullToEmpty(sourceFileUpload.getAdapterParams());
     }
 
     public void setSelectedLocaleId(String localeId) {
@@ -851,18 +866,23 @@ public class VersionHomeAction extends AbstractSortAction
         }
         HDocument document = null;
         try {
+            LocaleId locale = new LocaleId(sourceFileUpload.getSourceLang());
             Resource doc;
+            ParserOptions parserOptions = new ParserOptions(
+                    tempFile.toURI(), locale, getOptionalParams());
             if (docId == null) {
                 doc = translationFileServiceImpl.parseAdapterDocumentFile(
-                        tempFile.toURI(), documentPath, fileName,
-                        getOptionalParams(), Optional.of(docType.name()));
+                        documentPath, fileName,
+                        parserOptions,
+                        Optional.of(docType.name()));
             } else {
                 doc = translationFileServiceImpl
-                        .parseUpdatedAdapterDocumentFile(tempFile.toURI(),
-                                docId, fileName, getOptionalParams(),
+                        .parseUpdatedAdapterDocumentFile(
+                                docId, fileName,
+                                parserOptions,
                                 Optional.of(docType.name()));
             }
-            doc.setLang(new LocaleId(sourceFileUpload.getSourceLang()));
+            doc.setLang(locale);
             Set<String> extensions = Collections.<String> emptySet();
             // TODO Copy Trans values
             document = documentServiceImpl.saveDocument(projectSlug,
@@ -885,10 +905,8 @@ public class VersionHomeAction extends AbstractSortAction
                     new String(PasswordUtil.encodeHex(md5hash)));
             rawDocument.setType(docType);
             rawDocument.setUploadedBy(identity.getCredentials().getUsername());
-            Optional<String> params = getOptionalParams();
-            if (params.isPresent()) {
-                rawDocument.setAdapterParameters(params.get());
-            }
+            String params = getOptionalParams();
+            rawDocument.setAdapterParameters(params);
             try {
                 String name = projectSlug + ":" + versionSlug + ":" + docId;
                 virusScanner.scan(tempFile, name);
@@ -953,13 +971,23 @@ public class VersionHomeAction extends AbstractSortAction
     public String uploadTranslationFile(HLocale hLocale) {
         identity.checkPermission("modify-translation", hLocale,
                 getVersion().getProject());
+        if (translationFileUpload.getFileName() == null) {
+            setMessage(FacesMessage.SEVERITY_ERROR,
+                    "Cannot upload files of this type");
+            resetPageData();
+            return "failure";
+        }
         try {
             // process the file
             String fileName = translationFileUpload.fileName;
             if (!needDocumentTypeSelection(fileName)) {
                 // Get documentType for this file name
-                DocumentType documentType = getDocumentTypes(fileName).get(0);
-                translationFileUpload.setDocumentType(documentType.name());
+                List<DocumentType> types = getDocumentTypes(fileName);
+                if (types.size() <= 0) {
+                    throw new ZanataServiceException(
+                            "Cannot upload files of this type");
+                }
+                translationFileUpload.setDocumentType(types.get(0).name());
             }
             Optional<String> docType =
                     Optional.fromNullable(translationFileUpload.documentType);

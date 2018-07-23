@@ -3,7 +3,7 @@ import React from 'react'
 import dateUtils from '../../utils/DateHelper'
 
 /** @type
-    { React.StatelessComponent<{selectedDay, dateRange}> } */
+    { React.StatelessComponent<{selectedDay: any, dateRange: any}> } */
 const CalendarPeriodHeading = ({
   selectedDay,
   dateRange
@@ -16,8 +16,8 @@ const CalendarPeriodHeading = ({
 
   return (
     <div className='userProfile-calendarActivity'>
-      <h3 className='u-textUppercaseBold'>Activity Details</h3>
-      <p className='u-textMuted'>{period}</p>
+      <h3 className='ttu b'>Activity Details</h3>
+      <p className='txt-muted'>{period}</p>
     </div>
   )
 }

@@ -24,19 +24,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 
+import org.jetbrains.annotations.NotNull;
 import org.zanata.adapter.xliff.XliffCommon;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.adapter.xliff.XliffWriter;
-import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import com.google.common.base.Optional;
 import org.zanata.util.FileUtil;
-
-import javax.annotation.Nonnull;
 
 /**
  * Adapter to read and write {@link org.zanata.common.DocumentType#XLIFF} file
@@ -48,16 +45,14 @@ import javax.annotation.Nonnull;
  */
 public class XliffAdapter implements FileFormatAdapter {
     @Override
-    public Resource parseDocumentFile(@Nonnull URI fileUri,
-                                      @Nonnull LocaleId sourceLocale,
-                                      Optional<String> filterParams)
+    public Resource parseDocumentFile(ParserOptions options)
             throws FileFormatAdapterException, IllegalArgumentException {
         XliffReader xliffReader = new XliffReader();
         File tempFile;
         Resource doc;
         try {
-            tempFile = new File(fileUri);
-            doc = xliffReader.extractTemplate(tempFile, sourceLocale,
+            tempFile = new File(options.getRawFile());
+            doc = xliffReader.extractTemplate(tempFile, options.getLocale(),
                     tempFile.getName(),
                     XliffCommon.ValidationType.CONTENT.name());
         } catch (IOException e) {
@@ -69,16 +64,16 @@ public class XliffAdapter implements FileFormatAdapter {
         return doc;
     }
 
+    @NotNull
     @Override
-    public TranslationsResource parseTranslationFile(@Nonnull URI fileUri,
-            LocaleId sourceLocaleId, String localeId, Optional<String> params)
-            throws  FileFormatAdapterException,
-                    IllegalArgumentException {
+    public TranslationsResource parseTranslationFile(
+            @NotNull ParserOptions options)
+            throws FileFormatAdapterException {
         XliffReader xliffReader = new XliffReader();
         TranslationsResource targetDoc;
         File transFile = null;
         try {
-            transFile = new File(fileUri);
+            transFile = new File(options.getRawFile());
             targetDoc = xliffReader.extractTarget(transFile);
         } catch (FileNotFoundException e) {
             throw new FileFormatAdapterException(
@@ -92,17 +87,17 @@ public class XliffAdapter implements FileFormatAdapter {
     }
 
     @Override
-    public void writeTranslatedFile(OutputStream output, URI originalFile,
-            Resource resource, TranslationsResource translationsResource,
-            String locale, Optional<String> params)
+    public void writeTranslatedFile(@NotNull OutputStream output,
+            @NotNull WriterOptions options, boolean approvedOnly)
             throws FileFormatAdapterException, IllegalArgumentException {
         // write source string with empty translation
         boolean createSkeletons = true;
         File tempFile = null;
         try {
             tempFile = File.createTempFile("filename", "extension");
-            XliffWriter.writeFile(tempFile, resource, locale,
-                    translationsResource, createSkeletons);
+            XliffWriter.writeFile(tempFile, options.getTranslatedDoc().getSource(),
+                    options.getTranslatedDoc().getLocale().getId(),
+                    options.getTranslatedDoc().getTranslation(), createSkeletons, approvedOnly);
             FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {
             throw new FileFormatAdapterException(
@@ -110,5 +105,17 @@ public class XliffAdapter implements FileFormatAdapter {
         } finally {
             FileUtil.tryDeleteFile(tempFile);
         }
+    }
+
+    @NotNull
+    @Override
+    public String generateTranslationFilename(@NotNull HDocument document,
+            @NotNull String locale) throws IllegalArgumentException {
+        return FileFormatAdapter.DefaultImpls.generateTranslationFilename(this, document, locale);
+    }
+
+    @Override
+    public boolean getRawTranslationUploadAvailable() {
+        return false;
     }
 }

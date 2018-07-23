@@ -21,13 +21,15 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -35,6 +37,8 @@ import javax.inject.Named;
 import org.zanata.dao.VersionGroupDAO;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HProjectLocaleMember;
+import org.zanata.model.HProjectMember;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -101,19 +105,10 @@ public class DashboardAction implements Serializable {
 
     public String getUserLanguageTeams() {
         HAccount account = accountDAO.findById(authenticatedAccount.getId());
-        return StringUtils.join(Collections2.transform(
-                account.getPerson().getLanguageMemberships(),
-                new Function<HLocale, Object>() {
-
-                    @Nullable
-                    @Override
-                    public Object apply(@Nonnull HLocale locale) {
-                        if (locale == null) {
-                            throw new NullPointerException("locale");
-                        }
-                        return locale.retrieveDisplayName();
-                    }
-                }), ", ");
+        Stream<String> names =
+                account.getPerson().getLanguageMemberships().stream()
+                        .map(HLocale::retrieveDisplayName);
+        return StringUtils.join(names.iterator(), ", ");
     }
 
     public String getUserRoles() {
@@ -128,6 +123,22 @@ public class DashboardAction implements Serializable {
         // TODO i18n needed
         return lastTranslatedDate == null ? "never"
                 : DateUtil.getHowLongAgoDescription(lastTranslatedDate);
+    }
+
+    public List<String> getUserProjectRoles(HProject project) {
+        Set<String> roles = new HashSet<>();
+        for (HProjectMember member: project.getMembers()) {
+            if (member.getPerson().equals(authenticatedAccount.getPerson())) {
+                roles.add(member.getRole().toString());
+            }
+        }
+
+        for (HProjectLocaleMember member: project.getLocaleMembers()) {
+            if (member.getPerson().equals(authenticatedAccount.getPerson())) {
+                roles.add(member.getRole().toString());
+            }
+        }
+        return new ArrayList<>(roles);
     }
 
     public String getShortTime(Date date) {
@@ -202,13 +213,13 @@ public class DashboardAction implements Serializable {
         @Override
         protected List<HProject> fetchRecords(int start, int max,
                 String filter) {
-            return projectDAO.getProjectsForMaintainer(
+            return projectDAO.getProjectsForMember(
                     authenticatedAccount.getPerson(), filter, start, max);
         }
 
         @Override
         protected long fetchTotalRecords(String filter) {
-            return projectDAO.getMaintainedProjectCount(
+            return projectDAO.getProjectsForMemberCount(
                     authenticatedAccount.getPerson(), filter);
         }
     }

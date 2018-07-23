@@ -45,8 +45,8 @@ public class EditWebHooksTest extends ZanataTestCase {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .as("Admin is logged in")
+                .isEqualTo("admin");
     }
 
     @Trace(summary = "The maintainer can add WebHooks for a project")

@@ -20,20 +20,20 @@
  */
 package org.zanata.service.impl;
 
-import static com.google.common.collect.Collections2.filter;
 import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectNone;
 import static org.zanata.webtrans.shared.rest.dto.InternalTMSource.InternalTMChoice.SelectSome;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
@@ -52,6 +52,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.slf4j.Logger;
@@ -70,6 +71,7 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.dto.suggestion.SuggestionDetail;
 import org.zanata.rest.editor.dto.suggestion.TextFlowSuggestionDetail;
@@ -89,8 +91,6 @@ import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -120,7 +120,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     // private static final float BOOST_PROJITERSLUG = SysProperties.getFloat(
     // SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
     private static final double MINIMUM_SIMILARITY = 1.0;
-    private static final String LUCENE_KEY_WORDS = "(\\s*)(AND|OR|NOT)(\\s+)";
+    private static final String LUCENE_KEY_WORDS = "(^|\\s+)(AND|OR|NOT)(\\s+|$)";
     private static final long serialVersionUID = -570503476695179297L;
 
     // sort desc by lastChanged of HTextFlowTarget
@@ -182,13 +182,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * TODO this is only used by test. Should we remove it?
      * This is used by CopyTrans, with ContentHash search in lucene. Returns
      * first entry of the matches which sort by HTextFlowTarget.lastChanged DESC
-     *
-     * @param textFlow
-     * @param targetLocaleId
-     * @param sourceLocaleId
-     * @param checkContext
-     * @param checkDocument
-     * @param checkProject
      */
     @Override
     public Optional<HTextFlowTarget> searchBestMatchTransMemory(
@@ -199,7 +192,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 buildTMQuery(textFlow, HasSearchType.SearchType.CONTENT_HASH,
                         checkContext, checkDocument, checkProject, false,
                         InternalTMSource.SELECT_ALL);
-        Collection<Object[]> matches =
+        List<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId, query,
                         0, Optional.empty(), HTextFlowTarget.class);
         if (matches.isEmpty()) {
@@ -209,16 +202,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     }
 
     /**
-     * This is used by TMMerge. Returns first entry of the matches which sort by
-     * similarityPercent, sourceContents, and contents size.
-     * @param textFlow
-     * @param targetLocaleId
-     * @param sourceLocaleId
-     * @param checkContext
-     * @param checkDocument
-     * @param checkProject
-     * @param thresholdPercent
-     * @param internalTMSource
+     * This is used by TMMerge. Returns first entry of the matches which sort
+     * by similarityPercent, sourceContents, and contents size, but discards
+     * MT results.
      */
     @Override
     public Optional<TransMemoryResultItem> searchBestMatchTransMemory(
@@ -226,19 +212,19 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             LocaleId sourceLocaleId, boolean checkContext,
             boolean checkDocument, boolean checkProject, int thresholdPercent,
             InternalTMSource internalTMSource) {
+        // TODO alter query to omit MT matches for better results
+        // (currently discarded by filter below)
         TransMemoryQuery query =
                 buildTMQuery(textFlow, HasSearchType.SearchType.FUZZY_PLURAL,
                         checkContext, checkDocument, checkProject,
                         true, internalTMSource);
-        List<TransMemoryResultItem> tmResults =
-                searchTransMemory(targetLocaleId, sourceLocaleId, query);
-        // findTMAboveThreshold
-        Collection<TransMemoryResultItem> aboveThreshold = filter(tmResults,
-                new TransMemoryAboveThresholdPredicate(thresholdPercent));
-        if (aboveThreshold.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(aboveThreshold.iterator().next());
+        // TODO would maxResults of, say, 5 be enough for this case?
+        return searchTransMemory(targetLocaleId, sourceLocaleId, query)
+                .stream()
+                // findTMAboveThreshold
+                .filter(new TransMemoryAboveThresholdPredicate(thresholdPercent))
+                .filter(it -> !it.isMachineTranslation())
+                .findFirst();
     }
 
     @Override
@@ -249,18 +235,26 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         // via GWT-RPC(TransMemoryQuery), allowing Lucene to rank results
         // by metadata too.
         Optional<Long> textFlowTargetId = Optional.empty();
+        // The results from Hibernate Search are sorted by Lucene
+        // algorithms (eg relevance), but then we sort by similarity percentage
+        // (TransMemoryResultComparator). The sorting should be fairly similar,
+        // but if the most *similar* results don't appear in the first (most
+        // *relevant*) SEARCH_MAX_RESULTS, we will never see them.
         Collection<Object[]> matches = findMatchingTranslation(targetLocaleId,
                 sourceLocaleId, transMemoryQuery, SEARCH_MAX_RESULTS,
                 textFlowTargetId, HTextFlowTarget.class, TransMemoryUnit.class);
         Map<TMKey, TransMemoryResultItem> matchesMap =
                 new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
         for (Object[] match : matches) {
-            processIndexMatch(transMemoryQuery, matchesMap, match,
+            float score = (Float) match[0];
+            Object entity = match[1];
+            processIndexMatch(transMemoryQuery, matchesMap, entity, score,
                     sourceLocaleId, targetLocaleId);
         }
         List<TransMemoryResultItem> results =
                 Lists.newArrayList(matchesMap.values());
-        Collections.sort(results, new TransMemoryResultComparator(transMemoryQuery.getInternalTMSource()));
+        results.sort(new TransMemoryResultComparator(
+                transMemoryQuery.getInternalTMSource()));
         return results;
     }
 
@@ -308,23 +302,25 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * @param transMemoryQuery
      * @param maxResults
      */
-    private Collection<Object[]> findMatchingTranslation(
+    private List<Object[]> findMatchingTranslation(
             LocaleId targetLocaleId, LocaleId sourceLocaleId,
             TransMemoryQuery transMemoryQuery, int maxResults,
             Optional<Long> textFlowTargetId, @Nonnull Class<?>... entityTypes) {
         try {
-            if (entityTypes == null || entityTypes.length == 0) {
+            if (entityTypes.length == 0) {
                 throw new RuntimeException(
                         "Need entity type (HTextFlowTarget.class or TransMemoryUnit.class) for TM search");
             }
             List<Object[]> matches = getSearchResult(transMemoryQuery,
                     sourceLocaleId, targetLocaleId, maxResults,
-                    textFlowTargetId, entityTypes);
-            // filter out invalid target
-            // TODO filter by entityTypes as well
-            // TODO returning a filtered collection might be overkill
-            return Collections2.filter(matches,
+                    textFlowTargetId, entityTypes,
+                    // Filter out invalid targets.
+                    // NB this post-query filtering could discard Lucene's most
+                    // "relevant" results, perhaps all of them. The only way to
+                    // counteract this is to let Lucene return more results before we
+                    // filter.
                     new ValidTargetFilterPredicate(identity, targetLocaleId));
+            return matches;
         } catch (ParseException e) {
             if (e.getCause() instanceof BooleanQuery.TooManyClauses) {
                 log.warn(
@@ -350,51 +346,69 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     }
 
     private void processIndexMatch(TransMemoryQuery transMemoryQuery,
-            Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match,
-            LocaleId sourceLocaleId, LocaleId targetLocaleId) {
-        Object entity = match[1];
+            Map<TMKey, TransMemoryResultItem> matchesMap, Object entity,
+            float score, LocaleId sourceLocaleId, LocaleId targetLocaleId) {
         if (entity instanceof HTextFlowTarget) {
             HTextFlowTarget textFlowTarget = (HTextFlowTarget) entity;
-            ArrayList<String> textFlowContents = Lists
-                    .newArrayList(textFlowTarget.getTextFlow().getContents());
-            ArrayList<String> targetContents =
-                    Lists.newArrayList(textFlowTarget.getContents());
-            TransMemoryResultItem.MatchType matchType =
-                    fromContentState(textFlowTarget.getState());
-            double percent = calculateSimilarityPercentage(transMemoryQuery,
-                    textFlowContents);
-            if (percent < MINIMUM_SIMILARITY) {
-                log.debug("Ignoring TM - {} with less than {}% matching.",
-                        textFlowContents, MINIMUM_SIMILARITY);
-                return;
-            }
-            Long fromVersionId = textFlowTarget.getTextFlow().getDocument()
-                    .getProjectIteration().getId();
-            TransMemoryResultItem item =
-                    createOrGetResultItem(matchesMap, match, matchType,
-                            textFlowContents, targetContents, percent,
-                            fromVersionId);
-            addTextFlowTargetToResultMatches(textFlowTarget, item);
+            processTextFlowTargetMatch(transMemoryQuery, matchesMap,
+                    textFlowTarget, score);
         } else if (entity instanceof TransMemoryUnit) {
             TransMemoryUnit transUnit = (TransMemoryUnit) entity;
-            ArrayList<String> sourceContents =
-                    Lists.newArrayList(transUnit.getTransUnitVariants()
-                            .get(sourceLocaleId.getId()).getPlainTextSegment());
-            ArrayList<String> targetContents =
-                    Lists.newArrayList(transUnit.getTransUnitVariants()
-                            .get(targetLocaleId.getId()).getPlainTextSegment());
-            double percent = calculateSimilarityPercentage(transMemoryQuery,
-                    sourceContents);
-            if (percent < MINIMUM_SIMILARITY) {
-                log.debug("Ignoring TM - {} with less than {}% matching.",
-                        sourceContents, MINIMUM_SIMILARITY);
-                return;
-            }
-            TransMemoryResultItem item = createOrGetResultItem(matchesMap,
-                    match, TransMemoryResultItem.MatchType.Imported,
-                    sourceContents, targetContents, percent, null);
-            addTransMemoryUnitToResultMatches(item, transUnit);
+            processTransMemoryUnitMatch(transMemoryQuery, matchesMap,
+                    transUnit, score, sourceLocaleId, targetLocaleId);
+        } else {
+            log.warn("unexpected entity: {}", entity.getClass());
         }
+    }
+
+    private void processTextFlowTargetMatch(TransMemoryQuery transMemoryQuery,
+            Map<TMKey, TransMemoryResultItem> matchesMap,
+            HTextFlowTarget textFlowTarget, float score) {
+        TransMemoryResultItem.MatchType matchType =
+                fromContentState(textFlowTarget.getState());
+        ArrayList<String> textFlowContents = Lists
+                .newArrayList(textFlowTarget.getTextFlow().getContents());
+        double percent = calculateSimilarityPercentage(transMemoryQuery,
+                textFlowContents);
+        if (percent < MINIMUM_SIMILARITY) {
+            log.debug("Ignoring TM - {} - similarity is less than {}%",
+                    textFlowContents, MINIMUM_SIMILARITY);
+            return;
+        }
+        ArrayList<String> targetContents =
+                Lists.newArrayList(textFlowTarget.getContents());
+        Long fromVersionId = textFlowTarget.getTextFlow().getDocument()
+                .getProjectIteration().getId();
+        boolean machineTranslation = textFlowTarget.getSourceType() ==
+                TranslationSourceType.MACHINE_TRANS;
+        TransMemoryResultItem item =
+                createOrGetResultItem(matchesMap, score, matchType,
+                        textFlowContents, targetContents, percent,
+                        fromVersionId, machineTranslation);
+        addTextFlowTargetToResultMatches(textFlowTarget, item);
+    }
+
+    private void processTransMemoryUnitMatch(TransMemoryQuery transMemoryQuery,
+            Map<TMKey, TransMemoryResultItem> matchesMap,
+            TransMemoryUnit transUnit, float score, LocaleId sourceLocaleId,
+            LocaleId targetLocaleId) {
+        ArrayList<String> sourceContents =
+                Lists.newArrayList(transUnit.getTransUnitVariants()
+                        .get(sourceLocaleId.getId()).getPlainTextSegment());
+        ArrayList<String> targetContents =
+                Lists.newArrayList(transUnit.getTransUnitVariants()
+                        .get(targetLocaleId.getId()).getPlainTextSegment());
+        double percent = calculateSimilarityPercentage(transMemoryQuery,
+                sourceContents);
+        if (percent < MINIMUM_SIMILARITY) {
+            log.debug("Ignoring TM - {} with less than {}% matching.",
+                    sourceContents, MINIMUM_SIMILARITY);
+            return;
+        }
+        TransMemoryResultItem item = createOrGetResultItem(matchesMap,
+                score, TransMemoryResultItem.MatchType.Imported,
+                sourceContents, targetContents, percent, null, false);
+        addTransMemoryUnitToResultMatches(item, transUnit);
     }
 
     private static double calculateSimilarityPercentage(TransMemoryQuery query,
@@ -451,16 +465,16 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      *         newly created.
      */
     private TransMemoryResultItem createOrGetResultItem(
-            Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match,
+            Map<TMKey, TransMemoryResultItem> matchesMap, float score,
             TransMemoryResultItem.MatchType matchType,
             ArrayList<String> sourceContents, ArrayList<String> targetContents,
-            double percent, Long fromVersionId) {
+            double percent, Long fromVersionId, boolean machineTranslation) {
         TMKey key = new TMKey(sourceContents, targetContents);
         TransMemoryResultItem item = matchesMap.get(key);
         if (item == null) {
-            float score = (Float) match[0];
             item = new TransMemoryResultItem(sourceContents, targetContents,
-                    matchType, score, percent, fromVersionId);
+                    matchType, score, percent, fromVersionId,
+                    machineTranslation);
             matchesMap.put(key, item);
         }
         return item;
@@ -604,9 +618,14 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
     }
 
+    /**
+     *
+     * @param filter a post-query filter (eg ValidTargetFilterPredicate or TransMemoryAboveThresholdPredicate)
+     */
     private List<Object[]> getSearchResult(TransMemoryQuery query,
-            LocaleId sourceLocale, LocaleId targetLocale, int maxResult,
-            Optional<Long> textFlowTargetId, Class<?>... entities)
+            LocaleId sourceLocale, LocaleId targetLocale, int maxResults,
+            Optional<Long> textFlowTargetId, Class<?>[] entities,
+            Predicate<Object[]> filter)
             throws ParseException {
         String queryText = null;
         String[] multiQueryText = null;
@@ -670,21 +689,35 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         log.debug("Executing Lucene query: {}", textQuery);
         FullTextQuery ftQuery =
                 entityManager.createFullTextQuery(textQuery, entities);
-        ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
-        if (maxResult > 0) {
-            ftQuery.setMaxResults(maxResult);
+        ftQuery.setProjection(
+                ProjectionConstants.SCORE,
+                ProjectionConstants.THIS,
+                ProjectionConstants.OBJECT_CLASS,
+                ProjectionConstants.ID);
+        if (maxResults > 0) {
+            ftQuery.setMaxResults(maxResults);
         }
         ftQuery.setSort(lastChangedSort);
         @SuppressWarnings("unchecked")
-        List<Object[]> resultList = (List<Object[]>) ftQuery.getResultList();
-        if (!resultList.isEmpty() && resultList.size() == maxResult) {
+        List<Object[]> unfilteredMatches = (List<Object[]>) ftQuery.getResultList();
+
+        List<Object[]> filteredMatches =
+                unfilteredMatches.stream().filter(filter).collect(Collectors.toList());
+        // Log a warning if filtering discards more than (say) 3/4 of matches.
+        // TODO we could tell the caller instead of logging a warning here
+        // (and let the client retry with a larger limit if desired).
+        if (!unfilteredMatches.isEmpty() && unfilteredMatches.size() == maxResults && filteredMatches.size() < maxResults / 4) {
             log.warn(
-                    "Lucene query returned {} results (out of approx {}). Increasing {} might produce more matches.",
-                    resultList.size(), ftQuery.getResultSize(),
-                    SysProperties.TM_MAX_RESULTS);
-            logQueryResults(resultList);
+                    "Found {} items (out of {} hits) but only {} pass " +
+                            "the filter. More acceptable items may be found " +
+                            "if maxResults is increased. Query: {}",
+                    unfilteredMatches.size(),
+                    ftQuery.getResultSize(),
+                    filteredMatches.size(),
+                    textQuery);
+            logQueryResults(unfilteredMatches);
         }
-        return resultList;
+        return filteredMatches;
     }
 
     @VisibleForTesting
@@ -964,13 +997,21 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
 
         @Override
-        public boolean apply(TransMemoryResultItem tmResult) {
-            return tmResult != null ?
-                    (int) tmResult.getSimilarityPercent() >= approvedThreshold :
-                    false;
+        public boolean test(TransMemoryResultItem tmResult) {
+            return tmResult != null &&
+                    (int) tmResult.getSimilarityPercent() >= approvedThreshold;
         }
     }
 
+    /**
+     * Checks for results which should not be returned to the user.
+     * Assuming the indexes are up to date, we should now be able to discard
+     * most unwanted results at the Lucene layer (because we de-index TFTs for
+     * obsolete projects/versions), so we log any which get through as errors.
+     *
+     * Matches from private project versions are not discarded by Lucene, so
+     * any which slip through are only logged as debug before discarding here.
+     */
     private static class ValidTargetFilterPredicate
             implements Predicate<Object[]> {
         private final LocaleId localeId;
@@ -983,8 +1024,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
 
         @Override
-        public boolean apply(Object[] input) {
+        public boolean test(Object[] input) {
             Object entity = input[1];
+            Class entityClass = (Class) input[2];
+            Object entityID = input[3];
             if (entity instanceof HTextFlowTarget) {
                 HTextFlowTarget target = (HTextFlowTarget) entity;
                 if (!target.getLocaleId().equals(localeId)) {
@@ -1006,13 +1049,13 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                                 version, target);
                         return false;
                     } else if (version.getStatus() == EntityStatus.OBSOLETE) {
-                        log.debug(
+                        log.error(
                                 "Discarding TextFlowTarget (obsolete iteration {}): {}",
                                 version, target);
                         return false;
                     } else if (version.getProject()
                             .getStatus() == EntityStatus.OBSOLETE) {
-                        log.debug(
+                        log.error(
                                 "Discarding TextFlowTarget (obsolete project {}): {}",
                                 version.getProject(), target);
                         return false;
@@ -1031,15 +1074,13 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 return includesTargetLocale;
             } else if (entity == null) {
                 log.error(
-                        "Query results include null entity. You may need to re-index.");
+                        "Missing entity ({} with ID {}). You may need to re-index.", entityClass.getSimpleName(), entityID);
                 return false;
             } else {
-                String name = entity.getClass().getName();
-                log.warn(
-                        "Unexpected query result of type {}: {}. You may need to re-index.",
-                        name, entity);
+                log.error(
+                        "Unexpected entity ({} with ID {}). You may need to re-index.", entityClass.getSimpleName(), entityID);
+                return false;
             }
-            return true;
         }
     }
 
@@ -1122,7 +1163,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
          *         and entity is a HTextFlowTarget or TransMemoryUnit.
          */
 
-        private Collection<Object[]> runQuery() {
+        private List<Object[]> runQuery() {
             return findMatchingTranslation(transLocale, srcLocale, query,
                     SEARCH_MAX_RESULTS, textFlowTargetId, HTextFlowTarget.class,
                     TransMemoryUnit.class);

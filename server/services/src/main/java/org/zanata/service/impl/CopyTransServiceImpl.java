@@ -107,12 +107,10 @@ public class CopyTransServiceImpl implements CopyTransService {
         // number of copy targets), it's better to inverse the process, i.e.
         // iterate through candidates and inject matches
         if (hasTranslationToCopy) {
-            boolean requireTranslationReview = document.getProjectIteration()
-                    .getRequireTranslationReview();
             while (start < document.getTextFlows().size()) {
                 numCopied += copyTransForBatch(document, start,
                         COPY_TRANS_BATCH_SIZE, targetLocale, options,
-                        taskHandleOpt, requireTranslationReview);
+                        taskHandleOpt);
                 start += COPY_TRANS_BATCH_SIZE;
                 documentDAO.clear();
             }
@@ -136,8 +134,6 @@ public class CopyTransServiceImpl implements CopyTransService {
     /**
      * Perform copy trans on a batch of text flows for a document.
      *
-     * @param requireTranslationReview
-     *            whether the project iteration requires translation review
      * @param batchStart
      *            USE_HIBERNATE_SEARCH The text flow position to start copying.
      * @param batchLength
@@ -148,8 +144,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     private int copyTransForBatch(HDocument document, final int batchStart,
             final int batchLength, final HLocale targetLocale,
             final HCopyTransOptions options,
-            Optional<CopyTransTaskHandle> taskHandleOpt,
-            boolean requireTranslationReview) throws Exception {
+            Optional<CopyTransTaskHandle> taskHandleOpt) throws Exception {
         HDocument hDocument = documentDAO.findById(document.getId());
         List<HTextFlow> docTextFlows = hDocument.getTextFlows();
         int batchEnd = Math.min(batchStart + batchLength, docTextFlows.size());
@@ -158,7 +153,7 @@ public class CopyTransServiceImpl implements CopyTransService {
                 docTextFlows.subList(batchStart, batchEnd);
         Integer numCopied =
                 copyTransWorkFactory.runCopyTransInNewTx(targetLocale, options,
-                        document, requireTranslationReview, copyTargets);
+                        document, copyTargets);
         if (taskHandleOpt.isPresent()) {
             taskHandleOpt.get().increaseProgress(batchSize);
         }
@@ -294,8 +289,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     private void prepareCopyTransHandle(HProjectIteration iteration,
             CopyTransTaskHandle handle) {
         if (!handle.isPrepared()) {
-            // TODO Progress should be handle as long
-            handle.setMaxProgress((int) getMaxProgress(iteration));
+            handle.setMaxProgress(getMaxProgress(iteration));
             handle.setPrepared();
         }
     }
@@ -303,8 +297,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     private void prepareCopyTransHandle(HDocument document,
             CopyTransTaskHandle handle) {
         if (!handle.isPrepared()) {
-            // TODO Progress should be handle as long
-            handle.setMaxProgress((int) getMaxProgress(document));
+            handle.setMaxProgress(getMaxProgress(document));
             handle.setPrepared();
         }
     }

@@ -49,10 +49,9 @@ public class VersionGroupUrlTest extends ZanataTestCase {
 
     @Before
     public void before() {
-        assertThat(
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .as("Admin is logged in")
+                .isEqualTo("admin");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)

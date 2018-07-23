@@ -34,13 +34,15 @@ const user = {
   username: 'damason'
 }
 
+const translationSourceType = 'MT'
+
 storiesOf('ActivityFeedItem', module)
     .add('comment', () => (
       <ActivityFeedItem
         type='comment'
         content={'What in the world does this mean?'}
         lastModifiedTime={lastModifiedTime}
-        user={user} />
+        user={user} translationSourceType={translationSourceType} />
     ))
 
     .add('translated', () => (
@@ -49,7 +51,7 @@ storiesOf('ActivityFeedItem', module)
         status='translated'
         content={'নাম'}
         lastModifiedTime={lastModifiedTime}
-        user={user} />
+        user={user} translationSourceType={translationSourceType} />
     ))
 
     .add('needswork', () => (
@@ -58,7 +60,7 @@ storiesOf('ActivityFeedItem', module)
         status='needswork'
         content={'নাম'}
         lastModifiedTime={lastModifiedTime}
-        user={user} />
+        user={user} translationSourceType={translationSourceType} />
     ))
 
     .add('approved', () => (
@@ -67,7 +69,7 @@ storiesOf('ActivityFeedItem', module)
         status='approved'
         content={'নাম'}
         lastModifiedTime={lastModifiedTime}
-        user={user} />
+        user={user} translationSourceType={translationSourceType} />
     ))
 
     .add('rejected - minor priority', () => (
@@ -80,7 +82,7 @@ storiesOf('ActivityFeedItem', module)
         commentText='You spelt this wrong.'
         content={'নাম'}
         lastModifiedTime={lastModifiedTime}
-        user={user} />
+        user={user} translationSourceType={translationSourceType} />
     ))
     .add('rejected - major priority', () => (
       <ActivityFeedItem
@@ -92,7 +94,7 @@ storiesOf('ActivityFeedItem', module)
         commentText='You spelt this wrong.'
         content={'নাম'}
         lastModifiedTime={lastModifiedTime}
-        user={user} />
+        user={user} translationSourceType={translationSourceType} />
     ))
     .add('rejected - critical priority', () => (
       <ActivityFeedItem
@@ -104,5 +106,5 @@ storiesOf('ActivityFeedItem', module)
         commentText='You spelt this wrong.'
         content={'নাম'}
         lastModifiedTime={lastModifiedTime}
-        user={user} />
+        user={user} translationSourceType={translationSourceType} />
     ))

@@ -2,16 +2,19 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import {
-  Col, Radio, OverlayTrigger, Tooltip
-} from 'react-bootstrap'
+import Radio from 'antd/lib/radio'
+import 'antd/lib/radio/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 import Icon from '../../components/Icon'
 import {TMMergeOptionsValuePropType,
   TMMergeOptionsCallbackPropType, CopyLabel} from './TMMergeOptionsCommon'
 import {IGNORE_CHECK, FUZZY, REJECT} from '../../utils/EnumValueUtils'
 
 const copyAsFuzzyTooltip = (
-  <Tooltip id='copy-as-fuzzy-project' title='Copy as fuzzy - Project'>
+  <Tooltip id='copy-as-fuzzy-project'>
     Can only copy as translated if the context is the same. Otherwise it will
     always use fuzzy.
   </Tooltip>)
@@ -24,9 +27,9 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
       <CopyLabel type={REJECT} value={value} />
     </Radio>
   )
-  return <Col xs={12} md={4}>
+  return <Col xs={24} md={8} className='mt4 mb4'>
     If the translation is from a different&nbsp;
-    <span className="import-type">{name}</span>
+    <span className="import-type">{name}</span><br />
     <Radio checked={value === IGNORE_CHECK} validationState='success'
       onChange={callback(IGNORE_CHECK)} disabled={disabled}>
       <span>I don't mind at all</span><br />
@@ -36,12 +39,11 @@ const MetaDataCheckOption = ({name, value, callback, hasReject, disabled}) => {
       validationState='warning' disabled={disabled}>
       <span>I will need to review it</span><br />
       <CopyLabel type={FUZZY} value={value} />
-      <OverlayTrigger placement='right' overlay={copyAsFuzzyTooltip}>
-        <a className="btn-link tooltip-btn" role="button">
-          <Icon name="info" className="s0"
-            parentClassName="iconInfoVersionMerge" />
+      <Tooltip placement='right' title={copyAsFuzzyTooltip}>
+        <a className="btn-link pa0 v-mid ml1 txt-info" role="button">
+          <Icon name="info" className="s0" />
         </a>
-      </OverlayTrigger>
+      </Tooltip>
     </Radio>
     {reject}
   </Col>
@@ -79,9 +81,9 @@ class TMMergeProjectTMOptions extends Component {
       disabled
     } = this.props
     const diffProjectOption = disableDifferentProjectOption
-      ? (<Col xs={12} md={4}>
+      ? (<Col xs={24} md={8} className='mt4 mb4'>
         If the translation is from a different&nbsp;
-        <span className="import-type">project</span>
+        <span className="import-type">project</span><br />
         <Radio checked validationState="error" disabled>
           <span>I don't want it</span><br />
           <CopyLabel type={REJECT} value={REJECT} />
@@ -90,7 +92,7 @@ class TMMergeProjectTMOptions extends Component {
       : <MetaDataCheckOption name="project" disabled={disabled}
         value={differentProject} callback={this.onDifferentProjectChange} />
     return (
-      <Col xs={12} className="validations">
+      <Col xs={24} className='mt2 mb2'>
         {diffProjectOption}
         <MetaDataCheckOption name="document" value={differentDocId}
           disabled={disabled}

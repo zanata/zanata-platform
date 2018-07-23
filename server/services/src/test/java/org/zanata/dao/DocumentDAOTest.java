@@ -20,7 +20,7 @@
  */
 package org.zanata.dao;
 
-import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
@@ -32,8 +32,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-
-import com.google.common.base.Function;
+import org.zanata.rest.dto.TranslationSourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -93,12 +92,13 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
             String unchangedHash =
                     documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                             ITERATION_SLUG, DOC_ID, as);
-            assertThat(unchangedHash).isEqualTo(docHash)
-                    .as("Translated Document state hash function not repeatable");
+            assertThat(unchangedHash)
+                    .as("Translated Document state hash function not repeatable")
+                    .isEqualTo(docHash);
         }
     }
 
-    private void testHashChange(Function<HDocument, Void> mutator,
+    private void testHashChange(Consumer<HDocument> mutator,
             boolean expectHashChange) throws Exception {
         String docHash =
                 documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
@@ -107,7 +107,7 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
         HDocument doc =
                 documentDAO.getByProjectIterationAndDocId(PROJECT_SLUG,
                         ITERATION_SLUG, DOC_ID);
-        mutator.apply(doc);
+        mutator.accept(doc);
 
         // force a flush on the DB
         getSession().flush();
@@ -117,93 +117,71 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
                 documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                         ITERATION_SLUG, DOC_ID, as);
         if (expectHashChange) {
-            assertThat(changedDocHash).isNotEqualTo(docHash)
-                    .as("Translated document hash must change when something is changed");
+            assertThat(changedDocHash)
+                    .as("Translated document hash must change when something is changed")
+                    .isNotEqualTo(docHash);
         } else {
-            assertThat(changedDocHash).isEqualTo(docHash)
-                    .as("Translated document hash must not change when nothing is changed");
+            assertThat(changedDocHash)
+                    .as("Translated document hash must not change when nothing is changed")
+                    .isEqualTo(docHash);
         }
     }
 
     @Test()
     public void noChangeMeansNoHashChange() throws Exception {
-        testHashChange(new Function<HDocument, Void>() {
-            @Override
-            @Nullable
-            public Void apply(@Nullable HDocument doc) {
-                // change nothing
-                return null;
-            }
-        }, false);
+        testHashChange(doc -> {}, false);
     }
 
     @Test
     public void simpleDocumentUpdateChangesHash() throws Exception {
-        testHashChange(new Function<HDocument, Void>() {
-            @Override
-            @Nullable
-            public Void apply(@Nullable HDocument doc) {
-                doc.setName("newdocname.txt");
-                return null;
-            }
-        }, true);
+        testHashChange(doc -> doc.setName("newdocname.txt"), true);
     }
 
     @Test
     public void translationChangesHash() throws Exception {
-        testHashChange(new Function<HDocument, Void>() {
-            @Override
-            @Nullable
-            public Void apply(@Nullable HDocument doc) {
-                HTextFlow tf = doc.getTextFlows().get(0);
-                HTextFlowTarget tft = tf.getTargets().get(as.getId());
-                tft.setContent0("new Translation for as");
-                return null;
-            }
+        testHashChange(doc -> {
+            HTextFlow tf = doc.getTextFlows().get(0);
+            HTextFlowTarget tft = tf.getTargets().get(as.getId());
+            tft.setContent0("new Translation for as");
         }, true);
     }
 
     @Test
     public void otherLangDoesNotChangeHash() throws Exception {
-        testHashChange(new Function<HDocument, Void>() {
-            @Override
-            @Nullable
-            public Void apply(@Nullable HDocument doc) {
-                HTextFlow tf = doc.getTextFlows().get(0);
-                HTextFlowTarget tft = tf.getTargets().get(de.getId());
-                tft.setContent0("new Translation for de");
-                return null;
-            }
+        testHashChange(doc -> {
+            HTextFlow tf = doc.getTextFlows().get(0);
+            HTextFlowTarget tft = tf.getTargets().get(de.getId());
+            tft.setContent0("new Translation for de");
         }, false);
     }
 
     @Test
     public void tftNewCommentChangesHash() throws Exception {
-        testHashChange(new Function<HDocument, Void>() {
-            @Override
-            @Nullable
-            public Void apply(@Nullable HDocument doc) {
-                HTextFlow tf = doc.getTextFlows().get(0);
-                HTextFlowTarget tft = tf.getTargets().get(as.getId());
-                tft.setComment(new HSimpleComment("This is a new comment"));
-                return null;
-            }
+        testHashChange(doc -> {
+            HTextFlow tf = doc.getTextFlows().get(0);
+            HTextFlowTarget tft = tf.getTargets().get(as.getId());
+            tft.setComment(new HSimpleComment("This is a new comment"));
         }, true);
+    }
+
+    @Test
+    public void getStatisticsBySourceType() {
+        int[] result = documentDAO
+            .getStatisticsBySourceType(1L, as.getLocaleId(),
+                TranslationSourceType.UNKNOWN);
+        assertThat(result).hasSize(2);
+        assertThat(result[0]).isEqualTo(1);
+        assertThat(result[1]).isEqualTo(11);
     }
 
     // TODO set up the dbunit data with a pre-existing comment so that we can use this test
 //    @Test
 //    public void tftCommentChangesHash() throws Exception {
-//        testHashChange(new Function<HDocument, Void>() {
-//            @Override
-//            @Nullable
-//            public Void apply(@Nullable HDocument doc) {
+//        testHashChange(doc -> {
 //                HTextFlow tf = doc.getTextFlows().get(0);
 //                HTextFlowTarget tft = tf.getTargets().get(as.getId());
 //                // this requires changes to our dbunit config:
 //                tft.getComment().setComment("This is a modified comment");
-//                return null;
-//            }
 //        }, true);
 //    }
 }

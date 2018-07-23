@@ -23,21 +23,22 @@ package org.zanata.email;
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
+
 import static org.zanata.email.Addresses.getReplyTo;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class RequestToJoinLanguageEmailStrategy extends EmailStrategy {
+public class RequestToJoinLanguageEmailStrategy extends VelocityEmailStrategy {
     private final String fromLoginName;
     private final String fromName;
     private final String replyEmail;
     private final String localeId;
     private final String localeNativeName;
-    private final String htmlMessage;
+    private final String userMessage;
     private final boolean requestAsTranslator;
     private final boolean requestAsReviewer;
     private final boolean requestAsCoordinator;
@@ -63,25 +64,24 @@ public class RequestToJoinLanguageEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", safeHTML)
+                .put("safeHtmlMessage", textToSafeHtml(userMessage))
                 .put("requestAsTranslator", requestAsTranslator)
                 .put("requestAsReviewer", requestAsReviewer)
                 .put("requestAsCoordinator", requestAsCoordinator);
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
-            "replyEmail", "localeId", "localeNativeName", "htmlMessage",
+            "replyEmail", "localeId", "localeNativeName", "userMessage",
             "requestAsTranslator", "requestAsReviewer",
             "requestAsCoordinator" })
     public RequestToJoinLanguageEmailStrategy(final String fromLoginName,
             final String fromName, final String replyEmail,
             final String localeId, final String localeNativeName,
-            final String htmlMessage, final boolean requestAsTranslator,
+            final String userMessage, final boolean requestAsTranslator,
             final boolean requestAsReviewer,
             final boolean requestAsCoordinator) {
         this.fromLoginName = fromLoginName;
@@ -89,7 +89,7 @@ public class RequestToJoinLanguageEmailStrategy extends EmailStrategy {
         this.replyEmail = replyEmail;
         this.localeId = localeId;
         this.localeNativeName = localeNativeName;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
         this.requestAsTranslator = requestAsTranslator;
         this.requestAsReviewer = requestAsReviewer;
         this.requestAsCoordinator = requestAsCoordinator;

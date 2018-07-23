@@ -23,15 +23,16 @@ package org.zanata.email;
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 import javax.mail.internet.InternetAddress;
 import static org.zanata.email.Addresses.getReplyTo;
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
+public class ContactLanguageCoordinatorEmailStrategy extends
+        VelocityEmailStrategy {
     private final String receiver;
     private final String fromLoginName;
     private final String fromName;
@@ -39,7 +40,7 @@ public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
     private final String userSubject;
     private final String localeId;
     private final String localeNativeName;
-    private final String htmlMessage;
+    private final String userMessage;
 
     @Override
     public String getBodyResourceName() {
@@ -62,23 +63,22 @@ public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context.put("receiver", receiver)
                 .put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", safeHTML);
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "receiver", "fromLoginName", "fromName",
             "replyEmail", "userSubject", "localeId", "localeNativeName",
-            "htmlMessage" })
+            "userMessage" })
     public ContactLanguageCoordinatorEmailStrategy(final String receiver,
             final String fromLoginName,
             final String fromName, final String replyEmail,
             final String userSubject, final String localeId,
-            final String localeNativeName, final String htmlMessage) {
+            final String localeNativeName, final String userMessage) {
         this.receiver = receiver;
         this.fromLoginName = fromLoginName;
         this.fromName = fromName;
@@ -86,6 +86,6 @@ public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
         this.userSubject = userSubject;
         this.localeId = localeId;
         this.localeNativeName = localeNativeName;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
     }
 }

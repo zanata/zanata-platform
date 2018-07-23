@@ -1,11 +1,12 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import { ButtonToolbar } from 'react-bootstrap'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import SelectButton from '../SelectButton'
 
 const SelectButtonList = ({ items, selected, className, selectItem }) => (
-  <ButtonToolbar>
+  <Row>
     {items.map(({ id, icon, label }) => (
       <SelectButton
         id={id}
@@ -18,7 +19,7 @@ const SelectButtonList = ({ items, selected, className, selectItem }) => (
       />
     ))
     }
-  </ButtonToolbar>
+  </Row>
 )
 
 SelectButtonList.propTypes = {

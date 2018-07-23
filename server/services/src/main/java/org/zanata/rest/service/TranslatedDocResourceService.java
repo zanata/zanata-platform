@@ -34,7 +34,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -52,13 +51,12 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-import com.google.common.base.Optional;
 
 /**
  * This service allows clients to push and pull both source documents and
@@ -124,14 +122,16 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Deprecated
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
-            Set<String> extensions, boolean skeletons, String eTag) {
+            Set<String> extensions, boolean skeletons,
+            boolean markTranslatedAsApproved, String eTag) {
         String id = RestUtil.convertFromDocumentURIId(idNoSlash);
-        return getTranslationsWithDocId(locale, id, extensions, skeletons, eTag);
+        return getTranslationsWithDocId(locale, id, extensions, skeletons, markTranslatedAsApproved, eTag);
     }
 
     @Override
     public Response getTranslationsWithDocId(LocaleId locale, String docId,
-            Set<String> extensions, boolean createSkeletons, String eTag) {
+            Set<String> extensions, boolean createSkeletons,
+            boolean markTranslatedAsApproved, String eTag) {
         log.debug("start to get translation");
         if (StringUtils.isBlank(docId)) {
             // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
@@ -168,7 +168,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 textFlowTargetDAO.findTranslations(document, hLocale);
         boolean foundData = resourceUtils.transferToTranslationsResource(
                 translationResource, document, hLocale, extensions, hTargets,
-                Optional.<String> absent());
+                markTranslatedAsApproved);
         if (!foundData && !createSkeletons) {
             return Response.status(Status.NOT_FOUND).build();
         }

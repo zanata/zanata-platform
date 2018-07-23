@@ -12,9 +12,11 @@ import {
   selectDayChanged
 } from '../../actions/profile-actions'
 import RecentContributions from './RecentContributions'
-import { Notification, Icon, LoaderText } from '../../components'
+import { Icon, LoaderText } from '../../components'
 import { getLanguageUrl } from '../../utils/UrlHelper'
 import { isLoggedIn } from '../../config'
+import Notification from 'antd/lib/notification'
+import 'antd/lib/notification/style/css'
 
 /**
  * Root component for user profile page
@@ -44,10 +46,20 @@ class UserProfile extends Component {
     this.props.handleInitLoad(username)
   }
 
+  componentDidUpdate (prevProps) {
+    const { notification } = this.props
+    if (notification && prevProps.notification !== notification) {
+      Notification[notification.severity]({
+        message: notification.message,
+        description: notification.description,
+        duration: notification.duration
+      })
+    }
+  }
+
   render () {
     const {
       user,
-      notification,
       loading,
       matrixForAllDays,
       wordCountsForSelectedDayFilteredByContentState,
@@ -78,23 +90,23 @@ class UserProfile extends Component {
 
     let content
     if (user.loading || loading) {
-      content = (<div className='userProfile bstrapReact'>
+      content = (<div className='userProfile'>
         <LoaderText className='loaderText s8' loading />
       </div>)
     } else if (isEmpty(username)) {
-      content = <div className='u-flexColumn userProfile-wrapper bstrapReact'>
+      content = <div className='u-flexColumn userProfile-wrapper'>
       </div>
     } else {
-      content = (<div className='u-flexColumn userProfile-wrapper bstrapReact'>
+      content = (<div className='u-flexColumn userProfile-wrapper'>
         <div className='userProfile-details' id='userProfile-overview'>
           <img className='userProfile-details-avatar'
             src={user.imageUrl ? user.imageUrl : ''} alt={username} />
           <div className='u-flexColumn details-text'>
             {name &&
-              <div className='username h1 ellipsis'
+              <h1 className='fw5 ellipsis'
                 id='profile-displayname'>
               {name}
-              </div>
+              </h1>
             }
             <ul className='largeFontList'>
               <li className='u-flexCenter' id='profile-username'>
@@ -102,13 +114,15 @@ class UserProfile extends Component {
                 {username}
               </li>
               {email &&
-              (<span className='userProfile-email'>{email}</span>)}
-              {languageTeams &&
-              (<li id='profileLanguages'>
-                <Icon name='language' className='s0' title='Spoken languages'
-                  parentClassName='iconLanguage u-pullLeft' />
-                {languageTeams}
+              (<li className='u-flexCenter' id='profileEmail'>
+                <Icon name='mail' className='s0' title='Email' />
+                {email}
               </li>)}
+              {languageTeams &&
+              (<ul id='profileLanguages'>
+                <Icon name='language' className='s0' title='Spoken languages' />
+                <li>{languageTeams}</li>
+              </ul>)}
               {roles && isLoggedIn &&
               (<li className='u-flexCenter' id='profileRoles' title='Roles'>
                 <Icon name='users' className='s0' />
@@ -134,19 +148,12 @@ class UserProfile extends Component {
       </div>)
     }
     return (
-      <div>
-        {notification &&
-          (<Notification
-            severity={notification.severity}
-            message={notification.message}
-            details={notification.details}
-            show={!!notification} />
-        )}
+      <React.Fragment>
         <Helmet title='User Profile' />
         <div className='wideView' id='profile' >
           {content}
         </div>
-      </div>
+      </React.Fragment>
     )
   }
 }

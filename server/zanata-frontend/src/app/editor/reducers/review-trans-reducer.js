@@ -6,7 +6,9 @@ import {
   TOGGLE_REVIEW_MODAL
 } from '../actions/review-trans-actions'
 import { UNSPECIFIED } from '../utils/reject-trans-util'
+import { SEVERITY } from '../../actions/common-actions'
 
+/** @type {import('./state').ReviewState} */
 const defaultState = {
   notification: undefined,
   showReviewModal: false,
@@ -14,9 +16,11 @@ const defaultState = {
 }
 
 // selectors
+// @ts-ignore any
 export const getCriteria = state => state.review.criteria
 
 // utility function
+// @ts-ignore any
 const getErrorMessage = action => {
   if (action.error) {
     return action.payload && action.payload.message
@@ -27,6 +31,7 @@ const getErrorMessage = action => {
 const review = handleActions({
   [GET_ALL_CRITERIA_SUCCESS]: (state, action) => {
     // Add the unspecified option to the criteria list
+    // @ts-ignore
     action.payload.unshift(UNSPECIFIED)
     return update(state, {
       criteria: { $set: action.payload }
@@ -35,7 +40,12 @@ const review = handleActions({
   [GET_ALL_CRITERIA_FAILURE]: (state, action) => {
     return update(state, {
       notification: {
-        $set: `Failed to retrieve review criteria. ${getErrorMessage(action)}`
+        $set: {
+          severity: SEVERITY.ERROR,
+          message: `Failed to retrieve review criteria.`,
+          description: getErrorMessage(action),
+          duration: null
+        }
       }
     })
   },

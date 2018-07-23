@@ -12,15 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.fedorahosted.openprops.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
+import com.google.common.annotations.VisibleForTesting;
 
 public class PropWriter {
     private static final Logger log = LoggerFactory.getLogger(PropWriter.class);
@@ -77,24 +81,19 @@ public class PropWriter {
     /**
      * Writes to given properties file of the given TranslationsResource
      * in {@link CHARSET#UTF8} or {@link CHARSET#Latin1} encoding.
-     *
-     * @param doc
-     * @param propertiesFile
-     * @param charset
-     * @param createSkeletons
-     * @throws IOException
      */
-    public static void writeTranslationsFile(final Resource srcDoc,
-            final TranslationsResource doc,
+    public static void writeTranslationsFile(final TranslatedDoc translatedDoc,
             final File propertiesFile, final CHARSET charset,
-            boolean createSkeletons) throws IOException {
+            boolean createSkeletons, boolean approvedOnly) throws IOException {
 
         Properties targetProp = new Properties();
 
+        Resource srcDoc = translatedDoc.getSource();
+        TranslationsResource doc = translatedDoc.getTranslation();
         if (srcDoc == null) {
             for (TextFlowTarget target : doc.getTextFlowTargets()) {
                 textFlowTargetToProperty(target.getResId(), target, targetProp,
-                    createSkeletons);
+                    createSkeletons, approvedOnly);
             }
         } else {
             Map<String, TextFlowTarget> targets = new HashMap<>();
@@ -106,7 +105,7 @@ public class PropWriter {
             for (TextFlow textFlow : srcDoc.getTextFlows()) {
                 TextFlowTarget target = targets.get(textFlow.getId());
                 textFlowTargetToProperty(textFlow.getId(), target, targetProp,
-                    createSkeletons);
+                    createSkeletons, approvedOnly);
             }
         }
         storeProps(targetProp, propertiesFile, charset);
@@ -115,26 +114,18 @@ public class PropWriter {
     /**
      * Writes to given properties file of the given TranslationsResource
      * in {@link CHARSET#UTF8} or {@link CHARSET#Latin1} encoding.
-     *
-     * @param srcDoc
-     * @param doc
-     * @param baseDir
-     * @param bundleName
-     * @param locale
-     * @param createSkeletons
-     * @param charset
-     *
-     * @throws IOException
      */
-    public static void writeTranslations(Resource srcDoc, final TranslationsResource doc,
-        final File baseDir, String bundleName, String locale,
-        final CHARSET charset, boolean createSkeletons) throws IOException {
+    @VisibleForTesting
+    static void writeTranslations(final TranslatedDoc translatedDoc,
+            final File baseDir,
+            String bundleName, String locale, final CHARSET charset,
+            boolean createSkeletons, boolean approvedOnly) throws IOException {
         File langFile =
             new File(baseDir, bundleName + "_" + locale + ".properties");
         PathUtil.makeDirs(langFile.getParentFile());
         log.debug("Creating target file {}", langFile);
 
-        writeTranslationsFile(srcDoc, doc, langFile, charset, createSkeletons);
+        writeTranslationsFile(translatedDoc, langFile, charset, createSkeletons, approvedOnly);
     }
 
     private static void storeProps(Properties props, File file, CHARSET charset)
@@ -153,12 +144,20 @@ public class PropWriter {
         }
     }
 
+    private static boolean hasATranslation(@Nullable TextFlowTarget target) {
+        return target != null && !target.getContents().isEmpty();
+    }
+
+    private static boolean usable(@Nullable TextFlowTarget target, boolean approvedOnly) {
+        return hasATranslation(target)
+                && (target.getState().isApproved() ||
+                (!approvedOnly && target.getState().isTranslated()));
+    }
+
     private static void textFlowTargetToProperty(String resId,
             TextFlowTarget target, Properties targetProp,
-            boolean createSkeletons) {
-        if (target == null || !target.getState().isTranslated()
-                || target.getContents() == null
-                || target.getContents().size() == 0) {
+            boolean createSkeletons, boolean approvedOnly) {
+        if (!usable(target, approvedOnly)) {
             // don't save fuzzy or empty values
             if (createSkeletons) {
                 targetProp.setProperty(resId, "");

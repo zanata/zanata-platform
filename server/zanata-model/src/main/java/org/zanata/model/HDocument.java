@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -63,6 +64,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.collect.ImmutableList;
 import org.zanata.security.annotations.Authenticated;
+import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @see AbstractResourceMeta
@@ -74,6 +76,7 @@ import org.zanata.security.annotations.Authenticated;
 @EntityListeners({ HDocument.EntityListener.class })
 @Cacheable
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
+@GraphQLType(name = "Document")
 public class HDocument extends ModelEntityBase implements DocumentWithId,
         IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {
     private static final long serialVersionUID = 5129552589912687504L;
@@ -165,7 +168,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     @Override
     @Nonnull
     public HLocale getLocale() {
-        return this.locale;
+        return locale;
     }
 
     @Transient
@@ -268,7 +271,6 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
             setPoTargetHeaders(Map<HLocale, HPoTargetHeader> poTargetHeaders) {
         this.poTargetHeaders = poTargetHeaders;
     }
-    // TODO use orphanRemoval=true: requires JPA 2.0
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
             mappedBy = "document", orphanRemoval = true)
@@ -284,6 +286,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     @JoinTable(name = "HDocument_RawDocument",
             joinColumns = @JoinColumn(name = "documentId"),
             inverseJoinColumns = @JoinColumn(name = "rawDocumentId"))
+    @Nullable
     public HRawDocument getRawDocument() {
         return rawDocument;
     }

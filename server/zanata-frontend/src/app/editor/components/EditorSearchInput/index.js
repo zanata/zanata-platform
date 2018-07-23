@@ -25,12 +25,16 @@ import { connect } from 'react-redux'
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-import { Panel, Button } from 'react-bootstrap'
 import { map } from 'lodash'
 import {
   toggleAdvanced,
   updatePhraseFilter
 } from '../../actions/phrases-filter-actions'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+const Panel = Collapse.Panel
 
 const fields = {
   resId: {
@@ -53,10 +57,10 @@ const fields = {
     label: 'Source comment',
     description: 'source comment text'
   },
-  transComment: {
-    label: 'Translation comment',
-    description: 'translation comment text'
-  },
+  // transComment: {
+  //   label: 'Translation comment',
+  //   description: 'translation comment text'
+  // },
   msgContext: {
     label: 'msgctxt (gettext)',
     description: 'exact Message Context for a string'
@@ -90,8 +94,7 @@ export class EditorSearchInput extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      focused: false,
-      open: false
+      focused: false
     }
   }
 
@@ -190,19 +193,28 @@ export class EditorSearchInput extends Component {
             maxLength="1000"
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
-            onClick={this.state.open}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           <span className="EditorInputGroup-addon btn-xs btn-link n1"
             onClick={this.toggleAdvanced}>
             {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={showAdvanced}>
-          {advancedFields}
-          <Button bsStyle="link" bsSize="xsmall" className="AdvSearch-clear"
-            onClick={this.clearAllAdvancedFields}>
-            Clear all
-          </Button>
-        </Panel>
+        <Collapse activeKey={showAdvanced ? '1' : null} onChange={this.toggleAdvanced}
+          style={{
+            zIndex: '1000',
+            position: 'absolute',
+            marginBottom: '0.5rem',
+            width: '100%'
+          }}>
+          <Panel key='1' header={undefined} showArrow={false}>
+            <span>
+              {advancedFields}
+              <Button size={'small'} aria-label='button' className="AdvSearch-clear"
+                onClick={this.clearAllAdvancedFields}>
+                Clear all
+              </Button>
+            </span>
+          </Panel>
+        </Collapse>
       </div>
     )
   }

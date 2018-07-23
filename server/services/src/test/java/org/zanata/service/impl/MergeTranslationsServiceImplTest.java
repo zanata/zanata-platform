@@ -49,7 +49,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.seam.security.CurrentUserImpl;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
@@ -196,7 +196,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         // wait for the async process to finish...
         future.get();
         // No translations were performed
-        assertThat(handle.getTotalTranslations()).isEqualTo(0);
+        assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         // wait for the async process to finish...
         future.get();
         // No translations were performed
-        assertThat(handle.getTotalTranslations()).isEqualTo(0);
+        assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
 
     @Test

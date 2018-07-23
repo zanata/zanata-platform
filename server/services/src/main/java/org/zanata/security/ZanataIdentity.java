@@ -252,6 +252,9 @@ public class ZanataIdentity implements Identity, Serializable {
 
         for (Group sg : getSubject().getPrincipals(Group.class)) {
             if (ROLES_GROUP.equals(sg.getName())) {
+                // For now admin can only get other roles by explicitly
+                // assigning them (as before)
+//                 || sg.isMember(new Role("admin"));
                 return sg.isMember(new Role(role));
             }
         }
@@ -283,7 +286,6 @@ public class ZanataIdentity implements Identity, Serializable {
         credentials.clear();
     }
 
-    // TODO WHY do we have methods hasPermission(target, action) as well as hasPermission(action, target)??? Especially it's used in EL. So DARN confusing!
     public boolean hasPermission(Object target, String action) {
         log.trace("ENTER hasPermission({}, {})", target, action);
         boolean result = resolvePermission(target, action);

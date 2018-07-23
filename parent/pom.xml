@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>parent</artifactId>
-  <version>4.5.0-SNAPSHOT</version>
+  <version>4.6.0-rc-2-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -191,13 +191,14 @@
     <required.jvm>1.8</required.jvm>
     <maven.compiler.target>${required.jvm}</maven.compiler.target>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!--
       Version of Java used for API compatibility checking. Should
       correspond with required.jvm.
     -->
     <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
-    <required.maven>3.3.9</required.maven>
+    <required.maven>3.5.0</required.maven>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -218,11 +219,12 @@
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
     <jaxb.api.version>2.2.12</jaxb.api.version>
-    <maven.javadoc.version>2.9.1</maven.javadoc.version>
+    <!-- Fedora <= 27 still uses maven-javadoc-plugin version 2.9.1 -->
+    <maven.javadoc.version>3.0.0</maven.javadoc.version>
     <maven.jxr.version>2.5</maven.jxr.version>
-    <resteasy.version>3.0.13.Final</resteasy.version>
-    <surefire.version>2.18.1</surefire.version>
-    <maven.source.version>2.2.1</maven.source.version>
+    <resteasy.version>3.0.19.Final</resteasy.version>
+    <surefire.version>2.21.0</surefire.version>
+    <maven.source.version>3.0.1</maven.source.version>
     <site-maven-plugin.version>0.12</site-maven-plugin.version>
 
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
@@ -375,11 +377,12 @@
         <configuration>
           <failOnWarning>false</failOnWarning>
           <outputXML>true</outputXML>
-          <usedDependencies combine.children="append">
+          <ignoredDependencies combine.children="append">
             <!-- runtime-only dependencies which maven-dependency-analyzer misses  -->
-            <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
-            <usedDependency>org.slf4j:jcl-over-slf4j</usedDependency>
-          </usedDependencies>
+            <ignoredDependency>org.slf4j:slf4j-log4j12</ignoredDependency>
+            <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+            <ignoredDependency>org.slf4j:jcl-over-slf4j</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
 
@@ -387,7 +390,7 @@
       <plugin>
         <groupId>org.basepom.maven</groupId>
         <artifactId>duplicate-finder-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>1.3.0</version>
         <configuration>
           <failBuildInCaseOfDifferentContentConflict>true</failBuildInCaseOfDifferentContentConflict>
           <!--<printEqualFiles>true</printEqualFiles>-->
@@ -472,6 +475,10 @@
             -->
             <enforceBytecodeVersion>
               <maxJdkVersion>${required.jvm}</maxJdkVersion>
+              <ignoreClasses>
+                <!-- Workaround for https://github.com/mojohaus/extra-enforcer-rules/pull/36 -->
+                <ignoreClass>module-info</ignoreClass>
+              </ignoreClasses>
               <ignoredScopes>
                 <!-- Newer bytecode is allowed for system:jdk-tools and similar -->
                 <ignoredScope>system</ignoredScope>
@@ -540,7 +547,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.15</version>
+        <version>1.16</version>
         <executions>
           <execution>
             <id>animal-sniffer</id>
@@ -708,7 +715,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
+          <version>3.7.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -722,7 +729,10 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven.javadoc.version}</version>
           <configuration>
-            <additionalparam>${javadoc.opts}</additionalparam>
+            <!-- for maven-javadoc-plugin 2.x -->
+            <additionalparam>-Xdoclint:none</additionalparam>
+            <!-- for maven-javadoc-plugin 3.x -->
+            <doclint>none</doclint>
           </configuration>
         </plugin>
         <plugin>
@@ -735,7 +745,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.6</version>
+          <version>3.0.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
@@ -751,7 +761,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
@@ -825,16 +835,6 @@
 
   <profiles>
     <profile>
-      <id>doclint-java8-disable</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <properties>
-        <javadoc.opts>-Xdoclint:none</javadoc.opts>
-      </properties>
-    </profile>
-
-    <profile>
       <id>release</id>
       <build>
         <plugins>
@@ -856,7 +856,7 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.1</version>
+            <version>1.6.8</version>
             <extensions>true</extensions>
             <configuration>
               <!-- The Base URL of Nexus instance where we want to stage -->
@@ -870,10 +870,14 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <additionalparam>${javadoc.opts}</additionalparam>
-            </configuration>
             <executions>
+              <execution>
+                <id>aggregate</id>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+                <phase>site</phase>
+              </execution>
               <execution>
                 <id>attach-javadocs</id>
                 <goals>
@@ -903,6 +907,14 @@
           </plugin>
         </plugins>
       </build>
+      <dependencies>
+        <!-- nexus-staging-maven-plugin need this one -->
+        <dependency>
+          <groupId>org.sonatype.aether</groupId>
+          <artifactId>aether-api</artifactId>
+          <version>1.13.1</version>
+        </dependency>
+      </dependencies>
     </profile>
 
     <profile>
@@ -990,7 +1002,25 @@
       </activation>
       <properties>
         <!-- for ossindex: -->
-        <audit.failOnError>false</audit.failOnError>
+        <audit.failOnError>true</audit.failOnError>
+        <audit.quiet>true</audit.quiet>
+
+        <!-- TODO ignore by ID, not GAV (need https://github.com/OSSIndex/ossindex-maven-plugin/pull/20) -->
+        <!-- solr: ignore https://ossindex.net/resource/cve/8404719967 since we don't cluster solr -->
+        <!-- wildfly: due to https://github.com/OSSIndex/ossindex-maven-plugin/issues/19 -->
+        <!-- picketlink*, jgroups: because we use the app server's version (scope=provided)-->
+        <!-- ognl is test only (via concordion) -->
+        <audit.ignore>
+          org.apache.solr:solr-core:5.3.1,
+          org.apache.solr:solr-solrj:5.3.1,
+          org.wildfly.core:wildfly-server:2.0.10.Final,
+          org.jgroups:jgroups,
+          org.picketlink:picketlink-common,
+          org.picketlink:picketlink-federation,
+          ognl:ognl:2.6.9,
+        </audit.ignore>
+
+        <!--<audit.warnOnIgnore>true</audit.warnOnIgnore>-->
       </properties>
       <build>
         <plugins>
@@ -1002,7 +1032,8 @@
               <execution>
                 <phase>verify</phase>
                 <goals>
-                  <goal>check</goal>
+                  <!-- Disabled due to https://github.com/victims/maven-security-versions/issues/4 -->
+                  <!-- <goal>check</goal> -->
                 </goals>
               </execution>
             </executions>
@@ -1437,7 +1468,7 @@
       </dependency>
 
       <!-- RestEasy dependencies -->
-      <!-- We still need RestEasy, as zanata-common-api need it -->
+      <!-- zanata-common-api, client and server/services need them -->
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-bom</artifactId>
@@ -1445,7 +1476,16 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxb-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
@@ -1461,7 +1501,11 @@
           </exclusion>
         </exclusions>
       </dependency>
-
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-multipart-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
@@ -1470,7 +1514,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>3.0.4</version>
+        <version>${required.maven}</version>
       </dependency>
       <dependency>
         <groupId>com.pyx4j</groupId>
@@ -1492,7 +1536,7 @@
       <dependency>
         <groupId>org.fedorahosted.openprops</groupId>
         <artifactId>openprops</artifactId>
-        <version>0.7.1</version>
+        <version>0.8.5</version>
       </dependency>
       <dependency>
         <groupId>org.infinitest</groupId>
@@ -1526,7 +1570,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.4</version>
+        <version>2.5</version>
       </dependency>
 
       <dependency>
@@ -1550,6 +1594,38 @@
           </exclusion>
         </exclusions>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>4.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.santuario</groupId>
+        <artifactId>xmlsec</artifactId>
+        <version>2.0.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.7.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <!-- This comes from jboss - the standard 2.11.0 requires xml-apis (which we exclude) -->
+        <version>2.11.0.SP5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.24</version>
+      </dependency>
+
       <!-- Optional dependencies for using Spock -->
       <dependency> <!-- enables mocking of classes (in addition to interfaces) -->
         <groupId>cglib</groupId>
@@ -1569,11 +1645,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <reporting>

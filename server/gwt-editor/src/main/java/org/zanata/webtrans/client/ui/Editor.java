@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -36,6 +37,8 @@ public class Editor extends Composite implements ToggleEditor {
 
     private final TransUnitId id;
 
+    private final Map<String, String> attributes;
+
     private TargetContentsDisplay.Listener listener;
 
     @UiField
@@ -52,6 +55,9 @@ public class Editor extends Composite implements ToggleEditor {
 
     @UiField(provided = true)
     TextAreaWrapper textArea;
+
+    @UiField(provided = true)
+    TransSourceIndicator transSourceIndicator;
 
     // Timer period, in ms
     private static final int TYPING_TIMER_INTERVAL = 200;
@@ -84,9 +90,11 @@ public class Editor extends Composite implements ToggleEditor {
     private final Command onCodeMirrorFocusCallback;
 
     public Editor(String displayString, final int index,
-            final TargetContentsDisplay.Listener listener, final TransUnitId id) {
+        final TargetContentsDisplay.Listener listener, final TransUnitId id,
+        final TranslationSourceType translationSourceType, final Map<String, String> attributes) {
         this.listener = listener;
         this.index = index;
+        this.attributes = attributes;
         this.id = id;
         onCodeMirrorFocusCallback = new Command() {
             @Override
@@ -99,6 +107,9 @@ public class Editor extends Composite implements ToggleEditor {
         } else {
             textArea = new EditorTextArea(displayString);
         }
+        setTextAreaAttributes();
+
+        transSourceIndicator = new TransSourceIndicator(translationSourceType);
 
         initWidget(uiBinder.createAndBindUi(this));
         // determine whether to show or hide buttons
@@ -109,8 +120,16 @@ public class Editor extends Composite implements ToggleEditor {
         } else {
             setViewMode(ViewMode.EDIT);
         }
-
         setText(displayString);
+    }
+
+    private void setTextAreaAttributes() {
+        if (attributes != null) {
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
+                textArea.asWidget().getElement()
+                    .setAttribute(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     @Override
@@ -245,6 +264,7 @@ public class Editor extends Composite implements ToggleEditor {
             textArea.setCursorPos(cursorPos);
             textArea.setEditing(true);
         }
+        setTextAreaAttributes();
         textAreaWrapper.add(textArea);
         textArea.refresh();
     }

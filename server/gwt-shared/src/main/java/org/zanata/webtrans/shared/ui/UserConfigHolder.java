@@ -76,6 +76,7 @@ public class UserConfigHolder implements IsSerializable {
         state.filterByApproved = DEFAULT_FILTER;
         state.filterByRejected = DEFAULT_FILTER;
         state.filterByHasError = DEFAULT_FILTER;
+        state.filterByMT = DEFAULT_FILTER;
 
         state.showTMPanel = DEFAULT_SHOW_PANEL;
         state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
@@ -174,6 +175,11 @@ public class UserConfigHolder implements IsSerializable {
         state.filterByHasError = filterByHasError;
     }
 
+    public void setFilterByMT(boolean filterByMT) {
+        state = new ConfigurationState(state);
+        state.filterByMT = filterByMT;
+    }
+
     public void setShowSaveApprovedWarning(boolean showSaveApprovedWarning) {
         state = new ConfigurationState(state);
         state.showSaveApprovedWarning = showSaveApprovedWarning;
@@ -217,10 +223,11 @@ public class UserConfigHolder implements IsSerializable {
 
     public boolean isAcceptAllStatus() {
         return state.isFilterByTranslated() == state.isFilterByFuzzy()
-                && state.isFilterByUntranslated() == state.isFilterByFuzzy()
-                && state.isFilterByHasError() == state.isFilterByFuzzy()
-                && state.isFilterByApproved() == state.isFilterByFuzzy()
-                && state.isFilterByRejected() == state.isFilterByFuzzy();
+            && state.isFilterByUntranslated() == state.isFilterByFuzzy()
+            && state.isFilterByHasError() == state.isFilterByFuzzy()
+            && state.isFilterByApproved() == state.isFilterByFuzzy()
+            && state.isFilterByRejected() == state.isFilterByFuzzy()
+            && state.isFilterByMT() == state.isFilterByFuzzy();
     }
 
     /**
@@ -241,6 +248,7 @@ public class UserConfigHolder implements IsSerializable {
         private boolean filterByApproved;
         private boolean filterByRejected;
         private boolean filterByHasError;
+        private boolean filterByMT;
         private String selectedReferenceForSourceLang;
 
         private boolean showSaveApprovedWarning;
@@ -271,6 +279,7 @@ public class UserConfigHolder implements IsSerializable {
             this.filterByApproved = old.isFilterByApproved();
             this.filterByRejected = old.isFilterByRejected();
             this.filterByHasError = old.isFilterByHasError();
+            this.filterByMT = old.isFilterByMT();
             this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
             this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
             this.displayTheme = old.getDisplayTheme();
@@ -333,6 +342,10 @@ public class UserConfigHolder implements IsSerializable {
 
         public boolean isFilterByHasError() {
             return filterByHasError;
+        }
+
+        public boolean isFilterByMT() {
+            return filterByMT;
         }
 
         public boolean isShowSaveApprovedWarning() {

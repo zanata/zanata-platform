@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { savePhrase, fetchTransUnitHistory } from '../api'
+import {savePhrase, fetchTransUnitHistory} from '../api'
 import { toggleDropdown } from '.'
 import { createAction } from 'redux-actions'
 import {
@@ -11,10 +11,17 @@ import {
   SELECT_PHRASE_SPECIFIC_PLURAL,
   PHRASE_TEXT_SELECTION_RANGE,
   TRANSLATION_TEXT_INPUT_CHANGED,
+  TOGGLE_SAVE_WITH_ERROR_MODAL,
   QUEUE_SAVE,
   SAVE_INITIATED,
   PENDING_SAVE_INITIATED,
-  SAVE_FINISHED
+  SAVE_FINISHED,
+  SAVE_FAILED,
+  SAVE_CONFLICT,
+  SAVE_CONFLICT_RESOLVED_LATEST,
+  SAVE_CONFLICT_RESOLVED_ORIGINAL,
+  TOGGLE_CONCURRENT_MODAL,
+  VALIDATION_ERRORS
 } from './phrases-action-types'
 import {
   defaultSaveStatus,
@@ -25,6 +32,7 @@ import {
   STATUS_NEEDS_WORK
 } from '../utils/status-util'
 import { hasTranslationChanged } from '../utils/phrase-util'
+import { fetchStatisticsInfo } from './header-actions'
 
 /**
  * Copy from source text to the focused translation input.
@@ -53,15 +61,27 @@ export const cancelEdit = createAction(CANCEL_EDIT)
 export const undoEdit = createAction(UNDO_EDIT)
 
 /**
+ * Open a modal to confirm saving a translation with validation errors.
+ */
+export const toggleSaveErrorModal = createAction(TOGGLE_SAVE_WITH_ERROR_MODAL,
+  (phraseId, showValidationErrorModal) => ({
+    phraseId,
+    showValidationErrorModal
+  }))
+
+/**
  * Set the selected phrase to the given ID.
  * Only one phrase is selected at a time.
  */
-export function selectPhrase (phraseId, localeId, projectSlug, versionSlug) {
-  return (dispatch) => {
+export function selectPhrase (phraseId, localeId, projectSlug, versionSlug,
+  activityVisible) {
+  return (dispatch, getState) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(createAction(SELECT_PHRASE)(phraseId))
-    dispatch(fetchTransUnitHistory(
-      localeId, phraseId, projectSlug, versionSlug))
+    if (activityVisible) {
+      dispatch(fetchTransUnitHistory(
+        localeId, phraseId, projectSlug, versionSlug))
+    }
   }
 }
 
@@ -74,13 +94,15 @@ const selectPhraseSpecificPlural = createAction(SELECT_PHRASE_SPECIFIC_PLURAL,
  * and gains it back again (unless it gains focus from a different plural form
  * being specifically targeted).
  */
-export function selectPhrasePluralIndex (
-  phraseId, index, localeId, projectSlug, versionSlug) {
+export function selectPhrasePluralIndex (phraseId, index, localeId, projectSlug,
+  versionSlug, activityVisible) {
   return (dispatch) => {
     dispatch(savePreviousPhraseIfChanged(phraseId))
     dispatch(selectPhraseSpecificPlural(phraseId, index))
-    dispatch(fetchTransUnitHistory(
-      localeId, phraseId, projectSlug, versionSlug))
+    if (activityVisible) {
+      dispatch(fetchTransUnitHistory(
+        localeId, phraseId, projectSlug, versionSlug))
+    }
   }
 }
 
@@ -127,6 +149,91 @@ const saveFinished = createAction(SAVE_FINISHED,
     status: transUnitStatusToPhraseStatus(transUnitStatus),
     revision
   }))
+
+const saveFailed = createAction(SAVE_FAILED,
+  (phraseId, saveInfo, response) => ({
+    phraseId,
+    saveInfo,
+    response
+  }))
+
+const saveConflict = createAction(SAVE_CONFLICT,
+  (phraseId, saveInfo, response) => ({
+    phraseId,
+    saveInfo,
+    response
+  }))
+
+const saveConflictResolvedLatest = createAction(SAVE_CONFLICT_RESOLVED_LATEST,
+  (phraseId, saveInfo, revision) => ({
+    phraseId,
+    saveInfo,
+    revision
+  }))
+
+const saveConflictResolvedOriginal =
+  createAction(SAVE_CONFLICT_RESOLVED_ORIGINAL,
+  (phraseId, saveInfo, revision) => ({
+    phraseId,
+    saveInfo,
+    revision
+  }))
+
+export const validationError = createAction(VALIDATION_ERRORS,
+  (phraseId, hasValidationError) => ({
+    phraseId,
+    hasValidationError
+  }))
+
+export const toggleConcurrentModal = createAction(TOGGLE_CONCURRENT_MODAL)
+
+export function saveResolveConflictLatest (latest, original) {
+  return (dispatch, getState) => {
+    const stateBefore = getState()
+    dispatch(saveConflictResolvedLatest(
+        latest.id, latest, latest.revision)).then(
+        dispatch(fetchTransUnitHistory(
+          original.localeId,
+          latest.id,
+          stateBefore.context.projectSlug,
+          stateBefore.context.versionSlug
+        )).then(
+          fetchStatisticsInfo(dispatch, getState().context.projectSlug,
+            getState().context.versionSlug, getState().context.docId,
+            getState().context.lang)
+        )
+      )
+  }
+}
+
+export function saveResolveConflictOriginal (latest, original) {
+  return (dispatch, getState) => {
+    const stateBefore = getState()
+    savePhrase(latest, original)
+      .then(response => {
+        if (isErrorResponse(response)) {
+          console.error('Failed to save phrase')
+          dispatch(saveFailed(latest.id, original, response))
+        } else {
+          response.json().then(({ revision, status }) => {
+            dispatch(saveConflictResolvedOriginal(
+              latest.id, original, revision)).then(
+                dispatch(fetchTransUnitHistory(
+                  original.localeId,
+                  latest.id,
+                  stateBefore.context.projectSlug,
+                  stateBefore.context.versionSlug
+                )).then(
+                  fetchStatisticsInfo(dispatch, getState().context.projectSlug,
+                    getState().context.versionSlug, getState().context.docId,
+                    getState().context.lang)
+                )
+              )
+          })
+        }
+      })
+  }
+}
 
 export function savePhraseWithStatus (phrase, status, reviewComment) {
   return (dispatch, getState) => {
@@ -179,10 +286,12 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
         .then(response => {
           if (isErrorResponse(response)) {
             console.error('Failed to save phrase')
-            // TODO dispatch an error about save failure
-            //      this should remove the inProgressSave data
-            // FIXME make phraseSaveFailed exist
-            // dispatch(phraseSaveFailed(currentPhrase, saveInfo))
+            response.status === 409
+              ? response.json().then((json) => {
+                const withTime = {...saveInfo, modifiedTime: new Date()}
+                dispatch(saveConflict(phrase.id, withTime, json))
+              })
+              : dispatch(saveFailed(phrase.id, saveInfo, response))
           } else {
             response.json().then(({ revision, status }) => {
               dispatch(saveFinished(phrase.id, status, revision)).then(
@@ -191,7 +300,11 @@ export function savePhraseWithStatus (phrase, status, reviewComment) {
                   phrase.id,
                   stateBefore.context.projectSlug,
                   stateBefore.context.versionSlug
-                ))
+                )).then(
+                  fetchStatisticsInfo(dispatch, getState().context.projectSlug,
+                    getState().context.versionSlug, getState().context.docId,
+                    getState().context.lang)
+                )
               )
             })
           }

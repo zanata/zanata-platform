@@ -6,5 +6,6 @@
   <source path="rest/dto">
     <include name="stats/*" />
     <include name="Link*" />
+    <include name="TranslationSourceType*" />
   </source>
 </module>

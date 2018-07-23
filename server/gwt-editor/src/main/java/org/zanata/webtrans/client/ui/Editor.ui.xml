@@ -25,15 +25,21 @@
       width: 100%;
       min-height: 3em;
     }
-
   </ui:style>
 
   <g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
     <g:HTMLPanel tag="div" ui:field="textAreaTable" styleName="g--tight g--fit">
       <div class="w--1-12 g__item txt--align-center l--push-top-half">
-        <g:InlineLabel ui:field="copyIcon"
-          title="{tableMessages.copyFromSource}"
-          styleName="icon-right-1 {style.copyButton} fadeElement" />
+        <ul class="list--no-bullets">
+          <li>
+            <g:InlineLabel ui:field="copyIcon"
+              title="{tableMessages.copyFromSource}"
+              styleName="icon-right-1 {style.copyButton} fadeElement" />
+          </li>
+          <li>
+            <fui:TransSourceIndicator ui:field="transSourceIndicator" />
+          </li>
+        </ul>
       </div>
       <g:HTMLPanel styleName="w--11-12 g__item {style.textAreaWrapper}" ui:field="textAreaWrapper">
         <fui:TextAreaWrapper ui:field="textArea"/>

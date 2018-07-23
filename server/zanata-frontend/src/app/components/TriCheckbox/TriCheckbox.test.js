@@ -8,6 +8,7 @@ import TriCheckbox from '.'
 
 const callback = function () {}
 
+// @ts-ignore any
 const utilRender = function (checked, indeterminate, onChange) {
   const rendered = TestUtils.renderIntoDocument(<TriCheckbox
     checked={checked}
@@ -23,7 +24,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked={false} indeterminate={false} onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="triCheckbox bstrapReact"
+      <input type="checkbox" className="triCheckbox"
         checked={false} onChange={callback} />
     )
     const utilRendered = utilRender(false, false, callback)
@@ -34,7 +35,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked={false} indeterminate onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="triCheckbox bstrapReact"
+      <input type="checkbox" className="triCheckbox"
         checked={false} onChange={callback} />
     )
     const utilRendered = utilRender(false, true, callback)
@@ -45,7 +46,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked indeterminate={false} onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="triCheckbox bstrapReact"
+      <input type="checkbox" className="triCheckbox"
         checked onChange={callback} />
     )
     const utilRendered = utilRender(true, false, callback)
@@ -56,7 +57,7 @@ describe('TriCheckbox', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <TriCheckbox checked indeterminate onChange={callback} />)
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <input type="checkbox" className="triCheckbox bstrapReact"
+      <input type="checkbox" className="triCheckbox"
         checked onChange={callback} />
     )
     const utilRendered = utilRender(true, true, callback)
@@ -65,6 +66,7 @@ describe('TriCheckbox', () => {
   })
   it('can handle click from checked && !indeterminate state', () => {
     let changeEvent = 'do nothing'
+    // @ts-ignore any
     const livingItUp = function (e) {
       changeEvent = e.value
     }

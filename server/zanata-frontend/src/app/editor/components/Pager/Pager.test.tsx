@@ -2,27 +2,39 @@
 
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
-import { mount } from 'enzyme'
-import { Pager } from '.'
+import Adapter from 'enzyme-adapter-react-16'
+import Enzyme, { mount } from 'enzyme'
+import Pager from '.'
 import { Icon } from '../../../components'
-import mockGettextCatalog from '../../../../__mocks__/mockAngularGettext'
+import { IntlProvider } from 'react-intl'
+
+Enzyme.configure({ adapter: new Adapter() });
 
 // tslint:disable-next-line:no-empty
 const callback = () => {}
 
 describe('PagerTest', () => {
   it('Pager markup', () => {
-    const actual = ReactDOMServer.renderToStaticMarkup(<Pager
-      firstPage={callback}
-      previousPage={callback}
-      nextPage={callback}
-      lastPage={callback}
-      pageNumber={7}
-      pageCount={11}
-      gettextCatalog={mockGettextCatalog} />)
+    // Construct a new `IntlProvider` instance by passing `props` and
+    // `context` as React would, then call `getChildContext()` to get the
+    // React Intl API, complete with the `format*()` functions.
+    // see: https://github.com/yahoo/react-intl/wiki/Testing-with-React-Intl#relativedate-advanced-uses-injectintl
+
+    const actual = ReactDOMServer.renderToStaticMarkup(
+        <IntlProvider locale={'en'}>
+          <Pager
+            intl={undefined}
+            firstPage={callback}
+            previousPage={callback}
+            nextPage={callback}
+            lastPage={callback}
+            pageNumber={7}
+            pageCount={11}
+            />
+        </IntlProvider>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <ul className='u-listHorizontal u-textCenter'>
+      <ul className='u-listHorizontal tc'>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
             title='First page'>
@@ -37,7 +49,7 @@ describe('PagerTest', () => {
         </li>
         <li className='u-sizeHeight-1 u-sPH-1-4'>
           <span className='u-textNeutral'>
-            7 of 11
+            <option>7 of 11</option>
           </span>
         </li>
         <li>
@@ -64,14 +76,16 @@ describe('PagerTest', () => {
     const goLast = jest.fn()
 
     const d20 = mount(
-      <Pager
-        firstPage={goFirst}
-        previousPage={goPrev}
-        nextPage={goNext}
-        lastPage={goLast}
-        pageNumber={2}
-        pageCount={20}
-        gettextCatalog={mockGettextCatalog} />
+      <IntlProvider locale={'en'}>
+        <Pager
+          intl={undefined}
+          firstPage={goFirst}
+          previousPage={goPrev}
+          nextPage={goNext}
+          lastPage={goLast}
+          pageNumber={2}
+          pageCount={20}/>
+      </IntlProvider>
     )
 
     // click events are expected on the <a> tags

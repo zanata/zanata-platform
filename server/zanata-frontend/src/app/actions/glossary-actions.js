@@ -15,8 +15,9 @@ import {
   APITypes
 } from './common-actions'
 import { apiUrl } from '../config'
+import { GlossaryFileTypes } from '../reducers/state'
 
-export const FILE_TYPES = ['csv', 'po']
+export const FILE_TYPES = GlossaryFileTypes
 export const PAGE_SIZE_SELECTION = [20, 50, 100, 300, 500]
 // 500 by default
 export const PAGE_SIZE_DEFAULT = last(PAGE_SIZE_SELECTION)
@@ -99,6 +100,7 @@ export const glossaryToggleNewEntryModal =
 export const glossaryToggleDeleteAllEntriesModal =
   createAction(GLOSSARY_TOGGLE_DELETE_ALL_ENTRIES_DISPLAY)
 
+// @ts-ignore any
 const getGlossaryTerms = (state) => {
   const {
     src = DEFAULT_LOCALE.localeId,
@@ -131,9 +133,11 @@ const getGlossaryTerms = (state) => {
     GLOSSARY_TERMS_REQUEST,
     {
       type: GLOSSARY_TERMS_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
+          // @ts-ignore any
           return res.json().then((json) => {
             return normalize(json, { results: GLOSSARY_TERM_ARRAY })
           })
@@ -151,6 +155,7 @@ const getGlossaryTerms = (state) => {
   }
 }
 
+// @ts-ignore any
 const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
   const endpoint = apiUrl + '/glossary/info?qualifiedName=' + qualifiedName
   /** @type {APITypes} */
@@ -158,7 +163,9 @@ const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
     GLOSSARY_STATS_REQUEST,
     {
       type: GLOSSARY_STATS_SUCCESS,
+      // @ts-ignore any
       payload: (_action, state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           resetTerms && dispatch(getGlossaryTerms(state))
           return json
@@ -172,6 +179,7 @@ const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
   }
 }
 
+// @ts-ignore any
 const getPermission = (dispatch, qualifiedName) => {
   const endpoint =
     apiUrl + '/user/permission/glossary?qualifiedName=' + qualifiedName
@@ -180,7 +188,9 @@ const getPermission = (dispatch, qualifiedName) => {
     GLOSSARY_PERMISSION_REQUEST,
     {
       type: GLOSSARY_PERMISSION_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
@@ -194,6 +204,7 @@ const getPermission = (dispatch, qualifiedName) => {
   }
 }
 
+// @ts-ignore any
 const getQualifiedName = (dispatch, projectSlug) => {
   const endpoint = apiUrl +
     (projectSlug ? '/projects/p/' + projectSlug + '/glossary/qualifiedName'
@@ -204,7 +215,9 @@ const getQualifiedName = (dispatch, projectSlug) => {
     GLOSSARY_GET_QUALIFIED_NAME_REQUEST,
     {
       type: GLOSSARY_GET_QUALIFIED_NAME_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           const qualifiedName = json.name
           dispatch(getPermission(dispatch, qualifiedName))
@@ -219,6 +232,7 @@ const getQualifiedName = (dispatch, projectSlug) => {
   }
 }
 
+// @ts-ignore any
 const getProjectDetails = (projectSlug) => {
   const endpoint = apiUrl + '/projects/p/' + projectSlug
 
@@ -227,7 +241,9 @@ const getProjectDetails = (projectSlug) => {
     PROJECT_GET_DETAILS_REQUEST,
     {
       type: PROJECT_GET_DETAILS_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           return json
         })
@@ -240,6 +256,7 @@ const getProjectDetails = (projectSlug) => {
   }
 }
 
+// @ts-ignore any
 const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
   const headers = getHeaders()
   const endpoint = apiUrl + '/glossary'
@@ -257,7 +274,9 @@ const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
     GLOSSARY_UPLOAD_REQUEST,
     {
       type: GLOSSARY_UPLOAD_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
@@ -271,6 +290,7 @@ const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
   }
 }
 
+// @ts-ignore any
 const createGlossaryTerm = (dispatch, qualifiedName, term) => {
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'
@@ -281,13 +301,16 @@ const createGlossaryTerm = (dispatch, qualifiedName, term) => {
   const apiTypes = [
     {
       type: GLOSSARY_CREATE_REQUEST,
+      // @ts-ignore any
       payload: (_action, _state) => {
         return term
       }
     },
     {
       type: GLOSSARY_CREATE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
@@ -302,7 +325,9 @@ const createGlossaryTerm = (dispatch, qualifiedName, term) => {
   }
 }
 
+// @ts-ignore any
 const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
+    // @ts-ignore any
     needRefresh) => {
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'
@@ -315,13 +340,16 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
   const apiTypes = [
     {
       type: GLOSSARY_UPDATE_REQUEST,
+      // @ts-ignore any
       payload: (_action, _state) => {
         return term
       }
     },
     {
       type: GLOSSARY_UPDATE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           needRefresh &&
             dispatch(getGlossaryStats(dispatch, qualifiedName, false))
@@ -337,6 +365,7 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
   }
 }
 
+// @ts-ignore any
 const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
   const endpoint =
     apiUrl + '/glossary/entries/' + id + '?qualifiedName=' + qualifiedName
@@ -344,13 +373,16 @@ const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_REQUEST,
+      // @ts-ignore any
       payload: (_action, _state) => {
         return id
       }
     },
     {
       type: GLOSSARY_DELETE_SUCCESS,
+      // @ts-ignore any
       payload: (_action, state, res) => {
+        // @ts-ignore any
         return res.json().then((json) => {
           dispatch(getGlossaryStats(dispatch, state.glossary.qualifiedName,
             true))
@@ -365,18 +397,21 @@ const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
   }
 }
 
+// @ts-ignore any
 const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
   const endpoint = apiUrl + '/glossary?qualifiedName=' + qualifiedName
   /** @type {APITypes} */
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_ALL_REQUEST,
+      // @ts-ignore any
       payload: (_action, _state) => {
         return ''
       }
     },
     {
       type: GLOSSARY_DELETE_ALL_SUCCESS,
+      // @ts-ignore any
       payload: (_action, _state, _res) => {
         return dispatch(getGlossaryStats(dispatch, qualifiedName, true))
       }
@@ -388,6 +423,7 @@ const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
   }
 }
 
+// @ts-ignore any
 const glossaryExport = (type, qualifiedName) => {
   const endpoint = apiUrl + '/glossary/file?fileType=' + type +
     '&qualifiedName=' + qualifiedName
@@ -397,13 +433,16 @@ const glossaryExport = (type, qualifiedName) => {
   const apiTypes = [
     {
       type: GLOSSARY_EXPORT_REQUEST,
+      // @ts-ignore any
       payload: (_action, _state) => {
         return ''
       }
     },
     {
       type: GLOSSARY_EXPORT_SUCCESS,
+      // @ts-ignore any
       payload: (_action, state, res) => {
+        // @ts-ignore any
         return res.blob().then((blob) => {
           const selectedType = state.glossary.exportFile.type.value
           const fileName = 'glossary.' +
@@ -420,6 +459,7 @@ const glossaryExport = (type, qualifiedName) => {
 }
 
 export const glossaryDownload = () => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     dispatch(glossaryExport(getState().glossary.exportFile.type.value,
       getState().glossary.qualifiedName))
@@ -429,7 +469,9 @@ export const glossaryDownload = () => {
 export const glossaryInitStateFromUrl =
   createAction(GLOSSARY_INIT_STATE_FROM_URL)
 
+  // @ts-ignore any
 export const glossaryInitialLoad = (projectSlug) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     const query = getState().routing.locationBeforeTransitions.query
     // @ts-ignore
@@ -441,7 +483,9 @@ export const glossaryInitialLoad = (projectSlug) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryChangeLocale = (locale) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       locale: locale
@@ -452,7 +496,9 @@ export const glossaryChangeLocale = (locale) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryFilterTextChanged = (newFilter) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     if (!getState().glossary.termsLoading) {
       replaceRouteQuery(getState().routing.locationBeforeTransitions, {
@@ -466,7 +512,9 @@ export const glossaryFilterTextChanged = (newFilter) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryDeleteTerm = (id) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     dispatch(deleteGlossaryTerm(dispatch, id,
       getState().glossary.qualifiedName))
@@ -474,13 +522,16 @@ export const glossaryDeleteTerm = (id) => {
 }
 
 export const glossaryDeleteAll = () => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     dispatch(deleteAllGlossaryEntry(dispatch,
       getState().glossary.qualifiedName))
   }
 }
 
+// @ts-ignore any
 export const glossaryUpdateTerm = (term, needRefresh) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     const targetLocale = getState().glossary.locale || DEFAULT_LOCALE.localeId
     // do cloning to prevent changes in selectedTerm
@@ -489,7 +540,9 @@ export const glossaryUpdateTerm = (term, needRefresh) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryCreateNewEntry = (entry) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     dispatch(createGlossaryTerm(dispatch, getState().glossary.qualifiedName,
       entry))
@@ -497,6 +550,7 @@ export const glossaryCreateNewEntry = (entry) => {
 }
 
 export const glossaryImportFile = () => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     dispatch(importGlossaryFile(dispatch,
       getState().glossary.importFile,
@@ -505,7 +559,9 @@ export const glossaryImportFile = () => {
   }
 }
 
+// @ts-ignore any
 export const glossarySelectTerm = (termId) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     const selectedTerm = getState().glossary.selectedTerm
     if (selectedTerm && selectedTerm.id !== termId) {
@@ -519,7 +575,9 @@ export const glossarySelectTerm = (termId) => {
   }
 }
 
+// @ts-ignore any
 export const glossarySortColumn = (col) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     let sort = {}
     sort[col] = getState().glossary.sort[col]
@@ -538,7 +596,9 @@ export const glossarySortColumn = (col) => {
 const delayGetGlossaryTerm = debounce((dispatch, state) =>
   dispatch(getGlossaryTerms(state)), 160)
 
+  // @ts-ignore any
 export const glossaryGoFirstPage = (currentPage, _totalPage) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     if (currentPage !== 1) {
       replaceRouteQuery(getState().routing.locationBeforeTransitions, {page: 1})
@@ -547,7 +607,9 @@ export const glossaryGoFirstPage = (currentPage, _totalPage) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryGoPreviousPage = (currentPage, _totalPage) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     const newPage = currentPage - 1
     if (newPage >= 1) {
@@ -558,7 +620,9 @@ export const glossaryGoPreviousPage = (currentPage, _totalPage) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryGoNextPage = (currentPage, totalPage) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     const newPage = currentPage + 1
     if (newPage <= totalPage) {
@@ -569,7 +633,9 @@ export const glossaryGoNextPage = (currentPage, totalPage) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryGoLastPage = (currentPage, totalPage) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     if (currentPage !== totalPage) {
       replaceRouteQuery(getState().routing.locationBeforeTransitions,
@@ -579,7 +645,9 @@ export const glossaryGoLastPage = (currentPage, totalPage) => {
   }
 }
 
+// @ts-ignore any
 export const glossaryUpdatePageSize = (size) => {
+  // @ts-ignore any
   return (dispatch, getState) => {
     replaceRouteQuery(getState().routing.locationBeforeTransitions,
       {page: 1, size: size})

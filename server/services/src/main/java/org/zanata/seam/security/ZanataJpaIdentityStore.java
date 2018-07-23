@@ -399,7 +399,7 @@ public class ZanataJpaIdentityStore implements Serializable {
     public List<String> getRoleGroups(String name) {
         HAccountRole role = lookupRole(name);
         if (role == null) {
-            throw new NoSuchUserException("No such role \'" + name + "\'");
+            throw new NoSuchRoleException("No such role \'" + name + "\'");
         }
         List<String> groups = new ArrayList<String>();
         Collection<HAccountRole> roleGroups = role.getGroups();
@@ -470,7 +470,11 @@ public class ZanataJpaIdentityStore implements Serializable {
         for (String r : roles) {
             removeRoleFromGroup(r, role);
         }
+        for (String user : listUserMembers(role)) {
+            revokeRole(user, role);
+        }
         entityManager.remove(roleToDelete);
+
         return true;
     }
 

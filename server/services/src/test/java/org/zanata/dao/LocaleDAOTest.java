@@ -57,8 +57,12 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
         dao.clear();
         HLocale loadedLocale = dao.findById(id);
         assertThat(loadedLocale.getLocaleId().getId()).isEqualTo("en-ENABLED");
-        assertThat(loadedLocale.isActive()).isTrue().as("still active");
-        assertThat(loadedLocale.isEnabledByDefault()).isTrue().as("still enabled by default");
+        assertThat(loadedLocale.isActive())
+                .as("still active")
+                .isTrue();
+        assertThat(loadedLocale.isEnabledByDefault())
+                .as("still enabled by default")
+                .isTrue();
     }
 
     @Test

@@ -97,7 +97,8 @@
       </a>
       </p>
 
-      <a4j:commandButton styleClass="button--small l--push-bottom-half"
+      <a4j:commandButton
+          styleClass="copy-proj-type button--small l--push-bottom-half"
         id="copy-project-type" rendered="#{!versionHome.isNewInstance()}"
         action="#{versionHome.copyProjectTypeFromProject()}"
         value="#{msgs['jsf.iteration.CopyProjectType.label']}"

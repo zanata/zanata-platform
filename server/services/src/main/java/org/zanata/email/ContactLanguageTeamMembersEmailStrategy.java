@@ -23,17 +23,21 @@ package org.zanata.email;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
+
 import javax.mail.internet.InternetAddress;
+
+import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-public class ContactLanguageTeamMembersEmailStrategy extends EmailStrategy {
+public class ContactLanguageTeamMembersEmailStrategy extends
+        VelocityEmailStrategy {
     private final String fromLoginName;
     private final String userSubject;
     private final String localeId;
     private final String localeNativeName;
-    private final String htmlMessage;
+    private final String userMessage;
     private final String contactCoordinatorLink;
 
     @Override
@@ -52,24 +56,23 @@ public class ContactLanguageTeamMembersEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context.put("contactCoordinatorLink", contactCoordinatorLink)
                 .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", safeHTML);
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "userSubject",
-            "localeId", "localeNativeName", "htmlMessage",
+            "localeId", "localeNativeName", "userMessage",
             "contactCoordinatorLink" })
     public ContactLanguageTeamMembersEmailStrategy(final String fromLoginName,
             final String userSubject, final String localeId,
-            final String localeNativeName, final String htmlMessage,
+            final String localeNativeName, final String userMessage,
             final String contactCoordinatorLink) {
         this.fromLoginName = fromLoginName;
         this.userSubject = userSubject;
         this.localeId = localeId;
         this.localeNativeName = localeNativeName;
-        this.htmlMessage = htmlMessage;
+        this.userMessage = userMessage;
         this.contactCoordinatorLink = contactCoordinatorLink;
     }
 }

@@ -1,6 +1,6 @@
 /** @define Button; use strict */
 
-@import 'suitcss-components-button';
+@import "suitcss-components-button";
 
 :root {
   --Button-rhythm: 1.5rem;
@@ -29,7 +29,7 @@
 not conflict with the other frontend code
  */
 
-.EditorButton {
+.EditorButton, .ant-btn.EditorButton {
   transition: var(--Button-transition);
   min-height: calc(var(--Button-rhythm) * 1.25);
   text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
@@ -39,28 +39,29 @@ not conflict with the other frontend code
 
 .EditorButton:disabled,
 .EditorButton.is-disabled {
-  pointer-events: none;
+  pointer-events: none !important;
 }
 
 .EditorButton:hover,
 .EditorButton:active,
 .EditorButton.is-active {
-  outline: inherit;
+  outline: inherit !important;
 }
 
 /* Default */
 
-.Button--default {
-  background-color: var(--Button-color-default);
+.Button--default, .ant-btn.Button--default {
+  background-color: var(--Button-color-default) !important;
 }
 
-.Button--default:hover {
-  background-color: color(var(--Button-color-default) shade(10%));
+.Button--default:hover, .ant-btn.Button--default:hover  {
+  background-color: color(var(--Button-color-default) shade(10%)) !important;
 }
 
 .Button--default:active,
-.Button--default.is-active {
-  background-color: color(var(--Button-color-default) shade(15%));
+.Button--default.is-active,
+.ant-btn.Button--default:active {
+  background-color: color(var(--Button-color-default) shade(15%)) !important;
 }
 
 /**
@@ -69,148 +70,168 @@ not conflict with the other frontend code
 
 /* Primary */
 
-.Button--primary {
-  color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-primary);
+.Button--primary, .ant-btn.Button--primary {
+  color: var(--Button-color-text-invert) !important;
+  background-color: var(--Button-color-primary) !important;
 }
 
-.Button--primary:hover {
-  background-color: color(var(--Button-color-primary) shade(10%));
+.Button--primary:hover, .ant-btn.Button--primary:hover  {
+  background-color: color(var(--Button-color-primary) shade(10%)) !important;
 }
 
 .Button--primary:active,
-.Button--primary.is-active {
-  background-color: color(var(--Button-color-primary) shade(15%));
+.Button--primary.is-active,
+.ant-btn.Button--primary:active {
+  background-color: color(var(--Button-color-primary) shade(15%)) !important;
 }
 
 /* Secondary */
 
-.Button--secondary {
+.Button--secondary, .ant-btn.Button--secondary  {
   color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-secondary);
+  background-color: var(--Button-color-secondary) !important;
 }
 
-.Button--secondary:hover {
-  background-color: color(var(--Button-color-secondary) shade(10%));
+.Button--secondary:hover, .ant-btn.Button--secondary:hover {
+  background-color: color(var(--Button-color-secondary) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--secondary:active,
-.Button--secondary.is-active {
-  background-color: color(var(--Button-color-secondary) shade(15%));
+.Button--secondary.is-active,
+.ant-btn.Button--secondary:active, .ant-btn.Button--secondary.is-active {
+  background-color: color(var(--Button-color-secondary) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Hightlight */
 
-.Button--highlight {
-  color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-highlight);
+.Button--highlight,
+.ant-btn.Button--highlight{
+  color: var(--Button-color-text-invert) !important;
+  background-color: var(--Button-color-highlight) !important;
 }
 
-.Button--highlight:hover {
-  background-color: color(var(--Button-color-highlight) shade(10%));
+.Button--highlight:hover,
+.ant-btn.Button--highlight:hover {
+  background-color: color(var(--Button-color-highlight) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--highlight:active,
-.Button--highlight.is-active {
-  background-color: color(var(--Button-color-highlight) shade(15%));
+.Button--highlight.is-active,
+.ant-btn.Button--highlight:active {
+  background-color: color(var(--Button-color-highlight) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Success */
 
-.Button--success {
-  color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-success);
+.Button--success, .ant-btn.Button--success {
+  color: var(--Button-color-text-invert) !important;
+  background-color: var(--Button-color-success) !important;
 }
 
-.Button--success:hover {
-  background-color: color(var(--Button-color-success) shade(10%));
+.Button--success:hover, .ant-btn.Button--success:hover {
+  background-color: color(var(--Button-color-success) shade(10%)) !important;
 }
 
 .Button--success:active,
-.Button--success.is-active {
-  background-color: color(var(--Button-color-success) shade(15%));
+.Button--success.is-active,
+.ant-btn.Button--success:active {
+  background-color: color(var(--Button-color-success) shade(15%)) !important;
 }
 
 /* Unsure */
 
-.Button--unsure {
-  color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-unsure);
+.Button--unsure, .ant-btn.Button--unsure {
+  color: var(--Button-color-text-invert) !important;
+  background-color: var(--Button-color-unsure) !important;
 }
 
-.Button--unsure:hover {
-  background-color: color(var(--Button-color-unsure) shade(10%));
+.Button--unsure:hover, .ant-btn.Button--unsure:hover  {
+  background-color: color(var(--Button-color-unsure) shade(10%)) !important;
 }
 
 .Button--unsure:active,
-.Button--unsure.is-active {
-  background-color: color(var(--Button-color-unsure) shade(15%));
+.Button--unsure.is-active,
+.ant-btn.Button--unsure:active {
+  background-color: color(var(--Button-color-unsure) shade(15%)) !important;
 }
 
 /* Neutral */
 
-.Button--neutral {
+.Button--neutral, .ant-btn.Button--neutral {
   color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-neutral);
+  background-color: var(--Button-color-neutral) !important;
 }
 
-.Button--neutral:hover {
-  background-color: color(var(--Button-color-neutral) shade(10%));
+.Button--neutral:hover, .ant-btn.Button--neutral:hover  {
+  background-color: color(var(--Button-color-neutral) shade(10%)) !important;
 }
 
 .Button--neutral:active,
-.Button--neutral.is-active {
-  background-color: color(var(--Button-color-neutral) shade(15%));
+.Button--neutral.is-active,
+.ant-btn.Button--neutral:active {
+  background-color: color(var(--Button-color-neutral) shade(15%)) !important;
 }
 
 /* Warning */
 
-.Button--warning {
+.Button--warning, .ant-btn.Button--warning {
   color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-warning);
+  background-color: var(--Button-color-warning) !important;
 }
 
-.Button--warning:hover {
-  background-color: color(var(--Button-color-warning) shade(10%));
+.Button--warning:hover, .ant-btn.Button--warning:hover {
+  background-color: color(var(--Button-color-warning) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--warning:active,
-.Button--warning.is-active {
-  background-color: color(var(--Button-color-warning) shade(15%));
+.Button--warning.is-active,
+.ant-btn.Button--warning:active {
+  background-color: color(var(--Button-color-warning) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Danger */
 
-.Button--danger {
-  color: var(--Button-color-text-invert);
-  background-color: var(--Button-color-danger);
+.Button--danger, .ant-btn.Button--danger {
+  color: var(--Button-color-text-invert) !important;
+  background-color: var(--Button-color-danger) !important;
 }
 
-.Button--danger:hover {
-  background-color: color(var(--Button-color-danger) shade(10%));
+.Button--danger:hover, .ant-btn.Button--danger:hover {
+  background-color: color(var(--Button-color-danger) shade(10%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 .Button--danger:active,
-.Button--danger.is-active {
-  background-color: color(var(--Button-color-danger) shade(15%));
+.Button--danger.is-active,
+.ant-btn.Button--danger:active {
+  background-color: color(var(--Button-color-danger) shade(15%)) !important;
+  color: var(--Button-color-text-invert) !important;
 }
 
 /* Invisible */
 
-.Button--invisible {
-  background-color: transparent;
-  color: color(var(--Button-color-secondary) tint(50%));
+.Button--invisible, .ant-btn.Button--invisible  {
+  background-color: transparent !important;
+  color: color(var(--Button-color-secondary) tint(50%)) !important;
 }
 
-.Button--invisible:hover {
-  background-color: color(var(--Button-color-secondary) tint(92%));
-  color: color(var(--Button-color-secondary) tint(30%));
+.Button--invisible:hover, .ant-btn.Button--invisible:hover {
+  background-color: color(var(--Button-color-secondary) tint(92%)) !important;
+  color: color(var(--Button-color-secondary) tint(30%)) !important;
 }
 
 .Button--invisible:active,
-.Button--invisible.is-active {
-  color: var(--Button-color-secondary);
-  background-color: color(var(--Button-color-secondary) tint(88%));
+.Button--invisible.is-active,
+.ant-btn.Button--invisible:active,
+.ant-btn.Button--invisible.is-active {
+  color: var(--Button-color-secondary) !important;
+  background-color: color(var(--Button-color-secondary) tint(88%)) !important;
 }
 
 /**
@@ -219,18 +240,19 @@ not conflict with the other frontend code
 
 /* Snug */
 
-.Button--snug {
-  padding-left: var(--Button-padding-snug);
-  padding-right: var(--Button-padding-snug);
+.Button--snug, .ant-btn.Button--snug {
+  padding-left: var(--Button-padding-snug) !important;
+  padding-right: var(--Button-padding-snug) !important;
 }
 
-.Button--small {
-  min-height: calc(var(--Button-rhythm) * 1);
-  padding: var(--Button-padding-small);
-  font-size: calc(14/16)rem;
+.Button--small, .ant-btn.Button--small {
+  min-height: calc(var(--Button-rhythm) * 1) !important;
+  padding: var(--Button-padding-small) !important;
+  font-size: calc(14 /16)rem !important;
 }
 
-.EditorButton:hover, html input[type=button], input[type=reset], input[type=submit] {
-  cursor: pointer;
-  -webkit-appearance: button;
+.EditorButton:hover, .ant-btn.EditorButton:hover, html input[type=button],
+  input[type=reset], input[type=submit] {
+  cursor: pointer !important;
+  -webkit-appearance: button !important;
 }

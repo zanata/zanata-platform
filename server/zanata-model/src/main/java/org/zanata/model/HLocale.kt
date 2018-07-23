@@ -21,6 +21,8 @@
 package org.zanata.model
 
 import com.ibm.icu.util.ULocale
+import io.leangen.graphql.annotations.GraphQLQuery
+import io.leangen.graphql.annotations.types.GraphQLType
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.hibernate.annotations.NaturalId
@@ -48,11 +50,13 @@ import java.util.HashSet
 @Entity
 @Cacheable
 @TypeDef(name = "localeId", typeClass = LocaleIdType::class)
+@GraphQLType(name = "Locale")
 class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @get:NaturalId
     @get:NotNull
     @get:Type(type = "localeId")
+    @GraphQLQuery(name = "localeId", description = "localeId")
     var localeId: LocaleId
 
     var isActive: Boolean = false
@@ -60,14 +64,20 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
 
     var supportedProjects: Set<HProject>? = null
         @ManyToMany
-        @JoinTable(name = "HProject_Locale", joinColumns = [JoinColumn(name = "localeId")], inverseJoinColumns = [JoinColumn(name = "projectId")])
+        @JoinTable(
+                name = "HProject_Locale",
+                joinColumns = [JoinColumn(name = "localeId")],
+                inverseJoinColumns = [JoinColumn(name = "projectId")])
         get() {
             if (field == null) field = HashSet()
             return field
         }
     var supportedIterations: Set<HProjectIteration>? = null
         @ManyToMany
-        @JoinTable(name = "HProjectIteration_Locale", joinColumns = [JoinColumn(name = "localeId")], inverseJoinColumns = [JoinColumn(name = "projectIterationId")])
+        @JoinTable(
+                name = "HProjectIteration_Locale",
+                joinColumns = [JoinColumn(name = "localeId")],
+                inverseJoinColumns = [JoinColumn(name = "projectIterationId")])
         get() {
             if (field == null) field = HashSet()
             return field
@@ -82,6 +92,7 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
 
     var pluralForms: String? = null
 
+    @GraphQLQuery(name = "name", description = "name of the language")
     var displayName: String? = null
 
     var nativeName: String? = null
@@ -147,9 +158,7 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     }
 
     override fun hashCode(): Int {
-        val prime = 59
-        val result = prime + localeId.hashCode()
-        return result
+        return 59 + localeId.hashCode()
     }
 
     private fun canEqual(other: Any) = other is HLocale

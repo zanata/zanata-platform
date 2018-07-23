@@ -27,16 +27,18 @@ import { FormattedMessage } from 'react-intl'
 import { Icon } from '../../../components'
 import { Link } from '../../../components'
 import DateAndTimeDisplay from '../DateAndTimeDisplay'
-import { Well } from 'react-bootstrap'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 import { profileUrl } from '../../api'
 import { priorities } from '../../utils/reject-trans-util'
 import { statuses } from '../../utils/phrase'
+import TransSourceTypeIndicator from '../TransSourceTypeIndicator/index.tsx'
 
 const statusToWellClass = {
   approved: 'well-approved',
   rejected: 'well-rejected',
   translated: 'well-translated',
-  fuzzy: 'well-fuzzy',
+  needswork: 'well-fuzzy',
   // FIXME class does not exist, create it
   untranslated: 'well-untranslated'
 }
@@ -55,7 +57,8 @@ class ActivityFeedItem extends Component {
     user: PropTypes.shape({
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    translationSourceType: PropTypes.string
   }
 
   getMessage = () => {
@@ -63,10 +66,10 @@ class ActivityFeedItem extends Component {
     // Uses href because editor app is separate from frontend app
     const comment = (
       <span className='comment'>
-        <Well bsSize='small'>
+        <Card>
           <Icon name='comment' className='s0' />
           {this.props.commentText}
-        </Well>
+        </Card>
       </span>
     )
     const criteria = (
@@ -79,6 +82,7 @@ class ActivityFeedItem extends Component {
         {user.username}
       </Link>
     )
+
     const priority = (
       <span className='CriteriaText'>
         <Icon name='warning' className='s0' />
@@ -170,7 +174,7 @@ class ActivityFeedItem extends Component {
               'Title for an item in the activity feed showing a ' +
               'translator added a translation. The inserted section is from ' +
               'ActivityFeedItem.translated.translatedRevision'}
-            defaultMessage='{name} has {translatedRevision}'
+            defaultMessage='{name} has {translatedRevision} '
             values={{
               name,
               translatedRevision
@@ -229,7 +233,8 @@ class ActivityFeedItem extends Component {
     }
   }
   render () {
-    const {content, lastModifiedTime, status, type, user} = this.props
+    const {content, lastModifiedTime, status, type,
+      user, translationSourceType} = this.props
     const isComment = type === 'comment'
     const copyToClipboard = () => {
       var textField = document.createElement('textarea')
@@ -239,28 +244,34 @@ class ActivityFeedItem extends Component {
       document.execCommand('copy')
       textField.remove()
     }
+
+    const backendId = 'GOOGLE' // hard coded to Google
+
     return (
       /* eslint-disable max-len */
       <div className='RevisionBox'>
-        <p>
+        <div className='content'>
           <Icon name={isComment ? 'comment' : 'refresh'} className='s0' />
           <Link useHref link={profileUrl(user.username)}>
             {/* TODO use component for avatar image
             <img className='u-round ActivityAvatar' src={user.imageUrl} />*/}
           </Link>
           {this.getMessage()}
-        </p>
-        <Well className={isComment ? '' : statusToWellClass[status]}>
+        </div>
+        <Card bordered={false}
+          className={isComment ? '' : statusToWellClass[status]}>
           {content}
           <span className='u-pullRight'>
             <button onClick={copyToClipboard}
               className='Link Link--neutral' title='Copy'>
-              <Icon name='copy' className='s1' />
+              <Icon name='project' className='s1' />
             </button>
           </span>
-        </Well>
+        </Card>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
-          className='u-block small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
+          className='small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
+          {translationSourceType && <TransSourceTypeIndicator type={translationSourceType}
+            metadata={backendId} />}
       </div>
       /* eslint-enable max-len */
     )

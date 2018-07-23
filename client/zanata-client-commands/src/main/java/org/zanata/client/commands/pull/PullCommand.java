@@ -21,6 +21,7 @@ import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.dto.LocaleMappedTranslatedDoc;
 import org.zanata.client.etag.ETagCacheEntry;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
@@ -84,6 +85,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         logOptions(log, getOpts());
         log.info("Create skeletons for untranslated messages/files: {}",
                 getOpts().getCreateSkeletons());
+        log.info("Approved translations only: {}", getOpts().getApprovedOnly());
         if (getOpts().getFromDoc() != null) {
             log.info("From document: {}", getOpts().getFromDoc());
         }
@@ -96,7 +98,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
      * @param logger
      * @param opts
      */
-    public static void logOptions(Logger logger, PullOptions opts) {
+    static void logOptions(Logger logger, PullOptions opts) {
         logger.info("Server: {}", opts.getUrl());
         logger.info("Project: {}", opts.getProj());
         logger.info("Version: {}", opts.getProjectVersion());
@@ -155,6 +157,15 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             log.error("You are trying to pull source only, but source is not available for this project type.\n");
             log.info("Nothing to do. Aborting.\n");
             return;
+        }
+
+        if (getOpts().getApprovedOnly()) {
+            if (getOpts().getIncludeFuzzy() || getOpts().getCreateSkeletons()) {
+                String msg =
+                        "You can't use the option --approved together with --create-skeletons or --include-fuzzy";
+                log.error(msg);
+                throw new ConfigException(msg);
+            }
         }
 
         List<String> unsortedDocNamesForModule =
@@ -286,8 +297,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     @VisibleForTesting
     protected void pullDocForLocale(PullStrategy strat, Resource doc,
             String localDocName, String docId, boolean createSkeletons,
-            LocaleMapping locMapping,
-            File transFile) throws IOException {
+            LocaleMapping locMapping, File transFile) throws IOException {
         LocaleId locale = new LocaleId(locMapping.getLocale());
         String eTag = null;
         ETagCacheEntry eTagCacheEntry =
@@ -324,8 +334,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             } else {
                 transResponse = e.getResponse();
                 // Write the skeleton
-                writeTargetDoc(strat, localDocName, locMapping,
-                        doc, null,
+                LocaleMappedTranslatedDoc translatedDoc = new LocaleMappedTranslatedDoc(doc, null, locMapping);
+                writeTargetDoc(strat, localDocName, translatedDoc,
                         transResponse.getStringHeaders()
                                 .getFirst(HttpHeaders.ETAG));
             }
@@ -351,8 +361,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                 strat.getExtensions(),
                                 createSkeletons, null);
                 // rewrite the target document
-                writeTargetDoc(strat, localDocName, locMapping,
-                        doc, transResponse.readEntity(TranslationsResource.class),
+                LocaleMappedTranslatedDoc translatedDoc = new LocaleMappedTranslatedDoc(doc, transResponse.readEntity(TranslationsResource.class), locMapping);
+                writeTargetDoc(strat, localDocName, translatedDoc,
                         transResponse.getStringHeaders()
                                 .getFirst(HttpHeaders.ETAG));
             }
@@ -361,8 +371,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     transResponse.readEntity(TranslationsResource.class);
 
             // Write the target document
-            writeTargetDoc(strat, localDocName, locMapping,
-                    doc, targetDoc,
+            LocaleMappedTranslatedDoc translatedDoc = new LocaleMappedTranslatedDoc(doc, targetDoc, locMapping);
+            writeTargetDoc(strat, localDocName, translatedDoc,
                     transResponse.getStringHeaders()
                             .getFirst(HttpHeaders.ETAG));
         }
@@ -405,25 +415,17 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     }
 
     /**
-     *
-     * @param strat
-     * @param localDocName
-     * @param locMapping
-     * @param docWithLocalName
-     *            may be null if needsDocToWriteTrans() returns false
-     * @param targetDoc
-     * @throws IOException
+     * source Resource may be null if needsDocToWriteTrans() returns false
      */
     private void writeTargetDoc(PullStrategy strat, String localDocName,
-            LocaleMapping locMapping, Resource docWithLocalName,
-            TranslationsResource targetDoc, String serverETag)
+            LocaleMappedTranslatedDoc translatedDoc, String serverETag)
             throws IOException {
+        LocaleMapping locMapping = translatedDoc.getLocale();
         if (!getOpts().isDryRun()) {
             log.info("Writing translation file in locale {} for document {}",
                     locMapping.getLocalLocale(), localDocName);
             FileDetails fileDetails =
-                    strat.writeTransFile(docWithLocalName, localDocName,
-                            locMapping, targetDoc);
+                    strat.writeTransFile(localDocName, translatedDoc);
 
             // Insert to cache if the strategy returned file details and we are
             // using the cache

@@ -45,7 +45,7 @@ import org.zanata.exception.DocumentUploadException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
@@ -260,9 +260,8 @@ public class TranslationDocumentUpload implements Serializable {
     }
 
     private static String buildWarningString(List<String> warnings) {
-        return Joiner.on("\n\t").join(
-                "Upload succeeded but had the following warnings:", warnings)
-                + "\n";
+        return "Upload succeeded but had the following warnings:\n    " +
+                Joiner.on("\n    ").join(warnings);
     }
 
     private static MergeType mergeTypeFromString(String type) {

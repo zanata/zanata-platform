@@ -1,17 +1,20 @@
-@import "../../styles/variables.less";
+@import "../../styles/antdvars.less";
+
 #admin .list-group-item {
   display: flex;
   flex-direction: row;
   align-items: center;
   border: 1px solid rgba(32, 113, 138, 0.15);
   border-bottom-width: 2px;
-  background-color: @gray-lightest;
-  font-size: 1em;
+  background-color: @normal-color;
+  font-size: 1rem;
+  margin: 0.75rem;
+  padding: 1rem;
   font-weight: 600;
-  line-height: 1.5em;
-  color: @color-new-zanata-blue;
+  line-height: 1.5rem;
+  color: @processing-color;
   svg.s2 {
-    padding-right: 1.5em !important
+    margin-right: 1.5em !important
   }
 }
 #admin-review .centerWrapper {
@@ -19,3 +22,9 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+#admin .list-group-item:hover, #admin .list-group-item:focus {
+  background-color: @processing-color;
+  color: #fafafa;
+}
+

@@ -20,17 +20,20 @@
  */
 package org.zanata.adapter;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.io.OutputStream;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.adapter.FileFormatAdapter.WriterOptions;
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.common.dto.TranslatedDoc;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -55,6 +58,15 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
 
     @Test
     public void testTranslatedPropertiesDocument() {
+        testTranslatedPropertiesDocument(false);
+    }
+
+    @Test
+    public void testTranslatedPropertiesDocumentApprovedOnly() {
+        testTranslatedPropertiesDocument(true);
+    }
+
+    private void testTranslatedPropertiesDocument(boolean approvedOnly) {
         TranslationsResource tResource = new TranslationsResource();
         addTranslation(tResource, "line1", "¥Foun’dé metalkcta", ContentState.Approved);
         addTranslation(tResource, "line2", "¥Tba’dé metalkcta", ContentState.Translated);
@@ -62,19 +74,20 @@ public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF
 
         Resource resource = parseTestFile("test-properties-utf8.properties");
         File originalFile = new File(resourcePath.concat("test-properties-utf8.properties"));
-        OutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+        ParserOptions
+                sourceOptions = new ParserOptions(originalFile.toURI(), LocaleId.EN, "");
+        TranslatedDoc translatedDoc = new TranslatedDoc(resource, tResource, new LocaleId("ru"));
         adapter.writeTranslatedFile(outputStream,
-                originalFile.toURI(),
-                resource,
-                tResource,
-                "ru",
-                Optional.absent());
+                new WriterOptions(sourceOptions, translatedDoc),
+                approvedOnly);
 
-        assertThat(outputStream.toString()).isEqualTo(
-                "line1=¥Foun’dé metalkcta\n" +
+        String expected = "line1=¥Foun’dé metalkcta\n" +
                 "line2=¥Tba’dé metalkcta\n" +
-                "line3=\n");
+                "line3=\n";
+        if (approvedOnly) expected = expected.replace("¥Tba’dé metalkcta", "");
+        assertThat(outputStream.toString(UTF_8)).isEqualTo(
+                expected);
     }
-
 }
