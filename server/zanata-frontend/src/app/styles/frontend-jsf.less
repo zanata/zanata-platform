@@ -49,7 +49,7 @@ body.bodyStyle {
       height: auto !important;
     }
   }
-  .use-global, .remove-locale {
+  .use-global, .remove-locale, .copy-proj-type, .copy-proj-val {
     height: 3rem !important;
   }
   .flex-btn-group {
@@ -238,6 +238,9 @@ body.bodyStyle {
     color: #fff;
     vertical-align: baseline;
   }
+  .button--warning {
+    color: #fff !important;
+  }
   #versionPage.g {
     width: 100%;
   }
@@ -363,12 +366,26 @@ body.bodyStyle {
     position: relative;
     margin-top: -1rem;
   }
+
+  .button--group input[type=radio]+.button--danger {
+    background-color: #f7f7f7 !important;
+    color: #546677 !important;
+  }
+  .button--group input[type=radio]+.button--Warning {
+    background-color: #f7f7f7 !important;
+    color: #546677 !important;
+  }
   .button--group input[type=radio]:checked+.button--Off, .button--group input[type=radio]:checked+.button--Off:hover {
     background-color: #546677 !important;
     color: #f7f7f7 !important;
   }
   .button--group input[type=radio]:checked+.button--danger, .button--group input[type=radio]:checked+.button--danger:hover {
     color: #f7f7f7 !important;
+    background-color: @error-color !important;
+  }
+  .button--group input[type=radio]:checked+.button--Warning, .button--group input[type=radio]:checked+.button--Warning:hover {
+    color: #f7f7f7 !important;
+    background-color: @warning-color !important;
   }
   label {
     color: #546677 !important;
