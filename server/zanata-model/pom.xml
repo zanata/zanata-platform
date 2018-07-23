@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.6.0-rc-2-SNAPSHOT</version>
+    <version>4.6.0-rc-3-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-model</artifactId>
   <name>Zanata model</name>
@@ -180,12 +180,6 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-    </dependency>
-
-    <!-- Solr -->
-    <dependency>
-      <groupId>org.apache.solr</groupId>
-      <artifactId>solr-core</artifactId>
     </dependency>
 
     <dependency>

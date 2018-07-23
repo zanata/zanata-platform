@@ -222,11 +222,6 @@ h4 {
   vertical-align: sub;
 }
 
-.ant-pagination *,
-.ant-pagination-disabled * {
-  border: none !important;
-}
-
 .cc-link {
   color: @info-color !important;
   font-weight: 600;
@@ -264,6 +259,10 @@ button.ant-btn.btn-link:focus {
 
 .ant-btn .btn-sm {
   padding: 0 15px !important;
+}
+
+.ant-btn.btn-link[disabled] {
+  color: rgba(0, 0, 0, .25);
 }
 
 .ant-btn.ant-btn-primary {

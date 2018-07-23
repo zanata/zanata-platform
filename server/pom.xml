@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.6.0-rc-2-SNAPSHOT</version>
+    <version>4.6.0-rc-3-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -55,7 +55,6 @@
     <commonmark.spec.version>18.0</commonmark.spec.version>
     -->
 
-    <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
     <slf4j.version>1.7.25</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
@@ -70,7 +69,6 @@
     <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
     <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
     <shrinkwrap.desc.version>2.0.0</shrinkwrap.desc.version>
-    <maven.model.version>3.3.9</maven.model.version>
     <jetty.version>9.2.15.v20160210</jetty.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
@@ -154,6 +152,18 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interpolation</artifactId>
+        <version>1.24</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-sec-dispatcher</artifactId>
         <version>1.4</version>
       </dependency>
 
@@ -515,43 +525,43 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
-        <version>${maven.model.version}</version>
+        <version>3.3.9</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model-builder</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-repository-metadata</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-settings</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-settings-builder</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
@@ -564,12 +574,6 @@
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-http-lightweight</artifactId>
         <version>2.6</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>3.0.24</version>
       </dependency>
 
       <dependency>
@@ -1617,104 +1621,6 @@
         <version>${lucene.version}</version>
       </dependency>
 
-      <!-- Solr dependencies -->
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-core</artifactId>
-        <version>${solr.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet.ext.servlet</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>net.java.dev.stax-utils</groupId>
-            <artifactId>stax-utils</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-lucene-analyzers</artifactId>
-          </exclusion>
-          <!-- NB: https://hibernate.atlassian.net/browse/HSEARCH-380 -->
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-lucene-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-          </exclusion>
-          <exclusion>
-            <artifactId>servlet-api</artifactId>
-            <groupId>javax.servlet</groupId>
-          </exclusion>
-          <exclusion>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-solrj</artifactId>
-        <version>${solr.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-analysis-extras</artifactId>
-        <version>${solr.version}</version>
-      </dependency>
       <dependency>
         <groupId>net.customware.gwt.presenter</groupId>
         <artifactId>gwt-presenter</artifactId>
@@ -2436,9 +2342,6 @@
           <name>!excludeFrontend</name>
         </property>
       </activation>
-      <properties>
-        <required.maven>3.1.0</required.maven>
-      </properties>
       <modules>
         <module>zanata-frontend</module>
       </modules>
