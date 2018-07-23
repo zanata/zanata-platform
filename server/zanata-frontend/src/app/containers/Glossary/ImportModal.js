@@ -80,7 +80,7 @@ class ImportModal extends Component {
     }
 
     if (file && !this.isSupportedFile(fileExtension)) {
-      messageSection = (<div className='u-textUnsupported'>
+      messageSection = (<div className='txt-newblue'>
         File '{file.name}' is not supported.
       </div>)
     }

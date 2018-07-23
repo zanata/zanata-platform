@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Cacheable;
@@ -120,6 +121,7 @@ public class HProject extends SlugEntityBase
     @MapKeyColumn(name = "localeId")
     @Column(name = "alias", nullable = false)
     private Map<LocaleId, String> localeAliases = Maps.newHashMap();
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",
             orphanRemoval = true)
     private List<WebHook> webHooks = Lists.newArrayList();
@@ -364,6 +366,7 @@ public class HProject extends SlugEntityBase
         return this.webHooks;
     }
 
+    @Nullable
     public ProjectType getDefaultProjectType() {
         return this.defaultProjectType;
     }

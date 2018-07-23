@@ -54,6 +54,7 @@ public class HistoryTokenTest {
         assertThat(token.isFilterApproved()).isFalse();
         assertThat(token.isFilterRejected()).isFalse();
         assertThat(token.isFilterHasError()).isFalse();
+        assertThat(token.isFilterMT()).isFalse();
     }
 
     @Test
@@ -90,6 +91,7 @@ public class HistoryTokenTest {
         assertThat(token.isFilterApproved()).isFalse();
         assertThat(token.isFilterRejected()).isFalse();
         assertThat(token.isFilterHasError()).isFalse();
+        assertThat(token.isFilterMT()).isFalse();
     }
 
     @Test
@@ -126,6 +128,7 @@ public class HistoryTokenTest {
         assertThat(token.isFilterApproved()).isFalse();
         assertThat(token.isFilterRejected()).isFalse();
         assertThat(token.isFilterHasError()).isFalse();
+        assertThat(token.isFilterMT()).isFalse();
     }
 
     @Test
@@ -538,6 +541,7 @@ public class HistoryTokenTest {
         token.setFilterApproved(true);
         token.setFilterRejected(true);
         token.setFilterHasError(true);
+        token.setFilterMT(true);
 
         String tokenString = token.toTokenString();
 

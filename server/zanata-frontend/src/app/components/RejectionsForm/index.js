@@ -111,14 +111,14 @@ class RejectionsForm extends Component {
       <Tooltip title='Delete criteria'>
         <span>
           <Button type='danger' className='btn-danger' onClick={this.onDelete}>
-            <Icon name='trash' className='s0 iconEdit' />
+            <Icon name='trash' className='s0' />
           </Button>
         </span>
       </Tooltip>
       ) : DO_NOT_RENDER
     const commentToggle = isAdminMode ? (
-      <Form.Item label='Comment required'>
-        <Switch
+      <Form.Item label='Comment required' className='comment review-label'>
+        <Switch className='ml2'
           checked={this.state.isCommentRequired}
           onChange={this.onEditableChange} />
       </Form.Item>
@@ -132,7 +132,7 @@ class RejectionsForm extends Component {
               <Button type='primary'
                 onClick={this.onSave}
                 disabled={error}>
-                <Icon name='tick' className='s0 iconEdit' />
+                <Icon name='tick' className='s0' />
               </Button>
             </span>
           </Tooltip>
@@ -143,41 +143,41 @@ class RejectionsForm extends Component {
     return (
       <Form key={key} layout='inline'>
         <Row className='pb4' gutter={16}>
-          <Col span={12}>
-            <Form.Item label='Criteria' className='w-100'>
+          <Col xs={24} sm={12} md={8} lg={10}>
+            <Form.Item label='Criteria' className='review-label'>
               <Input.TextArea
                 disabled={!isAdminMode}
                 maxLength={255}
                 onChange={this.onTextChange}
                 placeholder={criteriaPlaceholder}
                 rows={2}
-                className='w-90'
+                className='w-100 ml2 mb2'
                 value={this.state.description} />
             </Form.Item>
           </Col>
-          <Col span={4}>
-            <Form.Item label='Priority'>
+          <Col xs={24} sm={12} md={6} lg={4}>
+            <Form.Item label='Priority' className='review-label'>
               <Select
                 key={key}
                 value={this.state.priority}
                 disabled={priorityDisabled}
                 onChange={this.onPriorityChange}>
                 <Option title={MINOR} key={MINOR} value={MINOR}>
-                  <span className='u-textInfo'>{MINOR}</span>
+                  <span className='txt-info'>{MINOR}</span>
                 </Option>
                 <Option title={MAJOR} key={MAJOR} value={MAJOR}>
-                  <span className='u-textWarning'>{MAJOR}</span>
+                  <span className='txt-warn'>{MAJOR}</span>
                 </Option>
                 <Option title={CRITICAL} key={CRITICAL} value={CRITICAL}>
-                  <span className='u-textDanger'>{CRITICAL}</span>
+                  <span className='txt-error'>{CRITICAL}</span>
                 </Option>
               </Select>
             </Form.Item>
           </Col>
-          <Col span={4}>
+          <Col xs={24} md={8} lg={6}>
             {commentToggle}
           </Col>
-          <Col span={4}>
+          <Col xs={4} md={2} lg={2} className='fr'>
             {formBtn}
           </Col>
         </Row>

@@ -12,7 +12,10 @@ describe('SuggestionDetailsSummaryTest', () => {
         suggestion={{
           matchDetails: [
             {
-              type: 'IMPORTED_TM',
+              type: {
+                key: 'IMPORTED_TM',
+                metadata: ''
+              },
               transMemorySlug: 'champagne'
             }
           ]
@@ -39,7 +42,10 @@ describe('SuggestionDetailsSummaryTest', () => {
         suggestion={{
           matchDetails: [
             {
-              type: 'LOCAL_PROJECT',
+              type: {
+                key: 'LOCAL_PROJECT',
+                metadata: ''
+              },
               projectId: 'sausages',
               projectName: 'Sausages',
               version: 'the-wurst-version',
@@ -73,7 +79,10 @@ describe('SuggestionDetailsSummaryTest', () => {
     // different type from top match so it is obvious
     // if display is based on the wrong one
     const remainingMatch = {
-      type: 'LOCAL_PROJECT',
+      type: {
+        key: 'LOCAL_PROJECT',
+        metadata: ''
+      },
       projectId: 'sausages',
       projectName: 'Sausages',
       version: 'the-wurst-version',
@@ -86,7 +95,10 @@ describe('SuggestionDetailsSummaryTest', () => {
         suggestion={{
           matchDetails: [
             {
-              type: 'IMPORTED_TM',
+              type: {
+                key: 'IMPORTED_TM',
+                metadata: ''
+              },
               transMemorySlug: 'champagne'
             },
             remainingMatch,

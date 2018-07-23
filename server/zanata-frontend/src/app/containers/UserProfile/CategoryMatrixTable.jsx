@@ -42,16 +42,16 @@ const CategoryMatrixTable = ({
   })
 
   return (
-    <div>
-      <h3 className='zeta txt--uppercase txt--understated'>
+    <React.Fragment>
+      <h3 className='txt-muted ttu f6'>
         {categoryName}
       </h3>
-      <table className='l--push-bottom-half'>
+      <table>
         <tbody>
         {rows}
         </tbody>
       </table>
-    </div>
+    </React.Fragment>
   )
 }
 

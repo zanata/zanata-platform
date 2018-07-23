@@ -13,11 +13,9 @@ const SettingsOptions = ({settings, updateSetting, disabled}) => {
     </li>
   ))
   return (
-    <div>
-      <ul>
-        {checkboxes}
-      </ul>
-    </div>
+    <ul>
+      {checkboxes}
+    </ul>
   )
 }
 

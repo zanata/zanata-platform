@@ -133,7 +133,7 @@ class ViewHeader extends Component {
         permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon type='lock' className='s1 iconLocked' />
+        <Icon type='lock' className='s1 lock' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
@@ -155,67 +155,67 @@ class ViewHeader extends Component {
       <Header className='header-glossary' title={title} icon={icon}
         extraHeadingElements={projectLink}
         extraElements={(
-          <div className='u-flexRowCenter'>
+          <div className='u-flexRowCenter items-end'>
             <TextInput
-              className='textInput glossarySearch'
+              className='textInput'
               ref={(ref) => this.searchInput = ref}
               type='search'
               placeholder='Search Terms…'
               accessibilityLabel='Search Terms'
               defaultValue={filterText}
               onChange={handleFilterFieldUpdate} />
-            <Button className='btn-link iconCross-glossary' aria-label='button'
+            <Button className='btn-link' aria-label='button'
               icon='close' title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={this.handleClearSearch} />
-            <div className='glossaryButtons'>
+            <div className='inline-flex items-end'>
               {permission.canAddNewEntry && (
-                <div className='glossaryBtn topBtn'>
+                <React.Fragment>
                   <Button className='btn-link' type='button'
                     aria-label='button'
                     onClick={() => handleImportFileDisplay(true)}>
                     <Row>
-                      <Icon type='upload' className='s1 iconImport' />
+                      <Icon type='upload' className='s1' />
                       <span className='hidden-lesm'>Import</span>
                     </Row>
                   </Button>
                   <ImportModal />
-                </div>)}
+                </React.Fragment>)}
 
               {permission.canDownload && !isEmptyTerms && (
-                <div className='glossaryBtn topBtn'>
+                <React.Fragment>
                   <Button className='btn-link' type='button'
                     aria-label='button'
                     onClick={() => handleExportFileDisplay(true)}>
                     <Row>
-                      <Icon type='export' className='s1 iconExport' />
+                      <Icon type='export' className='s1' />
                       <span className='hidden-lesm'>Export</span>
                     </Row>
                   </Button>
                   <ExportModal />
-                </div>)}
+                </React.Fragment>)}
 
               {permission.canAddNewEntry && (
-                <div className='glossaryBtn topBtn'>
+                <React.Fragment>
                   <Button className='btn-link' aria-label='button'
                     onClick={() =>
                         handleNewEntryDisplay(true)}>
                     <Row>
-                      <Icon type='plus' className='s1 iconPlus2' />
+                      <Icon type='plus' className='s1' />
                       <span className='hidden-lesm'>New</span>
                     </Row>
                   </Button>
                   <NewEntryModal />
-                </div>)}
+                </React.Fragment>)}
 
               {showDeleteAll && (
-                <div className='glossaryBtn topBtn'>
+                <React.Fragment>
                   <DeleteAllEntriesModal show={deleteAll.show}
                     isDeleting={deleteAll.isDeleting}
                     handleDeleteAllEntriesDisplay={
                       handleDeleteAllEntriesDisplay}
                     handleDeleteAllEntries={handleDeleteAllEntries} />
-                </div>)}
+                </React.Fragment>)}
             </div>
           </div>
         )}>
@@ -232,11 +232,11 @@ class ViewHeader extends Component {
                               ? <Icon name='chevron-down' className='s1' />
                               : <Icon name='chevron-up' className='s1' />
                           : ''}
-                      <Icon type='book' className='s1 iconGlossary-neutral' />
+                      <Icon type='book' className='s1 txt-neutral' />
                       <span>
                       English (United States)
                       </span>
-                      <span className='u-textMutedLeft'>{termCount}</span>
+                      <span className='txt-muted ml1'>{termCount}</span>
                     </Row>
                   </Button>
                 </td>
@@ -254,18 +254,18 @@ class ViewHeader extends Component {
                     onChange={handleTranslationLocaleChange}
                   />
                   {selectedTransLocale &&
-                  (<span className='hidden-xs'>
-                    <Icon type='global' className='s1 iconTranslate-neutral' />
-                    <span className='u-textNeutral'>
+                  (<span className='hidden-xs mt2 ml1'>
+                    <Icon type='global' className='s1 txt-neutral' />
+                    <span className='txt-muted'>
                       {currentLocaleCount}
                     </span>
                   </span>
                   )}
                 </td>
-                <td className='hidesmall td-1'
+                <td className='td-1'
                   onClick={() => handleSortColumn('part_of_speech')}>
                   <Button className='btn-link' aria-label='button'>
-                    <Row>
+                    <Row className='ml4'>
                       {'part_of_speech' in sort
                           ? (sort.part_of_speech === true)
                               ? <Icon type='down'
@@ -273,7 +273,7 @@ class ViewHeader extends Component {
                               : <Icon type='up'
                                 className='s1 iconChevron' />
                           : ''}
-                      <span className='u-marginL--rq'>
+                      <span>
                       Part of Speech
                       </span>
                     </Row>

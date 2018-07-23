@@ -13,17 +13,17 @@ const GroupTeaser = ({
   ...props
 }) => {
   const description = details.description
-    ? (<div className='u-textMuted'>
+    ? (<div className='txt-muted'>
       {details.description}
     </div>)
-    : (<div className='u-textMuted'>
+    : (<div className='txt-muted'>
       <em>Group : {details.id}</em>
     </div>)
   const metaData = details.owner ? (
-    <div className='metaInfo'>
-      <Icon name='user' className='n1' parentClassName='iconUser-muted' />
+    <div className='metaInfo txt-muted'>
+      <Icon name='user' className='n1' />
       <Link to={details.owner}>{details.owner}</Link>
-      <Icon name='users' className='n1' parentClassName='iconUsers-muted' />
+      <Icon name='users' className='n1' />
     </div>
   ) : undefined
   const link = getVersionGroupUrl(details.id)
@@ -34,12 +34,10 @@ const GroupTeaser = ({
         TODO: Statistics Donut here
       </View> */}
       <div className='teaser-inner'>
-        <div>
-          <Link link={link} useHref className='text-bold'>
-            {details.title}
-          </Link>
-          {description}
-        </div>
+        <Link link={link} useHref className='btn-link b'>
+          {details.title}
+        </Link>
+        {description}
         {metaData}
       </div>
     </div>

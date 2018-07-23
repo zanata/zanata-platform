@@ -35,7 +35,6 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.inject.Produces;
@@ -62,7 +61,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
@@ -92,7 +91,6 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.collect.Lists;
 
-import kotlin.ranges.IntRange;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
@@ -196,7 +194,7 @@ public class TransMemoryMergeServiceImplTest {
     private static TransMemoryResultItem tmResult(Long sourceId, int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.ApprovedInternal, 1D, percent, 1L);
+                        MatchType.ApprovedInternal, 1D, percent, 1L, false);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }
@@ -205,7 +203,7 @@ public class TransMemoryMergeServiceImplTest {
             int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.Imported, 1D, percent, 1L);
+                        MatchType.Imported, 1D, percent, 1L, false);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }

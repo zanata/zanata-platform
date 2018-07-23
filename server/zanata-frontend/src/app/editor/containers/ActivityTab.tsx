@@ -3,26 +3,41 @@ import CommentBox from "../components/CommentBox"
 import ActivityFeedItem from "../components/ActivityFeedItem"
 import Pager from "../components/Pager"
 import {
-  ActivityFilter, ActivityItemList, activityTypes, filterActivityTypes
+  ActivityItemList, activityTypes, ActivityFilterUnion, ActivityFilter
 } from "../utils/activity-util"
 import { transUnitStatusToPhraseStatus } from "../utils/status-util"
 import { ALL, COMMENTS, UPDATES } from "../utils/activity-util"
 import { isUndefined, isEmpty, orderBy } from "lodash"
 import React from "react"
-import * as PropTypes from "prop-types"
 import { commentTextLimit } from "./RejectTranslation"
+import * as t from 'io-ts'
+import { getPropTypes } from 'prop-types-ts'
 
 const DO_NOT_RENDER = undefined
 
 // Number of Activity Items to display per paginated page
 const COUNT_PER_PAGE = 10
 
-interface ActivityTabProps {
-  transHistory?: any,
-  postComment: (text: string) => void
+const  ActivityTabStateProps = t.partial({
+  transHistory: t.any,
+  selectedActivites: ActivityFilterUnion
+})
+
+const ActivityTabProps = t.intersection([
+  t.interface({
+    postComment: t.Function,
+    selectActivityTypeFilter: t.Function,
+  }), ActivityTabStateProps
+])
+
+// this interface partly repeats the t.interface props above, but they don't
+// include the Function's signatures
+interface ActivityTabDispatchProps {
+  postComment: (text: string) => void,
   selectActivityTypeFilter: (text: ActivityFilter) => void,
-  selectedActivites?: ActivityFilter
 }
+
+interface ActivityTabProps extends t.TypeOf<typeof ActivityTabStateProps>, ActivityTabDispatchProps {}
 
 type Filter = (transHistory: any) => ActivityItemList
 
@@ -51,7 +66,8 @@ const historyFilter: Filter = ({historyItems, latest}) => ({...(historyItems.map
     user: {
       name: historyItem.modifiedByPersonName,
       username: historyItem.modifiedBy
-    }
+    },
+    translationSourceType: historyItem.translationSourceType
   }
 })), latest: latestHistoryAsItem(latest)})
 
@@ -65,7 +81,8 @@ const latestHistoryAsItem = (latest) => ({
   user: {
     name: latest.modifiedByPersonName,
     username: latest.modifiedBy
-  }
+  },
+  translationSourceType: latest.translationSourceType
 })
 
 interface Props {
@@ -110,10 +127,10 @@ class ActivityItemsPager extends React.Component<Props, State> {
         pageCount={pageCount}
       />
     return (
-      <div>
+      <>
         {pager}
         {paginatedActivityItems}
-      </div>
+      </>
     )
   }
   private firstPage = () => {
@@ -141,6 +158,7 @@ class ActivityItemsPager extends React.Component<Props, State> {
  * for entering new TransUnit comments.
  * TODO: Implement or remove LanguageSelectList
  */
+// const ActivityTab = sfc<typeof ActivityTabStateProps, ActivityTabProps>(ActivityTabProps, ({
 const ActivityTab: React.SFC<ActivityTabProps> = ({
   transHistory,
   postComment,
@@ -191,7 +209,7 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
     ? DO_NOT_RENDER
     : <CommentBox postComment={postComment} maxLength={commentTextLimit} />
   return (
-    <div>
+    <>
       <div className="SidebarEditor-wrapper" id="SidebarEditorTabs-pane2">
         <ActivitySelectList selectItem={selectActivityTypeFilter}
           selected={selectedActivites} />
@@ -200,15 +218,10 @@ const ActivityTab: React.SFC<ActivityTabProps> = ({
         {commentBox}
         {ActivityPager}
       </div>
-    </div>
+    </>
   )
 }
 
-ActivityTab.propTypes = {
-   transHistory: PropTypes.any,
-   postComment: PropTypes.func.isRequired,
-   selectActivityTypeFilter: PropTypes.func.isRequired,
-   selectedActivites: PropTypes.oneOf(filterActivityTypes),
-}
+ActivityTab.propTypes = getPropTypes(ActivityTabProps) as any
 
 export default ActivityTab

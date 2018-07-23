@@ -37,7 +37,7 @@ public class ReplaceText extends UpdateTransUnit {
     /**
      * See {@link org.zanata.model.type.TranslationSourceType#GWT_EDITOR_ENTRY}
      */
-    private String sourceType = "GWT";
+    private static final String SOURCE_TYPE_GWT = "GWT";
 
     private ReplaceText() {
         super(UpdateType.NonEditorSave);
@@ -57,7 +57,8 @@ public class ReplaceText extends UpdateTransUnit {
         this.replaceText = replaceText;
         for (TransUnit tu : transUnits) {
             addTransUnit(new TransUnitUpdateRequest(tu.getId(),
-                    tu.getTargets(), tu.getStatus(), tu.getVerNum(), sourceType));
+                    tu.getTargets(), tu.getStatus(), tu.getVerNum(),
+                    SOURCE_TYPE_GWT));
         }
     }
 

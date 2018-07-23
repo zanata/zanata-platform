@@ -6,6 +6,7 @@ import org.zanata.common.ContentState;
 import org.zanata.model.po.HPotEntryData;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import org.zanata.rest.dto.TranslationSourceType;
 
 /**
  * A builder to build HTextFlow entity and possibly [HTextFlowTarget] [and
@@ -30,6 +31,7 @@ public class HTextFlowBuilder {
     private HPerson lastModifiedBy;
     private DateTime lastModifiedDate;
     private String targetComment;
+    private TranslationSourceType translationSourceType;
 
     public HTextFlow build() {
         Preconditions.checkNotNull(resId, "resId can not be null");
@@ -66,6 +68,7 @@ public class HTextFlowBuilder {
             if (targetComment != null) {
                 target.setComment(new HSimpleComment(targetComment));
             }
+            target.setSourceType(translationSourceType);
         }
         log.debug(this.toString());
         return hTextFlow;
@@ -82,11 +85,12 @@ public class HTextFlowBuilder {
     }
 
     private HTextFlowBuilder(final HDocument document,
-            final HLocale targetLocale, final String resId,
-            final String sourceContent, final String sourceComment,
-            final String msgContext, final String targetContent,
-            final ContentState targetState, final HPerson lastModifiedBy,
-            final DateTime lastModifiedDate, final String targetComment) {
+        final HLocale targetLocale, final String resId,
+        final String sourceContent, final String sourceComment,
+        final String msgContext, final String targetContent,
+        final ContentState targetState, final HPerson lastModifiedBy,
+        final DateTime lastModifiedDate, final String targetComment,
+        final TranslationSourceType translationSourceType) {
         this.document = document;
         this.targetLocale = targetLocale;
         this.resId = resId;
@@ -98,6 +102,7 @@ public class HTextFlowBuilder {
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
         this.targetComment = targetComment;
+        this.translationSourceType = translationSourceType;
     }
 
     public HTextFlowBuilder withDocument(final HDocument document) {
@@ -106,7 +111,7 @@ public class HTextFlowBuilder {
                         this.sourceContent, this.sourceComment, this.msgContext,
                         this.targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withTargetLocale(final HLocale targetLocale) {
@@ -115,7 +120,7 @@ public class HTextFlowBuilder {
                         this.sourceContent, this.sourceComment, this.msgContext,
                         this.targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withResId(final String resId) {
@@ -124,7 +129,7 @@ public class HTextFlowBuilder {
                         this.sourceContent, this.sourceComment, this.msgContext,
                         this.targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withSourceContent(final String sourceContent) {
@@ -133,7 +138,16 @@ public class HTextFlowBuilder {
                         this.resId, sourceContent, this.sourceComment,
                         this.msgContext, this.targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
+    }
+
+    public HTextFlowBuilder withSourceType(final TranslationSourceType translationSourceType) {
+        return this.translationSourceType == translationSourceType ? this
+            : new HTextFlowBuilder(this.document, this.targetLocale,
+            this.resId, this.sourceContent, this.sourceComment,
+            this.msgContext, this.targetContent, this.targetState,
+            this.lastModifiedBy, this.lastModifiedDate,
+            this.targetComment, translationSourceType);
     }
 
     public HTextFlowBuilder withSourceComment(final String sourceComment) {
@@ -142,7 +156,7 @@ public class HTextFlowBuilder {
                         this.resId, this.sourceContent, sourceComment,
                         this.msgContext, this.targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withMsgContext(final String msgContext) {
@@ -151,7 +165,7 @@ public class HTextFlowBuilder {
                         this.resId, this.sourceContent, this.sourceComment,
                         msgContext, this.targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withTargetContent(final String targetContent) {
@@ -160,7 +174,7 @@ public class HTextFlowBuilder {
                         this.resId, this.sourceContent, this.sourceComment,
                         this.msgContext, targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withTargetState(final ContentState targetState) {
@@ -169,7 +183,7 @@ public class HTextFlowBuilder {
                         this.resId, this.sourceContent, this.sourceComment,
                         this.msgContext, this.targetContent, targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withLastModifiedBy(final HPerson lastModifiedBy) {
@@ -178,7 +192,7 @@ public class HTextFlowBuilder {
                         this.resId, this.sourceContent, this.sourceComment,
                         this.msgContext, this.targetContent, this.targetState,
                         lastModifiedBy, this.lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder
@@ -188,7 +202,7 @@ public class HTextFlowBuilder {
                         this.resId, this.sourceContent, this.sourceComment,
                         this.msgContext, this.targetContent, this.targetState,
                         this.lastModifiedBy, lastModifiedDate,
-                        this.targetComment);
+                        this.targetComment, this.translationSourceType);
     }
 
     public HTextFlowBuilder withTargetComment(final String targetComment) {
@@ -197,6 +211,6 @@ public class HTextFlowBuilder {
                         this.resId, this.sourceContent, this.sourceComment,
                         this.msgContext, this.targetContent, this.targetState,
                         this.lastModifiedBy, this.lastModifiedDate,
-                        targetComment);
+                        targetComment, this.translationSourceType);
     }
 }

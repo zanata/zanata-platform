@@ -17,6 +17,7 @@ public class GetTransUnitList extends
     private DocumentId documentId;
     private ContentStateGroup filterStates;
     private boolean filterHasError;
+    private boolean filterMT;
     private List<ValidationId> validationIds;
     private TransUnitId targetTransUnitId;
     private boolean needReloadIndex = false;
@@ -31,6 +32,7 @@ public class GetTransUnitList extends
         count = context.getCount();
         setIncludeStates(context.getCurrentFilterStates());
         filterHasError = context.isFilterHasError();
+        filterMT = context.isFilterMT();
         targetTransUnitId = context.getTargetTransUnitId();
         validationIds = context.getValidationIds();
         editorFilter = context.getEditorFilter();
@@ -103,6 +105,10 @@ public class GetTransUnitList extends
         return filterHasError;
     }
 
+    public boolean isFilterMT() {
+        return filterMT;
+    }
+
     public TransUnitId getTargetTransUnitId() {
         return targetTransUnitId;
     }
@@ -112,7 +118,7 @@ public class GetTransUnitList extends
     }
 
     public boolean isAcceptAllStatus() {
-        return filterStates.hasAllStates() && !filterHasError;
+        return filterStates.hasAllStates() && !filterHasError && !filterMT;
     }
 
     @Override
@@ -124,6 +130,7 @@ public class GetTransUnitList extends
             add("documentId", documentId).
             add("filterStates", filterStates).
             add("filterHasError", filterHasError).
+            add("filterMT", filterMT).
             add("targetTransUnitId", targetTransUnitId).
             add("needReloadIndex", needReloadIndex).
             add("editorFilter", editorFilter).

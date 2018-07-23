@@ -159,13 +159,13 @@ const processUserStatistics = (state, json) => {
 }
 
 export default handleActions({
-  [CLEAR_MESSAGE]: (state, action) => {
+  [CLEAR_MESSAGE]: (state, _action) => {
     return {
       ...state,
       notification: undefined
     }
   },
-  [LOAD_USER_REQUEST]: (state, action) => {
+  [LOAD_USER_REQUEST]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -187,7 +187,7 @@ export default handleActions({
       }
     }
   },
-  [LOAD_USER_FAILURE]: (state, action) => {
+  [LOAD_USER_FAILURE]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -198,11 +198,12 @@ export default handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable load user info. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   },
-  [USER_STATS_REQUEST]: (state, action) => {
+  [USER_STATS_REQUEST]: (state, _action) => {
     return {
       ...state,
       loading: true,
@@ -216,7 +217,7 @@ export default handleActions({
       loading: false
     }
   },
-  [USER_STATS_FAILURE]: (state, action) => {
+  [USER_STATS_FAILURE]: (state, _action) => {
     return {
       ...state,
       loading: false,
@@ -224,7 +225,8 @@ export default handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable load user statistics. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   },
@@ -256,7 +258,7 @@ export default handleActions({
         filterByContentStateAndDay(matrix, contentStateOption, selectedDay)
     }
   },
-  [GET_LOCALE_REQUEST]: (state, action) => {
+  [GET_LOCALE_REQUEST]: (state, _action) => {
     return {
       ...state,
       user: {
@@ -279,7 +281,7 @@ export default handleActions({
       }
     }
   },
-  [GET_LOCALE_FAILURE]: (state, action) => {
+  [GET_LOCALE_FAILURE]: (state, _action) => {
     return {
       ...state,
       loading: false,
@@ -291,13 +293,15 @@ export default handleActions({
         severity: SEVERITY.ERROR,
         message:
         'We were unable load user information. ' +
-        'Please refresh this page and try again.'
+          'Please refresh this page and try again.',
+        duration: null
       }
     }
   }
 },
 // default state
-  {
+  /** @type {import('./state').ProfileState} */
+  ({
     matrix: [],
     matrixForAllDays: [],
     wordCountsForEachDayFilteredByContentState: [],
@@ -312,4 +316,4 @@ export default handleActions({
       username: '',
       loading: false
     }
-  })
+  }))

@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-abstract class AbstractAdapterTest <T extends FileFormatAdapter> {
+public abstract class AbstractAdapterTest <T extends FileFormatAdapter> {
 
     T adapter;
     String resourcePath = "src/test/resources/org/zanata/adapter/";

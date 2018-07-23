@@ -16,6 +16,7 @@ enum EditorTokens implements TokensConverter {
     static final String KEY_MESSAGE_FILTER_APPROVED = "approved";
     static final String KEY_MESSAGE_FILTER_REJECTED = "rejected";
     static final String KEY_MESSAGE_FILTER_ERROR = "error";
+    static final String KEY_MESSAGE_FILTER_MT = "mt";
     static final String VALUE_MESSAGE_FILTER = "show";
     static final String KEY_RES_ID = "resid";
     static final String KEY_MSG_CONTEXT = "msgcontext";
@@ -53,6 +54,9 @@ enum EditorTokens implements TokensConverter {
         }
         if (key.equals(KEY_MESSAGE_FILTER_ERROR)) {
             historyToken.setFilterHasError(true);
+        }
+        if (key.equals(KEY_MESSAGE_FILTER_MT)) {
+            historyToken.setFilterMT(true);
         }
         if (key.equals(KEY_RES_ID)) {
             historyToken.setResId(value);
@@ -99,7 +103,9 @@ enum EditorTokens implements TokensConverter {
                 || historyToken.isFilterUntranslated() != historyToken
                         .isFilterApproved()
                 || historyToken.isFilterUntranslated() != historyToken
-                        .isFilterRejected()) {
+                        .isFilterRejected()
+                || historyToken.isFilterUntranslated() != historyToken
+                        .isFilterMT()) {
             // if filter options is set (not showing everything)
             if (historyToken.isFilterUntranslated()) {
                 tokens.add(new Token(KEY_MESSAGE_FILTER_UNTRANSLATED,
@@ -124,6 +130,10 @@ enum EditorTokens implements TokensConverter {
             if (historyToken.isFilterHasError()) {
                 tokens.add(new Token(KEY_MESSAGE_FILTER_ERROR,
                         VALUE_MESSAGE_FILTER));
+            }
+            if (historyToken.isFilterMT()) {
+                tokens.add(new Token(KEY_MESSAGE_FILTER_MT,
+                    VALUE_MESSAGE_FILTER));
             }
         }
         setIfExists(tokens, KEY_RES_ID, historyToken.getResId());

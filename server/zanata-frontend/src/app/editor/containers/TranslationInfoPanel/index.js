@@ -21,8 +21,9 @@ import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 import Notification from 'antd/lib/notification'
 import 'antd/lib/notification/style/css'
-// eslint-disable-next-line no-unused-vars
-import { ActivityFilter } from '../../utils/activity-util'
+
+/** @typedef {import('../../utils/activity-util').ActivityFilter}
+    ActivityFilter */
 
 /* Tab keys for tracking active Tab */
 const activityTabKey = '1'
@@ -52,6 +53,7 @@ class TranslationInfoPanel extends React.Component {
     activityVisible: PropTypes.bool.isRequired,
     /* close the sidebar */
     close: PropTypes.func.isRequired,
+    conflict: PropTypes.any,
     glossaryCount: PropTypes.number.isRequired,
     glossaryVisible: PropTypes.bool.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
@@ -68,7 +70,7 @@ class TranslationInfoPanel extends React.Component {
     notification: PropTypes.shape({
       severity: PropTypes.string,
       message: PropTypes.string,
-      description: PropTypes.any,
+      description: PropTypes.node,
       duration: PropTypes.number
     }),
     selectedPhrase: PropTypes.shape({
@@ -102,9 +104,9 @@ class TranslationInfoPanel extends React.Component {
     if (notification && prevProps.notification !== notification) {
       // @ts-ignore any
       Notification[notification.severity]({
+        key: notification.key,
         message: notification.message,
-        description: notification.description,
-        duration: null
+        description: notification.description
       })
     }
   }
@@ -159,7 +161,7 @@ class TranslationInfoPanel extends React.Component {
       : glossaryVisible ? glossaryTabKey
       : activityTabKey
     return (
-      <div>
+      <React.Fragment>
         <h1 className="SidebarEditor-heading">
           <Icon name="info" className="s1" parentClassName='details-svg' />
           <span className="hide-md">
@@ -217,7 +219,7 @@ class TranslationInfoPanel extends React.Component {
             </TabPane>
           </Tabs>
         </span>
-      </div>
+      </React.Fragment>
     )
   }
 }

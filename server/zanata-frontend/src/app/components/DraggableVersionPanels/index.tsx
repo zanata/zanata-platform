@@ -36,12 +36,12 @@ export class Item extends Component<ItemProps, {}> {
   // styling for panel appears in TMMergeModal (ProjectVersion/index.less) css
   public render () {
     const { value: { version, projectSlug } } = this.props
-    return <li className="v list-group-item" >
+    return <li className="v list-group-item txt-primary">
       <DragHandle />
       <span className="ml2">
         {version.id}
       </span>
-      <span className="txt-muted ml1">
+      <span className="fw5 ml4 ml1 txt-neutral">
         {projectSlug}
       </span> <LockIcon status={version.status} />
       {" "}
@@ -76,21 +76,19 @@ class Items extends Component<ItemsProps, {}> {
         key={value.projectSlug + ":" + value.version.id} index={index}
         value={value} removeVersion={removeVersion} />))
     return (
-      <div>
-        <Layout className="d-inh">
-        Adjust priority of selected versions
-        <br />
-        <span className="txt-muted">
-        (best first)
-        </span>
-        <Tooltip placement="top" title={tooltipSort} trigger="hover">
-          <a className="btn-xs btn-link">
-            <Icon name="info" className="s0" />
-          </a>
-        </Tooltip>
-        {sortableItems}
-        </Layout>
-      </div>
+      <Layout className="d-inh">
+      Adjust priority of selected versions
+      <br />
+      <span className="txt-muted">
+      (best first)
+      </span>
+      <Tooltip placement="top" title={tooltipSort} trigger="hover">
+        <a className="btn-xs btn-link">
+          <Icon name="info" className="s0" />
+        </a>
+      </Tooltip>
+      {sortableItems}
+      </Layout>
     )
   }
 }
@@ -121,12 +119,12 @@ class DraggableVersionPanels extends Component<{
       )
     }
     return (
-      <span>
+      <React.Fragment>
         <SortableList items={this.props.selectedVersions}
           onSortEnd={this.props.onDraggableMoveEnd} useDragHandle
           removeVersion={this.props.removeVersion}
           helperClass="sortable-helper" />
-      </span>
+      </React.Fragment>
     )
   }
 }

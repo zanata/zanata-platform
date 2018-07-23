@@ -1,4 +1,4 @@
-@import "./variables.less";
+@import "./antdvars.less";
 
 body.bodyStyle {
   margin: 0;
@@ -9,7 +9,7 @@ body.bodyStyle {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.5;
   background-color: #fff;
-  font-size: @font-size-base;
+  font-size: 16px;
 }
 
 .new-zanata {
@@ -19,6 +19,41 @@ body.bodyStyle {
   }
   h1.l--push-all-0 {
     line-height: initial !important;
+  }
+  #copy-trans-modal {
+    .button--group input[type="radio"] + .button--success {
+      color: @success-color !important;
+      background-color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"] + .button--unsure {
+      color: @unsure-color !important;
+      background-color: #f0f0f0 !important;
+    }
+    .button--group input[type="radio"] + .button--danger {
+      color: @error-color !important;
+      background-color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--success {
+      background-color: @success-color !important;
+      color: #f7f7f7 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--unsure {
+      background-color: @unsure-color !important;
+      color: #f0f0f0 !important;
+    }
+    .button--group input[type="radio"]:checked + .button--danger {
+      background-color: @error-color !important;
+      color: #f7f7f7 !important;
+    }
+    .modal__footer {
+      height: auto !important;
+    }
+  }
+  .use-global, .remove-locale {
+    height: 3rem !important;
+  }
+  .flex-btn-group {
+    display: inline-flex !important;
   }
   .autocomplete {
   position: inherit !important;
@@ -72,39 +107,42 @@ body.bodyStyle {
   .u-fullWidth {
     width: 100%;
   }
-  .i--left.i--document {
-    color: @color-muted;
+  .i--left.i--document, #merge-form i.i--project, #merge-form .i.i--version  {
+    color: @muted-color;
+  }
+  #merge-trans-buttons {
+    padding-bottom: @spacing-md;
   }
   .txt--meta {
-    color: @color-new-zanata-blue;
+    color: @processing-color;
   }
   .u-blockPadding {
-    padding: @spacing-rh;
+    padding: @spacing-sm;
   }
   .u-textNeutral-top {
-    color: @color-neutral;
+    color: @neutral-color;
     margin-top: 0.3rem;
   }
   .u-textNeutral, .txt--neutral {
-    color: @color-neutral;
+    color: @neutral-color;
   }
   .iconUser {
     fill: #03A6D7;
-    margin-right: @spacing-re;
+    margin-right: @spacing-sm;
     vertical-align: sub;
   }
   .iconProject {
-    margin-right: @spacing-re;
+    margin-right: @spacing-sm;
   }
   .iconLanguage {
     vertical-align: sub;
   }
   .iconUser-muted {
-    color: @color-muted;
-    margin-right: @spacing-rh;
+    color: @muted-color;
+    margin-right: @spacing-sm;
   }
   .iconsStatus {
-    margin-right: @spacing-rh;
+    margin-right: @spacing-sm;
   }
   .iconDelete {
     vertical-align: sub;
@@ -113,22 +151,22 @@ body.bodyStyle {
     vertical-align: sub;
   }
   .iconUsers-muted, .iconTranslate-muted {
-    color: @color-muted;
-    margin-right: @spacing-rh;
-    margin-left: @spacing-rq;
+    color: @muted-color;
+    margin-right: @spacing-sm;
+    margin-left: @spacing-md;
     vertical-align: sub;
   }
   .iconTranslate-neutral, .iconLanguage-neutral, .iconGlossary-neutral {
     color: rgb(189, 212, 220);
-    margin-left: @spacing-rq;
-    margin-right: @spacing-re;
+    margin-left: @spacing-md;
+    margin-right: @spacing-sm;
   }
   .lineClamp {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
     max-height: 24px;
-    padding-left: @spacing-rh;
+    padding-left: @spacing-md;
   }
   a.lineClamp {
     display: -webkit-box;
@@ -188,7 +226,7 @@ body.bodyStyle {
     position: fixed;
   }
   .panel__header a#new-version-link i.i.i--add:not(.i--large) {
-    color: @color-light;
+    color: @info-color;
   } //fix for admin panel icons
   .panel__header i.i--add:not(.i--large) {
     color: inherit !important;
@@ -204,7 +242,7 @@ body.bodyStyle {
     width: 100%;
   }
   #fileUpload-toggleBtn i.i--add, #addMember-btn i.i--add {
-    color: @color-dark;
+    color: @primary-color;
   }
   .page {
     overflow: hidden;
@@ -258,7 +296,7 @@ body.bodyStyle {
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding-top: 0 !important;
-    margin-bottom: @spacing-base-and-a-half;
+    margin-bottom: @spacing-lg;
   }
   .rootMain-content {
     align-items: flex-start;

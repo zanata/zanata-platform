@@ -345,7 +345,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         return count == null ? 0 : count.intValue();
     }
 
-    public List<Long> getTextFlowsIdsInVersion(
+    public List<Long> getActiveTextFlowsIdsInProjectVersion(
             long projectIterationId, int startIndex, int maxCount) {
         String queryString =
                 "select id from HTextFlow tf" +

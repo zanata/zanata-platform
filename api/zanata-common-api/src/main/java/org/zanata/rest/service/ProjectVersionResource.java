@@ -242,6 +242,8 @@ public interface ProjectVersionResource {
         @PathParam("versionSlug") String versionSlug);
 
     /**
+     * INTERNAL API ONLY - SUBJECT TO CHANGE OR REMOVAL WITHOUT NOTICE <br/>
+     *
      * Queries for a list of translation unit id with status in a document.
      *
      * @param filterConstraints

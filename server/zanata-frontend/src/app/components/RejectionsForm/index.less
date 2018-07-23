@@ -1,51 +1,12 @@
-@import "../../styles/variables.less";
-
-form#rejectionsForm {
-  display: inline-flex;
-  align-items: flex-start;
-  width: 100%;
-  flex-direction: row;
-  margin-bottom: @spacing-xlarge;
-
-  #toggleComment {
-    text-align: center;
-  }
-  button,  input, textarea {
-    line-height: @line-height-small;
-  }
-
-  input.textInput::placeholder,
-  textarea.textInput::placeholder {
-    color: @color-muted;
-  }
-
-  .form-group {
-    padding-right: @spacing-xlarge;
-  }
-
-  .control-label {
-    font-size: @font-size-small;
-    font-weight: 500;
-  }
-
-  .btn-danger {
-    margin-left: @spacing-rq;
-  }
-
-  .iconEdit,
-  .rejection-btns .s1 {
-    vertical-align: sub;
-  }
-
-  .rejection-btns {
-    margin-left: @spacing-half-base;
-  }
-
-  button#dropdown-basic {
-    font-weight: 400;
-    padding-left: @spacing-rq;
-    padding-right: @spacing-rq;
-  }
-
+.review-label .ant-form-item-label, .review-label .ant-form-item-label * {
+  width: auto;
+  padding-right: 0.75rem;
 }
 
+.ant-form-inline .ant-row.ant-form-item.review-label > .ant-form-item-control-wrapper {
+  width: 100%;
+}
+
+.ant-row.ant-form-item.comment.review-label .ant-form-item-label {
+  display: contents;
+}

@@ -11,7 +11,7 @@ const fs = require('fs-extra')
 const c = require('cli-color')
 const WebpackDevServer = require('webpack-dev-server')
 const webpack = require('webpack')
-const createConfig = require('../webpack.config.js')
+const createConfig = require('../webpack.dev.js')
 const devServerConfig = require('./dev-server.config.js')
 
 const isEditor = process.argv.indexOf('--editor') !== -1
@@ -19,7 +19,7 @@ const port = isEditor ? 8001 : 8000
 const devRoot = `http://localhost:${port}`
 const zanataRoot = 'http://localhost:8080'
 
-const webpackConfig = createConfig({ buildtype: 'dev' }, isEditor, port)
+const webpackConfig = createConfig(isEditor, port)
 
 fs.ensureDir('dist')
   .then(() => {

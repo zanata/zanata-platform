@@ -1,15 +1,15 @@
+/* eslint-disable */
 // @ts-nocheck
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { EditableText } from '../'
-import { Well, Table } from 'react-bootstrap'
 import * as PropTypes from "prop-types";
 
 storiesOf('EditableText', module)
     .add('editing', () => (
         <span>
           <h2><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg" width="42px" /> EditableText</h2>
-          <Well bsSize="large">Used on Glossary page and modals for editable glossary terms.</Well>
+          <p>Used on Glossary page and modals for editable glossary terms.</p>
           <EditableText
             className='editable textInput textState'
             maxLength={255}
@@ -21,7 +21,7 @@ storiesOf('EditableText', module)
         </EditableText>
           <hr />
             <h3>Props</h3>
-          <Table striped bordered condensed hover>
+          <table striped bordered condensed hover>
             <thead>
             <tr>
               <th>Name</th>
@@ -73,7 +73,7 @@ storiesOf('EditableText', module)
               </td>
             </tr>
             </tbody>
-          </Table>
+          </table>
         </span>
     ))
     .add('not editing', () => (

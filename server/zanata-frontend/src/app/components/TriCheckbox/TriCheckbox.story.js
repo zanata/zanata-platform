@@ -1,3 +1,4 @@
+/* eslint-disable */
 // @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
@@ -6,7 +7,8 @@ import { action } from '@storybook/addon-actions'
 import { storiesOf } from '@storybook/react'
 import RealTriCheckbox from '.'
 import TriCheckboxGroup from './TriCheckboxGroup'
-import { Table, Col, Well } from 'react-bootstrap'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
 
 class TriCheckbox extends Component {
   static propTypes = {
@@ -33,7 +35,7 @@ class TriCheckbox extends Component {
 
   render () {
     return (
-      <div>
+      <React.Fragment>
         <RealTriCheckbox
           className={this.props.className}
           checked={this.state.checked}
@@ -41,7 +43,7 @@ class TriCheckbox extends Component {
           onChange={this.checkboxChanged}
           useDefaultStyle={this.state.useDefaultStyle}
         />
-      </div>
+      </React.Fragment>
     )
   }
 }
@@ -71,7 +73,7 @@ class WithButton extends Component {
 
   render () {
     return (
-      <div>
+      <React.Fragment>
         <RealTriCheckbox
           checked={this.state.checked}
           indeterminate={this.state.indeterminate}
@@ -79,30 +81,30 @@ class WithButton extends Component {
           useDefaultStyle={false}
         />
         <button onClick={this.makeIndeterminate}>Make intermediate</button>
-      </div>
+      </React.Fragment>
     )
   }
 }
 
 storiesOf('TriCheckbox', module)
   .add('default', () => (
-    <div>
+    <React.Fragment>
       <h2><img
           src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg"
           width="42px"/> TriCheckbox</h2>
-      <Well bsSize="large">Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.</Well>
+      <p>Checkbox with intermediate setting to indicate part of a list of checkbox items is selected.</p>
       <h3>Setting Intermediate</h3>
       <WithButton
         checked={false}
         indeterminate={false}
         onChange={action('onChange')}
         />
-    </div>
+    </React.Fragment>
   ))
   .add('truth table', () => (
-    <div>
+    <React.Fragment>
       <h2>Truth Table</h2>
-      <Table striped bordered condensed hover><tbody>
+      <table striped bordered condensed hover><tbody>
         <tr>
           <th>checked</th>
           <th>intermediate</th>
@@ -161,8 +163,8 @@ storiesOf('TriCheckbox', module)
             />
           </td>
         </tr>
-      </tbody></Table>
-    </div>
+      </tbody></table>
+    </React.Fragment>
   ))
   .add('checkbox group', () => (
     <TriCheckboxGroup
@@ -175,7 +177,7 @@ storiesOf('TriCheckbox', module)
       onClick={action('onClick')} />
   ))
   .add('with custom styles', () => (
-    <div>
+    <React.Fragment>
       <h2>Passing custom styles through props</h2>
       <Col xs={4}>
         <h3>unstyled</h3>
@@ -237,5 +239,5 @@ storiesOf('TriCheckbox', module)
           onChange={action('onChange')}
         />
       </Col>
-    </div>
+    </React.Fragment>
   ))

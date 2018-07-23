@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.6.0-SNAPSHOT</version>
+    <version>4.6.0-rc-2-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -71,6 +71,7 @@
     <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
     <shrinkwrap.desc.version>2.0.0</shrinkwrap.desc.version>
     <maven.model.version>3.3.9</maven.model.version>
+    <jetty.version>9.2.15.v20160210</jetty.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
@@ -147,13 +148,13 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.6</version>
+        <version>3.7</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.1</version>
+        <version>1.4</version>
       </dependency>
 
       <dependency>
@@ -475,7 +476,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.4.1</version>
+        <version>4.5.1</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -485,9 +486,30 @@
       </dependency>
 
       <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-webapp</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlets</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4.1</version>
+        <version>4.4.3</version>
       </dependency>
 
       <dependency>
@@ -1833,6 +1855,13 @@
         <version>1.0.5.Final</version>
         <scope>test</scope>
       </dependency>
+
+      <dependency>
+    <groupId>com.github.wnameless</groupId>
+    <artifactId>json-flattener</artifactId>
+    <version>0.5.0</version>
+</dependency>
+
     </dependencies>
   </dependencyManagement>
 

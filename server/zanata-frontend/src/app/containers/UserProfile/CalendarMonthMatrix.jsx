@@ -93,18 +93,14 @@ const CalendarMonthMatrix = ({
   return (
     <div id='userProfile-activityTable'>
       <div className='userProfile-activityTable-inner'>
-        <div>
-          <h3 className='u-textUppercaseBold'>
-            {header}
-          </h3>
-        </div>
+        <h3 className='u-textUppercaseBold'>
+          {header}
+        </h3>
         {selectedDay &&
-        (<div>
-          <Button className='btn-link btn-clear' aria-label='button'
-            onClick={() => handleSelectedDayChanged(null)}>
+        (<Button className='btn-link btn-clear' aria-label='button'
+          onClick={() => handleSelectedDayChanged(null)}>
             Clear selection
-          </Button>
-        </div>)}
+        </Button>)}
       </div>
       <table className={calClass}>
         <thead>

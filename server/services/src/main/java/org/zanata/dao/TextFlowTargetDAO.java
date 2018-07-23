@@ -210,7 +210,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
      * Other parameters (context, document id, and project) can also influence
      * what the best match is. A matching translation is one where the source
      * text is exactly the same as the translation within the document and in
-     * the same locale.
+     * the same locale, excluding any machine translations.
      *
      * @param textFlow
      *            The text flow for which to find a matching translation.
@@ -242,9 +242,13 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                 .append("WHERE tf.contentHash = :contentHash AND locale.localeId = :localeId ")
                 .append("AND tft.tf_id = tf.id ")
                 .append("AND tft.locale = locale.id ")
+                // 'MT' = TranslationSourceType.MACHINE_TRANS
+                .append("AND (tft.sourceType IS NULL OR tft.sourceType <> 'MT') ")
                 .append("AND tf.document_id = hDoc.id ")
                 .append("AND hDoc.project_iteration_id = iter.id ")
                 .append("AND iter.project_id = project.id ")
+                // (2, 3) = (ContentState.Translated, ContentState.Approved)
+                // 'O' = EntityStatus.OBSOLETE
                 .append("AND tft.state in (2, 3) AND tft.tf_id <> :textFlowId AND iter.status <> 'O' AND project.status <> 'O' ");
         if (checkContext) {
             queryBuilder.append("AND tf.resId = :resId ");

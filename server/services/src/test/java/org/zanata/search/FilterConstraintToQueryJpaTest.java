@@ -18,6 +18,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.WebHook;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.model.type.WebhookType;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
@@ -114,6 +115,11 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                 .withLastModifiedDate(yesterday).withResId("res10")
                 .withSourceContent("source 10").withTargetContent("target_10")
                 .withTargetState(ContentState.Translated).build();
+        // 11. target translated by machine translation
+        baseBuilder.withSourceType(TranslationSourceType.MACHINE_TRANS)
+            .withLastModifiedDate(yesterday).withResId("res11")
+            .withSourceContent("source 11").withTargetContent("target_11")
+            .withTargetState(ContentState.Translated).build();
         getEm().flush();
     }
 
@@ -134,11 +140,11 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                         FilterConstraints.builder().build(), documentId);
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> textFlows = getResultList(hql, constraintToQuery);
-        assertThat(textFlows).hasSize(10);
+        assertThat(textFlows).hasSize(11);
         String navigationQuery = constraintToQuery.toModalNavigationQuery();
         List<HTextFlow> navigationResult =
                 getNavigationResult(navigationQuery, constraintToQuery);
-        assertThat(navigationResult).hasSize(10);
+        assertThat(navigationResult).hasSize(11);
     }
 
     @SuppressWarnings("unchecked")
@@ -247,6 +253,22 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         log.debug("result: {}", ids);
         assertThat(ids).contains("res2");
         verifyModalNavigationQuery(constraintToQuery, result);
+    }
+
+    @Test
+    public void filterByMT() {
+        FilterConstraintToQuery constraintToQuery =
+            FilterConstraintToQuery.filterInSingleDocument(FilterConstraints
+                .builder().keepAll().includeMT(true).build(), documentId);
+        String hql = constraintToQuery.toEntityQuery();
+        List<HTextFlow> textFlows = getResultList(hql, constraintToQuery);
+        assertThat(textFlows).hasSize(1);
+        assertThat(textFlows.get(0).getResId()).isEqualTo("res11");
+
+        String navigationQuery = constraintToQuery.toModalNavigationQuery();
+        List<HTextFlow> navigationResult =
+            getNavigationResult(navigationQuery, constraintToQuery);
+        assertThat(navigationResult).hasSize(1);
     }
 
     @Test

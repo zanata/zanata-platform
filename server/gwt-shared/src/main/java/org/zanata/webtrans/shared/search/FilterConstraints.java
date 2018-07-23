@@ -41,6 +41,7 @@ public class FilterConstraints {
     private boolean searchInSource;
     private boolean searchInTarget;
     private ContentStateGroup includedStates;
+    private boolean includedMT;
     private String resId;
     private DateTime changedBefore;
     private DateTime changedAfter;
@@ -55,6 +56,7 @@ public class FilterConstraints {
         searchString = builder.searchString;
         isCaseSensitive = builder.caseSensitive;
         includedStates = builder.states.build();
+        includedMT = builder.includedMT;
         resId = builder.resId;
         changedBefore = builder.changedBefore;
         changedAfter = builder.changedAfter;
@@ -77,6 +79,7 @@ public class FilterConstraints {
         return isCaseSensitive == that.isCaseSensitive &&
                 searchInSource == that.searchInSource &&
                 searchInTarget == that.searchInTarget &&
+                Objects.equals(includedMT, that.includedMT) &&
                 Objects.equals(searchString, that.searchString) &&
                 Objects.equals(includedStates, that.includedStates) &&
                 Objects.equals(resId, that.resId) &&
@@ -92,10 +95,9 @@ public class FilterConstraints {
     @Override
     public int hashCode() {
         return Objects.hash(searchString, isCaseSensitive, searchInSource,
-                        searchInTarget,
-                        includedStates, resId, changedBefore, changedAfter,
-                        lastModifiedByUser, sourceComment, transComment,
-                        msgContext);
+            searchInTarget, includedStates, includedMT, resId, changedBefore,
+            changedAfter, lastModifiedByUser, sourceComment, transComment,
+            msgContext);
     }
 
     public static Builder builder() {
@@ -106,6 +108,7 @@ public class FilterConstraints {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("searchString", searchString)
+                .add("includedMT", includedMT)
                 .add("isCaseSensitive", isCaseSensitive)
                 .add("searchInSource", searchInSource)
                 .add("searchInTarget", searchInTarget)
@@ -126,6 +129,7 @@ public class FilterConstraints {
         private boolean searchInSource;
         private boolean searchInTarget;
         private ContentStateGroup.Builder states;
+        private boolean includedMT;
         private String resId;
         private DateTime changedBefore;
         private DateTime changedAfter;
@@ -153,6 +157,7 @@ public class FilterConstraints {
             caseSensitive = false;
             searchInSource = true;
             searchInTarget = true;
+            includedMT = false;
             states.addAll();
             resId = "";
             changedAfter = null;
@@ -164,6 +169,7 @@ public class FilterConstraints {
         }
 
         public Builder keepNone() {
+            includedMT = false;
             searchString = "";
             caseSensitive = false;
             searchInSource = false;
@@ -251,6 +257,11 @@ public class FilterConstraints {
 
         public Builder excludeRejected() {
             states.includeRejected(false);
+            return this;
+        }
+
+        public Builder includeMT(boolean includedMT) {
+            this.includedMT = includedMT;
             return this;
         }
 
@@ -342,5 +353,9 @@ public class FilterConstraints {
 
     public String getMsgContext() {
         return this.msgContext;
+    }
+
+    public boolean isIncludedMT() {
+        return includedMT;
     }
 }

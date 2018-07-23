@@ -271,7 +271,6 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
             setPoTargetHeaders(Map<HLocale, HPoTargetHeader> poTargetHeaders) {
         this.poTargetHeaders = poTargetHeaders;
     }
-    // TODO use orphanRemoval=true: requires JPA 2.0
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
             mappedBy = "document", orphanRemoval = true)

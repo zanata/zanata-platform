@@ -8,6 +8,7 @@ import {
 import { UNSPECIFIED } from '../utils/reject-trans-util'
 import { SEVERITY } from '../../actions/common-actions'
 
+/** @type {import('./state').ReviewState} */
 const defaultState = {
   notification: undefined,
   showReviewModal: false,
@@ -42,7 +43,8 @@ const review = handleActions({
         $set: {
           severity: SEVERITY.ERROR,
           message: `Failed to retrieve review criteria.`,
-          description: getErrorMessage(action)
+          description: getErrorMessage(action),
+          duration: null
         }
       }
     })

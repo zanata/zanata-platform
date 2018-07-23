@@ -2,6 +2,7 @@ package org.zanata.rest.editor.dto;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -44,6 +45,12 @@ public class TranslationData implements Serializable {
 
     @JsonProperty("revisionComment")
     private String revisionComment;
+
+    @JsonProperty("lastModifiedBy")
+    private String lastModifiedBy;
+
+    @JsonProperty("lastModifiedDate")
+    private Date lastModifiedDate;
 
     public TranslationData() {
 
@@ -91,6 +98,7 @@ public class TranslationData implements Serializable {
         this.revisionComment = comment;
     }
 
+
     @JsonIgnore
     public List<String> getContents() {
         if(contents == null && content == null) {
@@ -127,6 +135,26 @@ public class TranslationData implements Serializable {
         }
     }
 
+    @JsonIgnore
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    @JsonIgnore
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    @JsonIgnore
+    public Date getLastModifiedDate() {
+        return new Date(lastModifiedDate.getTime());
+    }
+
+    @JsonIgnore
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = new Date(lastModifiedDate.getTime());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -148,7 +176,14 @@ public class TranslationData implements Serializable {
         if (revision != null ? !revision.equals(that.revision) :
             that.revision != null) return false;
         if (status != that.status) return false;
-
+        if (lastModifiedBy != null
+                ? !lastModifiedBy.equals(that.lastModifiedBy)
+                : that.lastModifiedBy != null)
+            return false;
+        if (lastModifiedDate != null
+                ? !lastModifiedDate.equals(that.lastModifiedDate)
+                : that.lastModifiedDate != null)
+            return false;
         return true;
     }
 
@@ -162,6 +197,10 @@ public class TranslationData implements Serializable {
         result = 31 * result + (contents != null ? contents.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (plural ? 1 : 0);
+        result = 31 * result +
+                (lastModifiedBy != null? lastModifiedBy.hashCode() : 0);
+        result = 31 * result +
+                (lastModifiedDate != null ? lastModifiedDate.hashCode() : 0);
         return result;
     }
 }

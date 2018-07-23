@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Proxy;
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -57,6 +58,10 @@ import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.config.MTServiceToken;
+import org.zanata.config.MTServiceURL;
+import org.zanata.config.MTServiceUser;
 import org.zanata.email.EmailBuilder;
 import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
@@ -102,6 +107,16 @@ public class ZanataInit {
     @Inject
     private Event<ServerStarted> startupEvent;
 
+    @Inject
+    @MTServiceURL
+    private URI mtServiceURL;
+    @Inject
+    @MTServiceUser
+    private String mtServiceUser;
+    @Inject
+    @MTServiceToken
+    private String mtServiceToken;
+
     @WithRequestScope
     public void onCreate(@Observes @Initialized ServletContext context)
             throws Exception {
@@ -143,6 +158,9 @@ public class ZanataInit {
         }
         if (applicationConfiguration.isSaml2Auth()) {
             log.info("SAML2 authentication: enabled");
+        }
+        if (mtServiceURL != null) {
+            log.info("Machine translation service is enabled: {}", mtServiceURL);
         }
         log.info("Configured authentications: {}", applicationConfiguration.getAuthTypes());
         log.info("Enable copyTrans: {}",

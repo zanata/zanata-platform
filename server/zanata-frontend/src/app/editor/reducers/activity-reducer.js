@@ -2,6 +2,7 @@ import { handleActions } from 'redux-actions'
 import { TRANS_HISTORY_SUCCESS } from '../actions/activity-action-types'
 import update from 'immutability-helper'
 
+/** @type {import('./state').ActivityState} */
 const defaultState = {
   transHistory: {
     historyItems: undefined,

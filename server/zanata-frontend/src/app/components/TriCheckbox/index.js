@@ -38,7 +38,7 @@ class TriCheckbox extends Component {
     // eslint-disable-next-line no-unused-vars
     const { indeterminate, useDefaultStyle, className, ...otherProps } =
       this.props
-    const classes = cx({'triCheckbox bstrapReact': useDefaultStyle}, className)
+    const classes = cx({'triCheckbox': useDefaultStyle}, className)
     return (
       <input
         className={classes}

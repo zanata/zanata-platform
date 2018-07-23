@@ -14,45 +14,43 @@ const linkname = 'Our awesome webpage'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
-        <div>
-          <Sidebar />
-          <div className='flexTab'>
-            <p>This sidebar example has the active tag applied to both the People
-              and Languages pages to provide examples of how this design handles
-              sidebar links.</p>
-            <p>The sidebar nav has been implemented using &nbsp;
-              <a href='https://react-bootstrap.github.io/components.html#navs'>
-                react bootstrap components</a>.</p>
-          </div>
-      </div>
+      <React.Fragment>
+        <Sidebar />
+        <div className='flexTab'>
+          <p>This sidebar example has the active tag applied to both the People
+            and Languages pages to provide examples of how this design handles
+            sidebar links.
+          </p>
+        </div>
+      </React.Fragment>
     ))
     .add('AboutPage', () => (
-        <div>
-          <Sidebar />
-          <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
-        </div>
+      <React.Fragment>
+        <Sidebar />
+        <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
+      </React.Fragment>
     ))
     .add('PeoplePage', () => (
-        <div>
-          <Sidebar />
-          <PeoplePage />
-        </div>
+      <React.Fragment>
+        <Sidebar />
+        <PeoplePage />
+      </React.Fragment>
     ))
     .add('GroupsPage', () => (
-        <div>
-          <Sidebar />
-          <GroupsPage />
-        </div>
+      <React.Fragment>
+        <Sidebar />
+        <GroupsPage />
+      </React.Fragment>
     ))
     .add('LanguagesPage', () => (
-        <div>
-          <Sidebar />
-          <LanguagesPage />
-        </div>
+      <React.Fragment>
+        <Sidebar />
+        <LanguagesPage />
+      </React.Fragment>
     ))
     .add('DocumentsPage', () => (
-        <div>
-          <Sidebar />
-          <DocumentsPage />
-        </div>
+      <React.Fragment>
+        <Sidebar />
+        <DocumentsPage />
+      </React.Fragment>
     ))

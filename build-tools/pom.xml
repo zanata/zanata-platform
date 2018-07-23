@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>build-tools</artifactId>
-  <version>4.6.0-SNAPSHOT</version>
+  <version>4.6.0-rc-2-SNAPSHOT</version>
   <name>Build Tools</name>
   <description>Build tools for Zanata modules</description>
   <url>http://zanata.org/</url>

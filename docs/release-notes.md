@@ -1,3 +1,26 @@
+## 4.6.0
+##### Magpie Translation (MT)
+[Magpie Translation (MT)](https://github.com/zanata/zanata-mt/) provides the results from machine translation
+services.
+You can ignore this section if you do not run the Zanata Magpie service.
+
+To enable MT, edit `standalone.xml` and providing your own value of each system property:
+
+```xml
+<system-properties>
+  ...
+  <property name="mt.service.url" value="https://your.mt.service/"/>
+  <property name="mt.service.user" value="your_mt_service_username"/>
+  <property name="mt.service.token" value="token"/>
+</system-properties>
+```
+
+##### Breaking Changes
+JSON files were previously uploaded using a content hash for the ID.
+These will now use an object path for the ID, and updating an existing document may lose its translations.
+Users can utilize the Copy Translations or TM Merge features to restore them.
+-----------------------
+
 ## 4.5.0
 ##### Changes
  * [ZNTA-2552](https://zanata.atlassian.net/browse/ZNTA-2552) - Cookie consent popup

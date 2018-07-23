@@ -19,17 +19,17 @@ const ProjectTeaser = ({
 }) => {
   const status = statusIcons[details.status]
   const description = details.description
-    ? (<div className='u-textMuted'>
+    ? (<div className='txt-muted'>
         {details.description}
     </div>)
-    : (<div className='u-textMuted'>
+    : (<div className='txt-muted'>
       <em>Project: {details.id}</em>
     </div>)
   const metaData = details.owner && (
-    <div className='metaInfo'>
-      <Icon name='user' className='n1' parentClassName='iconUser-muted' />
+    <div className='metaInfo txt-muted'>
+      <Icon name='user' className='n1' />
       <Link to={details.owner}>{details.owner}</Link>
-      <Icon name='users' className='n1' parentClassName='iconUsers-muted' />
+      <Icon name='users' className='n1' />
       <Link
         to={details.owner + '/' + details.id + '/people'}>
         {details.contributorCount}
@@ -38,24 +38,21 @@ const ProjectTeaser = ({
   )
   const link = getProjectUrl(details.id)
   const className = status !== statusIcons.ACTIVE
-    ? 'text-muted-bold'
-    : 'text-bold'
+    ? 'btn-link b txt-muted'
+    : 'btn-link b'
   const tooltip = status === statusIcons.ACTIVE
     ? ''
     : 'This project is currently read only'
   return (
     <div className='teaserView' name={name}>
       <div className='teaser-inner'>
-        <div>
-          <Link link={link} useHref className={className} title={tooltip}>
-            {status !== statusIcons.ACTIVE &&
-            (<Icon name={statusIcons[details.status]} className='s1'
-              parentClassName='iconsStatus'
-            />)}
-            {details.title}
-          </Link>
-          {description}
-        </div>
+        <Link link={link} useHref className={className} title={tooltip}>
+          {status !== statusIcons.ACTIVE &&
+          (<Icon name={statusIcons[details.status]} className='s1'
+          />)}
+          {details.title}
+        </Link>
+        {description}
         {metaData}
       </div>
     </div>

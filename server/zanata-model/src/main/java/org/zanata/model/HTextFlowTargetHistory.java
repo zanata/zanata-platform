@@ -53,7 +53,7 @@ import org.hibernate.annotations.TypeDefs;
 import org.zanata.common.ContentState;
 import org.zanata.model.type.EntityType;
 import org.zanata.model.type.EntityTypeType;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.model.type.TranslationSourceTypeType;
 
 import com.google.common.base.Objects;

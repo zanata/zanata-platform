@@ -34,7 +34,6 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
@@ -46,6 +45,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
@@ -120,6 +120,9 @@ public class ProjectVersionService implements ProjectVersionResource {
     @Inject
     private ValidationService validationService;
 
+    @Inject
+    private ActiveProjectVersionAndLocaleValidator activeProjectVersionAndLocaleValidator;
+
     @Override
     public Response head(@PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug) {
@@ -144,13 +147,14 @@ public class ProjectVersionService implements ProjectVersionResource {
         if (projTypeError != null) {
             return projTypeError;
         }
-        HProject hProject = projectDAO.getBySlug(projectSlug);
-
         Optional<Response> projectResponse =
-                getResponseIfProjectIsNotActive(hProject, projectSlug);
+                activeProjectVersionAndLocaleValidator
+                        .getResponseIfProjectIsNotActive(projectSlug);
         if (projectResponse.isPresent()) {
             return projectResponse.get();
         }
+
+        HProject hProject = activeProjectVersionAndLocaleValidator.getProject();
 
         HProjectIteration hProjectVersion =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
@@ -202,26 +206,6 @@ public class ProjectVersionService implements ProjectVersionResource {
             etag = eTagUtils.generateETagForIteration(projectSlug, versionSlug);
         }
         return response.tag(etag).build();
-    }
-
-    private Optional<Response> getResponseIfProjectIsNotActive(
-            HProject hProject, String projectSlug) {
-        if (hProject == null) {
-            return Optional.of(Response.status(Response.Status.NOT_FOUND)
-                    .entity("Project \'" + projectSlug + "\' not found.")
-                    .build());
-        } else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
-            // Project is Obsolete
-            return Optional.of(Response.status(Response.Status.NOT_FOUND)
-                    .entity("Project \'" + projectSlug + "\' not found.")
-                    .build());
-        } else if (Objects.equal(hProject.getStatus(), READONLY)) {
-            // Project is ReadOnly
-            return Optional.of(Response.status(Response.Status.FORBIDDEN)
-                    .entity("Project \'" + projectSlug + "\' is read-only.")
-                    .build());
-        }
-        return Optional.empty();
     }
 
     @Override
@@ -357,9 +341,11 @@ public class ProjectVersionService implements ProjectVersionResource {
         List<TransUnitStatus> statusList =
                 Lists.newArrayListWithExpectedSize(textFlows.size());
         for (HTextFlow textFlow : textFlows) {
-            ContentState state =
-                    textFlow.getTargets().get(hLocale.getId()).getState();
-            statusList.add(new TransUnitStatus(textFlow.getId(), textFlow.getResId(), state));
+            HTextFlowTarget target = textFlow.getTargets().get(hLocale.getId());
+            ContentState state = target.getState();
+            statusList.add(
+                new TransUnitStatus(textFlow.getId(), textFlow.getResId(),
+                    state, target.getSourceType()));
         }
         Object entity = new GenericEntity<List<TransUnitStatus>>(statusList){};
         return Response.ok(entity).build();
@@ -404,40 +390,24 @@ public class ProjectVersionService implements ProjectVersionResource {
                     .entity("{\"error\":\"percentThreshold must be between 75 and 100\"}")
                     .build();
         }
-        HProject hProject = projectDAO.getBySlug(projectSlug);
 
-        Optional<Response> projectResponse =
-                getResponseIfProjectIsNotActive(hProject, projectSlug);
-        if (projectResponse.isPresent()) {
-            return projectResponse.get();
+        Optional<Response> response =
+                activeProjectVersionAndLocaleValidator
+                        .getResponseIfProjectLocaleAndVersionAreNotActive(
+                                projectSlug, versionSlug,
+                                mergeRequest.getLocaleId());
+
+        if (response.isPresent()) {
+            return response.get();
         }
 
-        LocaleId localeId = mergeRequest.getLocaleId();
-        HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-        if (hLocale == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
 
-        identity.checkPermission("modify-translation", hProject, hLocale);
+        HProject hProject = activeProjectVersionAndLocaleValidator.getProject();
+        HLocale hLocale = activeProjectVersionAndLocaleValidator.getLocale();
+        identity.checkPermission("modify-translation",
+                hProject, hLocale);
 
-        HProjectIteration version =
-                projectIterationDAO.getBySlug(hProject, versionSlug);
-        if (version == null || version.getStatus() == OBSOLETE) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Project version \'" + projectSlug + ":"
-                            + versionSlug + "\' not found.")
-                    .build();
-        } else if (version.getStatus() == READONLY) {
-            return Response.status(Response.Status.FORBIDDEN)
-                    .entity("Project version \'" + projectSlug + ":"
-                            + versionSlug + "\' is readonly.")
-                    .build();
-        } else if (version.getDocuments().isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"project version has no documents\"}")
-                    .build();
-        }
-
+        HProjectIteration version = activeProjectVersionAndLocaleValidator.getVersion();
 
         if (mergeRequest.getInternalTMSource().getChoice() == InternalTMSource.InternalTMChoice.SelectSome) {
             List<Long> fromVersionIds = mergeRequest.getInternalTMSource()
@@ -464,7 +434,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         AsyncTaskHandle<Void> handle = transMemoryMergeManager
                 .start(version.getId(), mergeRequest);
 
-        String url = uri.getBaseUri() + "process/key/" + handle.getKeyId();
+        String url = uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId();
         ProcessStatus processStatus = AsyncProcessService
                 .handleToProcessStatus(handle,
                         HttpUtil.stripProtocol(url));
@@ -616,4 +586,5 @@ public class ProjectVersionService implements ProjectVersionResource {
         this.urlUtil = urlUtil;
         this.validationService = validationService;
     }
+
 }

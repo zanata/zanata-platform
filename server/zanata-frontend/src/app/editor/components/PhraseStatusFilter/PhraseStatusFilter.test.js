@@ -83,7 +83,8 @@ describe('PhraseStatusFilterTest', () => {
           translated: true,
           needswork: false,
           rejected: true,
-          untranslated: false
+          untranslated: false,
+          mt: false
         }}
         counts={{
           total: 1,
@@ -91,7 +92,8 @@ describe('PhraseStatusFilterTest', () => {
           translated: 3,
           needswork: 4,
           rejected: 5,
-          untranslated: 6
+          untranslated: 6,
+          mt: 1
         }}
         gettextCatalog={mockGettextCatalog} />
     )
@@ -153,6 +155,15 @@ describe('PhraseStatusFilterTest', () => {
             count={6}
             onChange={callback} />
         </li>
+        <li className="u-ltemd-hidden u-sMV-1-4">
+          <FilterToggle
+            id="filter-phrases-mt"
+            className="u-text-color-secondary"
+            isChecked={false}
+            onChange={callback}
+            title="MT"
+            count={1} />
+        </li>
       </ul>
     )
     expect(actual).toEqual(expected)
@@ -180,7 +191,8 @@ describe('PhraseStatusFilterTest', () => {
           translated: true,
           needswork: false,
           rejected: false,
-          untranslated: true
+          untranslated: true,
+          mt: false
         }}
         counts={{
           total: 1,
@@ -188,12 +200,13 @@ describe('PhraseStatusFilterTest', () => {
           translated: 3,
           needswork: 4,
           rejected: 5,
-          untranslated: 6
+          untranslated: 6,
+          mt: 1
         }}
         gettextCatalog={mockGettextCatalog} />
     )
     // @ts-ignore
-    const [all, _approved, _translated, needsWork, _untranslated] =
+    const [all, _approved, _translated, needsWork, _untranslated, _mt] =
       // @ts-ignore
       TestUtils.scryRenderedDOMComponentsWithTag(filterComponent, 'input')
 

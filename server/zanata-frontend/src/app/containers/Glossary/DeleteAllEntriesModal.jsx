@@ -56,6 +56,7 @@ class DeleteAllEntriesModal extends Component {
           visible={show}
           title={deleteAll}
           className='tc'
+          trigger='click'
           arrowPointAtCenter>
           <Button className='btn-link icon-delete' aria-label='button'
             onClick={() => handleDeleteAllEntriesDisplay(true)}

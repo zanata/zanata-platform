@@ -136,12 +136,42 @@ class TransUnitTranslationPanel extends React.Component {
     const isPlural = phrase.plural
     const directionClass = isRTL ? 'rtl' : 'ltr'
 
+    if (selected) {
+      const headerProps = pick(this.props, [
+        'cancelEdit',
+        'phrase',
+        'translationLocale',
+        'undoEdit'
+      ])
+      header = <TransUnitTranslationHeader {...headerProps} />
+
+      const footerProps = pick(this.props, [
+        'glossaryCount',
+        'glossaryVisible',
+        'openDropdown',
+        'phrase',
+        'saveAsMode',
+        'saveDropdownKey',
+        'savePhraseWithStatus',
+        'showSuggestions',
+        'suggestionCount',
+        'suggestionSearchType',
+        'toggleDropdown',
+        'toggleGlossary',
+        'toggleSuggestionPanel',
+        'showRejectModal',
+        'permissions'
+      ])
+      footer = <TransUnitTranslationFooter {...footerProps} />
+    }
+
     const {
       openDropdown,
       onValidationErrorChange,
       intl,
       saveAsMode,
       saveDropdownKey,
+      translationLocale,
       textChanged,
       permissions,
       validationOptions } = this.props
@@ -154,7 +184,7 @@ class TransUnitTranslationPanel extends React.Component {
     let translations
     let validationMsgs
     if (isLoading) {
-      translations = <span className="u-textMeta">
+      translations = <span className="u-textNeutral">
         <LoaderText loading />
       </span>
     } else {
@@ -185,6 +215,7 @@ class TransUnitTranslationPanel extends React.Component {
               selectedPluralIndex={selectedPluralIndex}
               selectPhrasePluralIndex={selectPhrasePluralIndex}
               setTextArea={this.setTextArea}
+              translationLocale={translationLocale}
               textChanged={textChanged}
               translation={translation}
               directionClass={directionClass}
@@ -255,6 +286,10 @@ export class TranslationItem extends React.Component {
      * setTextArea(index, ref)
      */
     setTextArea: PropTypes.func.isRequired,
+    translationLocale: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired,
     textChanged: PropTypes.func.isRequired,
     translation: PropTypes.string,
     validationOptions: PropTypes.any.isRequired,
@@ -294,9 +329,11 @@ export class TranslationItem extends React.Component {
       onSelectionChange,
       selected,
       selectedPluralIndex,
+      translationLocale,
       translation,
       directionClass,
       permissions,
+      phrase,
       validationMessages
     } = this.props
 
@@ -307,8 +344,8 @@ export class TranslationItem extends React.Component {
 
     const highlightHeader = selected && index === selectedPluralIndex
     const headerClass = highlightHeader
-      ? 'u-textMini u-textPrimary'
-      : 'u-textMeta'
+      ? 'u-textMini txt-primary'
+      : 'u-textNeutral'
 
     const itemHeader = isPlural &&
       <div className="TransUnit-itemHeader">
@@ -322,8 +359,12 @@ export class TranslationItem extends React.Component {
       whiteSpace: 'pre-wrap',
       wordWrap: 'break-word'
     }
+    const langAttr = phrase.transSourceType && phrase.transSourceType === 'MT'
+      ? `${translationLocale.id}-x-mtfrom-und`
+      : translationLocale.id
     const syntaxHighlighter = (this.props.syntaxOn && selected)
       ? <SyntaxHighlighter
+        lang={langAttr}
         language='html'
         style={atelierLakesideLight}
         wrapLines
@@ -343,6 +384,7 @@ export class TranslationItem extends React.Component {
           disabled={cantEditTranslation}
           rows={1}
           value={translation}
+          lang={langAttr}
           placeholder="Enter a translation…"
           onFocus={this.setFocusedPlural}
           onChange={this._onChange}

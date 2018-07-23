@@ -4,16 +4,23 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Icon } from '../../components'
 import TransUnit from '../components/TransUnit'
+import ConcurrentModal from '../components/ConcurrentModal/index.tsx'
 import { connect } from 'react-redux'
 import { getCurrentPagePhraseDetail } from '../selectors'
 import { getActivityVisible } from '../reducers'
 import {
   fetchAllCriteria, toggleReviewModal
 } from '../actions/review-trans-actions'
+import {
+  toggleConcurrentModal,
+  saveResolveConflictLatest,
+  saveResolveConflictOriginal
+} from '../actions/phrases-actions'
 import { getCriteria } from '../reducers/review-trans-reducer'
 import { MINOR, MAJOR, CRITICAL } from '../utils/reject-trans-util'
 import RejectTranslation from '../containers/RejectTranslation'
 import { isUndefined } from 'lodash'
+
 /**
  * The main content section showing the current page of TransUnit source,
  * status and translations.
@@ -22,8 +29,12 @@ class MainContent extends React.Component {
   static propTypes = {
     activityVisible: PropTypes.bool.isRequired,
     maximised: PropTypes.bool.isRequired,
+    saveResolveConflictLatest: PropTypes.func.isRequired,
+    saveResolveConflictOriginal: PropTypes.func.isRequired,
+    showConflictModal: PropTypes.bool.isRequired,
     showReviewModal: PropTypes.bool.isRequired,
     phrases: PropTypes.arrayOf(PropTypes.object).isRequired,
+    toggleConcurrentModal: PropTypes.func.isRequired,
     toggleReviewModal: PropTypes.func.isRequired,
     fetchAllCriteria: PropTypes.func.isRequired,
     criteriaList: PropTypes.arrayOf(PropTypes.shape({
@@ -46,7 +57,7 @@ class MainContent extends React.Component {
     if (phrases.length === 0) {
       // TODO translate "No content"
       return (
-        <div className="u-posCenterCenter u-textEmpty u-textCenter">
+        <div className="u-posCenterCenter u-textEmpty tc">
           <span className="u-sMB-1-4">
             <Icon name="translate" className="s6" />
           </span>
@@ -97,6 +108,13 @@ class MainContent extends React.Component {
             {transUnits}
           </ul>
         </div>
+        <ConcurrentModal
+          closeConcurrentModal={this.props.toggleConcurrentModal}
+          saveResolveConflictLatest={this.props.saveResolveConflictLatest}
+          saveResolveConflictOriginal={this.props.saveResolveConflictOriginal}
+          conflictData={selectedPhraseRevision && selectedPhrase.conflict}
+          show={this.props.showConflictModal}
+        />
         <RejectTranslation
           show={this.props.showReviewModal}
           onHide={this.props.toggleReviewModal}
@@ -114,9 +132,11 @@ function mapStateToProps (state, _ownProps) {
   // TODO replace with selector
   const maximised = !state.ui.panels.navHeader.visible
   const showReviewModal = state.review.showReviewModal
+  const showConflictModal = state.phrases.showConflictModal
   return {
     activityVisible: getActivityVisible(state),
     maximised,
+    showConflictModal: showConflictModal,
     showReviewModal: showReviewModal,
     criteriaList: getCriteria(state),
     phrases: getCurrentPagePhraseDetail(state),
@@ -131,6 +151,11 @@ function mapStateToProps (state, _ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    saveResolveConflictLatest: (latest, original) => dispatch(
+      saveResolveConflictLatest(latest, original)),
+    saveResolveConflictOriginal: (latest, original) => dispatch(
+      saveResolveConflictOriginal(latest, original)),
+    toggleConcurrentModal: () => dispatch(toggleConcurrentModal()),
     toggleReviewModal: () => dispatch(toggleReviewModal()),
     fetchAllCriteria: () => dispatch(fetchAllCriteria())
   }

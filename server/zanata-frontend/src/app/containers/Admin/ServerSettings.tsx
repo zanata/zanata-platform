@@ -33,7 +33,8 @@ import {fetchServerSettings, handleSaveServerSettings
 interface NOTIFICATION {
   severity: IconType,
   message: string,
-  description: string
+  description: string,
+  duration: number
 }
 
 interface AdminState {
@@ -105,7 +106,7 @@ class ServerSettings extends React.Component<Props, SettingsState> {
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
-        duration: null
+        duration: notification.duration
       })
     }
     if (!isEqual(this.props, nextProps)) {
@@ -331,12 +332,12 @@ class ServerSettings extends React.Component<Props, SettingsState> {
 
                 <Card title='Server log' type='inner'>
                   <Form.Item {...tailFormItemLayout}
-                      extra={<div>Enables or disables the sending of Zanata diagnostics log
+                      extra={<>Enables or disables the sending of Zanata diagnostics log
                       information via email.<span className='u-block'>
                       <span className='u-textDanger'>Error</span> will only send error
                         messages, while <span className='u-textWarning'>
                         Warning</span> will send both warning and error messages
-                      </span></div>}>
+                      </span></>}>
                     {getFieldDecorator('log.email.active', {
                       initialValue: this.state['log.email.active'].value,
                       valuePropName: 'checked'

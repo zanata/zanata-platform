@@ -26,12 +26,12 @@ describe('DraggableVersionPanels', () => {
         value={version} removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <li className="v list-group-item" >
+      <li className="v list-group-item txt-primary" >
         <DragHandle />
         <span className='ml2'>
           {'ver1'}
         </span>
-        <span className='txt-muted ml1'>
+        <span className='fw5 ml4 ml1 txt-neutral'>
           {'meikai1'}
         </span> <LockIcon status={'ACTIVE'} />
         {" "}
@@ -66,32 +66,28 @@ describe('DraggableVersionPanels', () => {
         removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <span>
-        <div>
-        <Layout className="d-inh">
-        Adjust priority of selected versions
-        <br />
-        <span className="txt-muted">(best first)</span>
-        <Tooltip placement='top' title={tooltipSort}>
-          <a className="btn-xs btn-link">
-            <Icon name="info" className="s0" />
-          </a>
-        </Tooltip>
-        <Item
-          dispatch={callback}
-          key={'meikai1:ver1'}
-          // @ts-ignore
-          index={0}
-          value={someVersions[0]} removeVersion={callback} />
-        <Item
-          dispatch={callback}
-          key={'meikai2:ver2'}
-          // @ts-ignore
-          index={1}
-          value={someVersions[1]} removeVersion={callback} />
-        </Layout>
-      </div>
-      </span>
+      <Layout className="d-inh">
+      Adjust priority of selected versions
+      <br />
+      <span className="txt-muted">(best first)</span>
+      <Tooltip placement='top' title={tooltipSort}>
+        <a className="btn-xs btn-link">
+          <Icon name="info" className="s0" />
+        </a>
+      </Tooltip>
+      <Item
+        dispatch={callback}
+        key={'meikai1:ver1'}
+        // @ts-ignore
+        index={0}
+        value={someVersions[0]} removeVersion={callback} />
+      <Item
+        dispatch={callback}
+        key={'meikai2:ver2'}
+        // @ts-ignore
+        index={1}
+        value={someVersions[1]} removeVersion={callback} />
+      </Layout>
     )
     expect(actual).toEqual(expected)
   })

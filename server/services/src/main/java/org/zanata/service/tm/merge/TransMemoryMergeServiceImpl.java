@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.Async;
@@ -68,12 +69,11 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.EntityType;
-import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TransMemoryMergeService;
-import org.zanata.service.TranslationCounter;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
@@ -303,20 +303,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         // we need a separate read only transaction to load all the entities and close
         // it so that the following batch job can take as long as it can and no
         // transaction reaper will kick in.
-        NeededEntities neededEntities = new NeededEntities();
+        NeededEntities neededEntities;
         try {
-            transactionUtil.call(() -> {
-                // since this is async we need to reload entities
-                neededEntities.targetVersion =
-                        projectIterationDAO.findById(targetVersionId);
-                neededEntities.targetLocale =
-                        localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
-                neededEntities.localesInTargetVersion = localeServiceImpl
-                        .getSupportedLanguageByProjectIteration(neededEntities.targetVersion);
-                neededEntities.activeTextFlows = textFlowDAO.countActiveTextFlowsInProjectIteration(
-                        targetVersionId);
-                return neededEntities;
-            });
+            neededEntities = loadEntities(targetVersionId, mergeRequest);
         } catch (Exception e) {
             log.error("error loading entities", e);
             return AsyncTaskResult.completed();
@@ -333,7 +322,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
 
         taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
-        taskHandle.setMaxProgress((int) activeTextFlows);
+        taskHandle.setMaxProgress(activeTextFlows);
         taskHandle.setTotalTextFlows(activeTextFlows);
 
         Stopwatch overallStopwatch = Stopwatch.createStarted();
@@ -344,40 +333,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         boolean cancelled = false;
 
         while (textFlowIndex < activeTextFlows && !(cancelled = taskHandle.isCancelled())) {
-            // Get the next batch of text flows. They may or may not need
-            // translation, but they won't change during the TM merge
-            // (unless someone uploads a source document). We will be
-            // creating/modifying TFTs, so the offset queries shouldn't use them.
-            List<Long> textFlowsIds =
-                    textFlowDAO.getTextFlowsIdsInVersion(
-                            targetVersionId, textFlowIndex, BATCH_SIZE);
-            // Look up each text flow and it's translation state (if any)
-            // This might be more efficient if the HQL query were to check the
-            // translation state directly.
-            List<HTextFlow> translatableTextFlows = textFlowDAO
-                    .getTextFlowAndMaybeTargetState(
-                            textFlowsIds, targetLocale.getId())
-                    .filter(pair -> shouldTranslate(pair.component2()))
-                    .map(Pair::component1)
-                    .collect(Collectors.toList());
-
-            List<TranslationResult> batchResults =
-                translateInBatch(mergeRequest, translatableTextFlows,
-                    targetLocale, internalTMSource, NOOP);
-            for (TranslationResult result : batchResults) {
-                // we don't count copies which failed because of validation or concurrent edits
-                if (result.isTranslationSuccessful()) {
-                    HTextFlow hTextFlow =
-                            result.getTranslatedTextFlowTarget().getTextFlow();
-                    long charCount = codePoints(hTextFlow);
-                    long wordCount = hTextFlow.getWordCount();
-                    // round down (assuming non-negative)
-                    int similarity = (int) result.getSimilarityPercent();
-                    mergeResult.count(result.getNewContentState(), similarity,
-                            charCount, wordCount, 1);
-                }
-            }
-            taskHandle.increaseProgress(textFlowsIds.size());
+            int count = mergeTextFlowBatch(targetVersionId, mergeRequest,
+                    internalTMSource, mergeResult, targetLocale, textFlowIndex);
+            taskHandle.increaseProgress(count);
             textFlowIndex += BATCH_SIZE;
         }
         versionStateCacheImpl.clearVersionStatsCache(targetVersionId);
@@ -390,6 +348,69 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         sendTMMergeEmail(mergeRequest, mergeResult, neededEntities);
 
         return AsyncTaskResult.completed();
+    }
+
+    private int mergeTextFlowBatch(Long targetVersionId,
+            VersionTMMerge mergeRequest, InternalTMSource internalTMSource,
+            TMMergeResult mergeResult, HLocale targetLocale,
+            int batchStart) {
+        // Get the next batch of text flows. They may or may not need
+        // translation, but they won't change during the TM merge
+        // (unless someone uploads a source document). We will be
+        // creating/modifying TFTs, so the offset queries shouldn't use them.
+        List<Long> textFlowsIds =
+                textFlowDAO.getActiveTextFlowsIdsInProjectVersion(
+                        targetVersionId, batchStart, BATCH_SIZE);
+        // Look up each text flow and its translation state (if any)
+        // This might be more efficient if the HQL query were to filter by
+        // translation state directly.
+        List<HTextFlow> translatableTextFlows = textFlowDAO
+                .getTextFlowAndMaybeTargetState(
+                        textFlowsIds, targetLocale.getId())
+                // check target's nullable ContentState from Pair
+                .filter(pair -> shouldTranslate(pair.component2()))
+                // get TextFlow from Pair
+                .map(Pair::component1)
+                .collect(Collectors.toList());
+
+        List<TranslationResult> batchResults =
+            translateInBatch(mergeRequest, translatableTextFlows,
+                targetLocale, internalTMSource, NOOP);
+        for (TranslationResult result : batchResults) {
+            // we don't count copies which failed because of validation or concurrent edits
+            if (result.isTranslationSuccessful()) {
+                HTextFlow hTextFlow =
+                        result.getTranslatedTextFlowTarget().getTextFlow();
+                long charCount = codePoints(hTextFlow);
+                long wordCount = hTextFlow.getWordCount();
+                // round down (assuming non-negative)
+                int similarity = (int) result.getSimilarityPercent();
+                mergeResult.count(result.getNewContentState(), similarity,
+                        charCount, wordCount, 1);
+            }
+        }
+        return textFlowsIds.size();
+    }
+
+    @NotNull
+    private NeededEntities loadEntities(
+            Long targetVersionId, VersionTMMerge mergeRequest)
+            throws Exception {
+        NeededEntities neededEntities;
+        neededEntities = new NeededEntities();
+        transactionUtil.call(() -> {
+            // since this is async we need to reload entities
+            neededEntities.targetVersion =
+                    projectIterationDAO.findById(targetVersionId);
+            neededEntities.targetLocale =
+                    localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
+            neededEntities.localesInTargetVersion = localeServiceImpl
+                    .getSupportedLanguageByProjectIteration(neededEntities.targetVersion);
+            neededEntities.activeTextFlows = textFlowDAO.countActiveTextFlowsInProjectIteration(
+                    targetVersionId);
+            return neededEntities;
+        });
+        return neededEntities;
     }
 
     private boolean shouldTranslate(@Nullable ContentState state) {
