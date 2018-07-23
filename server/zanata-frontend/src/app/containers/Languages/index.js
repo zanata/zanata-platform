@@ -98,8 +98,8 @@ class Languages extends Component {
     this.props.handleDelete(localeId)
   }
 
-  onUpdateSearch = (event) => {
-    const searchText = event.target.value || ''
+  onUpdateSearch = (value) => {
+    const searchText = value || ''
     this.setState({
       searchText
     })
@@ -159,7 +159,6 @@ class Languages extends Component {
                   <Col xs={24} sm={23} md={8} className='ml3'>
                     <span>
                       <Search
-                        value={this.state.searchText}
                         onSearch={this.onUpdateSearch}
                         enterButton />
                     </span>
@@ -273,8 +272,8 @@ const mapDispatchToProps = (dispatch) => {
     handleOnUpdatePageSize: (event) => {
       dispatch(handleUpdatePageSize(event.target.value || ''))
     },
-    handleOnUpdateSort: (event) => {
-      dispatch(handleUpdateSort(event.target.value || ''))
+    handleOnUpdateSort: (value) => {
+      dispatch(handleUpdateSort(value || ''))
     },
     handleOnUpdateSearch: (val) => {
       dispatch(handleUpdateSearch(val))
