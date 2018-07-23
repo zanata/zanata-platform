@@ -58,10 +58,7 @@ class ActivityFeedItem extends Component {
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired
     }).isRequired,
-    translationSourceType: PropTypes.shape({
-      metadata: PropTypes.string,
-      abbr: PropTypes.string.isRequired
-    })
+    translationSourceType: PropTypes.string
   }
 
   getMessage = () => {
@@ -248,17 +245,19 @@ class ActivityFeedItem extends Component {
       textField.remove()
     }
 
+    const backendId = 'GOOGLE' // hard coded to Google
+
     return (
       /* eslint-disable max-len */
       <div className='RevisionBox'>
-        <p>
+        <div className='content'>
           <Icon name={isComment ? 'comment' : 'refresh'} className='s0' />
           <Link useHref link={profileUrl(user.username)}>
             {/* TODO use component for avatar image
             <img className='u-round ActivityAvatar' src={user.imageUrl} />*/}
           </Link>
           {this.getMessage()}
-        </p>
+        </div>
         <Card bordered={false}
           className={isComment ? '' : statusToWellClass[status]}>
           {content}
@@ -271,8 +270,8 @@ class ActivityFeedItem extends Component {
         </Card>
         <DateAndTimeDisplay dateTime={lastModifiedTime}
           className='small u-sMT-1-2 u-sPB-1-4 u-textMuted u-textSecondary' />
-          {translationSourceType && <TransSourceTypeIndicator type={translationSourceType.abbr}
-            metadata={translationSourceType.metadata} />}
+          {translationSourceType && <TransSourceTypeIndicator type={translationSourceType}
+            metadata={backendId} />}
       </div>
       /* eslint-enable max-len */
     )
