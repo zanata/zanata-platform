@@ -1616,7 +1616,8 @@
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.11.0</version>
+        <!-- This comes from jboss - the standard 2.11.0 requires xml-apis (which we exclude) -->
+        <version>2.11.0.SP5</version>
       </dependency>
 
       <dependency>
