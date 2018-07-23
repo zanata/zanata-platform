@@ -14,7 +14,7 @@
     "js": "yarn run check && webpack",
     "audit": "yarn run check && auditjs --report --whitelist auditjs-whitelist.json",
     "build": "yarn run check && node scripts/build && echo Running auditjs... && auditjs --level warn --report --whitelist auditjs-whitelist.json",
-    "draft": "yarn run check && node scripts/build",
+    "draft": "yarn run check && node scripts/draft",
     "extract-messages": "yarn run check && node scripts/extract-messages",
     "watch": "yarn run check && node scripts/dev-server",
     "watch:editor": "yarn run check && node scripts/dev-server --editor",
