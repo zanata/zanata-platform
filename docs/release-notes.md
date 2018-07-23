@@ -2,12 +2,14 @@
 ##### Magpie Translation (MT)
 [Magpie Translation (MT)](https://github.com/zanata/zanata-mt/) provides the results from machine translation
 services.
-To enable MT, edits `standalone.xml` with following system properties:
+You can ignore this section if you do not run the Zanata Magpie service.
+
+To enable MT, edit `standalone.xml` and providing your own value of each system property:
 
 ```xml
 <system-properties>
   ...
-  <property name="mt.service.url" value="https://your.mt.service:8080"/>
+  <property name="mt.service.url" value="https://your.mt.service/"/>
   <property name="mt.service.user" value="your_mt_service_username"/>
   <property name="mt.service.token" value="token"/>
 </system-properties>
