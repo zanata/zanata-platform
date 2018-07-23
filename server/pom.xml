@@ -58,7 +58,7 @@
     <seam.version>2.3.1.Final</seam.version>
     <slf4j.version>1.7.25</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
-    <okapi.version>0.29</okapi.version>
+    <okapi.version>0.35</okapi.version>
 
     <zanata.assets.version>10.4</zanata.assets.version>
     <zanata.client.version>${project.version}</zanata.client.version>
