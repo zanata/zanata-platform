@@ -12,7 +12,9 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
   <div
     className="RevisionBox"
   >
-    <p>
+    <div
+      className="content"
+    >
       <mock-icon
         className="s0"
         name="refresh"
@@ -36,7 +38,7 @@ exports[`Editor Storyshots ActivityFeedItem approved 1`] = `
           </span>
         </span>
       </span>
-    </p>
+    </div>
     <div
       className="ant-card well-approved"
     >
@@ -115,7 +117,9 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
   <div
     className="RevisionBox"
   >
-    <p>
+    <div
+      className="content"
+    >
       <mock-icon
         className="s0"
         name="comment"
@@ -132,7 +136,7 @@ exports[`Editor Storyshots ActivityFeedItem comment 1`] = `
         </a>
          has commented on this translation
       </span>
-    </p>
+    </div>
     <div
       className="ant-card"
     >
@@ -211,7 +215,9 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
   <div
     className="RevisionBox"
   >
-    <p>
+    <div
+      className="content"
+    >
       <mock-icon
         className="s0"
         name="refresh"
@@ -235,7 +241,7 @@ exports[`Editor Storyshots ActivityFeedItem needswork 1`] = `
           </span>
         </span>
       </span>
-    </p>
+    </div>
     <div
       className="ant-card well-fuzzy"
     >
@@ -314,7 +320,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
   <div
     className="RevisionBox"
   >
-    <p>
+    <div
+      className="content"
+    >
       <mock-icon
         className="s0"
         name="refresh"
@@ -357,7 +365,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - critical priority 1`] = `
           </div>
         </span>
       </span>
-    </p>
+    </div>
     <div
       className="ant-card well-rejected"
     >
@@ -436,7 +444,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
   <div
     className="RevisionBox"
   >
-    <p>
+    <div
+      className="content"
+    >
       <mock-icon
         className="s0"
         name="refresh"
@@ -479,7 +489,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - major priority 1`] = `
           </div>
         </span>
       </span>
-    </p>
+    </div>
     <div
       className="ant-card well-rejected"
     >
@@ -558,7 +568,9 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
   <div
     className="RevisionBox"
   >
-    <p>
+    <div
+      className="content"
+    >
       <mock-icon
         className="s0"
         name="refresh"
@@ -601,7 +613,7 @@ exports[`Editor Storyshots ActivityFeedItem rejected - minor priority 1`] = `
           </div>
         </span>
       </span>
-    </p>
+    </div>
     <div
       className="ant-card well-rejected"
     >
@@ -680,7 +692,9 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
   <div
     className="RevisionBox"
   >
-    <p>
+    <div
+      className="content"
+    >
       <mock-icon
         className="s0"
         name="refresh"
@@ -705,7 +719,7 @@ exports[`Editor Storyshots ActivityFeedItem translated 1`] = `
         </span>
          
       </span>
-    </p>
+    </div>
     <div
       className="ant-card well-translated"
     >
@@ -786,7 +800,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
     style={undefined}
   >
     <mock-button
-      className="Button Button--small u-rounded Button--secondary mr2 mb2 is-active"
+      className="Button Button--small u-rounded Button--secondary filterButtons is-active"
       onClick={[Function]}
       size="small"
     >
@@ -798,7 +812,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
       All
     </mock-button>
     <mock-button
-      className="Button Button--small u-rounded Button--secondary mr2 mb2"
+      className="Button Button--small u-rounded Button--secondary filterButtons"
       onClick={[Function]}
       size="small"
     >
@@ -810,7 +824,7 @@ exports[`Editor Storyshots ActivitySelectList default 1`] = `
       Comments
     </mock-button>
     <mock-button
-      className="Button Button--small u-rounded Button--secondary mr2 mb2"
+      className="Button Button--small u-rounded Button--secondary filterButtons"
       onClick={[Function]}
       size="small"
     >
