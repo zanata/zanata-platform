@@ -5,8 +5,13 @@ import {
   ContentStates,
   ContentStateStyles
 } from '../../constants/Options'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
+// import Button from 'antd/lib/button'
+// import 'antd/lib/button/style/css'
+import Radio from 'antd/lib/radio'
+import 'antd/lib/radio/style/css'
+
+const RadioButton = Radio.Button
+const RadioGroup = Radio.Group
 
 /**
  * Component to filter statistics on content state
@@ -18,22 +23,33 @@ const ContentStateFilter = ({
   ...props
 }) => {
   const optionItems = ContentStates.map(function (option, index) {
-    const active = selectedContentState === option
-
+    // const active = selectedContentState === option
+    // const filterChange = () => handleFilterChanged(option)
     /* eslint-disable react/jsx-no-bind */
     return (
-      <Button key={option} active={active} aria-label='button'
-        className={ContentStateStyles[index] + ' btn-default'}
-        onClick={() => handleFilterChanged(option)} size='small'>
+      <RadioButton
+        key={option}
+        value={option}
+        // active={active}
+        aria-label='radio'
+        className={ContentStateStyles[index]}
+        size='small'>
         {option}
-      </Button>
+      </RadioButton>
     )
     /* eslint-enable react/jsx-no-bind */
   })
+  const handleChange = (event) => {
+    const newContentState = event.target.value
+    handleFilterChanged(newContentState)
+  }
   return (
-    <React.Fragment>
+    <RadioGroup
+      buttonStyle='solid'
+      value={selectedContentState}
+      onChange={handleChange}>
       {optionItems}
-    </React.Fragment>
+    </RadioGroup>
   )
 }
 
