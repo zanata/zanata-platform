@@ -70,7 +70,6 @@
     <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
     <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
     <shrinkwrap.desc.version>2.0.0</shrinkwrap.desc.version>
-    <maven.model.version>3.3.9</maven.model.version>
     <jetty.version>9.2.15.v20160210</jetty.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
@@ -154,6 +153,18 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interpolation</artifactId>
+        <version>1.24</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-sec-dispatcher</artifactId>
         <version>1.4</version>
       </dependency>
 
@@ -515,43 +526,43 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
-        <version>${maven.model.version}</version>
+        <version>3.3.9</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model-builder</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-repository-metadata</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-settings</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-settings-builder</artifactId>
-        <version>${maven.model.version}</version>
+        <version>${required.maven}</version>
       </dependency>
 
       <dependency>
@@ -564,12 +575,6 @@
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-http-lightweight</artifactId>
         <version>2.6</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>3.0.24</version>
       </dependency>
 
       <dependency>
@@ -2436,9 +2441,6 @@
           <name>!excludeFrontend</name>
         </property>
       </activation>
-      <properties>
-        <required.maven>3.1.0</required.maven>
-      </properties>
       <modules>
         <module>zanata-frontend</module>
       </modules>
