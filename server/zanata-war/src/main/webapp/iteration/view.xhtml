@@ -41,7 +41,7 @@
         zanata.tabs.activate(jQuery('#languages_tab'));
         var clickEle = jQuery('a.locale-' + lang);
         if (lang && clickEle.length != 0) {
-          updateActiveRow(jQuery('a.locale-' + lang));
+          updateActiveRow(clickEle);
           toggleColumn('languages');
           reloadLocale(lang)
         }
