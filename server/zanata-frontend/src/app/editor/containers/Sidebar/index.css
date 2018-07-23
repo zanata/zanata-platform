@@ -70,6 +70,14 @@ const margin = this.props.headerOpen ? '6rem' : '3rem' */
   vertical-align: sub;
 }
 
+.SidebarEditor-heading .u-pullRight button span {
+  vertical-align: super;
+}
+
+.filterButtons {
+  margin-right: 1rem;
+}
+
 ul.SidebarEditor-details {
   color: var(--Sidebar-color-text);
   font-size: var(--Sidebar-small-text);
@@ -634,7 +642,7 @@ h3.SettingsHeading {
 
 @media (min-width:609px) {
  .sidebar-editor-contract {
-   margin-top: 5.4rem !important;
+   margin-top: 6rem !important;
  }
 }
 
