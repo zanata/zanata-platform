@@ -14,14 +14,15 @@
   <h:form id="settings-languages-form" styleClass="l--push-bottom-0" onsubmit="return false">
     <h:panelGroup layout="block"  id="settings-languages-list">
 
-      <button styleClass="button--small l--push-bottom-half" jsfc="a4j:commandButton"
+      <button styleClass="button--small l--push-bottom-half use-global"
+              jsfc="a4j:commandButton"
         value="#{msgs['jsf.iteration.inheriteLanguage.label']}"
         rendered="#{versionHome.overrideLocales}"
         action="#{versionHome.useDefaultLocales()}"
         render="settings-languages-form"/>
 
       <button jsfc="a4j:commandButton"
-        styleClass="button--small l--push-bottom-half l--push-left-half"
+        styleClass="button--small l--push-bottom-half l--push-left-half remove-locale"
         value="#{msgs['jsf.localeAlias.RemoveAllAliases']}"
         rendered="#{not empty versionHome.localeAliases}"
         action="#{versionHome.removeAllLocaleAliases()}"

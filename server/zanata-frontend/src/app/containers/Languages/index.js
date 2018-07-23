@@ -81,13 +81,28 @@ class Languages extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { notification } = this.props
+    const {
+      notification,
+      totalCount,
+      size,
+      page,
+      handlePageChanged
+    } = this.props
     if (notification && prevProps.notification !== notification) {
       Notification[notification.severity]({
         message: notification.message,
         description: notification.description,
         duration: notification.duration
       })
+    }
+    /* Reset to the first page when changing pagination size
+     * results higher than max page value */
+    if (prevProps.size !== size) {
+      const totalPage = Math.floor(totalCount / size) +
+        (totalCount % size > 0 ? 1 : 0)
+      if (page > totalPage) {
+        handlePageChanged(1)
+      }
     }
   }
 
@@ -98,8 +113,8 @@ class Languages extends Component {
     this.props.handleDelete(localeId)
   }
 
-  onUpdateSearch = (event) => {
-    const searchText = event.target.value || ''
+  onUpdateSearch = (value) => {
+    const searchText = value || ''
     this.setState({
       searchText
     })
@@ -124,12 +139,7 @@ class Languages extends Component {
     } = this.props
 
     const resetSearchText = this.resetSearchText
-
-    const totalPage = Math.floor(totalCount / size) +
-      (totalCount % size > 0 ? 1 : 0)
-
     const noResults = isEmpty(results)
-
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
       <div className='languages wideView'>
@@ -159,7 +169,6 @@ class Languages extends Component {
                   <Col xs={24} sm={23} md={8} className='ml3'>
                     <span>
                       <Search
-                        value={this.state.searchText}
                         onSearch={this.onUpdateSearch}
                         enterButton />
                     </span>
@@ -187,8 +196,9 @@ class Languages extends Component {
                   </Col>
                   <Col className='fr mr3 mb4'>
                     <Pagination
-                      total={totalPage}
-                      defaultCurrent={page}
+                      pageSize={size}
+                      total={totalCount}
+                      current={page}
                       onChange={handlePageChanged} />
                   </Col>
                 </span>)}
@@ -270,11 +280,11 @@ const mapDispatchToProps = (dispatch) => {
     handleDelete: (localeId) => {
       dispatch(handleDelete(localeId))
     },
-    handleOnUpdatePageSize: (event) => {
-      dispatch(handleUpdatePageSize(event.target.value || ''))
+    handleOnUpdatePageSize: (value) => {
+      dispatch(handleUpdatePageSize(value || ''))
     },
-    handleOnUpdateSort: (event) => {
-      dispatch(handleUpdateSort(event.target.value || ''))
+    handleOnUpdateSort: (value) => {
+      dispatch(handleUpdateSort(value || ''))
     },
     handleOnUpdateSearch: (val) => {
       dispatch(handleUpdateSearch(val))

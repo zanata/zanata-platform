@@ -237,8 +237,14 @@ public class MachineTranslationServiceImpl implements
                     projectSlug, versionSlug, options.getSaveState(),
                     options.getOverwriteFuzzy(), requestedBackend);
             if (backendId != null) {
-                attributionService.addAttribution(doc, targetLocale, backendId);
-                entityManager.merge(doc);
+                try {
+                    transactionUtil.run(() -> {
+                        attributionService.addAttribution(doc, targetLocale, backendId);
+                        entityManager.merge(doc);
+                    });
+                } catch (Exception e) {
+                    throw new RuntimeException("error adding attribution for machine translation", e);
+                }
             }
             taskHandle.increaseProgress(1);
         }
