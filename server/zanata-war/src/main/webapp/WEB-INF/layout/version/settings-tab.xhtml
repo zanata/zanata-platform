@@ -244,7 +244,8 @@
 
     <p>#{msgs['jsf.Validation.messages']}</p>
 
-    <a4j:commandButton styleClass="button--small l--push-bottom-half"
+    <a4j:commandButton
+        styleClass="button--small l--push-bottom-half copy-proj-val"
       id="copy-project-validations"
       action="#{versionHome.copyValidationFromProject()}"
       value="#{msgs['jsf.iteration.CopyProjectValidation.label']}"
