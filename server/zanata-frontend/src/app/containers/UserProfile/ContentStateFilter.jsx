@@ -5,6 +5,7 @@ import {
   ContentStates,
   ContentStateStyles
 } from '../../constants/Options'
+import cx from 'classnames'
 // import Button from 'antd/lib/button'
 // import 'antd/lib/button/style/css'
 import Radio from 'antd/lib/radio'
@@ -23,16 +24,16 @@ const ContentStateFilter = ({
   ...props
 }) => {
   const optionItems = ContentStates.map(function (option, index) {
-    // const active = selectedContentState === option
-    // const filterChange = () => handleFilterChanged(option)
-    /* eslint-disable react/jsx-no-bind */
+    const active = selectedContentState === option
+    const className = cx({
+      'is-active': active
+    }, 'content-state', ContentStateStyles[index])
     return (
       <RadioButton
         key={option}
         value={option}
-        // active={active}
         aria-label='radio'
-        className={ContentStateStyles[index]}
+        className={className}
         size='small'>
         {option}
       </RadioButton>
@@ -45,7 +46,6 @@ const ContentStateFilter = ({
   }
   return (
     <RadioGroup
-      buttonStyle='solid'
       value={selectedContentState}
       onChange={handleChange}>
       {optionItems}

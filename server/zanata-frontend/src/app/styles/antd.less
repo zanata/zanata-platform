@@ -792,6 +792,27 @@ table {
   background-color: @info-color !important;
 }
 
+.ant-radio-group .is-active {
+  &.content-state {
+    border-color: @muted-color;
+    color: #fff;
+    box-shadow: none;
+    &.plain {
+      background-color: @primary-color !important;
+    }
+    &.primary {
+      background-color: @info-color !important;
+    }
+    &.success {
+      background-color: @success-color !important;
+    }
+    &.unsure {
+      background-color: @unsure-color !important;
+      color: inherit;
+    }
+  }
+}
+
 .ant-radio-inner {
   border-color: @info-color !important;
 }
