@@ -180,7 +180,7 @@ class Languages extends Component {
                       })}
                     </Select>
                   </Col>
-                  <Col className=''>
+                  <Col className='fr mr3 mb4'>
                     <Pagination
                       pageSize={size}
                       total={totalCount}
