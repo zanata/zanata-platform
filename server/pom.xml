@@ -55,7 +55,6 @@
     <commonmark.spec.version>18.0</commonmark.spec.version>
     -->
 
-    <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
     <slf4j.version>1.7.25</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
@@ -1622,104 +1621,6 @@
         <version>${lucene.version}</version>
       </dependency>
 
-      <!-- Solr dependencies -->
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-core</artifactId>
-        <version>${solr.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet.ext.servlet</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>net.java.dev.stax-utils</groupId>
-            <artifactId>stax-utils</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-lucene-analyzers</artifactId>
-          </exclusion>
-          <!-- NB: https://hibernate.atlassian.net/browse/HSEARCH-380 -->
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-lucene-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-          </exclusion>
-          <exclusion>
-            <artifactId>servlet-api</artifactId>
-            <groupId>javax.servlet</groupId>
-          </exclusion>
-          <exclusion>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-solrj</artifactId>
-        <version>${solr.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-analysis-extras</artifactId>
-        <version>${solr.version}</version>
-      </dependency>
       <dependency>
         <groupId>net.customware.gwt.presenter</groupId>
         <artifactId>gwt-presenter</artifactId>
