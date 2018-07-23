@@ -198,7 +198,6 @@ class TranslationInfoPanel extends React.Component {
             }>
               <ActivityTab
                 // @ts-ignore
-                activeKey={this.state.key}
                 transHistory={this.props.transHistory}
                 selectedActivites={this.state.selectedActivites}
                 selectActivityTypeFilter={this.selectActivityTypeFilter}
@@ -213,9 +212,7 @@ class TranslationInfoPanel extends React.Component {
                 </span>{glossaryCountDisplay}
               </span>
               }>
-              <GlossaryTab
-                // @ts-ignore
-                activeKey={this.state.key} />
+              <GlossaryTab />
             </TabPane>
           </Tabs>
         </span>

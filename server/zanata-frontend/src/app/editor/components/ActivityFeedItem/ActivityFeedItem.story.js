@@ -34,10 +34,7 @@ const user = {
   username: 'damason'
 }
 
-const translationSourceType = {
-  metadata: 'Google',
-  abbr: 'MT'
-}
+const translationSourceType = 'MT'
 
 storiesOf('ActivityFeedItem', module)
     .add('comment', () => (

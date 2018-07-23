@@ -8,7 +8,7 @@ import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import GlossaryTerm from '../components/GlossaryTerm'
-import GlossaryTermModal from '../components/GlossaryTermModal'
+import GlossaryTermModal from '../components/GlossaryTermModal/index.ts'
 import {
   copyGlossaryTerm,
   glossarySearchTextEntered,
@@ -105,8 +105,7 @@ class GlossaryTab extends React.Component {
   }
 
   render () {
-    const glossaryModal = this.props.details.show
-      ? <GlossaryTermModal /> : undefined
+    const glossaryModal = this.props.details.show && <GlossaryTermModal />
 
     const {searchText, onGlossaryTextChange, isRTLSource} = this.props
 
