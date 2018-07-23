@@ -124,12 +124,7 @@ class Languages extends Component {
     } = this.props
 
     const resetSearchText = this.resetSearchText
-
-    const totalPage = Math.floor(totalCount / size) +
-      (totalCount % size > 0 ? 1 : 0)
-
     const noResults = isEmpty(results)
-
     /* eslint-disable max-len, react/jsx-no-bind */
     return (
       <div className='languages wideView'>
@@ -185,10 +180,11 @@ class Languages extends Component {
                       })}
                     </Select>
                   </Col>
-                  <Col className='fr mr3 mb4'>
+                  <Col className=''>
                     <Pagination
-                      total={totalPage}
-                      defaultCurrent={page}
+                      pageSize={size}
+                      total={totalCount}
+                      current={page}
                       onChange={handlePageChanged} />
                   </Col>
                 </span>)}
@@ -270,8 +266,8 @@ const mapDispatchToProps = (dispatch) => {
     handleDelete: (localeId) => {
       dispatch(handleDelete(localeId))
     },
-    handleOnUpdatePageSize: (event) => {
-      dispatch(handleUpdatePageSize(event.target.value || ''))
+    handleOnUpdatePageSize: (value) => {
+      dispatch(handleUpdatePageSize(value || ''))
     },
     handleOnUpdateSort: (event) => {
       dispatch(handleUpdateSort(event.target.value || ''))
