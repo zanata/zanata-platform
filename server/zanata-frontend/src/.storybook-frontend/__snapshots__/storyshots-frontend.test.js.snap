@@ -6518,11 +6518,11 @@ exports[`Frontend Storyshots MTMerge single 1`] = `
 >
   <mock-icons />
   <Alert
-    className="mb2"
     message="Have you run TM Merge first?"
     showIcon={true}
     type="warning"
   />
+  <br />
   <Alert
     message="Only .po (gettext) and .properties files are supported"
     showIcon={true}
@@ -6700,11 +6700,11 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
     visible={true}
   >
     <Alert
-      className="mb2"
       message="Have you run TM Merge first?"
       showIcon={true}
       type="warning"
     />
+    <br />
     <Alert
       message="Only .po (gettext) and .properties files are supported"
       showIcon={true}
