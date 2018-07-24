@@ -47,6 +47,7 @@ import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.cdi.TestTransaction;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -398,6 +399,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     @InRequestScope
     public void testCopyTextFlow() throws Exception {
         HDocument dummyDoc = getDummyDocument();
+        dummyDoc.setLocale(new HLocale(LocaleId.EN_US));
         HTextFlow existingTextFlow = textFlowDAO.findById(1L);
         HTextFlow newTextFlow =
                 service.copyTextFlow(dummyDoc, existingTextFlow);

@@ -70,7 +70,7 @@ public class HashUtilTest {
         assertThat(hashUtilHash).isEqualTo(testSingleContentHash);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void singleSourceHashNullIsInvalid() {
         String nullString = null;
         HashUtil.sourceHash(nullString);
