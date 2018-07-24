@@ -40,7 +40,7 @@ public class CacheManagerProducer {
     private static final String CACHE_MANAGER_NAME =
             "java:jboss/infinispan/container/zanata";
 
-    @Resource(lookup = CACHE_MANAGER_NAME)
+    @Resource(name = CACHE_MANAGER_NAME)
     private EmbeddedCacheManager manager;
 
     @Produces

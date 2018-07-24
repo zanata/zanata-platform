@@ -355,4 +355,34 @@
     <location>/404</location>
   </error-page>
 
+  <!-- JavaMail Connection Factories (java:comp/env/mail) -->
+  <!--<resource-ref>-->
+    <!--<description>Default Mail</description>-->
+    <!--<res-ref-name>mail/Default</res-ref-name>-->
+    <!--<res-type>javax.mail.Session</res-type>-->
+    <!--<res-auth>Container</res-auth>-->
+  <!--</resource-ref>-->
+
+  <!-- Ref: https://developer.jboss.org/message/981088#981088 -->
+
+  <resource-ref>
+    <res-ref-name>infinispan/container/zanata</res-ref-name>
+    <lookup-name>java:jboss/infinispan/container/zanata</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>infinispan/zanata-default</res-ref-name>
+    <lookup-name>java:jboss/infinispan/cache/zanata/default</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>infinispan/versionStatisticCache</res-ref-name>
+    <lookup-name>java:jboss/infinispan/cache/zanata/org.zanata.service.impl.VersionStateCacheImpl.versionStatisticCache</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>infinispan/config/zanata-default</res-ref-name>
+    <lookup-name>java:jboss/infinispan/configuration/zanata/default</lookup-name>
+  </resource-ref>
+
 </web-app>
