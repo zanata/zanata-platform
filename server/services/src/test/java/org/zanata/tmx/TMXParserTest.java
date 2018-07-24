@@ -94,7 +94,7 @@ public class TMXParserTest {
 
     @Produces @FullText @Mock FullTextEntityManager fullTextEntityManager;
     @Produces @FullText @Mock FullTextSession fullTextSession;
-    @Produces @Named("java:comp/UserTransaction") @Mock
+    @Produces @Named("java:jboss/UserTransaction") @Mock
     UserTransaction userTransaction;
     @Produces @Mock IServiceLocator serviceLocator;
 
@@ -118,7 +118,7 @@ public class TMXParserTest {
                     "org/zanata/test/model/ClearAllTables.dbunit.xml",
                     DatabaseOperation.DELETE_ALL));
 
-        when(serviceLocator.getJndiComponent("java:comp/UserTransaction",
+        when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
                 UserTransaction.class))
                 .thenReturn(new TestTransaction(getEm()));
     }

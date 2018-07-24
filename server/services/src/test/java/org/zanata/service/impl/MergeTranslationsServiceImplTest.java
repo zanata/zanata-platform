@@ -177,7 +177,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
     public void beforeMethod() throws Exception {
         tx = new TestTransaction(getEm());
         doReturn(tx).when(serviceLocator)
-                .getJndiComponent("java:comp/UserTransaction",
+                .getJndiComponent("java:jboss/UserTransaction",
                         UserTransaction.class);
     }
 

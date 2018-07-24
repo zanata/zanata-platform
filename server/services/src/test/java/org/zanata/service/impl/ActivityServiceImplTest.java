@@ -108,7 +108,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     @Before
     public void initializeSeam() {
         try {
-            when(serviceLocator.getJndiComponent("java:comp/UserTransaction",
+            when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
                     UserTransaction.class)).thenReturn(new TestTransaction(getEm()));
         } catch (NamingException e) {
             // this should not happen

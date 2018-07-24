@@ -165,7 +165,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
 
         tx = spy(new TestTransaction(getEm()));
         doReturn(tx).when(serviceLocator)
-                .getJndiComponent("java:comp/UserTransaction",
+                .getJndiComponent("java:jboss/UserTransaction",
                         UserTransaction.class);
     }
 
