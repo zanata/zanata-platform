@@ -20,6 +20,8 @@
  */
 package org.zanata.cache;
 
+import javax.annotation.Nullable;
+
 import com.google.common.cache.CacheLoader;
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
@@ -29,69 +31,71 @@ import org.infinispan.manager.CacheContainer;
  */
 public class InfinispanCacheWrapper<K, V> implements CacheWrapper<K, V> {
 
-    private final String cacheName;
-    private final CacheContainer cacheContainer;
-    private CacheLoader<K, V> cacheLoader;
+    private final Cache<K, V> cache;
+    private final @Nullable CacheLoader<K, V> cacheLoader;
 
-    public InfinispanCacheWrapper(String cacheName,
-            CacheContainer cacheContainer) {
-        this.cacheName = cacheName;
-        this.cacheContainer = cacheContainer;
+    public InfinispanCacheWrapper(Cache<K, V> cache,
+            CacheLoader<K, V> cacheLoader) {
+        this.cache = cache;
+        this.cacheLoader = cacheLoader;
     }
 
-    public InfinispanCacheWrapper(String cacheName,
-            CacheContainer cacheContainer,
-            CacheLoader<K, V> cacheLoader) {
-        this(cacheName, cacheContainer);
-        this.cacheLoader = cacheLoader;
+    public InfinispanCacheWrapper(Cache<K, V> cache) {
+        this(cache, null);
     }
 
     @Override
     public void put(K key, V value) {
-        getCache().put(key, value);
+        cache.put(key, value);
     }
 
     @Override
     public V get(K key) {
-        return getCache().get(key);
+        return cache.get(key);
     }
 
     @Override
     public synchronized V getWithLoader(K key) {
         // NB: Need to manually implement the cache loader feature
-        V cachedValue = getCache().get(key);
-        if(cachedValue == null && cacheLoader != null) {
+        V cachedValue = cache.get(key);
+        if (cachedValue == null && cacheLoader != null) {
             try {
                 cachedValue = cacheLoader.load(key);
             } catch (Exception e) {
                 throw new RuntimeException(
                         "Unable to load entry with cache loader ", e);
             }
-            getCache().put(key, cachedValue);
+            cache.put(key, cachedValue);
         }
         return cachedValue;
     }
 
     @Override
     public boolean remove(K key) {
-        return getCache().remove(key) != null;
+        return cache.remove(key) != null;
     }
 
     public Cache<K, V> getCache() {
-        return cacheContainer.getCache(cacheName);
+        return cache;
     }
 
     public static <K, V> InfinispanCacheWrapper<K, V> create(
             final String cacheName,
             final CacheContainer cacheManager) {
-        cacheManager.getCache(cacheName);
-        return new InfinispanCacheWrapper<K, V>(cacheName, cacheManager);
+        return create(cacheName, cacheManager, null);
     }
 
     public static <K, V> InfinispanCacheWrapper<K, V> create(
             final String cacheName,
-            final CacheContainer cacheManager, CacheLoader<K, V> loader) {
-        cacheManager.getCache(cacheName);
-        return new InfinispanCacheWrapper<K, V>(cacheName, cacheManager, loader);
+            final CacheContainer cacheManager,
+            final CacheLoader<K, V> loader) {
+        return create(cacheManager.getCache(cacheName), loader);
+
+    }
+
+    public static <K, V> InfinispanCacheWrapper<K, V> create(
+            final Cache<K, V> cache,
+            final @Nullable CacheLoader<K, V> loader) {
+        return new InfinispanCacheWrapper<>(cache, loader);
     }
 }
