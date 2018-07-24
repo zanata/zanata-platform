@@ -5,8 +5,8 @@ import {
   ContentStates,
   ContentStateStyles
 } from '../../constants/Options'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
 
 /**
  * Component to filter statistics on content state
@@ -17,18 +17,20 @@ const ContentStateFilter = ({
   handleFilterChanged,
   ...props
 }) => {
+  const { CheckableTag } = Tag
+
   const optionItems = ContentStates.map(function (option, index) {
     const active = selectedContentState === option
-
-    /* eslint-disable react/jsx-no-bind */
+    const onChange = () => {
+      handleFilterChanged(option)
+    }
     return (
-      <Button key={option} active={active} aria-label='button'
-        className={ContentStateStyles[index] + ' btn-default'}
-        onClick={() => handleFilterChanged(option)} size='small'>
+      <CheckableTag key={option} checked={active}
+        onChange={onChange}
+        className={ContentStateStyles[index] + ' f6'}>
         {option}
-      </Button>
+      </CheckableTag>
     )
-    /* eslint-enable react/jsx-no-bind */
   })
   return (
     <React.Fragment>
