@@ -69,8 +69,7 @@ public class TransactionPhaseListener implements PhaseListener {
     }
 
     private UserTransaction getUserTransaction() throws NamingException {
-        // was "java:comp/UserTransaction" in softwaremill version
-        return (UserTransaction) new InitialContext().lookup("java:jboss/UserTransaction");
+        return (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
     }
 
     private static final String STARTED_TX_KEY = "_started_tx_";

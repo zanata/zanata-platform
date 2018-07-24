@@ -198,7 +198,7 @@ public class CopyTransServiceImplParameterizedTest {
 
     @Before
     public void beforeMethod() throws Exception {
-        when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
+        when(serviceLocator.getJndiComponent("java:comp/UserTransaction",
                 UserTransaction.class))
                         .thenReturn(new TestTransaction(getEm()));
     }

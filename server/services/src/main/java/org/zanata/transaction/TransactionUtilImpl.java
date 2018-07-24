@@ -173,7 +173,7 @@ public class TransactionUtilImpl implements TransactionUtil {
     // Adapted from org.jboss.seam.transaction.Transaction.getUserTransaction()
 
     private UserTransaction getUserTransaction() throws NamingException {
-        return serviceLocator.getJndiComponent("java:jboss/UserTransaction",
+        return serviceLocator.getJndiComponent("java:comp/UserTransaction",
                 UserTransaction.class);
         // try {
         // return serviceLocator.getJndiComponent("java:comp/UserTransaction",

@@ -106,7 +106,7 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
 
     @Before
     public void setUp() throws Exception {
-        when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
+        when(serviceLocator.getJndiComponent("java:comp/UserTransaction",
                 UserTransaction.class)).thenReturn(userTransaction);
         deleteAllTables();
         authenticatedAccount =
