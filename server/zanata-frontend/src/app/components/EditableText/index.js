@@ -94,7 +94,7 @@ class EditableText extends Component {
     const content = children ||
       <span className='txt-muted'>{emptyText}</span>
     return (
-      <Row className='textInput w-100 tl text'
+      <Row className='textInput w-100 tl text ellipsis'
         onClick={this.handleClick} title={title}>
         {content}
       </Row>
