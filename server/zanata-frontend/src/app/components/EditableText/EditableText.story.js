@@ -11,7 +11,7 @@ storiesOf('EditableText', module)
           <h2><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg" width="42px" /> EditableText</h2>
           <p>Used on Glossary page and modals for editable glossary terms.</p>
           <EditableText
-            className='editable textInput textState'
+            className='editable textInput textState ellipsis'
             maxLength={255}
             editable={true}
             editing={true}
@@ -80,7 +80,7 @@ storiesOf('EditableText', module)
         <span>
         <h2><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Zanata-Logo.svg" width="42px" /> EditableText - disabled</h2>
         <EditableText
-            className='editable textInput textState'
+            className='editable textInput textState ellipsis'
             maxLength={255}
             editable={true}
             editing={false}

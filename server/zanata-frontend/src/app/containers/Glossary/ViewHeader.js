@@ -264,7 +264,7 @@ class ViewHeader extends Component {
                 </td>
                 <td className='td-1'
                   onClick={() => handleSortColumn('part_of_speech')}>
-                  <Button className='btn-link' aria-label='button'>
+                  <Button className='btn-link ml3' aria-label='button'>
                     <Row className='ml4'>
                       {'part_of_speech' in sort
                           ? (sort.part_of_speech === true)

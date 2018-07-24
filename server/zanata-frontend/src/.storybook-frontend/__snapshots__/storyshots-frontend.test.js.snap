@@ -164,7 +164,7 @@ exports[`Frontend Storyshots EditableText not editing 1`] = `
        EditableText - disabled
     </h2>
     <div
-      className="ant-row textInput w-100 tl text"
+      className="ant-row textInput w-100 tl text ellipsis"
       onClick={[Function]}
       style={undefined}
       title={undefined}
