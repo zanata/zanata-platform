@@ -693,7 +693,7 @@ h4.modal-title {
 }
 
 .Editor-mainNav .Dropdown-toggleIcon {
-  vertical-align: middle;
+  vertical-align: sub;
 }
 
 .icon-history svg, .icon-comment svg {
