@@ -133,17 +133,17 @@ class ViewHeader extends Component {
         permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon type='lock' className='s1 lock' />
+        <Icon type='lock' className='s1 lock mr3' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
     const projectUrl = project && getProjectUrl(project.id)
 
     const projectLink = project && (
-      <div className='projectLink'>
+      <div className='ml3 projectLink'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon type='folder-open' className='iconProject' />
+            <Icon type='folder-open' className='txt-muted mr1' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
