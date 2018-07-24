@@ -1036,6 +1036,33 @@
 
     <profile>
       <!-- This profile runs a single integration test with
+        -Dit.case=<integration-test-name>, skipping unit tests. -->
+      <id>it.case</id>
+      <activation>
+        <property>
+          <name>it.case</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <test>${it.case}</test>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- This profile runs a single integration test with
         -Dit.test=<integration-test-name>, skipping unit tests. -->
       <id>it.test</id>
       <activation>
