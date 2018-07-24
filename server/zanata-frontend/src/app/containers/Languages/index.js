@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import Helmet from 'react-helmet'
-import { debounce, find, isEmpty } from 'lodash'
+import { find, isEmpty } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
 import {LoaderText} from '../../components'
@@ -59,21 +59,9 @@ class Languages extends Component {
     handleDelete: PropTypes.func,
     handleOnUpdatePageSize: PropTypes.func,
     handleOnUpdateSort: PropTypes.func,
-    handleOnUpdateSearch: PropTypes.func,
+    handleOnSearch: PropTypes.func,
     handlePageChanged: PropTypes.func,
     handleOnDisplayNewLanguage: PropTypes.func
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      searchText: props.searchText
-    }
-    // Debounce works when you call it once, then use the returned function
-    // multiple times.
-    // Do not extract this to a function like `() => { debounce(...) }` since
-    // that would make a new debounced function instance on every call.
-    this.handleUpdateSearch = debounce(props.handleOnUpdateSearch, 200)
   }
 
   componentDidMount () {
@@ -113,14 +101,6 @@ class Languages extends Component {
     this.props.handleDelete(localeId)
   }
 
-  onUpdateSearch = (value) => {
-    const searchText = value || ''
-    this.setState({
-      searchText
-    })
-    this.handleUpdateSearch(searchText)
-  }
-
   render () {
     const {
       size,
@@ -132,10 +112,12 @@ class Languages extends Component {
       user,
       loading,
       deleting,
+      searchText,
       handleOnUpdatePageSize,
       handleOnUpdateSort,
       handlePageChanged,
-      handleOnDisplayNewLanguage
+      handleOnDisplayNewLanguage,
+      handleOnSearch
     } = this.props
 
     const resetSearchText = this.resetSearchText
@@ -169,8 +151,9 @@ class Languages extends Component {
                   <Col xs={24} sm={23} md={8} className='ml3'>
                     <span>
                       <Search
-                        onSearch={this.onUpdateSearch}
-                        enterButton />
+                        onSearch={handleOnSearch}
+                        defaultValue={searchText}
+                        enterButton autoFocus />
                     </span>
                   </Col>
                   <Col xs={24} sm={12} md={6} className='ml3 mb2'>
@@ -286,7 +269,7 @@ const mapDispatchToProps = (dispatch) => {
     handleOnUpdateSort: (value) => {
       dispatch(handleUpdateSort(value || ''))
     },
-    handleOnUpdateSearch: (val) => {
+    handleOnSearch: (val) => {
       dispatch(handleUpdateSearch(val))
     },
     handlePageChanged: (page) => {
