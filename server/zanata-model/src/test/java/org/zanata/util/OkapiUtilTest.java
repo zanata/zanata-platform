@@ -35,11 +35,20 @@ public class OkapiUtilTest {
     // @formatter:on
     // These counts represent the expected word counts for the strings listed
     // above.
-    private long[] count = { 2, 2, 9,
-            // Okapi says the fourth string has 49 words, but it looks like 54
-            // ?!
-            // TODO work out why
-            49, 3, 2, 3, };
+    private long[] count = {
+            // Includes tags
+            8,
+            // Simple text
+            2, 9,
+            // Okapi says the fourth string has 50 words, but it looks like 54
+            // non-null is considered 2 words, while firstSession.load is 1
+            50,
+            // Includes tags
+            7,
+            // https and cdn.redhat.com
+            2,
+            // Slashes
+            3 };
 
     @Test
     public void testCountWords() {
@@ -47,12 +56,8 @@ public class OkapiUtilTest {
         int i = 0;
         for (String s : strings) {
             long expected = count[i++];
-            long n = countWords(s, "en-US");
-            Assert.assertEquals(expected, n);
-            // if (n == 0)
-            // Assert.fail(s + ":" + n);
-            // else
-            // System.out.println(n);
+            System.out.println(s + ": Expecting " + expected + " words");
+            Assert.assertEquals(expected, countWords(s, "en-US"));
         }
     }
 
