@@ -111,7 +111,7 @@ class RejectionsForm extends Component {
       <Tooltip title='Delete criteria'>
         <span>
           <Button type='danger' className='btn-danger' onClick={this.onDelete}>
-            <Icon name='trash' className='s0' />
+            <Icon name='trash' className='s0 v-mid' />
           </Button>
         </span>
       </Tooltip>
@@ -132,7 +132,7 @@ class RejectionsForm extends Component {
               <Button type='primary'
                 onClick={this.onSave}
                 disabled={error}>
-                <Icon name='tick' className='s0' />
+                <Icon name='tick' className='s0 v-mid' />
               </Button>
             </span>
           </Tooltip>
@@ -177,7 +177,7 @@ class RejectionsForm extends Component {
           <Col xs={24} md={8} lg={6}>
             {commentToggle}
           </Col>
-          <Col xs={4} md={2} lg={2} className='fr'>
+          <Col xs={4} md={2} lg={3} className='fr'>
             {formBtn}
           </Col>
         </Row>
