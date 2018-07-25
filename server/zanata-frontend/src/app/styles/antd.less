@@ -99,6 +99,12 @@
   color: @info-color;
 }
 
+.ant-pagination-item-active,
+.ant-pagination-item:focus,
+.ant-pagination-item:hover {
+  border-color: @info-color;
+}
+
 .scrollView {
   align-items: center;
   -webkit-align-items: center;
@@ -410,6 +416,12 @@ textarea.textInput::placeholder {
   width: 100%;
   margin-left: @spacing-md;
   vertical-align: middle;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .editable {
@@ -750,12 +762,22 @@ span.svg {
   background-color: @info-color;
 }
 
-.ant-alert-info .ant-alert-icon {
+.ant-alert-info .ant-alert-icon,
+.ant-notification-notice-icon-info {
   color: @info-color;
 }
 
-.ant-alert-warning .ant-alert-icon {
+.ant-alert-warning .ant-alert-icon,
+.ant-notification-notice-icon-warning {
   color: @warning-color;
+}
+
+.ant-notification-notice-icon-success {
+  color: @success-color;
+}
+
+.ant-notification-notice-icon-danger {
+  color: @error-color;
 }
 
 table {

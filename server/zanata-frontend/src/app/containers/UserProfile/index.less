@@ -215,40 +215,69 @@
     padding-left: 0;
     padding-right: 0;
   }
+
  .ant-btn.success.btn-default.ant-btn-sm, .ant-btn.plain.btn-default.ant-btn-sm, .ant-btn.primary.btn-default.ant-btn-sm, .ant-btn.unsure.btn-default.ant-btn-sm {
-    border-radius: 1.071rem;
-    margin-right: @spacing-lg;
     border: solid 1px #e7e7e7;
     margin-bottom: 0.5rem;
   }
-  .ant-btn.plain.btn-default.ant-btn-sm:focus, .ant-btn.plain.btn-default.ant-btn-sm:hover, .ant-btn.plain.btn-default.ant-btn-sm.active {
-    background-color: rgba(84, 102, 119, 0.95);
-    color: #fff;
-    text-decoration: none;
-    outline: 0;
-    box-shadow: none;
+
+  .ant-tag-checkable {
+    cursor: pointer;
+    border: solid 1px;
   }
-  .ant-btn.primary.btn-default.ant-btn-sm:focus, .ant-btn.primary.btn-default.ant-btn-sm:hover, .ant-btn.primary.btn-default.ant-btn-sm.active {
-    background-color: rgba(3, 166, 215, 0.95);
-    color: #fff;
-    text-decoration: none;
-    outline: 0;
-    box-shadow: none;
+
+  .ant-tag.plain {
+    color: rgba(84, 102, 119, 0.95);
+    border-color: rgba(84, 102, 119, 1);
+    &:hover {
+      background-color: rgba(84, 102, 119, 0.5);
+      color: #fff;
+    }
+    &.ant-tag-checkable-checked {
+      background-color: rgba(84, 102, 119, 0.95);
+      color: #fff;
+    }
   }
-  .ant-btn.success.btn-default.ant-btn-sm:focus, .ant-btn.success.btn-default.ant-btn-sm:hover, .ant-btn.success.btn-default.ant-btn-sm.active {
-    background-color: rgba(98, 200, 118, 0.95);
-    color: #fff;
-    text-decoration: none;
-    outline: 0;
-    box-shadow: none;
+
+  .ant-tag.primary {
+    color: rgba(3, 166, 215, 0.95);
+    border-color: rgba(3, 166, 215, 1);
+    &:hover {
+      background-color: rgba(3, 166, 215, 0.5);
+      color: #fff;
+    }
+    &.ant-tag-checkable-checked {
+      background-color: rgba(3, 166, 215, 0.95);
+      color: #fff;
+    }
   }
-  .ant-btn.unsure.btn-default.ant-btn-sm:focus, .ant-btn.unsure.btn-default.ant-btn-sm:hover, .ant-btn.unsure.btn-default.ant-btn-sm.active {
-    background-color: rgba(233, 221, 0, 1);
-    color: @primary-color;
-    text-decoration: none;
-    outline: 0;
-    box-shadow: none;
+
+  .ant-tag.success {
+    color: rgba(98, 200, 118, 0.95);
+    border-color: rgba(98, 200, 118, 1);
+    &:hover {
+      background-color: rgba(98, 200, 118, 0.5);
+      color: #fff;
+    }
+    &.ant-tag-checkable-checked {
+      background-color: rgba(98, 200, 118, 0.95);
+      color: #fff;
+    }
   }
+
+  .ant-tag.unsure {
+    color: rgba(233, 221, 0, 1);
+    border-color: rgba(233, 221, 0, 1);
+    &:hover {
+      background-color: rgba(233, 221, 0, 0.5);
+      color: @primary-color;
+    }
+    &.ant-tag-checkable-checked {
+      background-color: rgba(233, 221, 0, 1);
+      color: @primary-color;
+    }
+  }
+
   #userProfile-activityTable td button.active.btn.btn-primary {
     background-color: @primary-color;
   }

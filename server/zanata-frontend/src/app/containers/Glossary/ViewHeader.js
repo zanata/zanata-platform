@@ -133,17 +133,17 @@ class ViewHeader extends Component {
         permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon type='lock' className='s1 lock' />
+        <Icon type='lock' className='s1 lock mr3' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
     const projectUrl = project && getProjectUrl(project.id)
 
     const projectLink = project && (
-      <div className='projectLink'>
+      <div className='ml3 projectLink'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon type='folder-open' className='iconProject' />
+            <Icon type='folder-open' className='txt-muted mr1' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
@@ -264,7 +264,7 @@ class ViewHeader extends Component {
                 </td>
                 <td className='td-1'
                   onClick={() => handleSortColumn('part_of_speech')}>
-                  <Button className='btn-link' aria-label='button'>
+                  <Button className='btn-link ml3' aria-label='button'>
                     <Row className='ml4'>
                       {'part_of_speech' in sort
                           ? (sort.part_of_speech === true)

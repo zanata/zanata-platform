@@ -82,12 +82,10 @@
             </zanata:decorate>
           </div>
 
-          <ui:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
-            <p class="txt--meta l--push-top-half">
-              <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
-                applicationConfiguration.termsOfUseUrl)}" escape="false"/>
-            </p>
-          </ui:fragment>
+          <p class="txt--meta l--push-top-half">
+            <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
+              applicationConfigurationAction.termOfUseUrl)}" escape="false"/>
+          </p>
 
           <div class="l--push-top-1">
             <h:commandButton id="user-create-new" value="#{msgs['jsf.Save']}"
