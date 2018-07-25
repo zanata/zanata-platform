@@ -229,7 +229,8 @@ const version = handleActions({
             ? statusToSeverity(state.MTMerge.processStatus.statusCode)
             : SEVERITY.INFO}`,
           message: `MT Merge finished ${state.MTMerge.processStatus
-            ? 'with status: ' + state.MTMerge.processStatus.statusCode : ''}`
+            ? 'with status: ' + state.MTMerge.processStatus.statusCode : ''}`,
+          duration: SEVERITY.ERROR ? null : 3.5
         }
       }
     })
