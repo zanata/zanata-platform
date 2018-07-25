@@ -55,7 +55,8 @@ export class MTMergeOptions extends Component<Props> {
     return (
       <React.Fragment>
         <Alert message="Have you run TM Merge first?" type="warning"
-          showIcon className='mb2'/>
+          showIcon />
+        <br />
         <Alert message="Only .po (gettext) and .properties files are supported"
           type="info" showIcon/>
         {/* Select Languages */}
