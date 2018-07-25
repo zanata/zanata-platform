@@ -376,11 +376,6 @@
   </resource-ref>
 
   <resource-ref>
-    <res-ref-name>infinispan/versionStatisticCache</res-ref-name>
-    <lookup-name>java:jboss/infinispan/cache/zanata/org.zanata.service.impl.VersionStateCacheImpl.versionStatisticCache</lookup-name>
-  </resource-ref>
-
-  <resource-ref>
     <res-ref-name>infinispan/config/zanata-default</res-ref-name>
     <lookup-name>java:jboss/infinispan/configuration/zanata/default</lookup-name>
   </resource-ref>
