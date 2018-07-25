@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.6.0-rc-3</version>
+    <version>4.6.0-rc-4-SNAPSHOT</version>
   </parent>
   <artifactId>security-common</artifactId>
   <name>security-common</name>
