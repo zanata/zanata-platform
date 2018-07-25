@@ -20,6 +20,71 @@ JSON files were previously uploaded using a content hash for the ID.
 These will now use an object path for the ID, and updating an existing document may lose its translations.
 Users can utilize the Copy Translations or TM Merge features to restore them.
 
+##### Changes
+ * [ZNTA-2694](https://zanata.atlassian.net/browse/ZNTA-2694) - Upgrade Okapi to M35
+ * [ZNTA-2692](https://zanata.atlassian.net/browse/ZNTA-2692) - Create Webpack Draft Build
+ * [ZNTA-2679](https://zanata.atlassian.net/browse/ZNTA-2679) - React Editor error status icon, disabled editor button styles
+ * [ZNTA-2663](https://zanata.atlassian.net/browse/ZNTA-2663) - editor TM suggestions heading colour
+ * [ZNTA-2652](https://zanata.atlassian.net/browse/ZNTA-2652) - Upgrade Webpack
+ * [ZNTA-2635](https://zanata.atlassian.net/browse/ZNTA-2635) - Editor UI behavior when validation errors detected
+ * [ZNTA-2625](https://zanata.atlassian.net/browse/ZNTA-2625) - Badge makes it difficult to bring up notification tab
+ * [ZNTA-2588](https://zanata.atlassian.net/browse/ZNTA-2588) - remove obsolete 'obsolete' flag from HProjectIterationGroup
+ * [ZNTA-2587](https://zanata.atlassian.net/browse/ZNTA-2587) - Replace GWT/Java Validators with Typescript module
+ * [ZNTA-2584](https://zanata.atlassian.net/browse/ZNTA-2584) - Create custom component for Editor advanced search
+ * [ZNTA-2559](https://zanata.atlassian.net/browse/ZNTA-2559) - Replace Thread.sleep in functional tests with waitForPageSilence
+ * [ZNTA-2555](https://zanata.atlassian.net/browse/ZNTA-2555) - Fix AssertJ assertion names
+ * [ZNTA-2544](https://zanata.atlassian.net/browse/ZNTA-2544) - Export user data
+ * [ZNTA-2538](https://zanata.atlassian.net/browse/ZNTA-2538) - Refactor RejectionsForm to antd
+ * [ZNTA-2537](https://zanata.atlassian.net/browse/ZNTA-2537) - custom component stories in storybook
+ * [ZNTA-2534](https://zanata.atlassian.net/browse/ZNTA-2534) - refactor editor react-bootstrap components to antd
+ * [ZNTA-2529](https://zanata.atlassian.net/browse/ZNTA-2529) - Migrate required css from style.less to antd 
+ * [ZNTA-2528](https://zanata.atlassian.net/browse/ZNTA-2528) - Refactor notifications and alerts to antd
+ * [ZNTA-2514](https://zanata.atlassian.net/browse/ZNTA-2514) - refactor frontend containers into antd
+ * [ZNTA-2487](https://zanata.atlassian.net/browse/ZNTA-2487) - Leverage MT merge for project versions
+ * [ZNTA-2459](https://zanata.atlassian.net/browse/ZNTA-2459) - Improve Activity Panel rendering performance
+ * [ZNTA-2437](https://zanata.atlassian.net/browse/ZNTA-2437) - CLI ability to specify if Zanata brings only approved or also includes translated 
+ * [ZNTA-2390](https://zanata.atlassian.net/browse/ZNTA-2390) - Trigger full functional test build with Github PR keyword
+ * [ZNTA-2300](https://zanata.atlassian.net/browse/ZNTA-2300) - Concurrent editors [backend]
+ * [ZNTA-2279](https://zanata.atlassian.net/browse/ZNTA-2279) - Css fixes to glossary: select component and icons
+ * [ZNTA-2078](https://zanata.atlassian.net/browse/ZNTA-2078) - Permalinks for translations in editor
+ * [ZNTA-1731](https://zanata.atlassian.net/browse/ZNTA-1731) - JSON textunits should have a global ID
+ * [ZNTA-75](https://zanata.atlassian.net/browse/ZNTA-75) - Add live validations to React editor.
+
+##### Bug Fixes
+ * [ZNTA-2708](https://zanata.atlassian.net/browse/ZNTA-2708) - Machine Translation merge fail notification should not auto-close
+ * [ZNTA-2707](https://zanata.atlassian.net/browse/ZNTA-2707) - Antd toast notification icon colours
+ * [ZNTA-2706](https://zanata.atlassian.net/browse/ZNTA-2706) - Center the menu arrows in react editor header
+ * [ZNTA-2704](https://zanata.atlassian.net/browse/ZNTA-2704) - Admin review criteria delete and save buttons not inline and icons not centred
+ * [ZNTA-2702](https://zanata.atlassian.net/browse/ZNTA-2702) - Add margin between two alerts in MT Merge modal
+ * [ZNTA-2701](https://zanata.atlassian.net/browse/ZNTA-2701) - Override pagination styling on Languages page
+ * [ZNTA-2699](https://zanata.atlassian.net/browse/ZNTA-2699) - Project glossary title not inline
+ * [ZNTA-2698](https://zanata.atlassian.net/browse/ZNTA-2698) - modal - footer margin
+ * [ZNTA-2697](https://zanata.atlassian.net/browse/ZNTA-2697) - Project list alignment
+ * [ZNTA-2696](https://zanata.atlassian.net/browse/ZNTA-2696) - Unable to reset language search
+ * [ZNTA-2695](https://zanata.atlassian.net/browse/ZNTA-2695) - Terms of Use on sign-up page redirecting to page not found. 
+ * [ZNTA-2687](https://zanata.atlassian.net/browse/ZNTA-2687) - can't get project list per language in a group
+ * [ZNTA-2682](https://zanata.atlassian.net/browse/ZNTA-2682) - Languages page pageSize dropdown not working
+ * [ZNTA-2681](https://zanata.atlassian.net/browse/ZNTA-2681) - Languages page sort dropdown not working
+ * [ZNTA-2677](https://zanata.atlassian.net/browse/ZNTA-2677) - Explore page pagination broken
+ * [ZNTA-2676](https://zanata.atlassian.net/browse/ZNTA-2676) - Too hard to see selected option in CopyTrans steps
+ * [ZNTA-2675](https://zanata.atlassian.net/browse/ZNTA-2675) - Too hard to read currently set validation options
+ * [ZNTA-2674](https://zanata.atlassian.net/browse/ZNTA-2674) - Project version settings "Inherit from project" button not aligned correctly
+ * [ZNTA-2671](https://zanata.atlassian.net/browse/ZNTA-2671) - Attribution check happens post translate, allowing unattributed translations
+ * [ZNTA-2662](https://zanata.atlassian.net/browse/ZNTA-2662) - MT fill silently dismisses translations with validation errors
+ * [ZNTA-2638](https://zanata.atlassian.net/browse/ZNTA-2638) - Unnecessary square box around a few buttons. 
+ * [ZNTA-2634](https://zanata.atlassian.net/browse/ZNTA-2634) - TS file language property is not changed on write
+ * [ZNTA-2627](https://zanata.atlassian.net/browse/ZNTA-2627) - Button loadertext changes button positioning
+ * [ZNTA-2610](https://zanata.atlassian.net/browse/ZNTA-2610) - Ant Design (antd) requires React 16, but we only have React 15
+ * [ZNTA-2601](https://zanata.atlassian.net/browse/ZNTA-2601) - Downloaded TS files have type=unfinished even for Approved translations
+ * [ZNTA-2600](https://zanata.atlassian.net/browse/ZNTA-2600) - Zanata generates URLs with a duplicate /zanata
+ * [ZNTA-2599](https://zanata.atlassian.net/browse/ZNTA-2599) - Enable/Disable Translations Review
+ * [ZNTA-2581](https://zanata.atlassian.net/browse/ZNTA-2581) - problem with uploading translation to the source document (json)
+ * [ZNTA-2574](https://zanata.atlassian.net/browse/ZNTA-2574) - Dropdowns doesn't open entirely
+ * [ZNTA-2553](https://zanata.atlassian.net/browse/ZNTA-2553) - Export project/version to TMX modal  is larger than required
+ * [ZNTA-968](https://zanata.atlassian.net/browse/ZNTA-968) - Some projects won't respond to rest API ../rest/stats/proj/%s/iter/%s?word=true
+ * [ZNTA-821](https://zanata.atlassian.net/browse/ZNTA-821) - Correct `lang=` HTML tag attribute should be used for target language text on Web UI
+ * [ZNTA-87](https://zanata.atlassian.net/browse/ZNTA-87) - Notify users of failed save in React editor.
+
 -----------------------
 
 ## 4.5.0
