@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.6.0-rc-3-SNAPSHOT</version>
+    <version>4.6.0-rc-3</version>
   </parent>
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
@@ -15,7 +15,7 @@
     <connection>scm:git:git://github.com/zanata/zanata.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
     <url>https://github.com/zanata/zanata</url>
-    <tag>HEAD</tag>
+    <tag>platform-4.6.0-rc-3</tag>
   </scm>
 
   <properties>
