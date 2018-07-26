@@ -70,13 +70,13 @@ export type HeaderDataState = DeepReadonly<{
       id: string
     }
     selectedLocale: string
-    localeMessages: any
   }
   permissions: {
     reviewer: boolean
     translator: boolean
   }
-  localeMessages?: any
+  localeMessages?: any,
+  selectedI18nLocale: string
 }>
 
 export type DropdownState = DeepReadonly<{

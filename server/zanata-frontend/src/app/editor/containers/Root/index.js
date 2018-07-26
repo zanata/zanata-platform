@@ -10,14 +10,14 @@ import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
 import { getSuggestionsPanelVisible, getAppLocale } from '../../reducers'
-import { fetchUiLocales, fetchAppLocale } from '../../actions/header-actions'
+import { fetchAppLocale } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
 import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
-import { locale, formats } from '../../config/intl'
 import { appLocale } from '../../../config'
-import { IntlProvider } from 'react-intl'
+
+import ConnectedIntlProvider from './ConnectedIntlProvider'
 
 /**
  * Top level of Zanata view hierarchy.
@@ -26,18 +26,15 @@ class Root extends Component {
   static propTypes = {
     percentHeight: PropTypes.number.isRequired,
     showSuggestion: PropTypes.bool,
-    requestUiLocales: PropTypes.func.isRequired,
     requestAppLocale: PropTypes.func.isRequired,
     saveSuggestionPanelHeight: PropTypes.func.isRequired,
     localeMessages: PropTypes.object
   }
 
-  componentWillMount () {
-    this.props.requestAppLocale()
-  }
-
   componentDidMount () {
-    this.props.requestUiLocales()
+    if (!this.props.localeMessages) {
+      this.props.requestAppLocale(appLocale)
+    }
     window.addEventListener('resize', this.onWindowResize)
   }
 
@@ -79,11 +76,7 @@ class Root extends Component {
       : 0
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
-      <IntlProvider defaultLocale={locale}
-        locale={appLocale}
-        formats={formats}
-        key={this.props.localeMessages}
-        messages={this.props.localeMessages}>
+      <ConnectedIntlProvider>
         <ParamPropDispatcher {...this.props}>
           <KeyShortcutDispatcher className='Editor is-suggestions-active'>
             <Icons />
@@ -101,7 +94,7 @@ class Root extends Component {
             <KeyShortcutCheatSheet />
           </KeyShortcutDispatcher>
         </ParamPropDispatcher>
-      </IntlProvider>
+      </ConnectedIntlProvider>
     )
   }
 }
@@ -118,15 +111,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    requestAppLocale: () => {
-      dispatch(fetchAppLocale(appLocale))
+    requestAppLocale: (locale) => {
+      dispatch(fetchAppLocale(locale))
     },
     saveSuggestionPanelHeight: (pixelHeight) => {
       const percent = pixelHeight / window.innerHeight
       dispatch(saveSuggestionPanelHeight(percent))
-    },
-    requestUiLocales: () => {
-      dispatch(fetchUiLocales())
     }
   }
 }

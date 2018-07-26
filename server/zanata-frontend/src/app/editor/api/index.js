@@ -135,7 +135,8 @@ export function fetchI18nLocale (locale) {
             return json
           })
         }
-      }
+      },
+      meta: locale
     },
     LOCALE_MESSAGES_FAILURE]
   return {

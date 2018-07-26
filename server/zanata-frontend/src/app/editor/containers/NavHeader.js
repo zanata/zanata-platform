@@ -1,19 +1,25 @@
 // @ts-nocheck
-import DashboardLink from '../components/DashboardLink'
-import DocsDropdown from '../components/DocsDropdown'
-import { Icon } from '../../components'
-import Row from 'antd/lib/row'
-import 'antd/lib/row/style/css'
-import LanguagesDropdown from '../components/LanguagesDropdown'
-import ProjectVersionLink from '../components/ProjectVersionLink'
-/* Disabled UI locale changes until zanata-spa is internationalised
-import UiLanguageDropdown from '../components/UiLanguageDropdown'
-*/
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { addLocaleData } from 'react-intl'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+import AntIcon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
+import DashboardLink from '../components/DashboardLink'
+import DocsDropdown from '../components/DocsDropdown'
+import { Icon } from '../../components'
+import LanguagesDropdown from '../components/LanguagesDropdown'
+import ProjectVersionLink from '../components/ProjectVersionLink'
 import { toggleDropdown } from '../actions'
-import { changeUiLocale } from '../actions/header-actions'
+import { fetchAppLocale } from '../actions/header-actions'
+import { appLocale } from '../../config'
+import { isEmpty } from 'lodash'
+
+const Option = Select.Option
 
 const { any, arrayOf, func, object, shape, string } = PropTypes
 
@@ -26,7 +32,6 @@ class NavHeader extends React.Component {
       changeUiLocale: func.isRequired,
       toggleDropdown: func.isRequired
     }).isRequired,
-
     data: shape({
       user: shape({
         name: string,
@@ -45,7 +50,8 @@ class NavHeader extends React.Component {
           locales: object.isRequired
         }).isRequired,
         selectedLocale: string.isRequired
-      }).isRequired
+      }).isRequired,
+      selectedI18nLocale: string.isRequired
     }).isRequired,
     isRTL: PropTypes.bool.isRequired,
     dropdown: shape({
@@ -79,16 +85,22 @@ class NavHeader extends React.Component {
       isOpen: dropdowns.openDropdownKey === dropdowns.localeKey,
       toggleDropdown: props.actions.toggleDropdown(dropdowns.localeKey)
     }
+    const locales = this.props.ui.uiLocales
+    const filterOpt = (input, option) => (
+      (option.props.value + option.props.title).toLowerCase())
+      .indexOf(input.toLowerCase()) >= 0
 
-    /* Disabled UI locale changes until zanata-spa is internationalised
-    const uiLangDropdownProps = {
-      changeUiLocale: props.actions.changeUiLocale,
-      selectedUiLocale: props.ui.selectedUiLocale,
-      uiLocales: props.ui.uiLocales,
-      isOpen: dropdowns.openDropdownKey === dropdowns.uiLocaleKey,
-      toggleDropdown: props.actions.toggleDropdown(dropdowns.uiLocaleKey)
-    }*/
-
+    const onSelectChange = (key) => {
+      // Dynamically load the app react-intl locale data
+      addLocaleData(require(`react-intl/locale-data/${key}`))
+      // Fetch the locale messages and change the selected locale
+      props.actions.changeUiLocale(key)
+    }
+    const defaultUiLocale = appLocale.length < 4 ? appLocale : 'en'
+    const defaultLocaleOpt =
+      <Option key={defaultUiLocale} value={defaultUiLocale} title={'English'}>
+        <span className='blue'>{defaultUiLocale}</span>
+      </Option>
     return (
       /* eslint-disable max-len */
       <nav role="navigation"
@@ -106,13 +118,28 @@ class NavHeader extends React.Component {
             <LanguagesDropdown {...langsDropdownProps} />
           </Row>
         </div>
-
         <ul className="u-listHorizontal u-posAbsoluteRight u-sMR-1-2">
-          {/* Disabled UI locale changes until zanata-spa is internationalised
-            <li>
-            <UiLanguageDropdown {...uiLangDropdownProps}/>
-          </li>*/
-          }
+          <li>
+            <AntIcon type="global" className="mr2 white" />
+            {!isEmpty(locales) && <Select
+              showSearch
+              style={{ width: '6em', marginTop: '.5em' }}
+              value={
+                <span className='blue'>{props.data.selectedI18nLocale}</span>
+              }
+              onChange={onSelectChange}
+              filterOption={filterOpt}
+            >
+              {[defaultLocaleOpt].concat(Object.keys(locales)
+                .filter(k => k.length < 4) // Filter unsupported locales
+                .sort()
+                .map(key =>
+                  <Option key={key} value={key} title={locales[key].name}>
+                    <span className='blue'>{key}</span>
+                  </Option>))
+              }
+            </Select>}
+          </li>
           {/* A couple of items from the Angular template that were not used
           <li ng-show="appCtrl.PRODUCTION">
             <button class="Link--invert Header-item u-sizeWidth-1_1-2"
@@ -153,9 +180,9 @@ function mapDispatchToProps (dispatch) {
         return () => dispatch(toggleDropdown(key))
       },
       changeUiLocale: (key) => {
-        return () => dispatch(changeUiLocale(key))
+        dispatch(fetchAppLocale(key))
       }
-    }
+    },
   }
 }
 
