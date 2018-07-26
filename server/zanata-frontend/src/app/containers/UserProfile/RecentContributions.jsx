@@ -3,8 +3,7 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
-import DatePicker from 'antd/lib/date-picker'
-import 'antd/lib/date-picker/style/css'
+import { DateRange } from 'react-date-range'
 import utilsDate from '../../utils/DateHelper'
 import { TextInput } from '../../components'
 import Button from 'antd/lib/button'
@@ -13,7 +12,6 @@ import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
 
 const STATS_MAX_DAYS = 365
-const { RangePicker } = DatePicker
 
 /**
  * User profile statistics root page
@@ -106,20 +104,12 @@ class RecentContributions extends React.Component {
                     Apply
                   </Button>]} >
                 <span className='txt-muted'>(Maximum 365 days)</span>
-                <RangePicker
-                  dateRender={(current) => {
-                    const style = {}
-                    if (current.date() === 1) {
-                      style.border = '1px solid #1890ff'
-                      style.borderRadius = '50%'
-                    }
-                    return (
-                      <div className="ant-calendar-date" style={style}>
-                        {current.date()}
-                      </div>
-                    )
-                  }}
-                />
+                <DateRange
+                  startDate={this.state.dateRange.startDate}
+                  endDate={this.state.dateRange.endDate}
+                  ranges={utilsDate.getDefaultDateRange()}
+                  className='dateRange-calendar'
+                  onChange={this.onDateRangeChanged} />
               </Modal>
             }
           </div>
