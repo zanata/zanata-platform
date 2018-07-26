@@ -136,7 +136,7 @@ export const ControlsHeader = ({
         <EditorSearchInput />
       </div>
       <div className="u-floatRight controlHeader-right">
-        <ul className="u-listHorizontal tc flex center">
+        <ul className="u-listHorizontal tc inline-flex items-center">
           <li className="u-sMV-1-4">
             <Pager
               firstPage={firstPage}
