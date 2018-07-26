@@ -117,11 +117,11 @@ const Pager = ({
   }
 
   return (
-    <ul className="u-listHorizontal tc">
+    <ul className="u-listHorizontal tc inline-flex items-center">
       <PagerButton {...buttons.first} />
       <PagerButton {...buttons.prev} />
       <li className="u-sizeHeight-1 u-sPH-1-4">
-        <span className="u-textNeutral">
+        <span className="u-textNeutral lh-title">
           {pageXofY}
         </span>
       </li>
