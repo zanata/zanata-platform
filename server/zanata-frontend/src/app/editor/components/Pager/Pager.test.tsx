@@ -34,7 +34,7 @@ describe('PagerTest', () => {
         </IntlProvider>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <ul className='u-listHorizontal tc'>
+      <ul className='u-listHorizontal tc inline-flex items-center'>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
             title='First page'>
@@ -48,7 +48,7 @@ describe('PagerTest', () => {
           </a>
         </li>
         <li className='u-sizeHeight-1 u-sPH-1-4'>
-          <span className='u-textNeutral'>
+          <span className='u-textNeutral lh-title'>
             <option>7 of 11</option>
           </span>
         </li>
