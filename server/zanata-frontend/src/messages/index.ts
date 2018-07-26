@@ -4,17 +4,33 @@
  */
 const MessageLocales = [
     {
+        id: 'de',
+        name: 'German'
+    },
+    {
         id: 'en',
         name: 'English'
+    },
+    {
+        id: 'fr',
+        name: 'French'
     },
     {
         id: 'ja',
         name: 'Japanese'
     },
     {
-        id: 'fr',
-        name: 'French'
-    }
+        id: 'ko',
+        name: 'Korean'
+    },
+    {
+        id: 'ru',
+        name: 'Russian'
+    },
+    {
+        id: 'zu',
+        name: 'Chinese'
+    },
 ]
 
 export default MessageLocales

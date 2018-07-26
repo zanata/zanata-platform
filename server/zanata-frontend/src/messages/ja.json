@@ -56,7 +56,7 @@
   "SettingsPanel.validation.header": "検証設定",
   "SettingsPanel.editor.heading": "エディタ設定",
   "SuggestionsHeader.title": "提案",
-  "SuggestionsHeader.switch.difference": "Difference",
+  "SuggestionsHeader.switch.difference": "違いを見方",
   "TranslationInfoPanel.details.resourceid": "書類の識別番号",
   "TranslationInfoPanel.details.messagecontext": "メッセージ文脈",
   "TranslationInfoPanel.details.reference": "参照",

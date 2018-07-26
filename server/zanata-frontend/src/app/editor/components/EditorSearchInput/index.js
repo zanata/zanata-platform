@@ -231,7 +231,7 @@ export class EditorSearchInput extends Component {
               {advancedFields}
               <Button size={'small'} aria-label='button' className="AdvSearch-clear"
                 onClick={this.clearAllAdvancedFields}>
-                Clear all
+                {intl.formatMessage(messages.clearAll)}
               </Button>
             </span>
           </Panel>
