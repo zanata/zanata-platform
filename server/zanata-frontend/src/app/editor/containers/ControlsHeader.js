@@ -125,7 +125,7 @@ export const ControlsHeader = ({
   }) => {
   return (
     /* eslint-disable max-len */
-    <nav className="flex flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of">
+    <nav className="flex center flex-wrapper u-bgHighest u-sPH-1-2 l--cf-of">
       <TranslatingIndicator permissions={permissions} />
       <div className="u-floatLeft controlHeader-left Input">
         <PhraseStatusFilter /></div>
@@ -136,7 +136,7 @@ export const ControlsHeader = ({
         <EditorSearchInput />
       </div>
       <div className="u-floatRight controlHeader-right">
-        <ul className="u-listHorizontal tc">
+        <ul className="u-listHorizontal tc inline-flex items-center">
           <li className="u-sMV-1-4">
             <Pager
               firstPage={firstPage}
