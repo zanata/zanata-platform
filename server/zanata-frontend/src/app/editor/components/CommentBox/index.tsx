@@ -19,11 +19,12 @@
  * site: http://www.fsf.org.
  */
 
+import React from "react"
+import { FormattedMessage } from 'react-intl'
 import { isEmpty } from "lodash"
 import Input from "antd/lib/input"
 import "antd/lib/input/style/css"
 import Icon from "../../../components/Icon"
-import React from "react"
 import Button from "antd/lib/button"
 import "antd/lib/button/style/css"
 
@@ -51,7 +52,9 @@ class CommentBox extends React.Component<Props, State> {
     return (
       <div className="TransUnit-commentBox mb4">
           <span>
-            <Icon name="comment" className="s0" /> Post a comment
+          <Icon name="comment" className="s0" /> <FormattedMessage
+            id='CommentBox.iconlabel'
+            defaultMessage='Comment on this translation' />
           </span><br />
           <TextArea
             autosize={{ minRows: 2, maxRows: 6 }}
@@ -63,7 +66,9 @@ class CommentBox extends React.Component<Props, State> {
         <Button disabled={isEmpty(this.state.commentText)}
           onClick={this.postComment}
           className="EditorButton Button--small u-rounded Button--primary u-pullRight mt2">
-         Post comment
+          <FormattedMessage
+            id='CommentBox.submitlabel'
+            defaultMessage='Post comment' />
         </Button>
       </div>
     )

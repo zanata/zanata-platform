@@ -191,7 +191,6 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
 
           fetchValidationSettings(dispatch, projectSlug, versionSlug)
 
-          dispatch(fetchUiLocales())
           // dispatching selected doc and locale must happen after we compare
           // previous state otherwise it will not fetch stats
           dispatch(selectDoc(selectedDocId))

@@ -1,4 +1,5 @@
 // @ts-nocheck
+/* eslint-disable max-len */
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
@@ -20,11 +21,12 @@
  * site: http://www.fsf.org.
  */
 
-import cx from 'classnames'
-import { connect } from 'react-redux'
 import React from 'react'
-import { Component } from 'react'
 import * as PropTypes from 'prop-types'
+import { Component } from 'react'
+import { connect } from 'react-redux'
+import { injectIntl, intlShape, defineMessages } from 'react-intl'
+import cx from 'classnames'
 import { map } from 'lodash'
 import {
   toggleAdvanced,
@@ -36,37 +38,6 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 const Panel = Collapse.Panel
 
-const fields = {
-  resId: {
-    label: 'Resource ID',
-    description: 'exact Resource ID for a string'
-  },
-  lastModifiedByUser: {
-    label: 'Last modified by',
-    description: 'username'
-  },
-  changedBefore: {
-    label: 'Last modified before',
-    description: 'date in format yyyy/mm/dd'
-  },
-  changedAfter: {
-    label: 'Last modified after',
-    description: 'date in format yyyy/mm/dd'
-  },
-  sourceComment: {
-    label: 'Source comment',
-    description: 'source comment text'
-  },
-  // transComment: {
-  //   label: 'Translation comment',
-  //   description: 'translation comment text'
-  // },
-  msgContext: {
-    label: 'msgctxt (gettext)',
-    description: 'exact Message Context for a string'
-  }
-}
-
 /**
  * Multiple-field search input that will suggest fields as the user types.
  *
@@ -76,6 +47,7 @@ const fields = {
  */
 export class EditorSearchInput extends Component {
   static propTypes = {
+    intl: intlShape,
     showAdvanced: PropTypes.bool.isRequired,
     search: PropTypes.shape({
       searchString: PropTypes.string.isRequired,
@@ -169,8 +141,54 @@ export class EditorSearchInput extends Component {
   }
 
   render () {
-    const { showAdvanced } = this.props
-
+    const { showAdvanced, intl } = this.props
+    const messages = defineMessages({
+      resIdLabel: { id: 'EditorSearchInput.resIdLabel', defaultMessage: 'Resource ID' },
+      resIdDesc: { id: 'EditorSearchInput.resIdDesc', defaultMessage: 'exact Resource ID for a string' },
+      lastModifiedLabel: { id: 'EditorSearchInput.lastModifiedLabel', defaultMessage: 'Last modified by' },
+      lastModifiedDesc: { id: 'EditorSearchInput.lastModifiedDesc', defaultMessage: 'username' },
+      changedBeforeLabel: { id: 'EditorSearchInput.changedBeforeLabel', defaultMessage: 'Last modified before' },
+      changedAfterLabel: { id: 'EditorSearchInput.changedAfterLabel', defaultMessage: 'Last modified after' },
+      sourceCommentLabel: { id: 'EditorSearchInput.sourceCommentLabel', defaultMessage: 'Source comment' },
+      sourceCommentDesc: { id: 'EditorSearchInput.sourceCommentDesc', defaultMessage: 'source comment text' },
+      msgContextLabel: { id: 'EditorSearchInput.msgContextLabel', defaultMessage: 'msgctxt (gettext)' },
+      msgContextDesc: { id: 'EditorSearchInput.msgContextDesc', defaultMessage: 'exact Message Context for a string' },
+      dateFormat: { id: 'EditorSearchInput.dateFormat', defaultMessage: 'date in format yyyy/mm/dd' },
+      searchPlaceholder: { id: 'EditorSearchInput.placeholder', defaultMessage: 'Search source and target text' },
+      showAdvanced: { id: 'EditorSearchInput.showAdvanced', defaultMessage: 'Advanced' },
+      hideAdvanced: { id: 'EditorSearchInput.hideAdvanced', defaultMessage: 'Hide advanced' },
+      clearAll: { id: 'EditorSearchInput.clearAll', defaultMessage: 'Clear all' },
+    })
+    const fields = {
+      resId: {
+        label: intl.formatMessage(messages.resIdLabel),
+        description: intl.formatMessage(messages.resIdDesc)
+      },
+      lastModifiedByUser: {
+        label: intl.formatMessage(messages.lastModifiedLabel),
+        description: intl.formatMessage(messages.lastModifiedDesc)
+      },
+      changedBefore: {
+        label: intl.formatMessage(messages.changedBeforeLabel),
+        description: intl.formatMessage(messages.dateFormat)
+      },
+      changedAfter: {
+        label: intl.formatMessage(messages.changedAfterLabel),
+        description: intl.formatMessage(messages.dateFormat)
+      },
+      sourceComment: {
+        label: intl.formatMessage(messages.sourceCommentLabel),
+        description: intl.formatMessage(messages.sourceCommentDesc)
+      },
+      msgContext: {
+        label: intl.formatMessage(messages.msgContextLabel),
+        description: intl.formatMessage(messages.msgContextDesc),
+      }
+      // transComment: {
+      //   label: 'Translation comment',
+      //   description: 'translation comment text'
+      // },
+    }
     const advancedFields = map(fields, (field, key) => (
       <AdvancedField key={key}
         id={key}
@@ -189,14 +207,17 @@ export class EditorSearchInput extends Component {
             { 'is-focused': this.state.focused })}>
           <input ref={this.setInput}
             type="search"
-            placeholder="Search source and target text"
+            placeholder={intl.formatMessage(messages.searchPlaceholder)}
             maxLength="1000"
             value={this.props.search.searchString}
             onChange={this.updateSearchText}
             className="EditorInputGroup-input u-sizeLineHeight-1_1-4" />
           <span className="EditorInputGroup-addon btn-xs btn-link n1"
             onClick={this.toggleAdvanced}>
-            {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
+            {showAdvanced
+              ? intl.formatMessage(messages.hideAdvanced)
+              : intl.formatMessage(messages.showAdvanced)}
+          </span>
         </div>
         <Collapse activeKey={showAdvanced ? '1' : null} onChange={this.toggleAdvanced}
           style={{
@@ -268,4 +289,5 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchInput)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  injectIntl(EditorSearchInput))

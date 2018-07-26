@@ -16,8 +16,7 @@ import LanguagesDropdown from '../components/LanguagesDropdown'
 import ProjectVersionLink from '../components/ProjectVersionLink'
 import { toggleDropdown } from '../actions'
 import { fetchAppLocale } from '../actions/header-actions'
-import { appLocale } from '../../config'
-import { isEmpty } from 'lodash'
+import MessageLocales from '../../../messages'
 
 const Option = Select.Option
 
@@ -85,7 +84,6 @@ class NavHeader extends React.Component {
       isOpen: dropdowns.openDropdownKey === dropdowns.localeKey,
       toggleDropdown: props.actions.toggleDropdown(dropdowns.localeKey)
     }
-    const locales = this.props.ui.uiLocales
     const filterOpt = (input, option) => (
       (option.props.value + option.props.title).toLowerCase())
       .indexOf(input.toLowerCase()) >= 0
@@ -96,11 +94,6 @@ class NavHeader extends React.Component {
       // Fetch the locale messages and change the selected locale
       props.actions.changeUiLocale(key)
     }
-    const defaultUiLocale = appLocale.length < 4 ? appLocale : 'en'
-    const defaultLocaleOpt =
-      <Option key={defaultUiLocale} value={defaultUiLocale} title={'English'}>
-        <span className='blue'>{defaultUiLocale}</span>
-      </Option>
     return (
       /* eslint-disable max-len */
       <nav role="navigation"
@@ -121,24 +114,19 @@ class NavHeader extends React.Component {
         <ul className="u-listHorizontal u-posAbsoluteRight u-sMR-1-2">
           <li>
             <AntIcon type="global" className="mr2 white" />
-            {!isEmpty(locales) && <Select
+            <Select
               showSearch
               style={{ width: '6em', marginTop: '.5em' }}
-              value={
-                <span className='blue'>{props.data.selectedI18nLocale}</span>
-              }
+              value={<span className='blue'>{props.data.selectedI18nLocale}</span>}
               onChange={onSelectChange}
-              filterOption={filterOpt}
-            >
-              {[defaultLocaleOpt].concat(Object.keys(locales)
-                .filter(k => k.length < 4) // Filter unsupported locales
-                .sort()
-                .map(key =>
-                  <Option key={key} value={key} title={locales[key].name}>
-                    <span className='blue'>{key}</span>
-                  </Option>))
+              filterOption={filterOpt}>
+              {
+                MessageLocales.sort().map(locale =>
+                  <Option key={locale.id} value={locale.id} title={locale.name}>
+                    <span className='blue'>{locale.id}</span>
+                  </Option>)
               }
-            </Select>}
+            </Select>
           </li>
           {/* A couple of items from the Angular template that were not used
           <li ng-show="appCtrl.PRODUCTION">
