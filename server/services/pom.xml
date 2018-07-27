@@ -6,7 +6,7 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>org.zanata</groupId>
-    <version>4.6.0</version>
+    <version>4.6.1-SNAPSHOT</version>
   </parent>
   <artifactId>services</artifactId>
   <packaging>jar</packaging>
@@ -18,7 +18,7 @@
     <connection>scm:git:git://github.com/zanata/zanata.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
     <url>https://github.com/zanata/zanata</url>
-    <tag>platform-4.6.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
