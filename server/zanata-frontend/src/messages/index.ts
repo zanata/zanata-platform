@@ -2,35 +2,42 @@
  * List the available locale ids for the frontend i18n.
  * Update this list when including new languages.
  */
-const MessageLocales = [
-    {
+const MessageLocales = {
+    de: {
         id: 'de',
-        name: 'German'
+        name: 'German',
+        displayName: 'Deutsche'
     },
-    {
+    en: {
         id: 'en',
-        name: 'English'
+        name: 'English',
+        displayName: 'English'
     },
-    {
+    fr: {
         id: 'fr',
-        name: 'French'
+        name: 'French',
+        displayName: 'Français'
     },
-    {
+    ja: {
         id: 'ja',
-        name: 'Japanese'
+        name: 'Japanese',
+        displayName: '日本語'
     },
-    {
+    ko: {
         id: 'ko',
-        name: 'Korean'
+        name: 'Korean',
+        displayName: '한국어'
     },
-    {
+    ru: {
         id: 'ru',
-        name: 'Russian'
+        name: 'Russian',
+        displayName: 'ру́сский'
     },
-    {
+    zu: {
         id: 'zu',
-        name: 'Chinese'
+        name: 'Chinese (Simplified)',
+        displayName: '中文'
     },
-]
+}
 
 export default MessageLocales

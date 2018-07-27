@@ -5,10 +5,7 @@ import { connect } from 'react-redux'
 import { addLocaleData } from 'react-intl'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
-import AntIcon from 'antd/lib/icon'
-import 'antd/lib/icon/style/css'
+import UiLanguageDropdown from '../components/UiLanguageDropdown'
 import DashboardLink from '../components/DashboardLink'
 import DocsDropdown from '../components/DocsDropdown'
 import { Icon } from '../../components'
@@ -17,8 +14,6 @@ import ProjectVersionLink from '../components/ProjectVersionLink'
 import { toggleDropdown } from '../actions'
 import { fetchAppLocale } from '../actions/header-actions'
 import MessageLocales from '../../../messages'
-
-const Option = Select.Option
 
 const { any, arrayOf, func, object, shape, string } = PropTypes
 
@@ -67,6 +62,19 @@ class NavHeader extends React.Component {
     }).isRequired
   }
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      UiLanguageDropdownOpen: false
+    }
+  }
+
+  toggleUiLanguageDropdown = () => {
+    this.setState(prevState => ({
+      UiLanguageDropdownOpen: !prevState.UiLanguageDropdownOpen
+    }))
+  }
+
   render () {
     const props = this.props
     const ctx = props.data.context
@@ -84,16 +92,14 @@ class NavHeader extends React.Component {
       isOpen: dropdowns.openDropdownKey === dropdowns.localeKey,
       toggleDropdown: props.actions.toggleDropdown(dropdowns.localeKey)
     }
-    const filterOpt = (input, option) => (
-      (option.props.value + option.props.title).toLowerCase())
-      .indexOf(input.toLowerCase()) >= 0
 
-    const onSelectChange = (key) => {
+    const onSelectChange = (locale) => {
       // Dynamically load the app react-intl locale data
-      addLocaleData(require(`react-intl/locale-data/${key}`))
+      addLocaleData(require(`react-intl/locale-data/${locale.id}`))
       // Fetch the locale messages and change the selected locale
-      props.actions.changeUiLocale(key)
+      props.actions.changeUiLocale(locale.id)
     }
+
     return (
       /* eslint-disable max-len */
       <nav role="navigation"
@@ -113,20 +119,15 @@ class NavHeader extends React.Component {
         </div>
         <ul className="u-listHorizontal u-posAbsoluteRight u-sMR-1-2">
           <li>
-            <AntIcon type="global" className="mr2 white" />
-            <Select
-              showSearch
-              style={{ width: '6em', marginTop: '.5em' }}
-              value={<span className='blue'>{props.data.selectedI18nLocale}</span>}
-              onChange={onSelectChange}
-              filterOption={filterOpt}>
-              {
-                MessageLocales.sort().map(locale =>
-                  <Option key={locale.id} value={locale.id} title={locale.name}>
-                    <span className='blue'>{locale.id}</span>
-                  </Option>)
+            <UiLanguageDropdown
+              changeUiLocale={onSelectChange}
+              selectedUiLocale={
+                props.data.selectedI18nLocale
               }
-            </Select>
+              uiLocales={MessageLocales}
+              toggleDropdown={this.toggleUiLanguageDropdown}
+              isOpen={this.state.UiLanguageDropdownOpen}
+            />
           </li>
           {/* A couple of items from the Angular template that were not used
           <li ng-show="appCtrl.PRODUCTION">
