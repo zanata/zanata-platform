@@ -51,6 +51,9 @@ Users can utilize the Copy Translations or TM Merge features to restore them.
  * [ZNTA-75](https://zanata.atlassian.net/browse/ZNTA-75) - Add live validations to React editor.
 
 ##### Bug Fixes
+ * [ZNTA-2714](https://zanata.atlassian.net/browse/ZNTA-2714) - Editor pagination not aligned
+ * [ZNTA-2712](https://zanata.atlassian.net/browse/ZNTA-2712) - Add some space/margin before Administration in some admin menus
+ * [ZNTA-2711](https://zanata.atlassian.net/browse/ZNTA-2711) - TM creation date is not align
  * [ZNTA-2708](https://zanata.atlassian.net/browse/ZNTA-2708) - Machine Translation merge fail notification should not auto-close
  * [ZNTA-2707](https://zanata.atlassian.net/browse/ZNTA-2707) - Antd toast notification icon colours
  * [ZNTA-2706](https://zanata.atlassian.net/browse/ZNTA-2706) - Center the menu arrows in react editor header
