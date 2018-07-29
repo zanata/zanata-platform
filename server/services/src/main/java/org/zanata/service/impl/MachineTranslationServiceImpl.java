@@ -86,6 +86,7 @@ import static java.util.stream.Collectors.toList;
 public class MachineTranslationServiceImpl implements
         MachineTranslationService {
     private static final int BATCH_SIZE = 100;
+    private static final int REQUEST_BATCH_SIZE = 1000;
     private static final Logger log =
             LoggerFactory.getLogger(MachineTranslationServiceImpl.class);
 
@@ -271,17 +272,29 @@ public class MachineTranslationServiceImpl implements
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
             return null;
         }
-
-        MTDocument mtDocument = textFlowsToMTDoc
-                .fromTextFlows(projectSlug, versionSlug,
-                        doc.getDocId(), doc.getSourceLocaleId(),
-                        textFlowsToTranslate,
-                        TextFlowsToMTDoc::extractPluralIfPresent,
-                        backendId);
-        MTDocument result = getTranslationFromMT(mtDocument,
-                targetLocale.getLocaleId());
-        saveTranslationsInBatches(textFlowsToTranslate, result, targetLocale, saveState);
-        return result.getBackendId();
+        int startBatch = 0;
+        String backendIdConfirmation = null;
+        while (startBatch < textFlowsToTranslate.size()) {
+            int batchEnd = Math.min(
+                    startBatch + REQUEST_BATCH_SIZE, textFlowsToTranslate.size());
+            List<HTextFlow> next =
+                    textFlowsToTranslate.subList(startBatch, batchEnd);
+            MTDocument mtDocument = textFlowsToMTDoc
+                    .fromTextFlows(projectSlug, versionSlug,
+                            doc.getDocId(), doc.getSourceLocaleId(),
+                            next,
+                            TextFlowsToMTDoc::extractPluralIfPresent,
+                            backendId);
+            MTDocument result = getTranslationFromMT(mtDocument,
+                    targetLocale.getLocaleId());
+            saveTranslationsInBatches(next, result, targetLocale, saveState);
+            backendIdConfirmation = result.getBackendId();
+            startBatch = batchEnd;
+        }
+        if (backendIdConfirmation == null) {
+            log.warn("Error getting confirmation backend ID for " + doc.getDocId());
+        }
+        return backendIdConfirmation;
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
