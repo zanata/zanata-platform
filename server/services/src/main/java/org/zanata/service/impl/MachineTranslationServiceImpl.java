@@ -292,7 +292,7 @@ public class MachineTranslationServiceImpl implements
             startBatch = batchEnd;
         }
         if (backendIdConfirmation == null) {
-            log.warn("Error getting confirmation backend ID for " + doc.getDocId());
+            log.warn("Error getting confirmation backend ID for {}", doc.getDocId());
         }
         return backendIdConfirmation;
     }
