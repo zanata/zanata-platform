@@ -34,9 +34,6 @@ zanata.createNS = function (namespace) {
 
 jQuery(function () {
   zanata.tooltip.init('[title]');
-
-  // Make touches as fast as desktop clicks
-  FastClick.attach(document.body);
 });
 
 jQuery(function () {
