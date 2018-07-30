@@ -11,7 +11,7 @@ class ToggleSwitch extends React.Component {
     className: PropTypes.string,
     isChecked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired
+    label: PropTypes.node.isRequired
   }
 
   render () {

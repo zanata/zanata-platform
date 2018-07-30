@@ -86,13 +86,14 @@ describe('header-data-reducer test', () => {
           },
           id: ''
         },
-        selectedLocale: '',
-        localeMessages: {}
+        selectedLocale: ''
       },
       permissions: {
         reviewer: false,
         translator: false
-      }
+      },
+      selectedI18nLocale: 'en',
+      localeMessages: undefined
     })
   })
 
@@ -163,13 +164,14 @@ describe('header-data-reducer test', () => {
           },
           id: ''
         },
-        selectedLocale: '',
-        localeMessages: {}
+        selectedLocale: ''
       },
       permissions: {
         reviewer: false,
         translator: false
-      }
+      },
+      selectedI18nLocale: 'en',
+      localeMessages: undefined
     })
   })
 

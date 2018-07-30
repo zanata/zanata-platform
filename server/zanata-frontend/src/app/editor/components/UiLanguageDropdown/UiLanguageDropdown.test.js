@@ -17,19 +17,23 @@ describe('UiLanguageDropdownTest', () => {
         uiLocales={{
           st: {
             id: 'st',
-            name: 'Sesotho'
+            name: 'Sesotho',
+            displayName: 'SesothoDisplay'
           },
           tn: {
             id: 'tn',
-            name: 'Setswana'
+            name: 'Setswana',
+            displayName: 'SetswanaDisplay'
           },
           sw: {
             id: 'sw',
-            name: 'Swahili'
+            name: 'Swahili',
+            displayName: 'SwahiliDisplay'
           },
           zu: {
             id: 'zu',
-            name: 'Zulu'
+            name: 'Zulu',
+            displayName: 'ZuluDisplay'
           }
         }}
         toggleDropdown={nowSeeHere}
@@ -42,29 +46,34 @@ describe('UiLanguageDropdownTest', () => {
         className="Dropdown--right u-sMV-1-2">
         <Dropdown.Button>
           <a className="Link--invert u-inlineBlock u-textNoWrap u-sPH-1-4">
-            Setswana
+            <i className="anticon anticon-global mr1 white" />
+            SetswanaDisplay
           </a>
         </Dropdown.Button>
         <Dropdown.Content>
           <ul>
             <li key="st">
-              <a className="EditorDropdown-item">
-                Sesotho
+              <a className="EditorDropdown-item"
+                title='Sesotho'>
+                SesothoDisplay
               </a>
             </li>
             <li key="tn">
-              <a className="EditorDropdown-item">
-                Setswana
+              <a className="EditorDropdown-item"
+                title='Setswana'>
+                SetswanaDisplay
               </a>
             </li>
             <li key="sw">
-              <a className="EditorDropdown-item">
-                Swahili
+              <a className="EditorDropdown-item"
+                title='Swahili'>
+                SwahiliDisplay
               </a>
             </li>
             <li key="zu">
-              <a className="EditorDropdown-item">
-                Zulu
+              <a className="EditorDropdown-item"
+                title='Zulu'>
+                ZuluDisplay
               </a>
             </li>
           </ul>
@@ -81,7 +90,7 @@ describe('UiLanguageDropdownTest', () => {
       myRoar = 'thunderous'
       // @ts-ignore
       expect(newLocale).toEqual(
-        {localeId: 'sw', name: 'Swahili'},
+        {id: 'sw', name: 'Swahili'},
         'should call changeUiLocale callback with a well-formatted locale object')
     }
     const nowSeeHere = () => {}

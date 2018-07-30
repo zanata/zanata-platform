@@ -43,14 +43,14 @@ const defaultState = {
       },
       id: ''
     },
-    selectedLocale: '',
-    localeMessages: {}
+    selectedLocale: ''
   },
   permissions: {
     reviewer: false,
     translator: false
   },
-  localeMessages: undefined
+  localeMessages: undefined,
+  selectedI18nLocale: 'en'
 }
 
 // @ts-ignore any
@@ -89,10 +89,16 @@ const headerDataReducer = handleActions({
     update(state, { context: { selectedDoc: { id: {$set: payload} } } }),
 
   [LOCALE_SELECTED]: (state, { payload }) =>
-    update(state, { context: { selectedLocale: {$set: payload} } }),
+    update(state, {
+      context: { selectedLocale: {$set: payload}, }
+    }),
 
-  [LOCALE_MESSAGES_SUCCESS]: (state, { payload }) =>
-    update(state, { localeMessages: {$set: payload} }),
+  // @ts-ignore
+  [LOCALE_MESSAGES_SUCCESS]: (state, { payload, meta }) =>
+    update(state, {
+      localeMessages: {$set: payload},
+      selectedI18nLocale: {$set: meta}
+    }),
 
   [STATS_FETCHED]: (state, { payload }) => update(state, {
     context: { selectedDoc: { counts: {$set: prepareStats(payload)} } } }),
