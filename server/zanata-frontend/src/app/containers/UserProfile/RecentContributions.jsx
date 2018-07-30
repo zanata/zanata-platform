@@ -5,8 +5,12 @@ import DatePicker from 'antd/lib/date-picker'
 import 'antd/lib/date-picker/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
+import utilsDate from '../../utils/DateHelper'
 import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
+
+const STATS_MAX_DAYS = 365
+
 /**
  * User profile statistics root page
  */
@@ -21,6 +25,19 @@ class RecentContributions extends React.Component {
     handleDateRangeChanged: PropTypes.func,
     handleFilterChanged: PropTypes.func,
     handleSelectedDayChanged: PropTypes.func.isRequired
+  }
+
+  onDateRangeChanged = (dateRange) => {
+    const dateRangeFormat = {
+      endDate: dateRange[1],
+      startDate: dateRange[0]
+    }
+    // adjust dateRange to be in STATS_MAX_DAYS
+    const adjustedDateRange =
+      utilsDate.keepDateInRange(
+        dateRangeFormat.startDate, dateRangeFormat.endDate, STATS_MAX_DAYS)
+    console.log(dateRangeFormat, adjustedDateRange)
+    this.props.handleDateRangeChanged(adjustedDateRange)
   }
 
   render () {
@@ -43,6 +60,8 @@ class RecentContributions extends React.Component {
           Recent Contributions</h2>
           <div className='fr'>
             <RangePicker
+              defaultValue={[dateRange.startDate, dateRange.endDate]}
+              onChange={this.onDateRangeChanged}
               dateRender={(current) => {
                 const style = {}
                 if (current.date() === 1) {
