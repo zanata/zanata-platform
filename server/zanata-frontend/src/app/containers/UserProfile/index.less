@@ -36,7 +36,6 @@
     width: 100%;
   }
   .matrixHeading .ant-row {
-    display: flex;
     margin-bottom: 2rem;
   }
   h2.matrixHeading {
@@ -45,23 +44,6 @@
     -webkit-flex-grow: 1;
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
-  }
-  .dateRange-container input.textInput {
-    font-size: 0.875rem;
-    text-align: center;
-    width: 100%;
-  }
-  .dateRange-calendar {
-    width: 100%;
-  }
-  .dateRange-container {
-    min-width: 15rem;
-  }
-  .dateRange-container button {
-    width: 100%;
-  }
-  .dateRange-container button:focus, .dateRange-container button:hover {
-    border: solid 1px @info-color;
   }
   #userProfile-matrix canvas {
     width: 100% !important;
@@ -74,16 +56,6 @@
   #profileLanguages a {
     display: block;
     padding-right: @spacing-md;
-  }
-  .dateRange-textField input.textInput {
-    width: 12rem;
-    font-size: 0.875rem;
-  }
-  .dateRange-calendar {
-    width: 100%;
-  }
-  .userProfile .loaderText {
-    width: 100%;
   }
   .userProfile-details {
     width: 100%;
@@ -153,6 +125,7 @@
   h2.userProfile-recentContributions {
     font-weight: 600;
     text-transform: uppercase;
+    width: 90%;
   }
   .userProfile-activityGraph {
     background-clip: padding-box;
@@ -364,12 +337,15 @@
   }
   @media (min-width: 767.99px) {
     .matrixHeading {
-      margin-right: @spacing-md;
-      margin-left: @spacing-md;
+      padding-right: @spacing-md;
+      padding-left: @spacing-md;
     }
     h2.matrixHeading {
       min-width: 0;
       margin-left: 3rem;
+    }
+    .matrix-inner {
+      margin-right: @spacing-lg;
     }
   }
   @media (min-width: 767.99px) and (max-width: 992px) {
@@ -389,8 +365,7 @@
       -webkit-flex-direction: row;
     }
     .matrix-inner {
-      width: 100%;
-      margin-right: @spacing-md;
+      margin-right: @spacing-xl;
     }
   }
 }

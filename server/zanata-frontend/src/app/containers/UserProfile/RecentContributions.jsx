@@ -36,7 +36,6 @@ class RecentContributions extends React.Component {
     const adjustedDateRange =
       utilsDate.keepDateInRange(
         dateRangeFormat.startDate, dateRangeFormat.endDate, STATS_MAX_DAYS)
-    console.log(dateRangeFormat, adjustedDateRange)
     this.props.handleDateRangeChanged(adjustedDateRange)
   }
 
@@ -65,7 +64,7 @@ class RecentContributions extends React.Component {
               dateRender={(current) => {
                 const style = {}
                 if (current.date() === 1) {
-                  style.border = '1px solid #1890ff'
+                  style.border = '1px solid #03A6D7'
                   style.borderRadius = '50%'
                 }
                 return (
