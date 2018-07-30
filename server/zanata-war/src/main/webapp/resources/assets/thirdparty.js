@@ -821,6 +821,10 @@ Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
 
 }));
 
+// Bootstrap defines $.fn.tooltip,
+// which is used by zanata.tooltip (in zanata.js),
+// which is used by refreshTooltip in components-script.js
+
 /*!
  * Bootstrap v3.0.3
  *
