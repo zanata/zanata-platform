@@ -38,24 +38,26 @@ class RecentContributions extends React.Component {
     /* eslint-disable react/jsx-no-bind */
     return (
       <div className='matrixHeading' id='userProfile-matrix'>
-        <h2 className='userProfile-recentContributions'>
-        Recent Contributions</h2>
-        <div className='fr'>
-          <RangePicker
-            dateRender={(current) => {
-              const style = {}
-              if (current.date() === 1) {
-                style.border = '1px solid #1890ff'
-                style.borderRadius = '50%'
-              }
-              return (
-                <div className="ant-calendar-date" style={style}>
-                  {current.date()}
-                </div>
-              )
-            }}
-          />
-        </div>
+        <Row>
+          <h2 className='userProfile-recentContributions'>
+          Recent Contributions</h2>
+          <div className='fr'>
+            <RangePicker
+              dateRender={(current) => {
+                const style = {}
+                if (current.date() === 1) {
+                  style.border = '1px solid #1890ff'
+                  style.borderRadius = '50%'
+                }
+                return (
+                  <div className="ant-calendar-date" style={style}>
+                    {current.date()}
+                  </div>
+                )
+              }}
+            />
+          </div>
+        </Row>
         <Row>
           <div className='flexChart-container'>
             <ContributionChart
