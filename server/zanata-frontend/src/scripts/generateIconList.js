@@ -11,6 +11,6 @@ const fileNames = files.map(file => {
   return fileName ? fileName[1] : undefined
 }).filter(file => file)
 const iconsFile =
-  `module.exports = [${fileNames.map(file => `'${file}'`)}]\r\n`
+  `module.exports = [\r\n${fileNames.map(file => `'${file}'`)}\r\n]`
 fs.writeFileSync(iconsFileName, iconsFile)
 console.log(' ... Done')
