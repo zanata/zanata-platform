@@ -100,6 +100,11 @@ class NavHeader extends React.Component {
       props.actions.changeUiLocale(locale.id)
     }
 
+    // Default to en if server locale not available
+    const selectedLocale = MessageLocales[props.data.selectedI18nLocale]
+      ? props.data.selectedI18nLocale
+      : 'en'
+
     return (
       /* eslint-disable max-len */
       <nav role="navigation"
@@ -121,9 +126,7 @@ class NavHeader extends React.Component {
           <li>
             <UiLanguageDropdown
               changeUiLocale={onSelectChange}
-              selectedUiLocale={
-                props.data.selectedI18nLocale
-              }
+              selectedUiLocale={selectedLocale}
               uiLocales={MessageLocales}
               toggleDropdown={this.toggleUiLanguageDropdown}
               isOpen={this.state.UiLanguageDropdownOpen}
