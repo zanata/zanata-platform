@@ -21,6 +21,7 @@
 
 import React from 'react'
 import * as PropTypes from 'prop-types'
+import { FormattedMessage } from 'react-intl'
 import { Icon } from '../../components'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
@@ -94,14 +95,15 @@ class SuggestionsHeader extends React.Component {
           onTextChange={this.props.search.changeText} />
       </div>
       : undefined
-
     return (
       <nav className="Editor-suggestionsHeader u-bgHighest u-sPH-3-4">
         <h2 className="Heading--panel u-textSecondary u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
           <span className="u-textMuted">
             <Icon name="suggestions" className="s0" />
           </span>
-          Suggestions
+          <FormattedMessage
+            id='SuggestionsHeader.title'
+            defaultMessage='Suggestions' />
         </h2>
         <div className="fr">
           <ul className="u-listHorizontal tc">
@@ -117,7 +119,11 @@ class SuggestionsHeader extends React.Component {
             <li className="u-sM-1-4">
               <ToggleSwitch
                 id="difference-toggle"
-                label="Difference"
+                label={
+                  <FormattedMessage
+                    id='SuggestionsHeader.switch.difference'
+                    defaultMessage='Difference' />
+                }
                 isChecked={this.props.showDiff}
                 onChange={this.props.onDiffChange} />
             </li>
