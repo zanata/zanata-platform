@@ -711,7 +711,7 @@ exports[`Frontend Storyshots MTMerge single 1`] = `
         className="pb1"
       >
         <Alert
-          message="MT fill will save translations with validation errors as fuzzy"
+          message="MT merge will save translations with validation errors as fuzzy"
           showIcon={true}
           type="warning"
         />
@@ -893,7 +893,7 @@ exports[`Frontend Storyshots MTMergeModal single 1`] = `
           className="pb1"
         >
           <Alert
-            message="MT fill will save translations with validation errors as fuzzy"
+            message="MT merge will save translations with validation errors as fuzzy"
             showIcon={true}
             type="warning"
           />
