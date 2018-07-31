@@ -204,7 +204,7 @@ Any other value will be treated as the name of a virus scanner command: the comm
 
 ## Machine translations (Magpie)
 
-Zanata can integrate with [Magpie Machine translation](http://github.com/zanata/zanata-mt). To use enable the service, 
+Zanata can integrate with [Magpie Machine translation](http://github.com/zanata/zanata-mt). To enable the service, 
 
 1. Open the `<JBOSS>/standalone/configuration/standalone.xml` file.
 
