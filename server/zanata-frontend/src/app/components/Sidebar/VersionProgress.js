@@ -50,7 +50,7 @@ class VersionProgress extends React.Component {
   }
 
   render () {
-    const className = cx('progress-custom w-100 mt3 mb3')
+    const className = cx('progress-custom w-100 mb3')
 
     const { counts } = this.props
 

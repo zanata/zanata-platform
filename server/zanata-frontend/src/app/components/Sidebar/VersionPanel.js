@@ -51,6 +51,9 @@ class VersionPanel extends Component {
               </Select>
             </span>
           </h2>
+          <span className='txt-success'>
+            <span className='f4'>60%</span> translated
+          </span>
           <VersionProgress counts={counts} />
           <Dropdown overlay={menu}>
             <Button className='mt2 mb3'>
