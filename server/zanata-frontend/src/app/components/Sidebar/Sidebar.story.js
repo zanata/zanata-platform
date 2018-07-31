@@ -4,5 +4,5 @@ import Sidebar from '.'
 
 storiesOf('Sidebar', module)
     .add('default', () => (
-       <Sidebar content='Test this' />
+      <Sidebar content='Test this' />
     ))

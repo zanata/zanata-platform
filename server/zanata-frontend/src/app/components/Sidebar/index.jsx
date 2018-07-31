@@ -1,19 +1,17 @@
 import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
-
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout/'
 import 'antd/lib/layout/style/css'
 import Icon from '../../components/Icon'
 import Menu from 'antd/lib/menu'
 import 'antd/lib/menu/style/css'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
 import ProcessingSidebar from './ProcessingSidebar'
 import VersionPanel from './VersionPanel'
 
 const { Sider, Content } = Layout
-const Option = Select.Option
 
 class Sidebar extends Component {
   static propTypes = {
@@ -52,13 +50,8 @@ class Sidebar extends Component {
               <span className='v-mid'>Settings</span>
             </Menu.Item>
           </Menu>
-          <div className='mt3 mb3'>
-            <Select placeholder='Options' style={{ width: 120 }}>
-              <Option value='1'>Option 1</Option>
-              <Option value='2'>Option 2</Option>
-              <Option value='3'>Option 3</Option>
-            </Select>
-          </div>
+          <Button type='primary' icon='export'>Export to TMX</Button>
+          <Button type='primary' icon='plus'>Add new version</Button>
           <ProcessingSidebar />
           <VersionPanel />
         </Sider>

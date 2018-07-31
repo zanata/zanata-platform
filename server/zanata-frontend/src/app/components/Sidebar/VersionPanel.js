@@ -1,15 +1,17 @@
 import React from 'react'
 import { Component } from 'react'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
-import {Icon} from '../../components'
 import Menu from 'antd/lib/menu'
 import 'antd/lib/menu/style/css'
 import VersionProgress from './VersionProgress'
+import Dropdown from 'antd/lib/dropdown'
+import 'antd/lib/dropdown/style/css'
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+import {Icon} from '../../components'
 
 const Option = Select.Option
 
@@ -25,6 +27,13 @@ class VersionPanel extends Component {
       rejected: 1,
       untranslated: 4
     }
+    const menu = (
+      <Menu>
+        <Menu.Item key="1">1st menu item</Menu.Item>
+        <Menu.Item key="2">2nd menu item</Menu.Item>
+        <Menu.Item key="3">3rd item</Menu.Item>
+      </Menu>
+    )
     return (
       <Layout>
         <h2 className='di mt3 txt-primary'>
@@ -37,9 +46,11 @@ class VersionPanel extends Component {
             </Select>
           </span>
         </h2>
-        <Button type="primary" size="small" className="w-80 center">
-          Version settings
-        </Button>
+        <Dropdown overlay={menu}>
+          <Button style={{ marginLeft: 8 }}>
+            Version tools <Icon name="chevron-down" className='s0 v-mid' />
+          </Button>
+        </Dropdown>
         <VersionProgress counts={counts} />
         <Menu>
           <Menu.Item key='1'>
@@ -50,6 +61,9 @@ class VersionPanel extends Component {
           </Menu.Item>
           <Menu.Item key='3'>
             <span>Groups</span>
+          </Menu.Item>
+          <Menu.Item key='4'>
+            <span>Version settings</span>
           </Menu.Item>
         </Menu>
       </Layout>
