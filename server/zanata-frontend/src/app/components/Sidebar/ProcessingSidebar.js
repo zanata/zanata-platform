@@ -13,11 +13,14 @@ class ProcessingSidebar extends Component {
   render () {
     return (
       <Layout>
-        <Card>
-          Processing document 1 of 10
-          <Progress percent={30} showInfo />
-          <Button type='danger' className='btn-danger' size='small'>Stop</Button>
-        </Card>
+        <span className='mt2'>
+          <Card hoverable>
+            Processing document <span className='b'>1 of 10</span>
+            <Progress percent={30} showInfo />
+            <Button type='danger' className='btn-danger mt1' size='small'>
+            Stop</Button>
+          </Card>
+        </span>
       </Layout>
     )
   }

@@ -50,8 +50,10 @@ class Sidebar extends Component {
               <span className='v-mid'>Settings</span>
             </Menu.Item>
           </Menu>
-          <Button type='primary' icon='export'>Export to TMX</Button>
-          <Button type='primary' icon='plus'>Add new version</Button>
+          <Button type='primary' size='small' icon='export'
+            className='ml3 mt2 mb2'>Export to TMX</Button>
+          <Button type='primary' size='small' className='ml3 mb2' icon='plus'>
+          Add new version</Button>
           <ProcessingSidebar />
           <VersionPanel />
         </Sider>
