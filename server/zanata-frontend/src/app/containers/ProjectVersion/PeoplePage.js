@@ -15,9 +15,40 @@ import 'antd/lib/select/style/css'
 import Pagination from 'antd/lib/pagination'
 import 'antd/lib/pagination/style/css'
 import {Icon} from '../../components'
+import Table from 'antd/lib/table'
+import 'antd/lib/table/style/css'
 
 const Search = Input.Search
 const Option = Select.Option
+
+const dataSource = [{
+  key: '1',
+  name: 'Mike',
+  lastactive: 'today'
+
+}, {
+  key: '2',
+  name: 'John',
+  lastactive: 'today'
+}]
+
+const columns = [{
+  title: 'Name',
+  dataIndex: 'name',
+  key: 'name',
+}, {
+  title: 'Last active',
+  dataIndex: 'lastactive',
+  key: 'lastactive',
+}, {
+  title: 'Action',
+  key: 'action',
+  render: (text, record) => (
+    <span className='fr'>
+      <Button type='primary'>Manage permissions</Button>
+    </span>
+  ),
+}]
 
 class PeoplePage extends Component {
 
@@ -55,6 +86,7 @@ class PeoplePage extends Component {
               />
             </Col>
           </Row>
+          <Table dataSource={dataSource} columns={columns} />
         </div>
         /* eslint-enable max-len */
     )
