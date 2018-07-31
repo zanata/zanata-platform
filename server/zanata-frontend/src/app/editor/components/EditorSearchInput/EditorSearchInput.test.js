@@ -4,6 +4,9 @@
 import React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import * as TestUtils from 'react-dom/test-utils'
+import {
+  IntlProvider
+} from 'react-intl'
 import { EditorSearchInput } from '.'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
@@ -13,10 +16,16 @@ const Panel = Collapse.Panel
 
 const callback = () => {}
 
+/* Use to simulate intl prop from react-intl injectIntl,
+ * which wraps the EditorSearchInput component */
+const intlProvider = new IntlProvider({ locale: 'en' }, {})
+const { intl } = intlProvider.getChildContext()
+
 describe('EditorSearchInputTest', () => {
   it('renders input markup with show advanced but not focused', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <EditorSearchInput
+        intl={intl}
         showAdvanced
         search={{
           searchString: 'it was the worst of',
@@ -153,6 +162,7 @@ describe('EditorSearchInputTest', () => {
 
     const inputWithText = TestUtils.renderIntoDocument(
       <EditorSearchInput
+        intl={intl}
         showAdvanced
         search={{
           searchString: 'it was the worst of',

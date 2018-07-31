@@ -4712,7 +4712,10 @@ exports[`Editor Storyshots CommentBox default 1`] = `
         className="s0"
         name="comment"
       />
-       Post a comment
+       
+      <span>
+        Comment on this translation
+      </span>
     </span>
     <br />
     <textarea
@@ -4729,7 +4732,9 @@ exports[`Editor Storyshots CommentBox default 1`] = `
       disabled={true}
       onClick={[Function]}
     >
-      Post comment
+      <span>
+        Post comment
+      </span>
     </mock-button>
   </div>
 </div>

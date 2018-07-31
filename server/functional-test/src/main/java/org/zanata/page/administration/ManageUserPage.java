@@ -101,9 +101,9 @@ public class ManageUserPage extends BasePage {
                 List<WebElement> linksUnderneath =
                         listItem.findElements(By.tagName("a"));
                 for (WebElement link : linksUnderneath) {
-                    String onclickCallback = link.getAttribute("onclick");
+                    String onclickCallback = link.getAttribute("href");
                     if (onclickCallback != null
-                            && onclickCallback.contains("editUser")) {
+                            && onclickCallback.contains("/userdetail?")) {
                         return link;
                     }
                 }

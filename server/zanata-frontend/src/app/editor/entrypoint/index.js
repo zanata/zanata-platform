@@ -38,6 +38,7 @@ function runApp () {
   // Dynamically load the locale data of the selected appLocale
   try {
     addLocaleData(require(`react-intl/locale-data/${appLocale}`))
+    // addLocaleData(require(`react-intl/locale-data/${'ja'}`))
   } catch (e) {
     console.error(`Locale module not found for locale: ${appLocale}
     Defaulting to en`)
