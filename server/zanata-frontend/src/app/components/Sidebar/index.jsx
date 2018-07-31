@@ -29,7 +29,7 @@ class Sidebar extends Component {
           className='pvSidebar'
           collapsedWidth='0'>
           <h1 className='di txt-info'>
-            <Icon name='project' className='s3 mr1 mt1' />
+            <Icon name='project' className='s5 mr1 v-sub' />
             {projectTitle}
           </h1>
           <Menu defaultSelectedKeys={['1']}>
