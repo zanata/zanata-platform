@@ -45,6 +45,7 @@ pages:
   - Join a group: 'user-guide/versions/request-to-join-group.md'
   - Merge translations: 'user-guide/versions/merge-translations.md'
   - Prefill translation from TM: 'user-guide/versions/version-tm-merge.md'
+  - Prefill translation from MT: 'user-guide/versions/version-mt-merge.md'
 # Documents
 - Documents:
   - Upload documents: 'user-guide/documents/upload-documents.md'
