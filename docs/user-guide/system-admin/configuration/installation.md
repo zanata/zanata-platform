@@ -202,6 +202,24 @@ To override the default behaviour above, you can set the system property `virusS
 `DISABLED` means no virus scanning will be performed; all files will be assumed safe.
 Any other value will be treated as the name of a virus scanner command: the command will be called with the name of a file to scan.
 
+## Machine translations (Magpie)
+
+Zanata can integrate with [Magpie Machine translation](http://github.com/zanata/zanata-mt). To enable the service, 
+
+1. Open the `<JBOSS>/standalone/configuration/standalone.xml` file.
+
+1. Locate the `system-properties` line, and add in the follow two properties
+
+```xml
+<system-properties>
+  ...
+  <property name="mt.service.url" value="http://examplex.com"/>
+  <property name="mt.service.user" value="admin"/>
+  <property name="mt.service.token" value="admin"/>
+  ...
+</system-properties>
+```
+
 ## Running Zanata
 
 Go to the `<JBOSS>/bin` directory and run
