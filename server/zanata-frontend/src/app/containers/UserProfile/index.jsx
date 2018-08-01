@@ -91,7 +91,7 @@ class UserProfile extends Component {
     let content
     if (user.loading || loading) {
       content = (<div className='userProfile'>
-        <LoaderText className='loaderText s8' loading />
+        <LoaderText className='loaderText s8 center' loading />
       </div>)
     } else if (isEmpty(username)) {
       content = <div className='u-flexColumn userProfile-wrapper'>
