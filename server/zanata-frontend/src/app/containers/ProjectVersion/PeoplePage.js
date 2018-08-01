@@ -21,31 +21,48 @@ import 'antd/lib/table/style/css'
 const Search = Input.Search
 const Option = Select.Option
 
+const name = (
+  <span>
+    <a href="">
+      <img src="https://www.gravatar.com/avatar/6068e27b4b6e165ca7c81fbc5f7f866a?d=mm&r=G&s=115"
+       className='avatar mr2'/> John
+    </a>
+  </span>
+)
+
+const lastactive = (
+  <span className='txt-muted'>
+    <Icon name='clock' className='s1 v-sub' /> Last active today
+  </span>
+)
+
 const dataSource = [{
   key: '1',
-  name: 'Mike',
-  lastactive: 'today'
+  name: name,
+  lastactive: lastactive
 
 }, {
   key: '2',
-  name: 'John',
-  lastactive: 'today'
+  name: name,
+  lastactive: lastactive
 }]
 
 const columns = [{
-  title: 'Name',
+  title: '',
   dataIndex: 'name',
   key: 'name',
 }, {
-  title: 'Last active',
+  title: '',
   dataIndex: 'lastactive',
   key: 'lastactive',
 }, {
-  title: 'Action',
+  title: '',
   key: 'action',
   render: (text, record) => (
     <span className='fr'>
-      <Button type='primary'>Manage permissions</Button>
+      <Button type='primary'><Icon name='settings' className='s0 v-sub mr2'/>
+        Manage permissions
+      </Button>
     </span>
   ),
 }]
@@ -65,7 +82,7 @@ class PeoplePage extends Component {
           <Row className='mb4'>
             <Col xs={24} sm={23} md={14}>
               <Search
-                placeholder="input search text"
+                placeholder="Search project members"
                 enterButton
               />
             </Col>
