@@ -3,7 +3,7 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { differenceWith, isEqual, throttle } from 'lodash'
+import { differenceWith, isEqual, isEmpty, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
@@ -237,8 +237,7 @@ class TMMergeModal extends Component {
     fromAllProjects: false,
     selectedLanguage: undefined,
     selectedVersions: [],
-    projectSearchTerm: this.props.projectSlug,
-    hasMerged: false
+    projectSearchTerm: this.props.projectSlug
   }
   constructor (props) {
     super(props)
@@ -254,49 +253,42 @@ class TMMergeModal extends Component {
       this.props.projectSlug, this.props.versionSlug)
     this.props.fetchProjectPage(this.state.projectSearchTerm)
   }
-  componentWillReceiveProps (nextProps) {
-    const { locales, showTMMergeModal } = nextProps
+
+  /* eslint-disable react/no-did-update-set-state*/
+  componentDidUpdate (prevProps) {
+    const nextProps = this.props
+    const hasMerged = isProcessEnded(nextProps.processStatus) &&
+      !isProcessEnded(prevProps.processStatus)
     // Fetch locales again when modal is re-opened
     // Reset the state when the modal is closed
-    if (showTMMergeModal !== this.props.showTMMergeModal) {
-      if (showTMMergeModal) {
+    if (nextProps.showTMMergeModal !== prevProps.showTMMergeModal) {
+      if (nextProps.showTMMergeModal) {
         nextProps.fetchVersionLocales(
-        nextProps.projectSlug, nextProps.versionSlug)
+          nextProps.projectSlug,
+          nextProps.versionSlug)
       } else {
         // If a merge has run, reload the page to display the merge results
-        if (this.state.hasMerged) {
+        if (hasMerged) {
           window.location.reload()
-        // Else reset the state to default on modal close
+          // Else reset the state to default on modal close
         } else {
           this.setState(this.defaultState)
         }
       }
     }
-    if (!this.state.selectedLanguage) {
-      this.setState((prevState, props) => ({
-        selectedLanguage: locales.length === 0 ? undefined : locales[0]
-      }))
-    }
-    const currentProcessStatus = this.props.processStatus
-    if (!isProcessEnded(currentProcessStatus) &&
-      isProcessEnded(nextProps.processStatus)) {
+    if (!this.state.selectedLanguage && nextProps.locales.length > 0) {
       this.setState({
-        hasMerged: true
+        selectedLanguage: nextProps.locales[0]
       })
+    }
+    if (hasMerged) {
       // process just finished, we want to re-display the merge option form.
       // but we want to delay it a bit so that the user can see the progress
       // bar animation finishes
       setTimeout(this.props.mergeProcessFinished, 1000)
     }
-    // Filter out the source project and version if present in search results
-    // TODO: perform this filtering on the server side when retrieving projects
-    nextProps.projectVersions.map((project) => {
-      project.versions = project.versions.filter((version) => {
-        return project.id !== nextProps.projectSlug ||
-          version.id !== nextProps.versionSlug
-      })
-    })
   }
+
   queryTMMergeProgress = () => {
     this.props.queryTMMergeProgress(this.props.processStatus.url)
   }
@@ -422,7 +414,6 @@ class TMMergeModal extends Component {
       toggleTMMergeModal,
       projectSlug,
       versionSlug,
-      projectVersions,
       locales,
       notification,
       triggered,
@@ -430,6 +421,16 @@ class TMMergeModal extends Component {
       fetchingLocale,
       processStatus
     } = this.props
+    // Filter out the source project and version from search results
+    const projectVersions = isEmpty(this.props.projectVersions)
+      ? this.props.projectVersions
+      : this.props.projectVersions.map((project) => {
+        const filterSource = project.versions.filter((version) => {
+          return project.id !== projectSlug ||
+            version.id !== versionSlug
+        })
+        return {...project, versions: filterSource}
+      })
     const modalBodyInner = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
@@ -442,7 +443,8 @@ class TMMergeModal extends Component {
         <a href={getVersionLanguageSettingsUrl(projectSlug, versionSlug)}>
         Language Settings</a></p>
       : (
-        <MergeOptions {...{projectSlug, versionSlug, locales, projectVersions,
+        <MergeOptions {...{
+          projectSlug, versionSlug, locales, projectVersions,
           fetchingProject, fetchingLocale}}
           mergeOptions={this.state}
           onPercentSelection={this.onPercentSelection}

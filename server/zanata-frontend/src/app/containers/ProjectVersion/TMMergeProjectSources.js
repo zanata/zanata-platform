@@ -117,16 +117,20 @@ class TMMergeProjectSources extends Component {
             <LoaderText loading={fetchingProject}
               loadingText={'Fetching Projects'} />
             <span className='txt-muted'>{noResults}</span>
-            <ProjectVersionPanels projectVersions={projectVersions}
-              selectedVersions={mergeOptions.selectedVersions}
-              onVersionCheckboxChange={onVersionCheckboxChange}
-              onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
+            {projectVersions.length > 0 &&
+              <ProjectVersionPanels projectVersions={projectVersions}
+                selectedVersions={mergeOptions.selectedVersions}
+                onVersionCheckboxChange={onVersionCheckboxChange}
+                onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
+            }
           </Col>
           <Col span={11}>
-            <DraggableVersionPanels
-              selectedVersions={mergeOptions.selectedVersions}
-              onDraggableMoveEnd={onDragMoveEnd}
-              removeVersion={removeProjectVersion} />
+            {projectVersions.length > 0 &&
+              <DraggableVersionPanels
+                selectedVersions={mergeOptions.selectedVersions}
+                onDraggableMoveEnd={onDragMoveEnd}
+                removeVersion={removeProjectVersion} />
+            }
           </Col>
         </Row>
       </span>
