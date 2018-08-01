@@ -59,6 +59,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>async-http-servlet-3.0</artifactId>
+      <version>3.0.19.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>

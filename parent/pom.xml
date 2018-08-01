@@ -213,8 +213,8 @@
 
     <hamcrest.version>1.3</hamcrest.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
-    <!-- Note: Fedora 23 has 2.4.4. -->
-    <groovy.version>2.4.4</groovy.version>
+    <!-- Note: Fedora 28 has 2.4.4. -->
+    <groovy.version>2.4.15</groovy.version>
     <!-- Fedora 27 is still on 18.0: https://apps.fedoraproject.org/packages/guava -->
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
@@ -222,7 +222,7 @@
     <!-- Fedora <= 27 still uses maven-javadoc-plugin version 2.9.1 -->
     <maven.javadoc.version>3.0.0</maven.javadoc.version>
     <maven.jxr.version>2.5</maven.jxr.version>
-    <resteasy.version>3.0.19.Final</resteasy.version>
+    <resteasy.version>3.0.26.Final</resteasy.version>
     <surefire.version>2.21.0</surefire.version>
     <maven.source.version>3.0.1</maven.source.version>
     <site-maven-plugin.version>0.12</site-maven-plugin.version>

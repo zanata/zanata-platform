@@ -39,7 +39,6 @@
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <weld.spi.version>2.3.Final </weld.spi.version>
-    <groovy.version>2.4.12</groovy.version>
     <icu4j.version>56.1</icu4j.version>
     <guava.version>23.5-jre</guava.version>
     <gwt.version>2.8.0</gwt.version>
@@ -96,7 +95,7 @@
 
     <!-- TODO try provided -->
     <resteasy.scope>compile</resteasy.scope>
-    <resteasy.version>3.0.19.Final</resteasy.version>
+    <resteasy.version>3.0.26.Final</resteasy.version>
     <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
 
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
@@ -1020,14 +1019,14 @@
       <dependency>
         <groupId>io.undertow</groupId>
         <artifactId>undertow-core</artifactId>
-        <version>1.3.15.Final</version>
+        <version>1.3.33.Final</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>io.undertow</groupId>
         <artifactId>undertow-servlet</artifactId>
-        <version>1.3.15.Final</version>
+        <version>1.3.33.Final</version>
         <scope>provided</scope>
         <exclusions>
           <exclusion>
@@ -1061,6 +1060,12 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
+        <version>${jackson2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <classifier>sources</classifier>
         <version>${jackson2.version}</version>
       </dependency>
       <dependency>
