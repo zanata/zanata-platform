@@ -50,6 +50,8 @@ const columns = [{
   ),
 }]
 
+const pagination = { position: 'top' }
+
 class PeoplePage extends Component {
 
   render() {
@@ -61,32 +63,23 @@ class PeoplePage extends Component {
             <span className='fw4'>People</span></h1>
           <Button type='primary' icon='plus' className='mb4'>Add someone</Button>
           <Row className='mb4'>
-            <Col xs={24} sm={23} md={8} className='mr2'>
+            <Col xs={24} sm={23} md={14}>
               <Search
                 placeholder="input search text"
                 enterButton
               />
             </Col>
-            <Col xs={24} sm={6} md={8}>
-              <span className='ml4'>
-              <span className='mr2'>Show</span>
-                <Select defaultValue="20" style={{ width: 60 }}>
-                  <Option value="10">10</Option>
-                  <Option value="20">20</Option>
-                  <Option value="50">50</Option>
-                  <Option value="100">100</Option>
-                </Select>
-              </span>
-            </Col>
             <Col className='fr'>
-              <Pagination
-                total={85}
-                pageSize={20}
-                defaultCurrent={1}
-              />
+              <span className='mr2'>Show</span>
+              <Select defaultValue="20" style={{ width: 60 }}>
+                <Option value="10">10</Option>
+                <Option value="20">20</Option>
+                <Option value="50">50</Option>
+                <Option value="100">100</Option>
+              </Select>
             </Col>
           </Row>
-          <Table dataSource={dataSource} columns={columns} />
+          <Table pagination={pagination} dataSource={dataSource} columns={columns} />
         </div>
         /* eslint-enable max-len */
     )
