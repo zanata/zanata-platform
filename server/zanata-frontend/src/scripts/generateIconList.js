@@ -8,9 +8,10 @@ process.stdout.write('Generating list of icon names in Icon/list.js')
 const files = fs.readdirSync(iconsSrc)
 const fileNames = files.map(file => {
   const fileName = file.match(svgFileRegex)
-  return fileName ? fileName[1] : undefined
+  return fileName ? '  \'' + fileName[1] + '\'' : undefined
 }).filter(file => file)
+
 const iconsFile =
-  `module.exports = [${fileNames.map(file => `'${file}'`)}]\r\n`
+  `module.exports = [\n${fileNames.join(',\n')}\n]\n`
 fs.writeFileSync(iconsFileName, iconsFile)
 console.log(' ... Done')

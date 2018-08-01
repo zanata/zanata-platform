@@ -108,7 +108,7 @@ export class MTMergeOptions extends Component<Props> {
         <div className="mt3">
           <Card hoverable>
             <div className="pb1">
-              <Alert message="MT fill will save translations with validation errors as fuzzy" type="warning"
+              <Alert message="MT merge will save translations with validation errors as fuzzy" type="warning"
                  showIcon/>
               <h3 className="txt-info mt-toggleHeading">
                 <span className="mr2 fw5">

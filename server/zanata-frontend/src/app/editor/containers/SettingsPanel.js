@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react'
 import * as PropTypes from 'prop-types'
+import { FormattedMessage } from 'react-intl'
 import { connect } from 'react-redux'
 import { hideSettings } from '../actions'
 import {
@@ -56,7 +57,11 @@ export const SettingsPanel = ({
     return (validator === ERROR || validator === WARNING)
   }
   const validationOptionsHeader =
-    <h2 className='SettingsHeading'>Validation options</h2>
+    <h2 className='SettingsHeading'>
+      <FormattedMessage
+        id='SettingsPanel.validation.header'
+        defaultMessage='Validation options' />
+    </h2>
   const validationOptions = <SettingsOptions
     settings={[
       {
@@ -106,7 +111,9 @@ export const SettingsPanel = ({
   return (
     <React.Fragment>
       <h1 className="SidebarEditor-heading">
-        <Icon className="s1" name="settings" /> Settings
+        <Icon className="s1" name="settings" /> <FormattedMessage
+          id='ControlsHeader.settings'
+          defaultMessage='Settings' />
         <span className="s1 u-pullRight">
           <Button className="btn-link transparent" onClick={hideSettings}>
             <Icon name="cross" />
@@ -114,7 +121,11 @@ export const SettingsPanel = ({
         </span>
       </h1>
       <div className={directionClass + ' SidebarEditor-wrapper'}>
-        <h2 className='SettingsHeading'>Editor options</h2>
+        <h2 className='SettingsHeading'>
+          <FormattedMessage
+            id='SettingsPanel.editor.heading'
+            defaultMessage='Editor options' />
+        </h2>
         <SettingsOptions
           settings={[
             {

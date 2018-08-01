@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
 import Modal from 'antd/lib/modal'
@@ -38,15 +38,17 @@ const columns = [{
   dataIndex: 'edit',
 }]
 
-const data = [];
+const data = []
 for (let i = 0; i < 12; i++) {
   data.push({
     key: i,
     index: `${i}`,
     source: `text source`,
     target: <span>text <span className='highlight'>target</span></span>,
-    edit: <Button className='btn-link fr'><Icon type='edit' className='f4' /></Button>
-  });
+    edit: <Button className='btn-link fr'>
+      <Icon type='edit' className='f4' />
+    </Button>
+  })
 }
 
 const Option = Select.Option
@@ -57,31 +59,28 @@ class SearchReplace extends Component {
     selectedRowKeys: [] // Check here to configure the default column
   }
   handleOk = (e) => {
-    console.log(e)
     this.setState({
       visible: false
     })
   }
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false
     })
   }
   start = () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true })
     // ajax request after empty completing
     setTimeout(() => {
       this.setState({
         selectedRowKeys: []
-      });
-    }, 1000);
+      })
+    }, 1000)
   }
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
+    this.setState({ selectedRowKeys })
   }
-  render() {
+  render () {
     const { selectedRowKeys } = this.state
     const rowSelection = {
       selectedRowKeys,
@@ -109,10 +108,11 @@ class SearchReplace extends Component {
           </Row>
           <Row className="mt3 mb2">
             <Col span={23}>
-            <Input
-              placeholder="Search in project"
-              prefix={<Icon type="search" style={{ color: 'rgba(84,102,119,1)' }} />}
-            />
+              <Input
+                placeholder="Search in project"
+                prefix={<Icon type="search"
+                  style={{ color: 'rgba(84,102,119,1)' }} />}
+              />
             </Col>
             <Col span={1}>
               <span className="icon-sub ml3">
@@ -121,17 +121,18 @@ class SearchReplace extends Component {
             </Col>
           </Row>
           <Row className="mb2 mt2">
-           <Col span={23}>
-            <Input
+            <Col span={23}>
+              <Input
                 placeholder="Replace in project"
-                prefix={<Icon type="swap" style={{ color: 'rgba(84,102,119,1)' }} />}
-            />
-           </Col>
+                prefix={<Icon type="swap"
+                  style={{ color: 'rgba(84,102,119,1)' }} />}
+              />
+            </Col>
             <Col span={1}>
               <span className="icon-sub ml3">
                 <Icon type="cross" />
               </span>
-           </Col>
+            </Col>
           </Row>
           <Row>
             <span className="fr mt2 mb4">
@@ -160,7 +161,7 @@ class SearchReplace extends Component {
           <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
         </Modal>
       </React.Fragment>
-    );
+    )
   }
 }
 
