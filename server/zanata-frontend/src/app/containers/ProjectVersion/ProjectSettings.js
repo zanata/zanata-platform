@@ -7,6 +7,7 @@ import Tabs from 'antd/lib/tabs'
 import 'antd/lib/tabs/style/css'
 import General from './ProjectSettingsTabs/General'
 import Languages from './ProjectSettingsTabs/Languages'
+import Translation from './ProjectSettingsTabs/Translation'
 
 const TabPane = Tabs.TabPane
 const generalTab = (
@@ -27,8 +28,9 @@ const webhooksTab = (
 const aboutTab = (
   <span className='f5'><Icon name='info' className='s1 v-mid' /> About
   </span>)
-const generalContent = <General/>
+const generalContent = <General />
 const langContent = <Languages />
+const transContent = <Translation />
 
 class ProjectSettings extends Component {
   render() {
@@ -42,7 +44,7 @@ class ProjectSettings extends Component {
           tabPosition='left'>
           <TabPane tab={generalTab} key="1">{generalContent}</TabPane>
           <TabPane tab={languagesTab} key="2">{langContent}</TabPane>
-          <TabPane tab={translationTab} key="3">Content of tab 3</TabPane>
+          <TabPane tab={translationTab} key="3">{transContent}</TabPane>
           <TabPane tab={permissionsTab} key="4">Content of tab 4</TabPane>
           <TabPane tab={webhooksTab} key="5">Content of tab 5</TabPane>
           <TabPane tab={aboutTab} key="6">Content of tab 6</TabPane>
