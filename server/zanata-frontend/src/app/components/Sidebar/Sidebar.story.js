@@ -9,13 +9,35 @@ const peoplePage = <PeoplePage />
 const aboutPage = <AboutPage />
 const settingsPage = <ProjectSettings />
 
+const pages = [peoplePage, aboutPage, settingsPage]
+
+// TODO: implement as redux state
+let active = '1'
+// @ts-ignore
+const onSelect = ({key}) => {
+  active = key
+}
+
 storiesOf('Sidebar', module)
-    .add('people', () => (
-      <Sidebar active='1' content={peoplePage} activeVersionMenu={['1']} />
+    .add('all', () => (
+      <Sidebar active='1' content={pages[parseInt(active)]} onSelect={onSelect} />
     ))
     .add('about', () => (
-      <Sidebar active='2' content={aboutPage} activeVersionMenu={['2']} />
+      <Sidebar active='2' content={aboutPage} onSelect={onSelect} />
     ))
     .add('settings', () => (
-      <Sidebar active='3' content={settingsPage} activeVersionMenu={['3']} />
+      <Sidebar active='3' content={settingsPage} onSelect={onSelect} />
     ))
+    .add('languages', () => (
+      <Sidebar active='4' content={settingsPage} onSelect={onSelect} />
+    ))
+    .add('documents', () => (
+      <Sidebar active='5' content={settingsPage} onSelect={onSelect} />
+    ))
+    .add('groups', () => (
+      <Sidebar active='6' content={settingsPage} onSelect={onSelect} />
+    ))
+    .add('version settings', () => (
+      <Sidebar active='7' content={settingsPage} onSelect={onSelect} />
+    ))
+

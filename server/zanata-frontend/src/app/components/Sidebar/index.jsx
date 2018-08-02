@@ -19,7 +19,7 @@ class Sidebar extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     active: PropTypes.string.isRequired,
-    activeVersionMenu: PropTypes.string
+    onSelect: PropTypes.func.isRequired
   }
   /* eslint-disable react/jsx-no-bind, no-return-assign */
   render () {
@@ -36,7 +36,7 @@ class Sidebar extends Component {
             <Icon name='project' className='s5 mr1 v-sub' />
             {projectTitle}
           </h1>
-          <Menu defaultSelectedKeys={[this.props.active]}>
+          <Menu selectedKeys={[this.props.active]} onClick={this.props.onSelect}>
             <Menu.Item key='1'>
               <Icon name='users' className='s1 v-mid mr1' />
               <span className='v-mid'>People</span>
@@ -60,7 +60,7 @@ class Sidebar extends Component {
             Add new version</Button>
           </Row>
           <ProcessingSidebar />
-          <VersionPanel activeVersionMenu={[this.props.activeVersionMenu]} />
+          <VersionPanel active={[this.props.active]} onSelect={this.props.onSelect} />
         </Sider>
         <Content>
           {content}
