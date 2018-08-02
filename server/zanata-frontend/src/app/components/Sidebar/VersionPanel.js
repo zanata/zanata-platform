@@ -21,7 +21,7 @@ const Option = Select.Option
 class VersionPanel extends Component {
   static propTypes = {
     active: PropTypes.string.isRequired,
-    onSelect: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired
   }
   render () {
     const counts = {

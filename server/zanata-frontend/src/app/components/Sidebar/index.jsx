@@ -17,7 +17,7 @@ const { Sider, Content } = Layout
 
 class Sidebar extends Component {
   static propTypes = {
-    content: PropTypes.string.isRequired,
+    content: PropTypes.func.isRequired,
     active: PropTypes.string.isRequired,
     onSelect: PropTypes.func.isRequired
   }
