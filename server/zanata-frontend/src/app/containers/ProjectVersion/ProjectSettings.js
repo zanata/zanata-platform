@@ -8,6 +8,9 @@ import 'antd/lib/tabs/style/css'
 import General from './ProjectSettingsTabs/General'
 import Languages from './ProjectSettingsTabs/Languages'
 import Translation from './ProjectSettingsTabs/Translation'
+import Permissions from './ProjectSettingsTabs/Permissions'
+import Webhooks from './ProjectSettingsTabs/Webhooks'
+import About from './ProjectSettingsTabs/About'
 
 const TabPane = Tabs.TabPane
 const generalTab = (
@@ -31,6 +34,9 @@ const aboutTab = (
 const generalContent = <General />
 const langContent = <Languages />
 const transContent = <Translation />
+const permContent = <Permissions />
+const webContent = <Webhooks />
+const aboutContent = <About />
 
 class ProjectSettings extends Component {
   render() {
@@ -45,9 +51,9 @@ class ProjectSettings extends Component {
           <TabPane tab={generalTab} key="1">{generalContent}</TabPane>
           <TabPane tab={languagesTab} key="2">{langContent}</TabPane>
           <TabPane tab={translationTab} key="3">{transContent}</TabPane>
-          <TabPane tab={permissionsTab} key="4">Content of tab 4</TabPane>
-          <TabPane tab={webhooksTab} key="5">Content of tab 5</TabPane>
-          <TabPane tab={aboutTab} key="6">Content of tab 6</TabPane>
+          <TabPane tab={permissionsTab} key="4">{permContent}</TabPane>
+          <TabPane tab={webhooksTab} key="5">{webContent}</TabPane>
+          <TabPane tab={aboutTab} key="6">{aboutContent}</TabPane>
         </Tabs>
       </div>
       /* eslint-enable max-len */

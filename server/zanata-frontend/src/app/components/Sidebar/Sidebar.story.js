@@ -22,6 +22,9 @@ storiesOf('Sidebar', module)
     .add('all', () => (
       <Sidebar active='1' content={pages[parseInt(active)]} onSelect={onSelect} />
     ))
+    .add('people', () => (
+      <Sidebar active='1' content={peoplePage} onSelect={onSelect} />
+    ))
     .add('about', () => (
       <Sidebar active='2' content={aboutPage} onSelect={onSelect} />
     ))

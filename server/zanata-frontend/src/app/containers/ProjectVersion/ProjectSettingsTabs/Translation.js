@@ -11,6 +11,8 @@ import Alert from 'antd/lib/alert'
 import 'antd/lib/alert/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
 
 class Translation extends Component {
   render() {
@@ -99,6 +101,29 @@ class Translation extends Component {
           <Radio.Button className='btn-warn'>Continue as Fuzzy</Radio.Button>
           <Radio.Button className='btn-danger'>Don't continue</Radio.Button>
         </Radio.Group>
+        <h3>On project mismatch</h3>
+        <p>If the translations are not both from this project
+        </p>
+        <Radio.Group>
+          <Radio.Button>Continue</Radio.Button>
+          <Radio.Button className='btn-warn'>Continue as Fuzzy</Radio.Button>
+          <Radio.Button className='btn-danger'>Don't continue</Radio.Button>
+        </Radio.Group>
+        <h3>On document mismatch</h3>
+        <p>If the translations are not both from the same document & document path
+        </p>
+        <Radio.Group>
+          <Radio.Button>Continue</Radio.Button>
+          <Radio.Button className='btn-warn'>Continue as Fuzzy</Radio.Button>
+          <Radio.Button className='btn-danger'>Don't continue</Radio.Button>
+        </Radio.Group>
+        <Card>
+          <h3>If all the previous steps have passed,
+            <span className='txt-success'>
+            copy as translated
+          </span></h3>
+          <Alert message="Unless previously copied as fuzzy" type="warning" showIcon />
+        </Card>
       </div>
       /* eslint-enable max-len */
     )
