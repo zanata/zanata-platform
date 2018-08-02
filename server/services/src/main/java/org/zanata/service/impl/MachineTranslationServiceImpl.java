@@ -21,6 +21,8 @@
 package org.zanata.service.impl;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -86,6 +88,7 @@ import static java.util.stream.Collectors.toList;
 public class MachineTranslationServiceImpl implements
         MachineTranslationService {
     private static final int BATCH_SIZE = 100;
+    private static final int REQUEST_BATCH_SIZE = 1000;
     private static final Logger log =
             LoggerFactory.getLogger(MachineTranslationServiceImpl.class);
 
@@ -196,6 +199,11 @@ public class MachineTranslationServiceImpl implements
         }
     }
 
+    // REMOVE ME (to easily find the debug output)
+    private void znta2730(String msg) {
+        System.out.println(msg);
+    }
+
     @Async
     @Override
     public Future<Void> prefillProjectVersionWithMachineTranslation(
@@ -240,6 +248,7 @@ public class MachineTranslationServiceImpl implements
                 try {
                     transactionUtil.run(() -> {
                         attributionService.addAttribution(doc, targetLocale, backendId);
+// -------------------- This is where it fails, with session errors after clear
                         entityManager.merge(doc);
                     });
                 } catch (Exception e) {
@@ -271,17 +280,35 @@ public class MachineTranslationServiceImpl implements
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
             return null;
         }
+        int startBatch = 0;
+        String backendIdConfirmation = null;
+        while (startBatch < textFlowsToTranslate.size()) {
+            int batchEnd = Math.min(
+                    startBatch + REQUEST_BATCH_SIZE, textFlowsToTranslate.size());
+            znta2730("Starting batch " + startBatch + "-" + batchEnd);
+            List<HTextFlow> next =
+                    textFlowsToTranslate.subList(startBatch, batchEnd);
+            MTDocument mtDocument = textFlowsToMTDoc
+                    .fromTextFlows(projectSlug, versionSlug,
+                            doc.getDocId(), doc.getSourceLocaleId(),
+                            next,
+                            TextFlowsToMTDoc::extractPluralIfPresent,
+                            backendId);
 
-        MTDocument mtDocument = textFlowsToMTDoc
-                .fromTextFlows(projectSlug, versionSlug,
-                        doc.getDocId(), doc.getSourceLocaleId(),
-                        textFlowsToTranslate,
-                        TextFlowsToMTDoc::extractPluralIfPresent,
-                        backendId);
-        MTDocument result = getTranslationFromMT(mtDocument,
-                targetLocale.getLocaleId());
-        saveTranslationsInBatches(textFlowsToTranslate, result, targetLocale, saveState);
-        return result.getBackendId();
+            znta2730("Sending batch " + startBatch + "-" + batchEnd);
+            Instant start = Instant.now();
+            MTDocument result = getTranslationFromMT(mtDocument,
+                    targetLocale.getLocaleId());
+            znta2730("Received response [" + result.getContents().size() +
+                    "] (" + Duration.between(start, Instant.now()).toMillis() + ")");
+            saveTranslationsInBatches(next, doc, result, targetLocale, saveState);
+            backendIdConfirmation = result.getBackendId();
+            startBatch = batchEnd;
+        }
+        if (backendIdConfirmation == null) {
+            log.warn("Error getting confirmation backend ID for {}", doc.getDocId());
+        }
+        return backendIdConfirmation;
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
@@ -297,15 +324,21 @@ public class MachineTranslationServiceImpl implements
     }
 
     private void saveTranslationsInBatches(List<HTextFlow> textFlows,
+            HDocument originalDoc,
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
         int batchStart = 0;
+        znta2730("  Saving in a batch");
+        Instant loop = Instant.now();
         while (batchStart < textFlows.size()) {
             // work out upper bound of index for each batch
             int batchEnd = Math.min(batchStart + BATCH_SIZE, textFlows.size());
+            znta2730("    Saving batch " + batchStart + "-" + batchEnd);
             List<HTextFlow> sourceBatch = textFlows.subList(batchStart, batchEnd);
             List<TypeString> transContentBatch =
                     transDoc.getContents().subList(batchStart, batchEnd);
+            znta2730("    Transaction...");
+            Instant start = Instant.now();
             try {
                 transactionUtil.run(() -> {
                     List<TransUnitUpdateRequest> updateRequests =
@@ -314,13 +347,32 @@ public class MachineTranslationServiceImpl implements
                                     saveState,
                                     sourceBatch,
                                     transContentBatch);
+                    System.out.println("    Committing translations...");
                     translationService.translate(targetLocale.getLocaleId(), updateRequests);
+
+                    // Can we somehow add attribution here instead?
+//                    System.out.println("    Adding attribution...");
+//                    try {
+//                        attributionService.addAttribution(originalDoc, targetLocale, transDoc.getBackendId());
+//                        entityManager.merge(originalDoc);
+//                    } catch (Exception e) {
+//                        throw new RuntimeException("Failed to save attribution", e);
+//                    }
+                    znta2730("    Done committing translations.");
+
                 });
             } catch (Exception e) {
-                log.error("error prefilling translation with machine translation", e);
+                log.error("Error prefilling translation with machine translation", e);
             }
+
+// -------- Clear here to reduce the entityManager cache
+            entityManager.clear();
+            znta2730("    After clear.");
             batchStart = batchEnd;
+            znta2730("  Done transaction " + batchStart + "-"
+                    + batchEnd + "(" + Duration.between(start, Instant.now()).toMillis() + ")");
         }
+        znta2730("  Done batches (" + Duration.between(loop, Instant.now()).toMillis() + ")");
     }
 
     /**
@@ -333,7 +385,8 @@ public class MachineTranslationServiceImpl implements
             List<HTextFlow> sourceBatch,
             List<TypeString> transContentBatch) {
         List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
-
+        znta2730("      Creating save requests...");
+        Instant start = Instant.now();
         for (int i = 0; i < sourceBatch.size(); i++) {
             HTextFlow textFlow = sourceBatch.get(i);
             ContentState saveState =
@@ -360,6 +413,7 @@ public class MachineTranslationServiceImpl implements
             updateRequest.addRevisionComment(getRevisionComment(backendId));
             updateRequests.add(updateRequest);
         }
+        znta2730("      Done creating (" + Duration.between(start, Instant.now()).toMillis() + ")");
         return updateRequests;
     }
 
