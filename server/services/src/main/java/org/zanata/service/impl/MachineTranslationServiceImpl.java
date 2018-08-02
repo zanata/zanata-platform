@@ -280,7 +280,7 @@ public class MachineTranslationServiceImpl implements
         while (startBatch < textFlowsToTranslate.size()) {
             int batchEnd = Math.min(
                     startBatch + REQUEST_BATCH_SIZE, textFlowsToTranslate.size());
-            logDebugPerf("Starting batch {} - {}", startBatch, batchEnd);
+            log.debug("[PERF] Starting batch {} - {}", startBatch, batchEnd);
             List<HTextFlow> next =
                     textFlowsToTranslate.subList(startBatch, batchEnd);
             MTDocument mtDocument = textFlowsToMTDoc
@@ -290,11 +290,11 @@ public class MachineTranslationServiceImpl implements
                             TextFlowsToMTDoc::extractPluralIfPresent,
                             backendId);
 
-            logDebugPerf("Sending batch {} - {}", startBatch, batchEnd);
+            log.debug("[PERF] Sending batch {} - {}", startBatch, batchEnd);
             Stopwatch mtProviderStopwatch = Stopwatch.createStarted();
             MTDocument result = getTranslationFromMT(mtDocument,
                     targetLocale.getLocaleId());
-            logDebugPerf("Received response [{} contents] ({}ms)",
+            log.debug("[PERF] Received response [{} contents] ({}ms)",
                     result.getContents().size(), mtProviderStopwatch);
             saveTranslationsInBatches(next, result, targetLocale, saveState);
             backendIdConfirmation = result.getBackendId();
@@ -322,7 +322,7 @@ public class MachineTranslationServiceImpl implements
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
         int batchStart = 0;
-        logDebugPerf("Saving {} translations in batches", textFlows.size());
+        log.debug("[PERF] Saving {} translations in batches", textFlows.size());
         Stopwatch saveAllTimer = Stopwatch.createStarted();
         while (batchStart < textFlows.size()) {
             // work out upper bound of index for each batch
@@ -330,7 +330,7 @@ public class MachineTranslationServiceImpl implements
             List<HTextFlow> sourceBatch = textFlows.subList(batchStart, batchEnd);
             List<TypeString> transContentBatch =
                     transDoc.getContents().subList(batchStart, batchEnd);
-            logDebugPerf("Batch save transaction {} - {}", batchStart, batchEnd);
+            log.debug("[PERF] Batch save transaction {} - {}", batchStart, batchEnd);
             Stopwatch transactionTime = Stopwatch.createStarted();
             try {
                 transactionUtil.run(() -> {
@@ -342,7 +342,7 @@ public class MachineTranslationServiceImpl implements
                                     transContentBatch);
                     Stopwatch storeTranslations = Stopwatch.createStarted();
                     translationService.translate(targetLocale.getLocaleId(), updateRequests);
-                    logDebugPerf("Commit translations to database ({}ms)", storeTranslations);
+                    log.debug("[PERF] Commit translations to database ({}ms)", storeTranslations);
 
                 });
             } catch (Exception e) {
@@ -352,10 +352,10 @@ public class MachineTranslationServiceImpl implements
             // Clear here to reduce the entityManager cache
             entityManager.clear();
             batchStart = batchEnd;
-            logDebugPerf("Transaction complete {} - {} ({}ms)", batchStart,
+            log.debug("[PERF] Transaction complete {} - {} ({}ms)", batchStart,
                     batchEnd, transactionTime);
         }
-        logDebugPerf("Batches complete ({}ms)", saveAllTimer);
+        log.debug("[PERF] Batches complete ({}ms)", saveAllTimer);
     }
 
     /**
@@ -368,8 +368,8 @@ public class MachineTranslationServiceImpl implements
             List<HTextFlow> sourceBatch,
             List<TypeString> transContentBatch) {
         List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
-        logDebugPerf("Creating {} save requests", sourceBatch.size());
-        Stopwatch start = Stopwatch.createStarted();
+        log.debug("[PERF] Creating {} save requests", sourceBatch.size());
+        Stopwatch createRequestsTimer = Stopwatch.createStarted();
         for (int i = 0; i < sourceBatch.size(); i++) {
             HTextFlow textFlow = sourceBatch.get(i);
             ContentState saveState =
@@ -396,7 +396,8 @@ public class MachineTranslationServiceImpl implements
             updateRequest.addRevisionComment(getRevisionComment(backendId));
             updateRequests.add(updateRequest);
         }
-        logDebugPerf("Created {} requests ({}ms)", start);
+        log.debug("[PERF] Created {} requests ({}ms)", updateRequests.size(),
+                createRequestsTimer);
         return updateRequests;
     }
 
@@ -416,15 +417,6 @@ public class MachineTranslationServiceImpl implements
 
     private String getRevisionComment(String backendId) {
         return attributionService.getAttributionMessage(backendId);
-    }
-
-
-    /**
-     * Debug message for performance tracking
-     * @param msg
-     */
-    private void logDebugPerf(String msg, Object... values) {
-        log.debug("[PERF] " + msg, values);
     }
 
 }
