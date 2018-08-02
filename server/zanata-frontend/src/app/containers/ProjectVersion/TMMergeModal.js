@@ -11,14 +11,16 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
 import {
-  Icon, LoaderText, Link} from '../../components'
+  Icon, LoaderText, Link
+} from '../../components'
+import LocaleSelect from '../../components/LocaleSelect'
 import {ProjectVersionHorizontal} from './project-version-displays'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
@@ -79,22 +81,11 @@ const MergeOptions = (
     locales.length > 0 &&
     mergeOptions.selectedLanguage &&
     !fetchingLocale
-    ? (
-      <span>
-        <Select
-          value={mergeOptions.selectedLanguage.localeId}
-          style={{ width: '15rem' }}
-          onChange={onLanguageSelection}>
-          {locales.map((locale) => {
-            return (
-              <Select.Option value={locale.localeId} >
-                {locale.displayName}
-              </Select.Option>
-            )
-          })}
-        </Select>
-      </span>
-    )
+    ? (<span><LocaleSelect
+      locales={locales}
+      onChange={onLanguageSelection}
+      style={{ width: '15rem' }}
+    /></span>)
     : <LoaderText loading={fetchingLocale}
       loadingText={'Fetching Locales'} />
   return (

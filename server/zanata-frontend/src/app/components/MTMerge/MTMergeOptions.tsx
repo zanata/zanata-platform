@@ -9,15 +9,13 @@ import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
 import Switch from 'antd/lib/switch'
 import 'antd/lib/switch/style/css'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
+import LocaleSelect from '../../components/LocaleSelect'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { LocaleId, Locale } from '../../utils/prop-types-util'
 import { STATUS_NEEDS_WORK, STATUS_TRANSLATED } from '../../editor/utils/phrase'
 
 const CheckboxGroup = Checkbox.Group
-const Option = Select.Option
 
 export type MTTranslationStatus = typeof STATUS_NEEDS_WORK | typeof STATUS_TRANSLATED
 
@@ -86,21 +84,11 @@ export class MTMergeOptions extends Component<Props> {
               </Checkbox>)}
             </CheckboxGroup>
           </div>
-          : <Select
-              showSearch
-              style={{ width: '100%' }}
-              placeholder="Select a locale"
+          : <LocaleSelect
+              locales={this.props.availableLocales}
               onChange={this.onSelectChange}
-              filterOption={(input, option) => (
-                // @ts-ignore
-                (option.props.value + option.props.title).toLowerCase())
-                .indexOf(input.toLowerCase()) >= 0}
-            >
-            {this.props.availableLocales.sort(this.compareLocId).map(loc =>
-              <Option key={loc.localeId} value={loc.localeId} title={loc.displayName}>
-                <span className='blue'>{loc.localeId}</span> {loc.displayName}
-              </Option>)}
-          </Select>
+              style={{ width: '100%' }}
+            />
         }
 
         {/* Other options */}
@@ -130,11 +118,6 @@ export class MTMergeOptions extends Component<Props> {
         }
       </React.Fragment>
     )
-  }
-
-  // Sort comparitor by locale Id
-  private compareLocId (a: Locale, b: Locale) {
-    return a.localeId < b.localeId ? -1 : a.localeId > b.localeId ? 1 : 0
   }
 
   private availableLocaleIds() {
