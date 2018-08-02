@@ -22,10 +22,7 @@ package org.zanata.service.impl;
 
 import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
-import java.lang.reflect.Field;
 import java.text.MessageFormat;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,9 +41,6 @@ import org.hibernate.HibernateException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.hibernate.engine.internal.StatefulPersistenceContext;
-import org.hibernate.engine.spi.PersistenceContext;
-import org.hibernate.engine.spi.SessionImplementor;
 import org.jetbrains.annotations.NotNull;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -186,20 +180,6 @@ public class TranslationServiceImpl implements TranslationService {
         List<TextFlowTargetStateChange> targetStates = Lists.newArrayList();
         Map<ContentState, Long> contentStateDeltas = Maps.newHashMap();
 
-        System.out.println("        Processing translations...");
-        Instant start = Instant.now();
-        try {
-            SessionImplementor sessionImpl = (SessionImplementor) entityManager.getDelegate();
-            PersistenceContext persistenceContext = sessionImpl.getPersistenceContext();
-            Field entityEntriesField = StatefulPersistenceContext.class.getDeclaredField("entitiesByKey");
-            entityEntriesField.setAccessible(true);
-            Map map = (Map) entityEntriesField.get(persistenceContext);
-            log.info("Pre-entitiesManager size {}", map.size());
-        } catch (Exception e)
-        {
-            log.error(e.getMessage());
-        }
-
         for (TransUnitUpdateRequest request : translationRequests) {
             ContentState newContentState = request.getNewContentState();
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class,
@@ -280,18 +260,7 @@ public class TranslationServiceImpl implements TranslationService {
             result.translatedTextFlowTarget = hTextFlowTarget;
             results.add(result);
         }
-        try {
-            SessionImplementor sessionImpl = (SessionImplementor) entityManager.getDelegate();
-            PersistenceContext persistenceContext = sessionImpl.getPersistenceContext();
-            Field entityEntriesField = StatefulPersistenceContext.class.getDeclaredField("entitiesByKey");
-            entityEntriesField.setAccessible(true);
-            Map map = (Map) entityEntriesField.get(persistenceContext);
-            log.info("Post EntityManager size {}", map.size());
-        } catch (Exception e)
-        {
-            log.error(e.getMessage());
-        }
-        System.out.println("          Done processing (" + Duration.between(start, Instant.now()).toMillis() + ")");
+
         if (!targetStates.isEmpty()) {
             DocumentLocaleKey documentLocaleKey =
                     new DocumentLocaleKey(sampleHTextFlow.getDocument().getId(),
