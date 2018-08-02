@@ -73,7 +73,7 @@ class PeoplePage extends Component {
 
     return (
       /* eslint-disable max-len */
-        <div className='flexTab wideView'>
+        <div className='flexTab wideView people'>
           <h1 className='txt-info'><Icon name='users' className='s5 v-sub mr2' />
             <span className='fw4'>People</span></h1>
           <Button type='primary' icon='plus' className='mb4'>Add someone</Button>

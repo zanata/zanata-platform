@@ -61,16 +61,16 @@ class VersionPanel extends Component {
             </Button>
           </Dropdown>
           <Menu>
-            <Menu.Item key='1'>
+            <Menu.Item key='4'>
               <span>Languages</span>
             </Menu.Item>
-            <Menu.Item key='2'>
+            <Menu.Item key='5'>
               <span>Documents</span>
             </Menu.Item>
-            <Menu.Item key='3'>
+            <Menu.Item key='6'>
               <span>Groups</span>
             </Menu.Item>
-            <Menu.Item key='4'>
+            <Menu.Item key='7'>
               <span>Version settings</span>
             </Menu.Item>
           </Menu>

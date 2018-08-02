@@ -17,5 +17,5 @@ storiesOf('Sidebar', module)
       <Sidebar active='2' content={aboutPage} />
     ))
     .add('settings', () => (
-      <Sidebar active='3' content={settingsPage} />
+      <Sidebar active='7' content={settingsPage} />
     ))

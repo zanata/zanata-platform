@@ -28,8 +28,7 @@ class General extends Component {
       /* eslint-disable max-len */
       <div className='flexTab wideView'>
         <h1 className='txt-info'><Icon name='settings' className='s5 v-sub mr2' />
-          <span className='fw4'>Project Settings</span></h1>
-        <h2>General</h2>
+          <span className='fw4'>General Settings</span></h1>
         <Form layout='horizontal'>
           <Row>
             <Col span={14}>
@@ -66,19 +65,19 @@ class General extends Component {
                 <Radio className='w-100' value="c">Podir
                   <span className='ml2 txt-muted'>
                   For Publican/Docbook strings</span></Radio>
-                <Radio className='w-100' value="c">Properties
+                <Radio className='w-100' value="d">Properties
                   <span className='ml2 txt-muted'>
                   For Java properties files</span></Radio>
-                <Radio className='w-100' value="c">Utf8 Properties
+                <Radio className='w-100' value="e">Utf8 Properties
                   <span className='ml2 txt-muted'>
                   For UTF8-encoded Java properties</span></Radio>
-                <Radio className='w-100' value="c">Xliff
+                <Radio className='w-100' value="f">Xliff
                   <span className='ml2 txt-muted'>
                   For supported XLIFF files</span></Radio>
-                <Radio className='w-100' value="c">XML
+                <Radio className='w-100' value="g">XML
                   <span className='ml2 txt-muted'>
                   For XML from the Zanata REST API</span></Radio>
-                <Radio className='w-100' value="c">Unspecified
+                <Radio className='w-100' value="h">Unspecified
                   <span className='ml2 txt-muted'>
                   A setting for older projects</span></Radio>
               </RadioGroup>
