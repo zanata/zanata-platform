@@ -8,6 +8,8 @@ import 'antd/lib/layout/style/css'
 import Icon from '../../components/Icon'
 import Menu from 'antd/lib/menu'
 import 'antd/lib/menu/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 import ProcessingSidebar from './ProcessingSidebar'
 import VersionPanel from './VersionPanel'
 
@@ -15,7 +17,8 @@ const { Sider, Content } = Layout
 
 class Sidebar extends Component {
   static propTypes = {
-    content: PropTypes.string.isRequired
+    content: PropTypes.string.isRequired,
+    active: PropTypes.string.isRequired
   }
   /* eslint-disable react/jsx-no-bind, no-return-assign */
   render () {
@@ -32,28 +35,29 @@ class Sidebar extends Component {
             <Icon name='project' className='s5 mr1 v-sub' />
             {projectTitle}
           </h1>
-          <Menu defaultSelectedKeys={['1']}>
+          <Menu defaultSelectedKeys={[this.props.active]}>
             <Menu.Item key='1'>
               <Icon name='users' className='s1 v-mid mr1' />
               <span className='v-mid'>People</span>
             </Menu.Item>
             <Menu.Item key='2'>
-              <Icon name='glossary' className='s1 v-mid mr1' />
-              <span className='v-mid'>Glossary</span>
-            </Menu.Item>
-            <Menu.Item key='3'>
               <Icon name='info' className='s1 v-mid mr1' />
               <span className='v-mid'>About</span>
             </Menu.Item>
-            <Menu.Item key='4'>
+            <Menu.Item key='3'>
               <Icon name='settings' className='s1 v-mid mr1' />
               <span className='v-mid'>Settings</span>
             </Menu.Item>
           </Menu>
-          <Button type='primary' size='small' icon='export'
-            className='ml3 mt2 mb2'>Export to TMX</Button>
-          <Button type='primary' size='small' className='ml3 mb2' icon='plus'>
-          Add new version</Button>
+          <Button type='dashed' className='ml3 mt2 mb3'>
+            <Icon name='glossary' className='s0 v-sub' /> Glossary
+          </Button>
+          <Row>
+            <Button type='primary' size='small' icon='export'
+              className='ml3 mt2 mb3'>Export to TMX</Button>
+            <Button type='primary' size='small' className='ml3 mb3' icon='plus'>
+            Add new version</Button>
+          </Row>
           <ProcessingSidebar />
           <VersionPanel />
         </Sider>
