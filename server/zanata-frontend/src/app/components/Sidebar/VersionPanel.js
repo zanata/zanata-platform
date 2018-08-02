@@ -1,5 +1,6 @@
 import React from 'react'
 import { Component } from 'react'
+import * as PropTypes from 'prop-types'
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 import Select from 'antd/lib/select'
@@ -18,6 +19,10 @@ const Option = Select.Option
 // need boolean prop for showing processing panel
 
 class VersionPanel extends Component {
+  static propTypes = {
+    activeVersionMenu: PropTypes.string
+  }
+
   render () {
     const counts = {
       total: 20,
@@ -60,17 +65,17 @@ class VersionPanel extends Component {
               Version tools <Icon name="chevron-down" className='s0 v-mid' />
             </Button>
           </Dropdown>
-          <Menu>
-            <Menu.Item key='4'>
+          <Menu selectedKeys={[this.props.activeVersionMenu]}>
+            <Menu.Item key='1'>
               <span>Languages</span>
             </Menu.Item>
-            <Menu.Item key='5'>
+            <Menu.Item key='2'>
               <span>Documents</span>
             </Menu.Item>
-            <Menu.Item key='6'>
+            <Menu.Item key='3'>
               <span>Groups</span>
             </Menu.Item>
-            <Menu.Item key='7'>
+            <Menu.Item key='4'>
               <span>Version settings</span>
             </Menu.Item>
           </Menu>

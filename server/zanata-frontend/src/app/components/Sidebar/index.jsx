@@ -18,7 +18,8 @@ const { Sider, Content } = Layout
 class Sidebar extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
-    active: PropTypes.string.isRequired
+    active: PropTypes.string.isRequired,
+    activeVersionMenu: PropTypes.string
   }
   /* eslint-disable react/jsx-no-bind, no-return-assign */
   render () {
@@ -59,7 +60,7 @@ class Sidebar extends Component {
             Add new version</Button>
           </Row>
           <ProcessingSidebar />
-          <VersionPanel />
+          <VersionPanel activeVersionMenu={[this.props.activeVersionMenu]} />
         </Sider>
         <Content>
           {content}
