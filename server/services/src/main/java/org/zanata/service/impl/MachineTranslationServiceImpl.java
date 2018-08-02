@@ -235,6 +235,7 @@ public class MachineTranslationServiceImpl implements
         for (Iterator<HDocument> iterator = documents.values().iterator();
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
+            Long docId = doc.getId();
 
             if (!attributionService.supportsAttribution(doc)) {
                 log.warn("Attribution not supported for {}; skipping MT", doc);
@@ -247,9 +248,10 @@ public class MachineTranslationServiceImpl implements
             if (backendId != null) {
                 try {
                     transactionUtil.run(() -> {
-                        attributionService.addAttribution(doc, targetLocale, backendId);
+                        HDocument refreshedDoc = entityManager.find(HDocument.class, docId);
+                        attributionService.addAttribution(refreshedDoc, targetLocale, backendId);
 // -------------------- This is where it fails, with session errors after clear
-                        entityManager.merge(doc);
+                        entityManager.merge(refreshedDoc);
                     });
                 } catch (Exception e) {
                     throw new RuntimeException("error adding attribution for machine translation", e);
@@ -301,7 +303,7 @@ public class MachineTranslationServiceImpl implements
                     targetLocale.getLocaleId());
             znta2730("Received response [" + result.getContents().size() +
                     "] (" + Duration.between(start, Instant.now()).toMillis() + ")");
-            saveTranslationsInBatches(next, doc, result, targetLocale, saveState);
+            saveTranslationsInBatches(next, result, targetLocale, saveState);
             backendIdConfirmation = result.getBackendId();
             startBatch = batchEnd;
         }
@@ -324,7 +326,6 @@ public class MachineTranslationServiceImpl implements
     }
 
     private void saveTranslationsInBatches(List<HTextFlow> textFlows,
-            HDocument originalDoc,
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
         int batchStart = 0;
@@ -366,7 +367,7 @@ public class MachineTranslationServiceImpl implements
             }
 
 // -------- Clear here to reduce the entityManager cache
-            entityManager.clear();
+//            entityManager.clear();
             znta2730("    After clear.");
             batchStart = batchEnd;
             znta2730("  Done transaction " + batchStart + "-"
