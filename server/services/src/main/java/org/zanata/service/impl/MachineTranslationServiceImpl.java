@@ -85,7 +85,7 @@ import static java.util.stream.Collectors.toList;
 @RequestScoped
 public class MachineTranslationServiceImpl implements
         MachineTranslationService {
-    private static final int BATCH_SIZE = 100;
+    private static final int SAVE_BATCH_SIZE = 100;
     private static final int REQUEST_BATCH_SIZE = 1000;
     private static final Logger log =
             LoggerFactory.getLogger(MachineTranslationServiceImpl.class);
@@ -315,7 +315,7 @@ public class MachineTranslationServiceImpl implements
         int batchStart = 0;
         while (batchStart < textFlows.size()) {
             // work out upper bound of index for each batch
-            int batchEnd = Math.min(batchStart + BATCH_SIZE, textFlows.size());
+            int batchEnd = Math.min(batchStart + SAVE_BATCH_SIZE, textFlows.size());
             List<HTextFlow> sourceBatch = textFlows.subList(batchStart, batchEnd);
             List<TypeString> transContentBatch =
                     transDoc.getContents().subList(batchStart, batchEnd);
