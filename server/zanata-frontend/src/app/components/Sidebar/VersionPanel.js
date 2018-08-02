@@ -20,9 +20,9 @@ const Option = Select.Option
 
 class VersionPanel extends Component {
   static propTypes = {
-    activeVersionMenu: PropTypes.string
+    active: PropTypes.string.isRequired,
+    onSelect: PropTypes.func.isRequired,
   }
-
   render () {
     const counts = {
       total: 20,
@@ -65,17 +65,17 @@ class VersionPanel extends Component {
               Version tools <Icon name="chevron-down" className='s0 v-mid' />
             </Button>
           </Dropdown>
-          <Menu selectedKeys={[this.props.activeVersionMenu]}>
-            <Menu.Item key='1'>
+          <Menu selectedKeys={this.props.active} onClick={this.props.onSelect}>
+            <Menu.Item key='4'>
               <span>Languages</span>
             </Menu.Item>
-            <Menu.Item key='2'>
+            <Menu.Item key='5'>
               <span>Documents</span>
             </Menu.Item>
-            <Menu.Item key='3'>
+            <Menu.Item key='6'>
               <span>Groups</span>
             </Menu.Item>
-            <Menu.Item key='4'>
+            <Menu.Item key='7'>
               <span>Version settings</span>
             </Menu.Item>
           </Menu>
