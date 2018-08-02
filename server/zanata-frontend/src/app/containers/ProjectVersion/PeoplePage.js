@@ -12,8 +12,6 @@ import Input from 'antd/lib/input'
 import 'antd/lib/input/style/css'
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
-import Pagination from 'antd/lib/pagination'
-import 'antd/lib/pagination/style/css'
 import {Icon} from '../../components'
 import Table from 'antd/lib/table'
 import 'antd/lib/table/style/css'
@@ -76,7 +74,7 @@ class PeoplePage extends Component {
     return (
       /* eslint-disable max-len */
         <div className='flexTab wideView'>
-          <h1 className='txt-info'><Icon name='users' className='s5 v-sub' />
+          <h1 className='txt-info'><Icon name='users' className='s5 v-sub mr2' />
             <span className='fw4'>People</span></h1>
           <Button type='primary' icon='plus' className='mb4'>Add someone</Button>
           <Row className='mb4'>

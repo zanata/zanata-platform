@@ -11,7 +11,7 @@ class AboutPage extends Component {
     return (
       /* eslint-disable max-len */
       <div className='flexTab wideView'>
-        <h1 className='txt-info'><Icon name='info' className='s5 v-sub' />
+        <h1 className='txt-info'><Icon name='info' className='s5 v-sub mr2' />
           <span className='fw4'>About</span></h1>
         <p>
           At vero eos et accusamus et iusto odio dignissimos ducimus qui
