@@ -288,6 +288,7 @@ public class MachineTranslationServiceImpl implements
             MTDocument result = getTranslationFromMT(mtDocument,
                     targetLocale.getLocaleId());
             saveTranslationsInBatches(next, result, targetLocale, saveState);
+            // TODO we only return the backendId from the final batch
             backendIdConfirmation = result.getBackendId();
             startBatch = batchEnd;
         }
