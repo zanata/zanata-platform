@@ -59,7 +59,7 @@ const columns = [{
   render: (text, record) => (
     <span className='fr'>
       <Button type='primary'><Icon name='settings' className='s0 v-sub mr2'/>
-        Manage permissions
+        <span className='hidden-lesm'>Manage permissions</span>
       </Button>
     </span>
   ),

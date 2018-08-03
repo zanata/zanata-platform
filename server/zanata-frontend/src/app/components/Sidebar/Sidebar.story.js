@@ -3,13 +3,15 @@ import { storiesOf } from '@storybook/react'
 import Sidebar from '.'
 import PeoplePage from '../../containers/ProjectVersion/PeoplePage'
 import AboutPage from '../../containers/ProjectVersion/AboutPage'
+import LanguagesPage from '../../containers/ProjectVersion/LanguagesPage'
 import ProjectSettings from '../../containers/ProjectVersion/ProjectSettings'
 
 const peoplePage = <PeoplePage />
 const aboutPage = <AboutPage />
 const settingsPage = <ProjectSettings />
+const languagesPage = <LanguagesPage />
 
-const pages = [peoplePage, aboutPage, settingsPage]
+const pages = [peoplePage, aboutPage, settingsPage, languagesPage]
 
 // TODO: implement as redux state
 let active = '1'
@@ -32,7 +34,7 @@ storiesOf('Sidebar', module)
       <Sidebar active='3' content={settingsPage} onSelect={onSelect} />
     ))
     .add('languages', () => (
-      <Sidebar active='4' content={settingsPage} onSelect={onSelect} />
+      <Sidebar active='4' content={languagesPage} onSelect={onSelect} />
     ))
     .add('documents', () => (
       <Sidebar active='5' content={settingsPage} onSelect={onSelect} />
