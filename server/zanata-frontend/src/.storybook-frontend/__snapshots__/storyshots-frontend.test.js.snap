@@ -7019,7 +7019,7 @@ exports[`Frontend Storyshots Sidebar version settings 1`] = `
   <mock-icons />
   <Sidebar
     active="7"
-    content={<ProjectSettings />}
+    content={<VersionSettings />}
     onSelect={[Function]}
   />
 </div>
