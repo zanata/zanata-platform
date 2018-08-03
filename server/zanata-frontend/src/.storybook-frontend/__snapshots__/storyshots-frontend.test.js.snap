@@ -6968,7 +6968,7 @@ exports[`Frontend Storyshots Sidebar languages 1`] = `
   <mock-icons />
   <Sidebar
     active="4"
-    content={<ProjectSettings />}
+    content={<LanguagesPage />}
     onSelect={[Function]}
   />
 </div>

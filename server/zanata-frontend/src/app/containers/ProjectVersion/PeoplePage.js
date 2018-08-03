@@ -65,7 +65,9 @@ const columns = [{
   ),
 }]
 
-const pagination = { position: 'top' }
+const pagination = { position: 'top',
+  size: 'small'
+}
 
 class PeoplePage extends Component {
 

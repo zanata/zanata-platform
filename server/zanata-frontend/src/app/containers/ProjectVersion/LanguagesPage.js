@@ -2,8 +2,6 @@
 // @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
 import Row from 'antd/lib/row'
@@ -12,72 +10,10 @@ import Input from 'antd/lib/input'
 import 'antd/lib/input/style/css'
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
-import {Icon} from '../../components'
-import Table from 'antd/lib/table'
-import 'antd/lib/table/style/css'
-import VersionProgress from '../../components/Sidebar/VersionProgress'
+import LanguagesTable from './LanguagesTable'
 
 const Search = Input.Search
 const Option = Select.Option
-
-const counts = {
-  total: 20,
-  approved: 3,
-  translated: 8,
-  needswork: 4,
-  rejected: 1,
-  untranslated: 4
-}
-
-const name = (
-  <span>
-    <a href="">
-      Japanese
-    </a>
-  </span>
-)
-
-const lastmodified = (
-  <span className='txt-muted fr'>
-    <Icon name='clock' className='s1 v-sub' /> Last modified today
-  </span>
-)
-
-const translated = (
-  <Row>
-    <span className='txt-success'>60%
-      <VersionProgress counts={counts}/>
-    </span>
-  </Row>
-)
-
-const dataSource = [{
-  key: '1',
-  name: name,
-  translated: translated,
-  lastmodified: lastmodified
-}, {
-  key: '2',
-  name: name,
-  translated: translated,
-  lastmodified: lastmodified
-}]
-
-const columns = [{
-  title: '',
-  dataIndex: 'name',
-  key: 'name',
-}, {
-  title: '',
-  dataIndex: 'translated',
-  key: 'translated',
-}, {
-  title: '',
-  dataIndex: 'lastmodified',
-  key: 'lastmodified'
-}]
-
-const pagination = { position: 'top' }
 
 class LanguagesPage extends Component {
 
@@ -114,7 +50,7 @@ class LanguagesPage extends Component {
             </Select>
           </Col>
         </Row>
-        <Table pagination={pagination} dataSource={dataSource} columns={columns} />
+        <LanguagesTable />
       </div>
       /* eslint-enable max-len */
     )

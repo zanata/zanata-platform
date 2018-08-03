@@ -95,14 +95,14 @@
   color: @primary-color;
 }
 
-.ant-pagination-item-active a {
+.ant-pagination-item-active a, .ant-pagination-item-active {
   color: @info-color;
 }
 
 .ant-pagination-item-active,
 .ant-pagination-item:focus,
 .ant-pagination-item:hover {
-  border-color: @info-color;
+  border-color: @info-color !important;
 }
 
 .scrollView {
@@ -406,6 +406,12 @@ input,
 input.react-autosuggest__input {
   background-color: transparent;
   border-bottom: solid 1px @neutral-color;
+}
+
+.ant-table-thead > tr.ant-table-row-hover > td,
+.ant-table-tbody > tr.ant-table-row-hover > td,
+.ant-table-thead > tr:hover > td, .ant-table-tbody > tr:hover > td {
+  background: transparent !important;
 }
 
 .ant-input.textInput,
