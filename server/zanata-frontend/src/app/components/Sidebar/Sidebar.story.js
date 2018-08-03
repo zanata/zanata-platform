@@ -4,14 +4,16 @@ import Sidebar from '.'
 import PeoplePage from '../../containers/ProjectVersion/PeoplePage'
 import AboutPage from '../../containers/ProjectVersion/AboutPage'
 import LanguagesPage from '../../containers/ProjectVersion/LanguagesPage'
+import DocumentsPage from '../../containers/ProjectVersion/DocumentsPage'
 import ProjectSettings from '../../containers/ProjectVersion/ProjectSettings'
 
 const peoplePage = <PeoplePage />
 const aboutPage = <AboutPage />
 const settingsPage = <ProjectSettings />
 const languagesPage = <LanguagesPage />
+const docsPage = <DocumentsPage />
 
-const pages = [peoplePage, aboutPage, settingsPage, languagesPage]
+const pages = [peoplePage, aboutPage, settingsPage, languagesPage, docsPage]
 
 // TODO: implement as redux state
 let active = '1'
@@ -37,7 +39,7 @@ storiesOf('Sidebar', module)
       <Sidebar active='4' content={languagesPage} onSelect={onSelect} />
     ))
     .add('documents', () => (
-      <Sidebar active='5' content={settingsPage} onSelect={onSelect} />
+      <Sidebar active='5' content={docsPage} onSelect={onSelect} />
     ))
     .add('groups', () => (
       <Sidebar active='6' content={settingsPage} onSelect={onSelect} />

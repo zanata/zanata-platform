@@ -16,9 +16,9 @@ const counts = {
   untranslated: 4
 }
 
-const language = (<a href=''>Japanese</a>)
+const doc = (<a href=''>Readme.txt</a>)
 const percentage = (<span className='txt-success'><span className='f4'>60%</span> translated</span>)
-
+const wordsleft = '200 words left'
 const lastModified =  <span className='txt-muted'>
     <Icon name='clock' className='s1 v-sub' /> Last modified today
   </span>
@@ -26,12 +26,13 @@ const lastModified =  <span className='txt-muted'>
 const tableEntry = (
   <React.Fragment>
     <tr className='row1'>
-      <td className='w-30'>{language}</td>
+      <td className='w-30 ellipsis'>{doc}</td>
       <td className='w-20'>{percentage}</td>
+      <td className='w-20'>{wordsleft}</td>
       <td className='fr'>{lastModified}</td>
     </tr>
     <tr className = 'mb4 row2'>
-      <td colSpan = "3" >
+      <td colSpan = "4" >
         <VersionProgress counts = {counts} />
       </td>
     </tr>

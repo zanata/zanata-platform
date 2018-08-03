@@ -27,7 +27,7 @@ class Sidebar extends Component {
     const content = this.props.content
     return (
       <Layout>
-        <Sider breakpoint='sm'
+        <Sider breakpoint='md'
           defaultCollapsed={false}
           width='300'
           className='pvSidebar'
