@@ -297,6 +297,7 @@ public class MachineTranslationServiceImpl implements
             log.debug("[PERF] Received response [{} contents] ({}ms)",
                     result.getContents().size(), mtProviderStopwatch);
             saveTranslationsInBatches(next, result, targetLocale, saveState);
+            // TODO we only return the backendId from the final batch
             backendIdConfirmation = result.getBackendId();
             startBatch = batchEnd;
         }
