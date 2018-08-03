@@ -6934,7 +6934,7 @@ exports[`Frontend Storyshots Sidebar documents 1`] = `
   <mock-icons />
   <Sidebar
     active="5"
-    content={<ProjectSettings />}
+    content={<DocumentsPage />}
     onSelect={[Function]}
   />
 </div>
@@ -6951,7 +6951,7 @@ exports[`Frontend Storyshots Sidebar groups 1`] = `
   <mock-icons />
   <Sidebar
     active="6"
-    content={<ProjectSettings />}
+    content={<GroupsPage />}
     onSelect={[Function]}
   />
 </div>
