@@ -398,40 +398,72 @@
                 <ui:fragment rendered="#{not versionHomeAction.isCopyActionsRunning()}">
                   <ui:fragment
                     rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
-                    <li>
-                      <a href="javascript:void(0)" class="i__item--right"
-                          data-toggle="modal"
-                          data-target="#copy-trans-modal">
-                        #{msgs['jsf.CopyTrans']}
-                        <i class="i i--add i__item__icon"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" class="i__item--right"
-                        title="#{msgs['jsf.iteration.mergeTrans.header']}"
-                        data-toggle="modal"
-                        data-target="#mergeTransDialog">
-                        #{msgs['jsf.iteration.mergeTrans']}
-                        <i class="i i--translate i__item__icon"></i>
-                      </a>
-                    </li>
-                  </ui:fragment>
-                  <ui:fragment
-                    rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
-                    <li>
-                      <a href="#" class="i__item--right"
-                        onclick="toggleTMMergeModal(); return false">
-                        #{msgs['jsf.iteration.TMMerge']}
-                        <i class="i i--translate i__item__icon"></i>
-                      </a>
-                    </li>
-                    <ui:fragment rendered="#{identity.hasRole('mt-bulk')}">
+                    <ui:fragment rendered="#{!versionHomeAction.version.documents.isEmpty()}">
                       <li>
-                        <a href="#" class="i__item--right" onclick="toggleMTMergeModal(); return false">
-                          #{msgs['jsf.iteration.MTMerge']}
+                        <a href="javascript:void(0)" class="i__item--right"
+                            data-toggle="modal"
+                            data-target="#copy-trans-modal">
+                          #{msgs['jsf.CopyTrans']}
+                          <i class="i i--add i__item__icon"></i>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="i__item--right"
+                          title="#{msgs['jsf.iteration.mergeTrans.header']}"
+                          data-toggle="modal"
+                          data-target="#mergeTransDialog">
+                          #{msgs['jsf.iteration.mergeTrans']}
                           <i class="i i--translate i__item__icon"></i>
                         </a>
                       </li>
+                      <li>
+                        <a href="#" class="i__item--right"
+                          onclick="toggleTMMergeModal(); return false">
+                          #{msgs['jsf.iteration.TMMerge']}
+                          <i class="i i--translate i__item__icon"></i>
+                        </a>
+                      </li>
+                      <ui:fragment rendered="#{identity.hasRole('mt-bulk')}">
+                        <li>
+                          <a href="#" class="i__item--right" onclick="toggleMTMergeModal(); return false">
+                            #{msgs['jsf.iteration.MTMerge']}
+                            <i class="i i--translate i__item__icon"></i>
+                          </a>
+                        </li>
+                      </ui:fragment>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{versionHomeAction.version.documents.isEmpty()}">
+                      <li title="#{msgs['jsf.iteration.NoDocumentInVersion']}">
+                        <a class="i__item--right" onclick="return false"
+                          disabled="true">
+                          #{msgs['jsf.CopyTrans']}
+                          <i class="i i--add i__item__icon"></i>
+                        </a>
+                      </li>
+                      <li title="#{msgs['jsf.iteration.NoDocumentInVersion']}">
+                        <a class="i__item--right" onclick="return false"
+                          disabled="true">
+                          #{msgs['jsf.iteration.mergeTrans']}
+                          <i class="i i--translate i__item__icon"></i>
+                        </a>
+                      </li>
+
+                      <li title="#{msgs['jsf.iteration.NoDocumentInVersion']}">
+                        <a class="i__item--right" onclick="return false"
+                          disabled="true">
+                          #{msgs['jsf.iteration.TMMerge']}
+                          <i class="i i--translate i__item__icon"></i>
+                        </a>
+                      </li>
+                      <ui:fragment rendered="#{identity.hasRole('mt-bulk')}">
+                        <li title="#{msgs['jsf.iteration.NoDocumentInVersion']}">
+                          <a class="i__item--right" onclick="return false"
+                            disabled="true">
+                            #{msgs['jsf.iteration.MTMerge']}
+                            <i class="i i--translate i__item__icon"></i>
+                          </a>
+                        </li>
+                      </ui:fragment>
                     </ui:fragment>
                   </ui:fragment>
                   <ui:fragment
