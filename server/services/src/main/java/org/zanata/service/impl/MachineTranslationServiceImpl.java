@@ -268,6 +268,7 @@ public class MachineTranslationServiceImpl implements
             String backendId) {
         DocumentId documentId = new DocumentId(doc.getId(),
                 doc.getDocId());
+        entityManager.clear();
         List<HTextFlow> textFlowsToTranslate =
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
                         documentId, overwriteFuzzy);

@@ -21,7 +21,6 @@
 package org.zanata.service.impl;
 
 import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -179,12 +178,10 @@ public class TranslationServiceImpl implements TranslationService {
                 projectIteration, hLocale);
         List<TextFlowTargetStateChange> targetStates = Lists.newArrayList();
         Map<ContentState, Long> contentStateDeltas = Maps.newHashMap();
-
         for (TransUnitUpdateRequest request : translationRequests) {
             ContentState newContentState = request.getNewContentState();
             HTextFlow hTextFlow = entityManager.find(HTextFlow.class,
                     request.getTransUnitId().getValue());
-
             TranslationResultImpl result = new TranslationResultImpl();
             result.similarityPercent = request.getSimilarityPercent();
             if (runValidation) {
@@ -260,7 +257,6 @@ public class TranslationServiceImpl implements TranslationService {
             result.translatedTextFlowTarget = hTextFlowTarget;
             results.add(result);
         }
-
         if (!targetStates.isEmpty()) {
             DocumentLocaleKey documentLocaleKey =
                     new DocumentLocaleKey(sampleHTextFlow.getDocument().getId(),
