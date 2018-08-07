@@ -31,8 +31,12 @@ public class LoggingExtension implements TestInstancePostProcessor {
     public void postProcessTestInstance(Object testInstance,
                                         ExtensionContext context) throws Exception {
         Logger logger = LogManager.getLogger(testInstance.getClass());
-        testInstance.getClass()
-                .getMethod("setLogger", Logger.class)
-                .invoke(testInstance, logger);
+        try {
+            testInstance.getClass()
+                    .getMethod("setLogger", Logger.class)
+                    .invoke(testInstance, logger);
+        } catch (NoSuchMethodException e) {
+            System.out.println("Unable to set logger " + this.getClass());
+        }
     }
 }
