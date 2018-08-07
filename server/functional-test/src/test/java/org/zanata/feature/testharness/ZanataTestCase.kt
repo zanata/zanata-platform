@@ -83,7 +83,9 @@ open class ZanataTestCase {
                 .appendSuffix("ms").toFormatter()
         log.info(periodFormatter.print(duration.toPeriod()))
         cleanUpWindows()
-        WebDriverFactory.INSTANCE.testExit()
+        WebDriverFactory.INSTANCE.ignoringDswid{
+            WebDriverFactory.INSTANCE.testExit()
+        }
     }
 
     // Close all windows other than the original one
