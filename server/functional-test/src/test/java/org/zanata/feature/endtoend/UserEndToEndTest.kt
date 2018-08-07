@@ -47,8 +47,10 @@ import java.io.File
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
+import org.junit.jupiter.api.extension.ExtendWith
 import org.zanata.feature.testharness.BasicAcceptanceTest
 import org.zanata.util.EmailQuery.LinkType.ACTIVATE
+import org.zanata.util.HasEmailExtension
 
 /**
  * This aim of this test is to provide a method of testing as many
@@ -58,6 +60,7 @@ import org.zanata.util.EmailQuery.LinkType.ACTIVATE
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @BasicAcceptanceTest
+@ExtendWith(HasEmailExtension::class)
 class UserEndToEndTest : ZanataTestCase() {
 
     var testFileGenerator = TestFileGenerator()

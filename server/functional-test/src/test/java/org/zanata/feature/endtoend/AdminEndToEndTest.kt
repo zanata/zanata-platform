@@ -31,8 +31,10 @@ import org.zanata.page.utility.HomePage
 import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.extension.ExtendWith
 import org.zanata.feature.testharness.BasicAcceptanceTest
 import org.zanata.page.administration.ServerConfigurationPage
+import org.zanata.util.HasEmailExtension
 
 /**
  * This aim of this test is to provide a method of testing as many
@@ -42,6 +44,7 @@ import org.zanata.page.administration.ServerConfigurationPage
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @BasicAcceptanceTest
+@ExtendWith(HasEmailExtension::class)
 class AdminEndToEndTest : ZanataTestCase() {
 
     private val ADMINUSER = "admin"
