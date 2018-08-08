@@ -423,7 +423,7 @@
                           <i class="i i--translate i__item__icon"></i>
                         </a>
                       </li>
-                      <ui:fragment rendered="#{identity.hasRole('mt-bulk')}">
+                      <ui:fragment rendered="#{versionHomeAction.isMTEnabled()}">
                         <li>
                           <a href="#" class="i__item--right" onclick="toggleMTMergeModal(); return false">
                             #{msgs['jsf.iteration.MTMerge']}
@@ -455,7 +455,7 @@
                           <i class="i i--translate i__item__icon"></i>
                         </a>
                       </li>
-                      <ui:fragment rendered="#{identity.hasRole('mt-bulk')}">
+                      <ui:fragment rendered="#{versionHomeAction.isMTEnabled()}">
                         <li title="#{msgs['jsf.iteration.NoDocumentInVersion']}">
                           <a class="i__item--right" onclick="return false"
                             disabled="true">
