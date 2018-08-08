@@ -280,7 +280,8 @@ public class MachineTranslationServiceImpl implements
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
                         documentId, overwriteFuzzy);
         // Increase progress for non-translated items
-        taskHandle.increaseProgress(doc.getTextFlows().size() - textFlowsToTranslate.size());
+        int textFlowsToSkip = doc.getTextFlows().size() - textFlowsToTranslate.size();
+        taskHandle.increaseProgress(textFlowsToSkip);
         if (textFlowsToTranslate.isEmpty()) {
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
             return null;
@@ -291,12 +292,12 @@ public class MachineTranslationServiceImpl implements
             int batchEnd = Math.min(
                     startBatch + REQUEST_BATCH_SIZE, textFlowsToTranslate.size());
             log.debug("[PERF] Starting batch {} - {}", startBatch, batchEnd);
-            List<HTextFlow> next =
+            List<HTextFlow> textFlowBatch =
                     textFlowsToTranslate.subList(startBatch, batchEnd);
             MTDocument mtDocument = textFlowsToMTDoc
                     .fromTextFlows(projectSlug, versionSlug,
                             doc.getDocId(), doc.getSourceLocaleId(),
-                            next,
+                            textFlowBatch,
                             TextFlowsToMTDoc::extractPluralIfPresent,
                             backendId);
 
@@ -306,11 +307,11 @@ public class MachineTranslationServiceImpl implements
                     targetLocale.getLocaleId());
             log.debug("[PERF] Received response [{} contents] ({}ms)",
                     result.getContents().size(), mtProviderStopwatch);
-            saveTranslationsInBatches(next, result, targetLocale, saveState);
+            saveTranslationsInBatches(textFlowBatch, result, targetLocale, saveState);
             // TODO we only return the backendId from the final batch
             backendIdConfirmation = result.getBackendId();
             startBatch = batchEnd;
-            taskHandle.increaseProgress(next.size());
+            taskHandle.increaseProgress(textFlowBatch.size());
         }
         if (backendIdConfirmation == null) {
             log.warn("Error getting confirmation backend ID for {}", doc.getDocId());
