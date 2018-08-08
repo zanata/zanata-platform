@@ -25,8 +25,6 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.UserTriggeredTaskHandle;
 import com.google.common.base.MoreObjects;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * @author Patrick Huang
@@ -37,7 +35,7 @@ public class MachineTranslationPrefillTaskHandle extends AsyncTaskHandle<Void>
     private static final long serialVersionUID = 1704257523049053603L;
     private String triggeredBy;
     private String targetVersion;
-    private double percentage;
+    private long totalUnits;
     private long actualProgress;
 
     public MachineTranslationPrefillTaskHandle(AsyncTaskKey key) {
@@ -69,19 +67,18 @@ public class MachineTranslationPrefillTaskHandle extends AsyncTaskHandle<Void>
     }
 
     /**
-     * Set the percentage 'step' for more fine grained representation
+     * Set the total number of units for more fine grained representation
      * @param units
      */
-    public void setUnits(long units) {
-        this.percentage = units == 0 ? 0 :
-                new BigDecimal((float) 100 / (float) units)
-                        .setScale(5, RoundingMode.CEILING).doubleValue();
+    public void setTotalUnits(long units) {
+        this.totalUnits = units;
     }
 
     @Override
     public long increaseProgress(long units) {
         actualProgress += units;
-        setCurrentProgress(Math.min(Math.round(actualProgress * percentage), 100));
+        int percentage = (int) (((float) actualProgress / (float) totalUnits) * 100);
+        setCurrentProgress(Math.min(percentage, 100));
         return getCurrentProgress();
     }
 

@@ -211,7 +211,7 @@ public class MachineTranslationServiceImpl implements
             return AsyncTaskResult.completed();
         }
         // Set taskHandle to count the textflows of all documents
-        taskHandle.setUnits(
+        taskHandle.setTotalUnits(
                 documents.values().stream()
                         .mapToLong(d -> d.getTextFlows().size()).sum());
         HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
