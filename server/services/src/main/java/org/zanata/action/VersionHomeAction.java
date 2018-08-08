@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -48,6 +49,7 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.config.MTServiceURL;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.exception.AuthorizationException;
@@ -163,6 +165,10 @@ public class VersionHomeAction extends AbstractSortAction
     private WebhookServiceImpl webhookService;
     @Inject
     private WebHookDAO webHookDAO;
+    @Inject
+    @MTServiceURL
+    private URI mtServiceURL;
+
     private List<HLocale> supportedLocale;
     private List<HDocument> documents;
     private Map<LocaleId, WordStatistic> localeStatisticMap;
@@ -1401,5 +1407,9 @@ public class VersionHomeAction extends AbstractSortAction
 
     public AbstractListFilter<HLocale> getDocumentsTabLanguageFilter() {
         return this.documentsTabLanguageFilter;
+    }
+
+    public boolean isMTEnabled() {
+        return mtServiceURL != null && identity.hasRole("mt-bulk");
     }
 }
