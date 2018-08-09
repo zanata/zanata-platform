@@ -211,7 +211,6 @@ public class MachineTranslationServiceImpl implements
         }
         taskHandle.setMaxProgress(documents.size());
         HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
-
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
         String projectSlug = version.getProject().getSlug();

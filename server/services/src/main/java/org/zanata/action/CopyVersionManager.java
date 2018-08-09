@@ -11,6 +11,7 @@ import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.CopyVersionTaskHandle;
+import org.zanata.i18n.Messages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 
@@ -35,6 +36,8 @@ public class CopyVersionManager implements Serializable {
     private CopyVersionService copyVersionServiceImpl;
     @Inject
     private ZanataIdentity identity;
+    @Inject
+    private Messages messages;
 
     /**
      * Copy existing version to new version
@@ -50,6 +53,9 @@ public class CopyVersionManager implements Serializable {
             String newVersionSlug) {
         AsyncTaskKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
         CopyVersionTaskHandle handle = new CopyVersionTaskHandle();
+        handle.setTaskName(
+                messages.format("jsf.tasks.copyVersion", projectSlug,
+                        versionSlug, newVersionSlug));
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyVersionServiceImpl.startCopyVersion(projectSlug, versionSlug,
                 newVersionSlug, handle);

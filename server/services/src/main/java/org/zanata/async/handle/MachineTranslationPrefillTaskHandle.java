@@ -20,12 +20,10 @@
  */
 package org.zanata.async.handle;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.UserTriggeredTaskHandle;
-import org.zanata.common.LocaleId;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 import com.google.common.base.MoreObjects;
 
@@ -65,5 +63,10 @@ public class MachineTranslationPrefillTaskHandle extends AsyncTaskHandle<Void>
                 .add("maxProgress", getMaxProgress())
                 .add("triggeredBy", triggeredBy)
                 .toString();
+    }
+
+    @Override
+    public String getTaskName() {
+        return ObjectUtils.firstNonNull(this.taskName, "Unnamed MT Fill");
     }
 }

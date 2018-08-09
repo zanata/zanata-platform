@@ -20,6 +20,7 @@
  */
 package org.zanata.async.handle;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.UserTriggeredTaskHandle;
 import org.zanata.common.LocaleId;
@@ -62,5 +63,10 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> implements
                 .add("maxProgress", getMaxProgress())
                 .add("triggeredBy", triggeredBy)
                 .toString();
+    }
+
+    @Override
+    public String getTaskName() {
+        return ObjectUtils.firstNonNull(this.taskName, "Unnamed TM Merge");
     }
 }

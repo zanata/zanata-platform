@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <div class="panel">
+    <div class="panel__header">
+      <h2 class="panel__heading">#{msgs['jsf.dashboard.tasks.owned.label']}</h2>
+    </div>
+
+    <h:form id="process_form" styleClass="l--push-bottom-0">
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+                    rendered="#{empty dashboardAction.getUserTasks()}">
+        <p class="txt--meta">#{msgs['jsf.dashboard.tasks.empty']}</p>
+      </h:panelGroup>
+
+      <ui:fragment rendered="#{not empty dashboardAction.getUserTasks()}">
+        <ul class="list--stats">
+          <ui:repeat value="#{dashboardAction.getUserTasks()}" var="handle">
+            <li title="#{handle.done ? msgs['jsf.processmanager.status.Finished'] : msgs['jsf.processmanager.status.Running']}">
+              <div class="list__item__content">
+                <div class="list__item__info">
+                  <span class="zeta #{handle.done ? 'txt--understated' : 'txt--highlight'}">
+                    #{handle.getTaskName()}
+                  </span>
+                  <span class="list__item__meta txt--warning">
+                    <ui:fragment rendered="#{handle.done}">
+                      #{msgs['jsf.processmanager.status.Finished']}
+                    </ui:fragment>
+                    <ui:fragment rendered="#{not handle.done}">
+                      #{msgs.format('jsf.processmanager.progress', handle.currentProgress, handle.maxProgress)}
+                    </ui:fragment>
+                  </span>
+                </div>
+                <div class="list__item__stats">
+                  <ui:fragment rendered="#{not handle.done}">
+                    <zanata:loader type="loader--small" layout="inline"/>
+                    <a4j:commandButton action="#{dashboardAction.cancelTask(handle)}"
+                                       value="#{msgs['jsf.Cancel']}"
+                                       rendered="#{not handle.done}"
+                                       styleClass="button button--danger l--push-left-half l--push-bottom-quarter"/>
+
+                  </ui:fragment>
+
+                  <h:panelGroup layout="span" styleClass="txt--understated" rendered="#{handle.done}">
+                    <span class="txt--hero">#{handle.executingTime}</span>
+                    <span class="stats__unit txt--lowercase">
+                        #{msgs['jsf.processmanager.miliseconds']}
+                    </span>
+                  </h:panelGroup>
+                </div>
+              </div>
+            </li>
+          </ui:repeat>
+        </ul>
+      </ui:fragment>
+    </h:form>
+  </div>
+</ui:composition>

@@ -35,6 +35,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.zanata.security.ZanataIdentity;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -100,6 +101,16 @@ public class AsyncTaskHandleManager implements Serializable {
         Collection<AsyncTaskHandle<?>> handles = Lists.newArrayList();
         handles.addAll(handlesByKey.values());
         handles.addAll(finishedTasks.asMap().values());
+        return handles;
+    }
+
+    public Collection<AsyncTaskHandle<?>> getTasksFor(ZanataIdentity identity) {
+        Collection<AsyncTaskHandle<?>> handles = Lists.newArrayList();
+        for (AsyncTaskHandle handle : handlesByKey.values()) {
+            if (AsyncTaskHandle.triggeredBySameUser(handle, identity)) {
+                handles.add(handle);
+            }
+        }
         return handles;
     }
 

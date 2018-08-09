@@ -33,6 +33,7 @@ import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.CopyTransTaskHandle;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
@@ -60,6 +61,8 @@ public class CopyTransManager implements Serializable {
     private CopyTransService copyTransServiceImpl;
     @Inject
     private ZanataIdentity identity;
+    @Inject
+    private Messages messages;
 
     public boolean isCopyTransRunning(@Nonnull Object target) {
         AsyncTaskKey key;
@@ -98,6 +101,8 @@ public class CopyTransManager implements Serializable {
         }
         AsyncTaskKey key = CopyTransProcessKey.getKey(document);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
+        handle.setTaskName(messages.format("jsf.tasks.copyTranslationsDoc",
+                document.getDocId()));
         handle.setTriggeredBy(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForDocument(document, options,
@@ -118,6 +123,9 @@ public class CopyTransManager implements Serializable {
         AsyncTaskKey key = CopyTransProcessKey.getKey(iteration);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
         handle.setTriggeredBy(identity.getAccountUsername());
+        handle.setTaskName(
+                messages.format("jsf.tasks.copyTranslationsVersion",
+                iteration.getProject().getSlug(), iteration.getSlug()));
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForIteration(iteration, options,
                 handle);

@@ -30,6 +30,7 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MachineTranslationPrefillTaskHandle;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.MachineTranslationPrefill;
@@ -54,6 +55,8 @@ public class MachineTranslationsManager {
     private HAccount authenticatedAccount;
     @Inject
     private MachineTranslationService machineTranslationService;
+    @Inject
+    private Messages messages;
 
     public AsyncTaskHandle<Void> prefillVersionWithMachineTranslations(String projectSlug, String versionSlug, HProjectIteration projectIteration, MachineTranslationPrefill prefillRequest) {
         ProjectIterationId projectIterationId =
@@ -70,7 +73,9 @@ public class MachineTranslationsManager {
 
         if (AsyncTaskHandle.taskIsNotRunning(taskHandle)) {
             taskHandle = new MachineTranslationPrefillTaskHandle(taskKey);
-
+            taskHandle.setTaskName(
+                    messages.format("jsf.tasks.machineTranslation", projectSlug,
+                            versionSlug, prefillRequest.getToLocale().getId()));
             taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
             taskHandle.setTargetVersion(projectIterationId.toString());
             asyncTaskHandleManager.registerTaskHandle(taskHandle, taskKey);
