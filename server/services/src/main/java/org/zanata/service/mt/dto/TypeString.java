@@ -6,7 +6,7 @@ package org.zanata.service.mt.dto;
  */
 public class TypeString {
     private String value;
-    private String type = "text/html";
+    private String type = "text/xml";
     private String metadata = "";
 
     public TypeString(String value) {
