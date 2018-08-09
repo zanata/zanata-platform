@@ -674,8 +674,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public boolean isPoProject() {
-        HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        HProjectIteration projectIteration = getVersion();
         ProjectType type = projectIteration.getProjectType();
         if (type == null) {
             type = projectIteration.getProject().getDefaultProjectType();
@@ -701,9 +700,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public boolean isKnownProjectType() {
-        ProjectType type = projectIterationDAO
-                .getBySlug(projectSlug, versionSlug).getProjectType();
-        return type != null;
+        return getVersion().getProjectType() != null;
     }
 
     public boolean isFileUploadAllowed(HLocale hLocale) {
@@ -769,6 +766,9 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public boolean hasOriginal(String docPath, String docName) {
+        if (!isKnownProjectType() || getVersion().getProjectType() != ProjectType.File) {
+            return false;
+        }
         GlobalDocumentId id = new GlobalDocumentId(projectSlug, versionSlug,
                 docPath + docName);
         return filePersistService.hasPersistedDocument(id);
