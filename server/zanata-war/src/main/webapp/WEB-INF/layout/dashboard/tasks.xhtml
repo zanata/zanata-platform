@@ -3,7 +3,11 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
-
+  <a4j:region>
+    <h:form>
+      <a4j:poll interval="2000" render="process_form"/>
+    </h:form>
+  </a4j:region>
   <div class="panel">
     <div class="panel__header">
       <h2 class="panel__heading">#{msgs['jsf.dashboard.tasks.owned.label']}</h2>
