@@ -1805,17 +1805,6 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
-    <repository>
-      <id>okapi-cloudbees-release</id>
-      <name>okapi-cloudbees-release</name>
-      <url>http://repository-okapi.forge.cloudbees.com/release/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
     <!-- Needed for GWT snapshots -->
     <repository>
       <id>google-maven-snapshot-repository</id>
@@ -2067,7 +2056,6 @@
             <requireNoRepositories>
               <allowedRepositories combine.children="append">
                 <allowedRepository>jboss-public-repository-group</allowedRepository>
-                <allowedRepository>okapi-cloudbees-release</allowedRepository>
                 <allowedRepository>google-maven-snapshot-repository</allowedRepository>
                 <allowedRepository>jcenter</allowedRepository>
               </allowedRepositories>
