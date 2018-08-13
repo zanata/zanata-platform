@@ -21,7 +21,6 @@ These will now use an object path for the ID, and updating an existing document 
 Users can utilize the Copy Translations or TM Merge features to restore them.
 
 ##### Changes
- * [ZNTA-2694](https://zanata.atlassian.net/browse/ZNTA-2694) - Upgrade Okapi to M35
  * [ZNTA-2692](https://zanata.atlassian.net/browse/ZNTA-2692) - Create Webpack Draft Build
  * [ZNTA-2679](https://zanata.atlassian.net/browse/ZNTA-2679) - React Editor error status icon, disabled editor button styles
  * [ZNTA-2663](https://zanata.atlassian.net/browse/ZNTA-2663) - editor TM suggestions heading colour
