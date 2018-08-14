@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,9 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.VersionGroupDAO;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
@@ -88,7 +92,8 @@ public class DashboardAction implements Serializable {
     private GroupFilter groupList;
     @Inject
     private IdentityManager identityManager;
-
+    @Inject
+    private AsyncTaskHandleManager asyncTaskHandleManager;
 
     public String getUserImageUrl() {
         return gravatarServiceImpl
@@ -257,5 +262,15 @@ public class DashboardAction implements Serializable {
 
     public GroupFilter getGroupList() {
         return this.groupList;
+    }
+
+    public Collection<AsyncTaskHandle<?>> getUserTasks() {
+        return asyncTaskHandleManager.getTasksFor(identity);
+    }
+
+    public void cancelTask(AsyncTaskHandle handle) {
+        if (handle.canCancel(identity)) {
+            handle.cancel(true);
+        }
     }
 }

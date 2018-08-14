@@ -30,9 +30,9 @@ import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zanata.security.ZanataIdentity;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -57,6 +57,7 @@ public class AsyncTaskHandle<V> implements Serializable {
     private String cancelledBy;
     private long cancelledTime;
     private String keyId;
+    protected String taskName;
 
     public static boolean taskIsNotRunning(
             @Nullable AsyncTaskHandle<?> handleByKey) {
@@ -137,7 +138,7 @@ public class AsyncTaskHandle<V> implements Serializable {
                 || triggeredBySameUser(taskHandle, identity));
     }
 
-    private static boolean triggeredBySameUser(AsyncTaskHandle<?> taskHandle,
+    public static boolean triggeredBySameUser(AsyncTaskHandle<?> taskHandle,
             ZanataIdentity identity) {
         return taskHandle instanceof UserTriggeredTaskHandle && Objects.equals(
                 ((UserTriggeredTaskHandle) taskHandle).getTriggeredBy(),
@@ -251,5 +252,17 @@ public class AsyncTaskHandle<V> implements Serializable {
 
     public void setKeyId(String keyId) {
         this.keyId = keyId;
+    }
+
+    public void setTaskName(String name) {
+        this.taskName = name;
+    }
+
+    /**
+     * Provide a user visible name for the task
+     * @return task name, or generic class name response if not set.
+     */
+    public String getTaskName() {
+        return ObjectUtils.firstNonNull(this.taskName, this.getClass().getName());
     }
 }

@@ -20,6 +20,7 @@
  */
 package org.zanata.async.handle;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.UserTriggeredTaskHandle;
 
@@ -50,5 +51,10 @@ public class CopyTransTaskHandle extends AsyncTaskHandle<Void> implements
 
     public boolean isPrepared() {
         return this.prepared;
+    }
+
+    @Override
+    public String getTaskName() {
+        return ObjectUtils.firstNonNull(this.taskName, "Unnamed Copy Translations");
     }
 }

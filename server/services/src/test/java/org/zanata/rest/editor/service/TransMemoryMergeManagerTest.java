@@ -2,6 +2,7 @@ package org.zanata.rest.editor.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -18,6 +19,7 @@ import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.i18n.Messages;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.rest.editor.service.TransMemoryMergeManager.TMMergeForDocTaskKey;
@@ -30,6 +32,7 @@ import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.test.GWTTestData;
+
 
 public class TransMemoryMergeManagerTest {
 
@@ -49,6 +52,7 @@ public class TransMemoryMergeManagerTest {
     private ArgumentCaptor<AsyncTaskKey> taskKeyCaptor;
     private TransMemoryMergeCancelRequest cancelRequest;
     @Mock private ZanataIdentity identity;
+    @Mock private Messages messages;
 
     @Before
     public void setUp() {
@@ -56,7 +60,8 @@ public class TransMemoryMergeManagerTest {
 
         manager = new TransMemoryMergeManager(asyncTaskHandleManager,
                 transMemoryMergeService, identity);
-
+        manager.setMessages(messages);
+        when(messages.format(any(), any())).thenReturn("Test TMMerge");
         WorkspaceId workspaceId = GWTTestData
                 .workspaceId(LocaleId.DE, "project", "version",
                         ProjectType.Gettext);
@@ -144,6 +149,8 @@ public class TransMemoryMergeManagerTest {
         TransMemoryMergeTaskHandle handle = docTMMergeHandleCaptor.getValue();
         assertThat(handle.getTriggeredBy())
                 .isEqualTo(identity.getAccountUsername());
+        handle.setTaskName("Test TMMerge");
+        assertThat(handle.getTaskName()).isEqualTo("Test TMMerge");
         Mockito.verify(transMemoryMergeService).executeMergeAsync(request,
                 handle);
     }
