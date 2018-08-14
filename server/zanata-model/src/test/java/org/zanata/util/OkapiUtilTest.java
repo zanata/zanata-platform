@@ -12,7 +12,7 @@ public class OkapiUtilTest {
         "Graphic Design",
         "the object is passed up to the UI tier",
 
-        // 4
+        // 4 (tokens in current line) [0 (total)]
         "// in the first session\n" +
         // 6 [10] (a.b is one token)
         "Cat cat = (Cat) firstSession.load(Cat.class, catID);\n\n" +
@@ -37,13 +37,13 @@ public class OkapiUtilTest {
     // These counts represent the expected word counts for the strings listed
     // above.
     private long[] count = {
-            // Not including tags since M36
+            // Not including tags
             2,
             // Simple text
             2, 9,
             // Non-null is 1 word, firstSession.load is 1
             49,
-            // Not including tags since M36
+            // Not including tags
             3,
             // https and cdn.redhat.com
             2,
@@ -56,7 +56,7 @@ public class OkapiUtilTest {
         int i = 0;
         for (String s : strings) {
             long expected = count[i++];
-            System.out.println(s + ": Expecting " + expected + " words");
+            // System.out.println(s + ": Expecting " + expected + " words");
             Assert.assertEquals(expected, countWords(s, "en-US"));
         }
     }
