@@ -51,6 +51,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.config.MTServiceToken;
 import org.zanata.config.MTServiceURL;
 import org.zanata.config.MTServiceUser;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -101,6 +102,7 @@ public class MachineTranslationServiceImpl implements
     private TextFlowsToMTDoc textFlowsToMTDoc;
     private TextFlowDAO textFlowDAO;
     private TextFlowTargetDAO textFlowTargetDAO;
+    private ProjectIterationDAO projectIterationDAO;
     private LocaleService localeService;
     private EntityManager entityManager;
     private TransactionUtil transactionUtil;
@@ -119,6 +121,7 @@ public class MachineTranslationServiceImpl implements
             TextFlowsToMTDoc textFlowsToMTDoc,
             TextFlowDAO textFlowDAO,
             TextFlowTargetDAO textFlowTargetDAO,
+            ProjectIterationDAO projectIterationDAO,
             LocaleService localeService,
             EntityManager entityManager,
             TransactionUtil transactionUtil,
@@ -137,6 +140,7 @@ public class MachineTranslationServiceImpl implements
         this.translationService = translationService;
         this.versionStateCache = versionStateCache;
         this.attributionService = attributionService;
+        this.projectIterationDAO = projectIterationDAO;
     }
 
     @Override
@@ -211,9 +215,8 @@ public class MachineTranslationServiceImpl implements
             return AsyncTaskResult.completed();
         }
         // Set taskHandle to count the textflows of all documents
-        taskHandle.setTotalUnits(
-                documents.values().stream()
-                        .mapToLong(d -> d.getTextFlows().size()).sum());
+        taskHandle.setTotalUnits(projectIterationDAO
+                        .getTotalMessageCountForIteration(versionId));
         HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
