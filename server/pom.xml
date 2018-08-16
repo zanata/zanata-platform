@@ -2397,7 +2397,7 @@
         <cargo.container>wildfly10x</cargo.container>
         <!-- used in the wildfly8 profile in zanata-war -->
         <!-- This is the server version -->
-        <wildfly.version>13.0.0.Final</wildfly.version>
+        <wildfly.version>14.0.0.Beta2</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
         <!-- https leads to errors like
