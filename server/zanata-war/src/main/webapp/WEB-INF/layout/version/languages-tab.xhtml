@@ -395,7 +395,7 @@
                           </h:outputLink>
                         </li>
                       </ui:fragment>
-                      <ui:fragment rendered="#{versionHomeAction.isUserAllowedToUploadTranslationFile(selectedLocale)}">
+                      <ui:fragment rendered="#{versionHomeAction.isUserAllowedToUploadTranslationFile(versionHomeAction.selectedLocale)}">
                         <li>
                           <a href="#" class="i__item--right"
                              data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
