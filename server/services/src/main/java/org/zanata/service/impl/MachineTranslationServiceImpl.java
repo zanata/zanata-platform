@@ -215,7 +215,7 @@ public class MachineTranslationServiceImpl implements
             return AsyncTaskResult.completed();
         }
         // Set taskHandle to count the textflows of all documents
-        taskHandle.setTotalUnits(projectIterationDAO
+        taskHandle.setMaxProgress(projectIterationDAO
                         .getTotalMessageCountForIteration(versionId));
         HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
         Stopwatch overallStopwatch = Stopwatch.createStarted();
@@ -282,7 +282,9 @@ public class MachineTranslationServiceImpl implements
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
                         documentId, overwriteFuzzy);
         // Increase progress for non-translated items
-        int textFlowsToSkip = doc.getTextFlows().size() - textFlowsToTranslate.size();
+        int textFlowsToSkip = entityManager
+                .find(HDocument.class, doc.getId()).getTextFlows().size()
+                - textFlowsToTranslate.size();
         taskHandle.increaseProgress(textFlowsToSkip);
         if (textFlowsToTranslate.isEmpty()) {
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());

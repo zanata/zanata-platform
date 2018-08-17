@@ -32,23 +32,11 @@ import org.assertj.core.api.Assertions.assertThat
 class MachineTranslationPrefillTaskHandleTest {
 
     @Test
-    fun testProgress() {
-        val handle = MachineTranslationPrefillTaskHandle { "12345" }
-        handle.setTotalUnits(200)
-        assertThat(handle.increaseProgress(50)).isEqualTo(25)
-        assertThat(handle.increaseProgress(1)).isEqualTo(25)
-        assertThat(handle.increaseProgress(9)).isEqualTo(30)
-        assertThat(handle.increaseProgress(140)).isEqualTo(100)
-        assertThat(handle.increaseProgress(50)).isEqualTo(100)
-    }
-
-    @Test
     fun testToString() {
         val handle = MachineTranslationPrefillTaskHandle { "12345" }
         handle.triggeredBy = "Leeloo"
         handle.maxProgress = 100
         handle.setTargetVersion("zanata-server-master")
-        handle.setTotalUnits(100)
         handle.increaseProgress(50)
         assertThat(handle.triggeredBy).isEqualTo("Leeloo")
         assertThat(handle.toString()).isEqualTo("""
