@@ -1,8 +1,8 @@
 package org.zanata.security
 
-import com.nhaarman.mockito_kotlin.given
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.verify
 import org.jglue.cdiunit.InRequestScope
 import org.junit.Test
 import org.junit.runner.RunWith

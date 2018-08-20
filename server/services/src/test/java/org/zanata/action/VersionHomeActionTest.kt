@@ -20,6 +20,7 @@
  */
 package org.zanata.action
 
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.jglue.cdiunit.InRequestScope
 import org.jglue.cdiunit.InSessionScope
@@ -27,7 +28,6 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.zanata.config.MTServiceURL
 import org.zanata.dao.DocumentDAO
 import org.zanata.dao.LocaleDAO
@@ -123,7 +123,7 @@ class VersionHomeActionTest {
         }
         action.projectSlug = "myproject"
         action.versionSlug = "myversion"
-        `when`<HProjectIteration>(projectIterationDAO
+        whenever(projectIterationDAO
                 .getBySlug("myproject", "myversion"))
                 .thenReturn(hProjectIteration)
         assertThat(action.hasDocuments()).isTrue()
@@ -140,7 +140,7 @@ class VersionHomeActionTest {
         }
         action.projectSlug = "myproject"
         action.versionSlug = "myversion"
-        `when`<HProjectIteration>(projectIterationDAO
+        whenever(projectIterationDAO
                 .getBySlug("myproject", "myversion"))
                 .thenReturn(hProjectIteration)
         assertThat(action.hasDocuments()).isFalse()

@@ -1,6 +1,6 @@
 package org.zanata.dao
 
-import com.nhaarman.mockito_kotlin.given
+import com.nhaarman.mockitokotlin2.given
 import org.assertj.core.api.Assertions
 import org.hibernate.Session
 import org.jglue.cdiunit.InRequestScope
