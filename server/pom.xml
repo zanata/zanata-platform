@@ -1012,9 +1012,9 @@
       </dependency>
 
       <dependency>
-        <groupId>io.javaslang</groupId>
-        <artifactId>javaslang</artifactId>
-        <version>2.0.6</version>
+        <groupId>com.aol.simplereact</groupId>
+        <artifactId>cyclops-react</artifactId>
+        <version>2.1.1</version>
       </dependency>
 
       <dependency>

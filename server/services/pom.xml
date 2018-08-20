@@ -305,8 +305,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang</artifactId>
+      <groupId>com.aol.simplereact</groupId>
+      <artifactId>cyclops-react</artifactId>
     </dependency>
 
     <dependency>

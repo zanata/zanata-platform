@@ -15,9 +15,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import cyclops.collections.immutable.PersistentMapX;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import javaslang.collection.HashMap;
-import javaslang.collection.Map;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -26,8 +25,12 @@ import org.apache.velocity.runtime.log.CommonsLogLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.pcollections.Empty;
+import org.pcollections.PMap;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.i18n.Messages;
+import com.aol.cyclops2.data.collections.extensions.persistent.PMapXImpl;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import org.zanata.i18n.MessagesFactory;
@@ -119,12 +122,14 @@ public class EmailBuilder implements Serializable {
         msg.setSubject(strategy.getSubject(msgs), UTF_8.name());
         // optional future extension
         // strategy.setMailHeaders(msg, msgs);
-        Map<String, Object> genericContext =
-                HashMap.of("msgs", msgs, "receivedReasons", receivedReasons,
-                        "serverPath", emailContext.getServerPath());
+        PersistentMapX<String, Object> genericContext = PersistentMapX
+                .<String, Object>empty()
+                .plus("msgs", msgs)
+                .plus("receivedReasons", receivedReasons)
+                .plus("serverPath", emailContext.getServerPath());
         // the Map needs to be mutable for "foreach" to work
         VelocityContext context = new VelocityContext(
-                strategy.makeContext(genericContext, toAddresses).toJavaMap());
+                strategy.makeContext(genericContext, toAddresses).toMap(it -> it));
         Template template =
                 velocityEngine.getTemplate(strategy.getTemplateResourceName());
         StringWriter writer = new StringWriter();

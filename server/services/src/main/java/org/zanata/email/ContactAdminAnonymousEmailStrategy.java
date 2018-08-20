@@ -21,7 +21,8 @@
 package org.zanata.email;
 
 import javax.mail.internet.InternetAddress;
-import javaslang.collection.Map;
+
+import cyclops.collections.immutable.PersistentMapX;
 import org.zanata.i18n.Messages;
 import com.google.common.base.Optional;
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
@@ -48,12 +49,12 @@ public class ContactAdminAnonymousEmailStrategy extends VelocityEmailStrategy {
     }
 
     @Override
-    public Map<String, Object> makeContext(Map<String, Object> genericContext,
+    public PersistentMapX<String, Object> makeContext(PersistentMapX<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context =
+        PersistentMapX<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.put("ipAddress", ipAddress)
-                .put("safeHtmlMessage", textToSafeHtml(userMessage));
+        return context.plus("ipAddress", ipAddress)
+                .plus("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "ipAddress", "userSubject",

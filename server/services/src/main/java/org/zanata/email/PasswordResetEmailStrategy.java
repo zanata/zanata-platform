@@ -20,9 +20,10 @@
  */
 package org.zanata.email;
 
-import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import javax.mail.internet.InternetAddress;
+
+import cyclops.collections.immutable.PersistentMapX;
 
 /**
  * @author Sean Flanigan
@@ -42,11 +43,11 @@ public class PasswordResetEmailStrategy extends VelocityEmailStrategy {
     }
 
     @Override
-    public Map<String, Object> makeContext(Map<String, Object> genericContext,
+    public PersistentMapX<String, Object> makeContext(PersistentMapX<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context =
+        PersistentMapX<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.put("activationKey", key).put("toName",
+        return context.plus("activationKey", key).plus("toName",
                 toAddresses[0].getPersonal());
     }
 

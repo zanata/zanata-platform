@@ -1,8 +1,9 @@
 package org.zanata.email;
 
-import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import javax.mail.internet.InternetAddress;
+
+import cyclops.collections.immutable.PersistentMapX;
 
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
@@ -28,14 +29,14 @@ public class DeclineLanguageRequestEmailStrategy extends VelocityEmailStrategy {
     }
 
     @Override
-    public Map<String, Object> makeContext(Map<String, Object> genericContext,
+    public PersistentMapX<String, Object> makeContext(PersistentMapX<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context =
+        PersistentMapX<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.put("toName", toName).put("roles", roles)
-                .put("localeDisplayName", localeDisplayName)
-                .put("contactCoordinatorLink", contactCoordinatorLink)
-                .put("safeHtmlMessage", textToSafeHtml(userMessage));
+        return context.plus("toName", toName).plus("roles", roles)
+                .plus("localeDisplayName", localeDisplayName)
+                .plus("contactCoordinatorLink", contactCoordinatorLink)
+                .plus("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "toName", "roles",

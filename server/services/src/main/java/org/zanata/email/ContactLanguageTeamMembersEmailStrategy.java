@@ -20,11 +20,11 @@
  */
 package org.zanata.email;
 
-import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
-import org.zanata.util.HtmlUtil;
 
 import javax.mail.internet.InternetAddress;
+
+import cyclops.collections.immutable.PersistentMapX;
 
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
@@ -52,13 +52,14 @@ public class ContactLanguageTeamMembersEmailStrategy extends
     }
 
     @Override
-    public Map<String, Object> makeContext(Map<String, Object> genericContext,
+    public PersistentMapX<String, Object> makeContext(
+            PersistentMapX<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context =
+        PersistentMapX<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.put("contactCoordinatorLink", contactCoordinatorLink)
-                .put("localeNativeName", localeNativeName)
-                .put("safeHtmlMessage", textToSafeHtml(userMessage));
+        return context.plus("contactCoordinatorLink", contactCoordinatorLink)
+                .plus("localeNativeName", localeNativeName)
+                .plus("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "userSubject",

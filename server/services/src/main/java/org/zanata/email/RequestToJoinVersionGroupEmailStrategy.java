@@ -21,11 +21,13 @@
 package org.zanata.email;
 
 import com.google.common.base.Optional;
-import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import javax.mail.internet.InternetAddress;
 import java.util.Collection;
+
+import cyclops.collections.immutable.PersistentMapX;
+
 import static org.zanata.email.Addresses.getReplyTo;
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
@@ -59,15 +61,15 @@ public class RequestToJoinVersionGroupEmailStrategy extends
     }
 
     @Override
-    public Map<String, Object> makeContext(Map<String, Object> genericContext,
+    public PersistentMapX<String, Object> makeContext(PersistentMapX<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context =
+        PersistentMapX<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.put("fromLoginName", fromLoginName)
-                .put("fromName", fromName).put("replyEmail", replyEmail)
-                .put("groupName", groupName).put("versionGroupSlug", groupSlug)
-                .put("projectIterationIds", projectIterationIds)
-                .put("safeHtmlMessage", textToSafeHtml(userMessage));
+        return context.plus("fromLoginName", fromLoginName)
+                .plus("fromName", fromName).plus("replyEmail", replyEmail)
+                .plus("groupName", groupName).plus("versionGroupSlug", groupSlug)
+                .plus("projectIterationIds", projectIterationIds)
+                .plus("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
