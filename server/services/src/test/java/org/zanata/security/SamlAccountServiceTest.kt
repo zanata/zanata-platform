@@ -1,7 +1,7 @@
 package org.zanata.security
 
-import com.nhaarman.mockito_kotlin.given
-import com.nhaarman.mockito_kotlin.verifyZeroInteractions
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
