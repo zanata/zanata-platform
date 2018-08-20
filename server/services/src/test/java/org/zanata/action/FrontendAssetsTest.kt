@@ -1,6 +1,6 @@
 package org.zanata.action
 
-import com.nhaarman.mockito_kotlin.given
+import com.nhaarman.mockitokotlin2.given
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.After
