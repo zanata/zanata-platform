@@ -1,8 +1,15 @@
+## 4.6.2
+##### Bug Fixes
+ * [ZNTA-2751](https://zanata.atlassian.net/browse/ZNTA-2751) - Cannot upload .po translation via documents list
+ * [ZNTA-2745](https://zanata.atlassian.net/browse/ZNTA-2745) - Lazy load fail on documents.isEmpty check
+
+-----------------------
+
 ## 4.6.1
 ##### Bug Fixes
  * [ZNTA-2744](https://zanata.atlassian.net/browse/ZNTA-2744) - Download Translated (raw) showing for some gettext files
  * [ZNTA-2743](https://zanata.atlassian.net/browse/ZNTA-2743) - MT merge option should be hidden if no url is being configured
- * [ZNTA-2740](https://zanata.atlassian.net/browse/ZNTA-2740) - Exception while accessing roles 
+ * [ZNTA-2740](https://zanata.atlassian.net/browse/ZNTA-2740) - Exception while accessing roles
  * [ZNTA-2735](https://zanata.atlassian.net/browse/ZNTA-2735) - Handle XML tags (eg 'link') in MT Merge
  * [ZNTA-2731](https://zanata.atlassian.net/browse/ZNTA-2731) - Handle TM and MT merge modal when there is no document in the version.
  * [ZNTA-2730](https://zanata.atlassian.net/browse/ZNTA-2730) - Progressively degrading performance saving MT to database
