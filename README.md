@@ -90,7 +90,7 @@ running functional tests from an IDE.
 
 #### Development using docker (experimental)
 
-For a quick Zanata development environment with Docker, please visit the [docker README](docker/README.md).
+For a quick Zanata development environment with Docker, please visit the [docker README](server/docker/README.md).
 
 ### Commits
 
