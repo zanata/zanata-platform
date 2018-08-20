@@ -774,6 +774,10 @@ public class VersionHomeAction extends AbstractSortAction
         return filePersistService.hasPersistedDocument(id);
     }
 
+    public boolean hasDocuments() {
+        return !getVersion().getDocuments().isEmpty();
+    }
+
     private void showUploadSuccessMessage() {
         setMessage(FacesMessage.SEVERITY_INFO,
                 "Document " + sourceFileUpload.getFileName() + " uploaded.");

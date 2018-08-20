@@ -398,7 +398,7 @@
                 <ui:fragment rendered="#{not versionHomeAction.isCopyActionsRunning()}">
                   <ui:fragment
                     rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
-                    <ui:fragment rendered="#{!versionHomeAction.version.documents.isEmpty()}">
+                    <ui:fragment rendered="#{versionHomeAction.hasDocuments()}">
                       <li>
                         <a href="javascript:void(0)" class="i__item--right"
                             data-toggle="modal"
@@ -432,7 +432,7 @@
                         </li>
                       </ui:fragment>
                     </ui:fragment>
-                    <ui:fragment rendered="#{versionHomeAction.version.documents.isEmpty()}">
+                    <ui:fragment rendered="#{!versionHomeAction.hasDocuments()}">
                       <li title="#{msgs['jsf.iteration.NoDocumentInVersion']}">
                         <a class="i__item--right" onclick="return false"
                           disabled="true">
