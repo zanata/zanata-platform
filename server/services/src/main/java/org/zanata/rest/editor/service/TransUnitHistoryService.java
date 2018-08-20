@@ -21,7 +21,6 @@
 package org.zanata.rest.editor.service;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.pcollections.Empty;
 import org.zanata.rest.editor.service.resource.TransUnitHistoryResource;
 import org.zanata.webtrans.server.rpc.GetTranslationHistoryHandler;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
@@ -33,8 +32,8 @@ import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import com.aol.cyclops2.data.collections.extensions.persistent.PMapXImpl;
-import cyclops.collections.immutable.PersistentMapX;
+import com.oath.cyclops.types.persistent.PersistentMap;
+import cyclops.data.HashMap;
 
 /**
  * @author Earl Floden <a href="mailto:efloden@redhat.com">efloden@redhat.com</a>
@@ -62,13 +61,13 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
     public Response get(String localeId, Long transUnitId, String projectSlug,
             String versionSlug) {
 
-        PersistentMapX<Object, String> params = PersistentMapX
+        PersistentMap<Object, String> params = HashMap
                 .<Object, String>empty()
-                .plus(localeId, "localeId")
-                .plus(projectSlug, "projectSlug")
-                .plus(versionSlug, "versionSlug")
-                .plus(transUnitId, "transUnitId");
-        Response error = RestUtils.checkParams(params.toList());
+                .put(localeId, "localeId")
+                .put(projectSlug, "projectSlug")
+                .put(versionSlug, "versionSlug")
+                .put(transUnitId, "transUnitId");
+        Response error = RestUtils.checkParams(params);
         if (error != null) return error;
         GetTranslationHistoryResult result =
                 historyHandler.getTranslationHistory(

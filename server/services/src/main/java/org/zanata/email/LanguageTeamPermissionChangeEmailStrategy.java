@@ -5,7 +5,7 @@ import javax.mail.internet.InternetAddress;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
 import com.google.common.collect.Lists;
-import cyclops.collections.immutable.PersistentMapX;
+import com.oath.cyclops.types.persistent.PersistentMap;
 
 /**
  * @author Patrick Huang
@@ -29,9 +29,9 @@ public class LanguageTeamPermissionChangeEmailStrategy extends
     }
 
     @Override
-    public PersistentMapX<String, Object> makeContext(PersistentMapX<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMapX<String, Object> context =
+        PersistentMap<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
         List<String> oldPermissions = Lists.newArrayList();
         if (changedEvent.hasNoOldPermissions()) {
@@ -49,12 +49,12 @@ public class LanguageTeamPermissionChangeEmailStrategy extends
             transformPermissionToDescription(changedEvent.getNewPermission(),
                     newPermissions);
         }
-        return context.plus("language", changedEvent.getLanguage())
-                .plus("changedByName", changedEvent.getChangedByName())
-                .plus("oldPermissions", oldPermissions)
-                .plus("newPermissions", newPermissions)
-                .plus("contactCoordinatorLink", contactCoordinatorLink)
-                .plus("toName", toAddresses[0].getPersonal());
+        return context.put("language", changedEvent.getLanguage())
+                .put("changedByName", changedEvent.getChangedByName())
+                .put("oldPermissions", oldPermissions)
+                .put("newPermissions", newPermissions)
+                .put("contactCoordinatorLink", contactCoordinatorLink)
+                .put("toName", toAddresses[0].getPersonal());
     }
 
     private void transformPermissionToDescription(List<Boolean> permissionList,

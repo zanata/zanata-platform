@@ -15,10 +15,9 @@ import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import kotlin.Pair;
+import cyclops.data.tuple.Tuple2;
 
 @Dependent
 @Named("restUtils")
@@ -72,13 +71,13 @@ public class RestUtils {
     }
 
     @Nullable
-    public static Response checkParams(List<Tuple2<Object, String>> params) {
+    public static Response checkParams(Iterable<Tuple2<Object, String>> params) {
         StringBuilder msg = new StringBuilder("Null or empty parameters: ");
         boolean error = false;
         for (Tuple2<Object, String> param : params) {
-            if (param.v1 == null || param.v1 instanceof String &&
-                    ((String) param.v1).isEmpty()) {
-                msg.append(param.v2);
+            if (param._1() == null || param._1() instanceof String &&
+                    ((String) param._1()).isEmpty()) {
+                msg.append(param._2());
                 msg.append(" ");
                 error = true;
             }

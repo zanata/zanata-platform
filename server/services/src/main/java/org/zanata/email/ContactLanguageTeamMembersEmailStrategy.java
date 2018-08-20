@@ -24,7 +24,7 @@ import org.zanata.i18n.Messages;
 
 import javax.mail.internet.InternetAddress;
 
-import cyclops.collections.immutable.PersistentMapX;
+import com.oath.cyclops.types.persistent.PersistentMap;
 
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
@@ -52,14 +52,14 @@ public class ContactLanguageTeamMembersEmailStrategy extends
     }
 
     @Override
-    public PersistentMapX<String, Object> makeContext(
-            PersistentMapX<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+            PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMapX<String, Object> context =
+        PersistentMap<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.plus("contactCoordinatorLink", contactCoordinatorLink)
-                .plus("localeNativeName", localeNativeName)
-                .plus("safeHtmlMessage", textToSafeHtml(userMessage));
+        return context.put("contactCoordinatorLink", contactCoordinatorLink)
+                .put("localeNativeName", localeNativeName)
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "userSubject",

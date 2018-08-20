@@ -26,7 +26,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import javax.mail.internet.InternetAddress;
 import java.util.Collection;
 
-import cyclops.collections.immutable.PersistentMapX;
+import com.oath.cyclops.types.persistent.PersistentMap;
 
 import static org.zanata.email.Addresses.getReplyTo;
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
@@ -61,15 +61,15 @@ public class RequestToJoinVersionGroupEmailStrategy extends
     }
 
     @Override
-    public PersistentMapX<String, Object> makeContext(PersistentMapX<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMapX<String, Object> context =
+        PersistentMap<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.plus("fromLoginName", fromLoginName)
-                .plus("fromName", fromName).plus("replyEmail", replyEmail)
-                .plus("groupName", groupName).plus("versionGroupSlug", groupSlug)
-                .plus("projectIterationIds", projectIterationIds)
-                .plus("safeHtmlMessage", textToSafeHtml(userMessage));
+        return context.put("fromLoginName", fromLoginName)
+                .put("fromName", fromName).put("replyEmail", replyEmail)
+                .put("groupName", groupName).put("versionGroupSlug", groupSlug)
+                .put("projectIterationIds", projectIterationIds)
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "fromLoginName", "fromName",

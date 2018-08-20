@@ -38,8 +38,7 @@ import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.MoreObjects;
-import cyclops.control.Xor;
-import cyclops.control.lazy.Either;
+import cyclops.control.Either;
 
 /**
  * This class is responsible for checking for all REST requests: a) valid
@@ -117,13 +116,13 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                         .build());
             }
         } else if (restCredentials.hasOAuthToken()) {
-            Xor<Response, String> usernameOrError =
+            Either<Response, String> usernameOrError =
                 getAuthenticatedUsernameOrError();
-            if (usernameOrError.isSecondary()) {
-                context.abortWith(usernameOrError.secondaryGet());
+            if (usernameOrError.isLeft()) {
+                context.abortWith(usernameOrError.leftOrElse(null));
                 return;
             }
-            String username = usernameOrError.get();
+            String username = usernameOrError.orElse(null);
             zanataIdentity.getCredentials().setUsername(username);
             zanataIdentity.setRequestUsingOAuth(true);
             // login will always success since the check was done above
@@ -147,7 +146,7 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         }
     }
 
-    private Xor<Response, String> getAuthenticatedUsernameOrError() {
+    private Either<Response, String> getAuthenticatedUsernameOrError() {
 
         Optional<String> usernameOpt;
         Optional<String> accessTokenOpt =

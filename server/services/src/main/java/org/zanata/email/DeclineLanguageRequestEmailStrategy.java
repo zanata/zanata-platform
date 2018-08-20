@@ -3,7 +3,7 @@ package org.zanata.email;
 import org.zanata.i18n.Messages;
 import javax.mail.internet.InternetAddress;
 
-import cyclops.collections.immutable.PersistentMapX;
+import com.oath.cyclops.types.persistent.PersistentMap;
 
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
@@ -29,14 +29,14 @@ public class DeclineLanguageRequestEmailStrategy extends VelocityEmailStrategy {
     }
 
     @Override
-    public PersistentMapX<String, Object> makeContext(PersistentMapX<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMapX<String, Object> context =
+        PersistentMap<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
-        return context.plus("toName", toName).plus("roles", roles)
-                .plus("localeDisplayName", localeDisplayName)
-                .plus("contactCoordinatorLink", contactCoordinatorLink)
-                .plus("safeHtmlMessage", textToSafeHtml(userMessage));
+        return context.put("toName", toName).put("roles", roles)
+                .put("localeDisplayName", localeDisplayName)
+                .put("contactCoordinatorLink", contactCoordinatorLink)
+                .put("safeHtmlMessage", textToSafeHtml(userMessage));
     }
 
     @java.beans.ConstructorProperties({ "toName", "roles",

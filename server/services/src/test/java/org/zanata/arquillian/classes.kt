@@ -3,9 +3,8 @@
 
 package org.zanata.arquillian
 
-import cyclops.collections.immutable.LinkedListX
+import cyclops.data.Seq
 import org.apache.maven.shared.dependency.analyzer.asm.DependencyClassFileVisitor
-import org.jooq.lambda.Seq
 import org.slf4j.LoggerFactory
 import org.zanata.arquillian.ArquillianUtil.IN_ZANATA
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo
@@ -43,7 +42,7 @@ fun findAllClassDependencyChains(classes: List<Class<*>>, filter: ClassNameFilte
             nextDeps = mutableSetOf()
         }
         val clazzes: Seq<Class<*>> = currentDeps.next()
-        val clazz = clazzes.findFirst().get()
+        val clazz = clazzes.first()
         analysedDeps[clazz] = clazzes
         val newDeps: Set<Class<*>> = findDirectClassDependencies(clazz)
                 .filter(filter)

@@ -20,7 +20,7 @@
  */
 package org.zanata.email;
 
-import cyclops.collections.immutable.PersistentMapX;
+import com.oath.cyclops.types.persistent.PersistentMap;
 import org.zanata.i18n.Messages;
 
 import javax.mail.internet.InternetAddress;
@@ -53,14 +53,14 @@ public class ActivationEmailStrategy extends VelocityEmailStrategy {
     }
 
     @Override
-    public PersistentMapX<String, Object> makeContext(
-            PersistentMapX<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+            PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMapX<String, Object> context = super.makeContext(
+        PersistentMap<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
         return context
-                .plus("activationKey", key)
-                .plus("resetPasswordKey", resetPasswordKey)
-                .plus("toName", toAddresses[0].getPersonal());
+                .put("activationKey", key)
+                .put("resetPasswordKey", resetPasswordKey)
+                .put("toName", toAddresses[0].getPersonal());
     }
 }

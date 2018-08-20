@@ -305,8 +305,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>com.aol.simplereact</groupId>
-      <artifactId>cyclops-react</artifactId>
+      <groupId>com.oath.cyclops</groupId>
+      <artifactId>cyclops</artifactId>
     </dependency>
 
     <dependency>

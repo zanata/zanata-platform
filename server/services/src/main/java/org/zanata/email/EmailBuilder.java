@@ -15,7 +15,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import cyclops.collections.immutable.PersistentMapX;
+import com.oath.cyclops.types.persistent.PersistentMap;
+import cyclops.data.HashMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -26,11 +27,8 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pcollections.Empty;
-import org.pcollections.PMap;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.i18n.Messages;
-import com.aol.cyclops2.data.collections.extensions.persistent.PMapXImpl;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import org.zanata.i18n.MessagesFactory;
@@ -122,14 +120,14 @@ public class EmailBuilder implements Serializable {
         msg.setSubject(strategy.getSubject(msgs), UTF_8.name());
         // optional future extension
         // strategy.setMailHeaders(msg, msgs);
-        PersistentMapX<String, Object> genericContext = PersistentMapX
+        PersistentMap<String, Object> genericContext = HashMap
                 .<String, Object>empty()
-                .plus("msgs", msgs)
-                .plus("receivedReasons", receivedReasons)
-                .plus("serverPath", emailContext.getServerPath());
+                .put("msgs", msgs)
+                .put("receivedReasons", receivedReasons)
+                .put("serverPath", emailContext.getServerPath());
         // the Map needs to be mutable for "foreach" to work
         VelocityContext context = new VelocityContext(
-                strategy.makeContext(genericContext, toAddresses).toMap(it -> it));
+                strategy.makeContext(genericContext, toAddresses).mapView());
         Template template =
                 velocityEngine.getTemplate(strategy.getTemplateResourceName());
         StringWriter writer = new StringWriter();

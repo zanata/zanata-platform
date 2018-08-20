@@ -1012,9 +1012,9 @@
       </dependency>
 
       <dependency>
-        <groupId>com.aol.simplereact</groupId>
-        <artifactId>cyclops-react</artifactId>
-        <version>2.1.1</version>
+        <groupId>com.oath.cyclops</groupId>
+        <artifactId>cyclops</artifactId>
+        <version>10.0.0-FINAL</version>
       </dependency>
 
       <dependency>
