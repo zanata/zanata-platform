@@ -202,9 +202,7 @@ public class SourceDocumentUpload implements Serializable {
     private boolean isDocumentUploadAllowed(GlobalDocumentId id) {
         HProjectIteration projectIteration = projectIterationDAO
                 .getBySlug(id.getProjectSlug(), id.getVersionSlug());
-        return projectIteration.getStatus() == EntityStatus.ACTIVE
-                && projectIteration.getProject()
-                        .getStatus() == EntityStatus.ACTIVE
+        return projectIteration.isActive()
                 && identity != null && identity.hasPermissionWithAnyTargets(
                         "import-template", projectIteration);
     }

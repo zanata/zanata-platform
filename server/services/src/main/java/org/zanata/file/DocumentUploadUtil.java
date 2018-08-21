@@ -178,16 +178,11 @@ public class DocumentUploadUtil implements Serializable {
                             + ":" + id.getVersionSlug()
                             + "\" does not exist on this server.");
         }
-        if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE) {
-            throw new DocumentUploadException(Status.FORBIDDEN, "The project \""
-                    + id.getProjectSlug()
-                    + "\" is not active. Document upload is not allowed.");
-        }
-        if (projectIteration.getStatus() != EntityStatus.ACTIVE) {
+        if (!projectIteration.isActive()) {
             throw new DocumentUploadException(Status.FORBIDDEN,
-                    "The project-version \"" + id.getProjectSlug() + ":"
-                            + id.getVersionSlug()
-                            + "\" is not active. Document upload is not allowed.");
+                    "The project \"" + id.getProjectSlug() +
+                    "\" or version \"" + id.getVersionSlug() +
+                    "\" is not active. Document upload is not allowed.");
         }
     }
 

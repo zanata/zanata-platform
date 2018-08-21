@@ -509,6 +509,11 @@ public class VersionHome extends SlugHome<HProjectIteration>
     @Transactional
     public void updateStatus(char initial) {
         identity.checkPermission(getInstance(), "update");
+        if (getProject().getStatus() == EntityStatus.READONLY) {
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    "Parent project is read-only!");
+            return;
+        }
         String message = msgs.format("jsf.iteration.status.updated",
                 EntityStatus.valueOf(initial));
         getInstance().setStatus(EntityStatus.valueOf(initial));

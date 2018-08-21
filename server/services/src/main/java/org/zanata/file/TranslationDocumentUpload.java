@@ -228,9 +228,7 @@ public class TranslationDocumentUpload implements Serializable {
                 .getBySlug(id.getProjectSlug(), id.getVersionSlug());
         // TODO should this check be "add-translation" or "modify-translation"?
         // They appear to be granted identically at the moment.
-        return projectIteration.getStatus() == EntityStatus.ACTIVE
-                && projectIteration.getProject()
-                        .getStatus() == EntityStatus.ACTIVE
+        return projectIteration.isActive()
                 && identity != null
                 && identity.hasPermissionWithAnyTargets("add-translation",
                         projectIteration.getProject(), locale);

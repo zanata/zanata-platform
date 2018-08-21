@@ -136,8 +136,7 @@ public class ActivateWorkspaceHandler extends
         HProjectIteration projectIteration = projectIterationDAO.getBySlug(
                 workspaceId.getProjectIterationId().getProjectSlug(),
                 workspaceId.getProjectIterationId().getIterationSlug());
-        boolean isProjectActive = isProjectIterationActive(project.getStatus(),
-                projectIteration.getStatus());
+        boolean isProjectActive = projectIteration.isActive();
         boolean isProjectObsolete = isProjectIterationObsolete(
                 project.getStatus(), projectIteration.getStatus());
         boolean hasWriteAccess = hasWritePermission(project, locale);
@@ -183,12 +182,6 @@ public class ActivateWorkspaceHandler extends
     private boolean hasReviewerPermission(HLocale locale, HProject project) {
         return identity.hasPermissionWithAnyTargets("translation-review",
                 project, locale);
-    }
-
-    private boolean isProjectIterationActive(EntityStatus projectStatus,
-            EntityStatus iterStatus) {
-        return (projectStatus.equals(EntityStatus.ACTIVE)
-                && iterStatus.equals(EntityStatus.ACTIVE));
     }
 
     private boolean isProjectIterationObsolete(EntityStatus projectStatus,

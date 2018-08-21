@@ -166,9 +166,7 @@ public class TranslationWorkspaceManagerImpl
         }
         String projectSlug = projectIteration.getProject().getSlug();
         String iterSlug = projectIteration.getSlug();
-        HProject project = projectIteration.getProject();
-        Boolean isProjectActive = projectIterationIsActive(project.getStatus(),
-                projectIteration.getStatus());
+        Boolean isProjectActive = projectIteration.isActive();
         ProjectType projectType = projectIteration.getProjectType();
         log.info(
                 "Project {} iteration {} updated, status={}, isProjectActive={}, projectType={}, oldProjectSlug={}, oldIterationSlug={}",
@@ -228,12 +226,6 @@ public class TranslationWorkspaceManagerImpl
                     projectIteration.getProjectType());
         }
         return iterId;
-    }
-
-    private boolean projectIterationIsActive(EntityStatus projectStatus,
-            EntityStatus iterStatus) {
-        return (projectStatus.equals(EntityStatus.ACTIVE)
-                && iterStatus.equals(EntityStatus.ACTIVE));
     }
 
     @PreDestroy
