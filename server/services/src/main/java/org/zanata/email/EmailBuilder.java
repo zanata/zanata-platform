@@ -6,6 +6,7 @@ import static javax.mail.Message.RecipientType.BCC;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -125,9 +126,10 @@ public class EmailBuilder implements Serializable {
                 .put("msgs", msgs)
                 .put("receivedReasons", receivedReasons)
                 .put("serverPath", emailContext.getServerPath());
-        // the Map needs to be mutable for "foreach" to work
-        VelocityContext context = new VelocityContext(
+        // NB contextMap needs to be mutable for "foreach" to work
+        Map<String, Object> contextMap = new java.util.HashMap<>(
                 strategy.makeContext(genericContext, toAddresses).mapView());
+        VelocityContext context = new VelocityContext(contextMap);
         Template template =
                 velocityEngine.getTemplate(strategy.getTemplateResourceName());
         StringWriter writer = new StringWriter();
