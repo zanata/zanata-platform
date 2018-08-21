@@ -61,12 +61,12 @@ public class TransUnitHistoryService implements TransUnitHistoryResource {
     public Response get(String localeId, Long transUnitId, String projectSlug,
             String versionSlug) {
 
-        PersistentMap<Object, String> params = HashMap
-                .<Object, String>empty()
-                .put(localeId, "localeId")
-                .put(projectSlug, "projectSlug")
-                .put(versionSlug, "versionSlug")
-                .put(transUnitId, "transUnitId");
+        PersistentMap<String, Object> params = HashMap
+                .<String, Object>empty()
+                .put("localeId", localeId)
+                .put("projectSlug", projectSlug)
+                .put("versionSlug", versionSlug)
+                .put("transUnitId", transUnitId);
         Response error = RestUtils.checkParams(params);
         if (error != null) return error;
         GetTranslationHistoryResult result =
