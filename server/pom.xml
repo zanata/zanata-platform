@@ -1907,7 +1907,7 @@
           </execution>
         </executions>
         <configuration>
-          <args>-Xprogressive</args>
+          <args>-Xjsr305=strict -Xprogressive</args>
           <compilerPlugins>
             <plugin>all-open</plugin>
             <plugin>no-arg</plugin>
