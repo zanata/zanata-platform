@@ -133,14 +133,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
     private String selectedProjectType;
     private boolean copyFromVersion = true;
     private String copyFromVersionSlug;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
-    private final Function<HProjectIteration, VersionItem> VERSION_ITEM_FN =
-            iter -> {
-                boolean selected = StringUtils
-                        .isNotEmpty(copyFromVersionSlug)
-                        && copyFromVersionSlug.equals(iter.getSlug());
-                return new VersionItem(selected, iter);
-            };
 
     private void setDefaultCopyFromVersion() {
         List<VersionItem> otherVersions = getOtherVersions();
@@ -213,7 +205,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
                             EntityStatus.ACTIVE, EntityStatus.READONLY);
             versionList.sort(ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
             List<VersionItem> versionItems =
-                    versionList.stream().map(VERSION_ITEM_FN)
+                    versionList.stream().map(this::makeVersionItem)
                             .collect(Collectors.toList());
             if (isEmpty(copyFromVersionSlug) && !versionItems.isEmpty()) {
                 versionItems.get(0).setSelected(true);
@@ -221,6 +213,12 @@ public class VersionHome extends SlugHome<HProjectIteration>
             return versionItems;
         }
         return Collections.emptyList();
+    }
+
+    private VersionItem makeVersionItem(HProjectIteration iter) {
+        boolean selected = StringUtils.isNotEmpty(copyFromVersionSlug) &&
+                copyFromVersionSlug.equals(iter.getSlug());
+        return new VersionItem(selected, iter);
     }
 
     public static class VersionItem {
