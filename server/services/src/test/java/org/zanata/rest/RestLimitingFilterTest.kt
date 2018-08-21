@@ -1,5 +1,6 @@
 package org.zanata.rest
 
+import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -16,7 +17,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers.RETURNS_DEEP_STUBS
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.same
 import org.zanata.ZanataTest
@@ -34,15 +34,15 @@ import org.zanata.util.RunnableEx
 class RestLimitingFilterTest : ZanataTest() {
 
     companion object {
-        private val API_KEY = "apiKey123"
-        private val clientIP = "255.255.0.1"
+        private const val API_KEY = "apiKey123"
+        private const val clientIP = "255.255.0.1"
     }
 
     private val request: HttpServletRequest = mock(defaultAnswer = RETURNS_DEEP_STUBS)
     private val response: HttpServletResponse = mock(defaultAnswer = RETURNS_DEEP_STUBS)
     private final val processor: RateLimitingProcessor = mock()
     private val filterChain: FilterChain = mock()
-    private val taskCaptor = captor<RunnableEx>()
+    private val taskCaptor = argumentCaptor<RunnableEx>()
 
     private final var authenticatedUser: HAccount? = null
     // Using @Inject would be better, but some tests currently require
@@ -60,8 +60,8 @@ class RestLimitingFilterTest : ZanataTest() {
 
     @Test
     fun willUseApiKeyIfPresent() {
-        whenever(request.getHeader(HttpUtil.API_KEY_HEADER_NAME)).thenReturn(
-                API_KEY)
+        whenever(request.getHeader(HttpUtil.API_KEY_HEADER_NAME))
+                .thenReturn(API_KEY)
 
         filter.doFilter(request, response, filterChain)
 
@@ -69,16 +69,17 @@ class RestLimitingFilterTest : ZanataTest() {
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
         verify(filterChain).doFilter(request, response)
     }
 
     @Test
     fun willUseUsernameIfNoApiKeyButAuthenticated() {
-        authenticatedUser = HAccount()
-        authenticatedUser!!.username = "admin"
-        doReturn(authenticatedUser).whenever<RestLimitingFilter>(filter).authenticatedUser
+        authenticatedUser = HAccount().apply {
+            username = "admin"
+        }
+        doReturn(authenticatedUser).whenever(filter).authenticatedUser
 
         filter.doFilter(request, response, filterChain)
 
@@ -86,7 +87,7 @@ class RestLimitingFilterTest : ZanataTest() {
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
         verify(filterChain).doFilter(request, response)
     }
@@ -94,8 +95,8 @@ class RestLimitingFilterTest : ZanataTest() {
     @Test
     fun willUseAuthorizationCodeIfItPresents() {
         val authCode = "abc123"
-        whenever(request.getParameter(OAuth.OAUTH_CODE)).thenReturn(
-                authCode)
+        whenever(request.getParameter(OAuth.OAUTH_CODE))
+                .thenReturn(authCode)
 
         filter.doFilter(request, response, filterChain)
 
@@ -103,15 +104,15 @@ class RestLimitingFilterTest : ZanataTest() {
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
         verify(filterChain).doFilter(request, response)
     }
 
     @Test
     fun willUseAccessTokenIfItPresents() {
-        whenever(request.getHeader(OAuth.HeaderType.AUTHORIZATION)).thenReturn(
-                "Bearer abc123")
+        whenever(request.getHeader(OAuth.HeaderType.AUTHORIZATION))
+                .thenReturn("Bearer abc123")
 
         filter.doFilter(request, response, filterChain)
 
@@ -119,7 +120,7 @@ class RestLimitingFilterTest : ZanataTest() {
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
         verify(filterChain).doFilter(request, response)
     }
@@ -137,13 +138,9 @@ class RestLimitingFilterTest : ZanataTest() {
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
         verify(filterChain).doFilter(request, response)
     }
 
 }
-
-// borrowed from https://github.com/nhaarman/mockito-kotlin
-// TODO use argumentCaptor?
-inline fun <reified T : Any> captor(): ArgumentCaptor<T> = ArgumentCaptor.forClass(T::class.java)
