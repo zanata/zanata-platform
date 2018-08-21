@@ -29,27 +29,6 @@ public class TransUnitHistoryServiceTest {
     }
 
     @Test
-    public void nullOrEmptyLocaleWillReturnBadRequest() {
-        Response response = service.get(
-                null, transUnitId, projectSlug, versionSlug);
-        assertThat(response.getStatus()).isEqualTo(400);
-    }
-
-    @Test
-    public void nullTransUnitIdWillReturnBadRequest() {
-        Response response = service.get(
-                localeId, null, projectSlug, versionSlug);
-        assertThat(response.getStatus()).isEqualTo(400);
-    }
-
-    @Test
-    public void nullProjectSlugWillReturnBadRequest() {
-        Response response = service.get(
-                localeId, transUnitId, null, versionSlug);
-        assertThat(response.getStatus()).isEqualTo(400);
-    }
-
-    @Test
     public void nullVersionSlugWillReturnBadRequest() {
         Response response = service.get(
                 localeId, transUnitId, projectSlug, null);
