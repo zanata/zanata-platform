@@ -27,5 +27,5 @@ package org.zanata.security.openid;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public enum OpenIdProviderType {
-    Fedora, Google, Yahoo, MyOpenId, Generic;
+    Fedora, Yahoo, Generic;
 }
