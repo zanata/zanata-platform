@@ -70,6 +70,8 @@
     <version>2.2.11</version>
     </dependency>
 
+    <!-- Replace the above JAXB dependencies when 2.4.0 is released: -->
+
     <!-- https://stackoverflow.com/a/50251510/14379 -->
     <!--<dependency>-->
       <!--<groupId>javax.xml.bind</groupId>-->
