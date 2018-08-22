@@ -903,6 +903,23 @@ public class ProjectHome extends SlugHome<HProject>
         identity.checkPermission(getInstance(), "update");
         EntityStatus status = EntityStatus.valueOf(initial);
         getInstance().setStatus(status);
+        if (getInstance().getStatus() == EntityStatus.READONLY) {
+            for (HProjectIteration version : getInstance()
+                    .getProjectIterations()) {
+                if (version.getStatus() == EntityStatus.ACTIVE) {
+                    version.setStatus(EntityStatus.READONLY);
+                    entityManager.merge(version);
+                }
+            }
+        } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
+            for (HProjectIteration version : getInstance()
+                    .getProjectIterations()) {
+                if (version.getStatus() != EntityStatus.OBSOLETE) {
+                    version.setStatus(EntityStatus.OBSOLETE);
+                    entityManager.merge(version);
+                }
+            }
+        }
         update();
         if (status.equals(EntityStatus.OBSOLETE)) {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,

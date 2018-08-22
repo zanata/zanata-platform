@@ -155,10 +155,10 @@ class VersionHomeActionTest {
             slug = "myversion"
             project = HProject().apply {
                 slug = "myproject"
-                status = EntityStatus.READONLY
+                status = EntityStatus.ACTIVE
             }
             documents = mutableMapOf()
-            status = EntityStatus.READONLY
+            status = EntityStatus.ACTIVE
         }
         action.projectSlug = "myproject"
         action.versionSlug = "myversion"
@@ -168,12 +168,15 @@ class VersionHomeActionTest {
         whenever(identity.hasPermissionWithAnyTargets(eq("import-template"), any()))
                 .thenReturn(true)
 
-        assertThat(action.isDocumentUploadAllowed).isFalse()
+        hProjectIteration.project.status = EntityStatus.READONLY
         hProjectIteration.status = EntityStatus.ACTIVE
         assertThat(action.isDocumentUploadAllowed).isFalse()
-        hProjectIteration.status = EntityStatus.READONLY
+
         hProjectIteration.project.status = EntityStatus.ACTIVE
+        hProjectIteration.status = EntityStatus.READONLY
         assertThat(action.isDocumentUploadAllowed).isFalse()
+
+        hProjectIteration.project.status = EntityStatus.ACTIVE
         hProjectIteration.status = EntityStatus.ACTIVE
         assertThat(action.isDocumentUploadAllowed).isTrue()
     }
