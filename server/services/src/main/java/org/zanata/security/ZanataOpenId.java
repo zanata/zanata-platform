@@ -41,8 +41,6 @@ import org.zanata.model.HAccount;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GenericOpenIdProvider;
-import org.zanata.security.openid.GoogleOpenIdProvider;
-import org.zanata.security.openid.MyOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProvider;
@@ -386,12 +384,6 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
         switch (openIdProviderType) {
             case Fedora:
                 return new FedoraOpenIdProvider();
-
-            case Google:
-                return new GoogleOpenIdProvider();
-
-            case MyOpenId:
-                return new MyOpenIdProvider();
 
             case Yahoo:
                 return new YahooOpenIdProvider();

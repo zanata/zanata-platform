@@ -53,7 +53,6 @@ import org.zanata.security.AuthenticationManager;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.FedoraOpenIdProvider;
-import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -191,9 +190,7 @@ public class UserSettingsAction implements Serializable {
      * Valid Types: google, yahoo, fedora, openid for everything else
      */
     public String getCredentialsType(HCredentials credentials) {
-        if (new GoogleOpenIdProvider().accepts(credentials.getUser())) {
-            return "google";
-        } else if (new FedoraOpenIdProvider().accepts(credentials.getUser())) {
+        if (new FedoraOpenIdProvider().accepts(credentials.getUser())) {
             return "fedora";
         } else if (new YahooOpenIdProvider().accepts(credentials.getUser())) {
             return "yahoo";

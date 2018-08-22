@@ -39,7 +39,6 @@ import org.zanata.security.UserRedirectBean;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.openid.FedoraOpenIdProvider;
-import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.util.UrlUtil;
@@ -180,8 +179,6 @@ public class LoginAction implements Serializable {
     public static OpenIdProviderType getBestSuitedProvider(String openId) {
         if (new FedoraOpenIdProvider().accepts(openId)) {
             return OpenIdProviderType.Fedora;
-        } else if (new GoogleOpenIdProvider().accepts(openId)) {
-            return OpenIdProviderType.Google;
         } else if (new YahooOpenIdProvider().accepts(openId)) {
             return OpenIdProviderType.Yahoo;
         } else {
