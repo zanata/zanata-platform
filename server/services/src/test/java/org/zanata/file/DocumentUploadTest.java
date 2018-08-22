@@ -46,10 +46,8 @@ public abstract class DocumentUploadTest extends ZanataTest {
     @Produces @ProducesAlternative @Mock
     protected ProjectIterationDAO projectIterationDAO;
 
-    @Mock
-    protected HProject project;
-    @Mock
-    protected HProjectIteration projectIteration;
+    protected HProject project = new HProject();
+    protected HProjectIteration projectIteration = new HProjectIteration();
 
     protected MockConfig conf;
     protected Response response;
@@ -73,10 +71,10 @@ public abstract class DocumentUploadTest extends ZanataTest {
     protected void mockProjectAndVersionStatus() {
         when(projectIterationDAO.getBySlug(conf.projectSlug, conf.versionSlug))
                 .thenReturn(projectIteration);
-        when(projectIteration.getProject()).thenReturn(project);
-        when(project.getStatus()).thenReturn(conf.projectStatus);
-        when(projectIteration.getStatus()).thenReturn(conf.versionStatus);
-        when(projectIteration.getProjectType()).thenReturn(conf.projectType);
+        projectIteration.setProject(project);
+        project.setStatus(conf.projectStatus);
+        projectIteration.setStatus(conf.versionStatus);
+        projectIteration.setProjectType(conf.projectType);
     }
 
     protected void mockLoggedIn() {
