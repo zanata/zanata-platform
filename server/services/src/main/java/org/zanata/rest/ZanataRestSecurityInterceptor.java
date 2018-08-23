@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import javaslang.control.Either;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -39,6 +38,7 @@ import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.MoreObjects;
+import cyclops.control.Either;
 
 /**
  * This class is responsible for checking for all REST requests: a) valid
@@ -119,10 +119,10 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             Either<Response, String> usernameOrError =
                 getAuthenticatedUsernameOrError();
             if (usernameOrError.isLeft()) {
-                context.abortWith(usernameOrError.getLeft());
+                context.abortWith(usernameOrError.leftOrElse(null));
                 return;
             }
-            String username = usernameOrError.get();
+            String username = usernameOrError.orElse(null);
             zanataIdentity.getCredentials().setUsername(username);
             zanataIdentity.setRequestUsingOAuth(true);
             // login will always success since the check was done above

@@ -35,7 +35,7 @@ object ArquillianRest {
         return listOf("com.google.guava:guava",
                 "com.google.gwt:gwt-servlet",
                 "com.ibm.icu:icu4j",
-                "io.javaslang:javaslang",
+                "com.oath.cyclops:cyclops",
                 "net.sf.okapi.steps:okapi-step-tokenization",
                 "net.sourceforge.openutils:openutils-log4j",
                 "org.apache.commons:commons-lang3",
@@ -71,7 +71,7 @@ object ArquillianRest {
 
     @JvmStatic
     fun classesWithDependenciesForRest(): List<Class<*>> {
-        return listOf<Class<out Any>>(
+        return listOf(
                 JaxRSApplication::class.java,
                 WithRequestScopeInterceptor::class.java,
                 SynchronizationInterceptor::class.java,

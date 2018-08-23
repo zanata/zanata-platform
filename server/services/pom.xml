@@ -305,8 +305,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang</artifactId>
+      <groupId>com.oath.cyclops</groupId>
+      <artifactId>cyclops</artifactId>
     </dependency>
 
     <dependency>

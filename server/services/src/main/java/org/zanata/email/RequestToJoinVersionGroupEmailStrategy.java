@@ -21,11 +21,13 @@
 package org.zanata.email;
 
 import com.google.common.base.Optional;
-import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import javax.mail.internet.InternetAddress;
 import java.util.Collection;
+
+import com.oath.cyclops.types.persistent.PersistentMap;
+
 import static org.zanata.email.Addresses.getReplyTo;
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
 
@@ -59,9 +61,9 @@ public class RequestToJoinVersionGroupEmailStrategy extends
     }
 
     @Override
-    public Map<String, Object> makeContext(Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context =
+        PersistentMap<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
         return context.put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)

@@ -712,11 +712,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.tngtech.java</groupId>
       <artifactId>junit-dataprovider</artifactId>
       <version>1.10.2</version>

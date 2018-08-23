@@ -2,6 +2,8 @@ package org.zanata.rest.editor.service.resource;
 
 import org.zanata.rest.editor.MediaTypes;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
@@ -15,6 +17,7 @@ import javax.ws.rs.core.Response;
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
+@ParametersAreNonnullByDefault
 public interface TransUnitHistoryResource {
 
     String SERVICE_PATH = "/transhist/{localeId}/{transUnitId}/{projectSlug}";
@@ -38,5 +41,5 @@ public interface TransUnitHistoryResource {
     Response get(@PathParam("localeId") String localeId,
             @PathParam("transUnitId") Long transUnitId,
             @PathParam("projectSlug") String projectSlug,
-            @QueryParam("versionSlug") String versionSlug);
+            @Nullable @QueryParam("versionSlug") String versionSlug);
 }

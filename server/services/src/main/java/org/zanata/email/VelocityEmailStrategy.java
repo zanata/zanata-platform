@@ -22,7 +22,7 @@ package org.zanata.email;
 
 import javax.mail.internet.InternetAddress;
 
-import javaslang.collection.Map;
+import com.oath.cyclops.types.persistent.PersistentMap;
 
 /**
  * Strategy class for EmailBuilder to customise the content and recipients
@@ -54,8 +54,8 @@ public abstract class VelocityEmailStrategy extends AbstractEmailStrategy {
      * @param genericContext
      * @param toAddresses
      */
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+            PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
         return genericContext.put("body", getBodyResourceName());
     }

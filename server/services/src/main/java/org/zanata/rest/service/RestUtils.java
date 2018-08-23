@@ -1,5 +1,6 @@
 package org.zanata.rest.service;
 
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
@@ -8,7 +9,6 @@ import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import javaslang.Tuple2;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
@@ -17,6 +17,7 @@ import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import cyclops.data.tuple.Tuple2;
 
 @Dependent
 @Named("restUtils")
@@ -70,13 +71,13 @@ public class RestUtils {
     }
 
     @Nullable
-    public static Response checkParams(Iterable<Tuple2<Object, String>> params) {
+    public static Response checkParams(Iterable<Tuple2<String, Object>> params) {
         StringBuilder msg = new StringBuilder("Null or empty parameters: ");
         boolean error = false;
-        for (Tuple2<Object, String> param : params) {
-            if (param._1 == null || param._1 instanceof String &&
-                    ((String) param._1).isEmpty()) {
-                msg.append(param._2);
+        for (Tuple2<String, Object> param : params) {
+            if (param._2() == null || param._2() instanceof String &&
+                    ((String) param._2()).isEmpty()) {
+                msg.append(param._1());
                 msg.append(" ");
                 error = true;
             }

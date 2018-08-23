@@ -6,6 +6,7 @@ import static javax.mail.Message.RecipientType.BCC;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -15,9 +16,9 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.oath.cyclops.types.persistent.PersistentMap;
+import cyclops.data.HashMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import javaslang.collection.HashMap;
-import javaslang.collection.Map;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -26,6 +27,7 @@ import org.apache.velocity.runtime.log.CommonsLogLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.ApplicationConfiguration;
 import org.zanata.i18n.Messages;
 import com.google.common.annotations.VisibleForTesting;
@@ -119,12 +121,15 @@ public class EmailBuilder implements Serializable {
         msg.setSubject(strategy.getSubject(msgs), UTF_8.name());
         // optional future extension
         // strategy.setMailHeaders(msg, msgs);
-        Map<String, Object> genericContext =
-                HashMap.of("msgs", msgs, "receivedReasons", receivedReasons,
-                        "serverPath", emailContext.getServerPath());
-        // the Map needs to be mutable for "foreach" to work
-        VelocityContext context = new VelocityContext(
-                strategy.makeContext(genericContext, toAddresses).toJavaMap());
+        PersistentMap<String, Object> genericContext = HashMap
+                .<String, Object>empty()
+                .put("msgs", msgs)
+                .put("receivedReasons", receivedReasons)
+                .put("serverPath", emailContext.getServerPath());
+        // NB contextMap needs to be mutable for "foreach" to work
+        Map<String, Object> contextMap = new java.util.HashMap<>(
+                strategy.makeContext(genericContext, toAddresses).mapView());
+        VelocityContext context = new VelocityContext(contextMap);
         Template template =
                 velocityEngine.getTemplate(strategy.getTemplateResourceName());
         StringWriter writer = new StringWriter();
