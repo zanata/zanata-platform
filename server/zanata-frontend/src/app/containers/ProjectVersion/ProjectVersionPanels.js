@@ -4,6 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
+import { reduce } from 'lodash'
 
 import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
@@ -21,7 +22,8 @@ class ProjectVersionPanels extends Component {
     /* params: version, projectSlug */
     onVersionCheckboxChange: PropTypes.func.isRequired,
     /* params: project object */
-    onAllVersionCheckboxChange: PropTypes.func.isRequired
+    onAllVersionCheckboxChange: PropTypes.func.isRequired,
+    onAllProjectsCheckboxChange: PropTypes.func.isRequired
   }
   /*
     selectedVersions is an array of shape:
@@ -55,7 +57,28 @@ class ProjectVersionPanels extends Component {
         />
       )
     })
-    return <span>{panels}</span>
+
+    const totalVersions = reduce(this.props.projectVersions.map((proj) => {
+      return proj.versions.length
+    }), (sum, n) => { return sum + n }, 0)
+
+    const allVersionsChecked = totalVersions ===
+      this.props.selectedVersions.length
+    const someVersionsChecked = !allVersionsChecked &&
+      this.props.selectedVersions.length !== 0
+    return (
+      <span>
+        <div className='checkbox'>
+          <span>
+            <TriCheckbox
+              onChange={this.props.onAllProjectsCheckboxChange}
+              checked={allVersionsChecked}
+              indeterminate={someVersionsChecked} /> Select all
+          </span>
+        </div>
+        {panels}
+      </span>
+    )
   }
 }
 

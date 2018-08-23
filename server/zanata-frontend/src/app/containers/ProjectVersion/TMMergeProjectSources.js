@@ -55,6 +55,7 @@ class TMMergeProjectSources extends Component {
     onProjectSearchChange: PropTypes.func.isRequired,
     onVersionCheckboxChange: PropTypes.func.isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired,
+    onAllProjectsCheckboxChange: PropTypes.func.isRequired,
     onDragMoveEnd: PropTypes.func.isRequired,
     removeProjectVersion: PropTypes.func.isRequired,
     thisProjectSlug: PropTypes.string.isRequired
@@ -95,6 +96,7 @@ class TMMergeProjectSources extends Component {
       mergeOptions,
       onVersionCheckboxChange,
       onAllVersionCheckboxChange,
+      onAllProjectsCheckboxChange,
       onDragMoveEnd,
       removeProjectVersion
     } = this.props
@@ -116,12 +118,13 @@ class TMMergeProjectSources extends Component {
             </span>
             <LoaderText loading={fetchingProject}
               loadingText={'Fetching Projects'} />
-            <span className='txt-muted'>{noResults}</span>
+            <span className='txt-muted ml1'>{noResults}</span>
             {projectVersions.length > 0 &&
               <ProjectVersionPanels projectVersions={projectVersions}
                 selectedVersions={mergeOptions.selectedVersions}
                 onVersionCheckboxChange={onVersionCheckboxChange}
-                onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
+                onAllVersionCheckboxChange={onAllVersionCheckboxChange}
+                onAllProjectsCheckboxChange={onAllProjectsCheckboxChange} />
             }
           </Col>
           <Col span={11}>

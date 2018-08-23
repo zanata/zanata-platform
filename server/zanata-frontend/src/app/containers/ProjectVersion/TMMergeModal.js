@@ -71,6 +71,7 @@ const MergeOptions = (
     onProjectSearchChange,
     onVersionCheckboxChange,
     onAllVersionCheckboxChange,
+    onAllProjectsCheckboxChange,
     onFromAllProjectsChange,
     onDragMoveEnd,
     removeProjectVersion
@@ -153,8 +154,8 @@ const MergeOptions = (
       <Col>
         <TMMergeProjectSources {...{projectVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
-          onAllVersionCheckboxChange, onVersionCheckboxChange, onDragMoveEnd,
-          removeProjectVersion}}
+          onAllVersionCheckboxChange, onVersionCheckboxChange,
+          onAllProjectsCheckboxChange, onDragMoveEnd, removeProjectVersion}}
           thisProjectSlug={projectSlug}
           {...mergeOptions}
           {...{onDifferentDocIdChange, onDifferentContextChange,
@@ -187,6 +188,7 @@ MergeOptions.propTypes = {
   onProjectSearchChange: PropTypes.func.isRequired,
   onVersionCheckboxChange: PropTypes.func.isRequired,
   onAllVersionCheckboxChange: PropTypes.func.isRequired,
+  onAllProjectsCheckboxChange: PropTypes.func.isRequired,
   onDragMoveEnd: PropTypes.func.isRequired,
   removeProjectVersion: PropTypes.func.isRequired,
   ...TMMergeOptionsCallbackPropType
@@ -346,6 +348,22 @@ class TMMergeModal extends Component {
     return this.state.selectedVersions
       .find(p => p.projectSlug === projectSlug && p.version.id === version.id)
   }
+
+  // check all projects
+  onAllProjectsCheckboxChange = (event) => {
+    const checked = event.target.checked
+    this.props.projectVersions.map((project) => {
+      const projectSlug = project.id
+      this.removeAllProjectVersions(projectSlug)
+      if (checked) {
+        const versionsInProject = project.versions.map((version) => {
+          return {version, projectSlug}
+        })
+        this.pushAllProjectVersions(versionsInProject)
+      }
+    })
+  }
+
   // Remove/Add version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version, projectSlug) => {
     const versionChecked = this.isProjectVersionSelected(projectSlug, version)
@@ -446,6 +464,7 @@ class TMMergeModal extends Component {
           onFromAllProjectsChange={this.onFromAllProjectsChange}
           onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
           onVersionCheckboxChange={this.onVersionCheckboxChange}
+          onAllProjectsCheckboxChange={this.onAllProjectsCheckboxChange}
           onLanguageSelection={this.onLanguageSelection}
           onProjectSearchChange={this.onProjectSearchChange}
           onDragMoveEnd={this.onDragMoveEnd}
