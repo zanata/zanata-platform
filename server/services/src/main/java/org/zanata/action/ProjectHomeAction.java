@@ -415,8 +415,7 @@ public class ProjectHomeAction extends AbstractSortAction
     }
 
     private boolean isIterationActive(HProjectIteration version) {
-        return version.getProject().getStatus() == EntityStatus.ACTIVE
-                || version.getStatus() == EntityStatus.ACTIVE;
+        return version.isActive();
     }
 
     public void setPageRendered(boolean pageRendered) {

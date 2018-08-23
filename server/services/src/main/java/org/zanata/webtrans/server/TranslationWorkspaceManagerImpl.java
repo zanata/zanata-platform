@@ -13,7 +13,6 @@ import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.async.Async;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
@@ -166,20 +165,18 @@ public class TranslationWorkspaceManagerImpl
         }
         String projectSlug = projectIteration.getProject().getSlug();
         String iterSlug = projectIteration.getSlug();
-        HProject project = projectIteration.getProject();
-        Boolean isProjectActive = projectIterationIsActive(project.getStatus(),
-                projectIteration.getStatus());
+        boolean isVersionActive = projectIteration.isActive();
         ProjectType projectType = projectIteration.getProjectType();
         log.info(
                 "Project {} iteration {} updated, status={}, isProjectActive={}, projectType={}, oldProjectSlug={}, oldIterationSlug={}",
                 projectSlug, iterSlug, projectIteration.getStatus(),
-                isProjectActive, projectType, oldProjectSlug, oldIterationSlug);
+                isVersionActive, projectType, oldProjectSlug, oldIterationSlug);
         ProjectIterationId iterId = createProjectIterationId(projectIteration,
                 oldProjectSlug, oldIterationSlug, projectSlug, iterSlug);
         for (TranslationWorkspace workspace : projIterWorkspaceMap
                 .get(iterId)) {
             WorkspaceContextUpdate event = new WorkspaceContextUpdate(
-                    isProjectActive, projectType, validationStates);
+                    isVersionActive, projectType, validationStates);
             if (oldProjectSlug.isPresent()) {
                 event = event.projectSlugChanged(oldProjectSlug.get(),
                         projectSlug);
@@ -228,12 +225,6 @@ public class TranslationWorkspaceManagerImpl
                     projectIteration.getProjectType());
         }
         return iterId;
-    }
-
-    private boolean projectIterationIsActive(EntityStatus projectStatus,
-            EntityStatus iterStatus) {
-        return (projectStatus.equals(EntityStatus.ACTIVE)
-                && iterStatus.equals(EntityStatus.ACTIVE));
     }
 
     @PreDestroy

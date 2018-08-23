@@ -91,16 +91,9 @@ public class SecurityServiceImpl implements SecurityService {
                             "Project [%s] or version [%s] does not exist. Are they moved?",
                             projectSlug, iterationSlug));
         }
-        if (projectIterationIsInactive(project.getStatus(),
-                projectIteration.getStatus())) {
+        if (!projectIteration.isActive()) {
             throw new AuthorizationException("Project or version is read-only");
         }
         return project;
-    }
-
-    private static boolean projectIterationIsInactive(
-            EntityStatus projectStatus, EntityStatus iterStatus) {
-        return !(projectStatus.equals(EntityStatus.ACTIVE) && iterStatus
-                .equals(EntityStatus.ACTIVE));
     }
 }

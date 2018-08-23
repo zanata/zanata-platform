@@ -25,6 +25,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.IssuePriority;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
@@ -148,32 +149,36 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
                 new ActivateWorkspaceAction(workspaceId);
         when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId))
                 .thenReturn(translationWorkspace);
+
         HLocale hLocale = new HLocale(workspaceId.getLocaleId());
         when(localeServiceImpl.getByLocaleId(workspaceId.getLocaleId()))
                 .thenReturn(hLocale);
+
         ProjectIterationId projectIterationId =
                 workspaceId.getProjectIterationId();
         HProject hProject = new HProject();
+        hProject.setStatus(EntityStatus.ACTIVE);
         when(projectDAO.getBySlug(projectIterationId.getProjectSlug()))
                 .thenReturn(hProject);
+
         HProjectIteration hProjectIteration = new HProjectIteration();
-        when(
-                projectIterationDAO.getBySlug(
-                        projectIterationId.getProjectSlug(),
-                        projectIterationId.getIterationSlug())).thenReturn(
-                hProjectIteration);
+        hProjectIteration.setProject(hProject);
+        when(projectIterationDAO.getBySlug(
+                projectIterationId.getProjectSlug(),
+                projectIterationId.getIterationSlug()))
+                .thenReturn(hProjectIteration);
         when(identity.hasPermissionWithAnyTargets("modify-translation",
                 hProject, hLocale))
                 .thenReturn(true);
         when(identity.hasPermission("", "glossary-update")).thenReturn(true);
+
         LoadOptionsResult optionsResult =
                 new LoadOptionsResult(new UserConfigHolder().getState());
-        when(
-                loadOptionsHandler.execute(isA(LoadOptionsAction.class),
-                        nullable(ExecutionContext.class))).thenReturn(optionsResult);
+        when(loadOptionsHandler.execute(isA(LoadOptionsAction.class),
+                nullable(ExecutionContext.class))).thenReturn(optionsResult);
 
-        when(translationWorkspace.getWorkspaceContext()).thenReturn(
-                workspaceContext);
+        when(translationWorkspace.getWorkspaceContext())
+                .thenReturn(workspaceContext);
         when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
         Collection<ValidationAction> validationList =
@@ -186,11 +191,9 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
 
         GetValidationRulesResult validationResult =
                 new GetValidationRulesResult(validationStates);
-        when(
-                getValidationRulesHandler.execute(
-                        isA(GetValidationRulesAction.class),
-                        nullable(ExecutionContext.class))).thenReturn(
-                validationResult);
+        when(getValidationRulesHandler.execute(
+                isA(GetValidationRulesAction.class), nullable(ExecutionContext.class)))
+                .thenReturn(validationResult);
         when(reviewCriteriaDAO.findAll()).thenReturn(Lists.newArrayList(new ReviewCriteria(
                 IssuePriority.Critical, false, "Grammar error")));
 

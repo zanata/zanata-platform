@@ -20,6 +20,8 @@
  */
 package org.zanata.action
 
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.jglue.cdiunit.InRequestScope
@@ -28,6 +30,7 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.zanata.common.EntityStatus
 import org.zanata.config.MTServiceURL
 import org.zanata.dao.DocumentDAO
 import org.zanata.dao.LocaleDAO
@@ -144,5 +147,37 @@ class VersionHomeActionTest {
                 .getBySlug("myproject", "myversion"))
                 .thenReturn(hProjectIteration)
         assertThat(action.hasDocuments()).isFalse()
+    }
+
+    @Test
+    fun userCanOnlyUploadADocumentToActiveProjectVersion() {
+        val hProjectIteration = HProjectIteration().apply {
+            slug = "myversion"
+            project = HProject().apply {
+                slug = "myproject"
+                status = EntityStatus.ACTIVE
+            }
+            documents = mutableMapOf()
+            status = EntityStatus.ACTIVE
+        }
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(hProjectIteration)
+        whenever(identity.hasPermissionWithAnyTargets(eq("import-template"), any()))
+                .thenReturn(true)
+
+        hProjectIteration.project.status = EntityStatus.READONLY
+        hProjectIteration.status = EntityStatus.ACTIVE
+        assertThat(action.isDocumentUploadAllowed).isFalse()
+
+        hProjectIteration.project.status = EntityStatus.ACTIVE
+        hProjectIteration.status = EntityStatus.READONLY
+        assertThat(action.isDocumentUploadAllowed).isFalse()
+
+        hProjectIteration.project.status = EntityStatus.ACTIVE
+        hProjectIteration.status = EntityStatus.ACTIVE
+        assertThat(action.isDocumentUploadAllowed).isTrue()
     }
 }

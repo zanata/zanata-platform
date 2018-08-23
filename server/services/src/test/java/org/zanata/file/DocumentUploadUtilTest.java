@@ -95,9 +95,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
     @Inject
     private DocumentUploadUtil util;
 
-    private final String MSG_DOC_UPLOAD_NOT_ALLOWED =
-            "The project-version \"myproject:myversion\" is not "
-                    + "active. Document upload is not allowed.";
+    private final String MSG_DOC_UPLOAD_NOT_ALLOWED = "Document upload is not allowed.";
 
     private final String MSG_VERSION_NOT_FOUND =
             "The specified project-version \"myproject:myversion\" does not exist on this server.";
@@ -195,9 +193,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             fail("Should throw exception if project is read only or obsolete.");
         } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode()).isEqualTo(FORBIDDEN);
-            assertThat(e.getMessage()).isEqualTo(
-                    "The project \"myproject\" is not active. Document upload "
-                            + "is not allowed.");
+            assertThat(e.getMessage()).contains("Document upload is not allowed.");
         }
     }
 
@@ -232,7 +228,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
             fail("Should throw exception if version is read only or obsolete.");
         } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode()).isEqualTo(expectedStatus);
-            assertThat(e.getMessage()).isEqualTo(expectedMessage);
+            assertThat(e.getMessage()).contains(expectedMessage);
         }
     }
 

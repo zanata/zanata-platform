@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.zanata.adapter.FileFormatAdapter.ParserOptions;
 import org.zanata.common.DocumentType;
+import org.zanata.common.EntityStatus;
 import org.zanata.exception.DocumentUploadException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HRawDocument;
@@ -109,30 +110,22 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         when(documentUploadUtil.persistTempFileFromUpload(conf.uploadForm))
                 .thenReturn(someFile);
         doNothing().when(virusScanner).scan(someFile, "myproject:myversion:mydoc");
-        when(
-                documentDAO.getAdapterParams(conf.projectSlug,
-                        conf.versionSlug, conf.docId)).thenReturn(
-                conf.storedParams);
-//        conf.storedParams);
-        when(
-                documentDAO.addRawDocument(ArgumentMatchers.any(HDocument.class),
-                        persistedRawDocument.capture())).thenReturn(
-                new HRawDocument());
-        when(
-                documentDAO.getByProjectIterationAndDocId(conf.projectSlug,
-                        conf.versionSlug, conf.docId)).thenReturn(
-                conf.existingDocument);
+        when(documentDAO.getAdapterParams(conf.projectSlug, conf.versionSlug, conf.docId))
+                .thenReturn(conf.storedParams);
+        when(documentDAO.addRawDocument(ArgumentMatchers.any(HDocument.class),
+                persistedRawDocument.capture()))
+                .thenReturn(new HRawDocument());
+        when(documentDAO.getByProjectIterationAndDocId(conf.projectSlug,
+                conf.versionSlug, conf.docId))
+                .thenReturn(conf.existingDocument);
         Resource document = new Resource();
-        when(
-                translationFileService.parseUpdatedAdapterDocumentFile(
-                        eq(conf.docId),
-                        eq(conf.fileType), parserOptions.capture(),
-                        ArgumentMatchers.any(Optional.class))).thenReturn(
-            document);
-        when(
-                documentService.saveDocument(eq(conf.projectSlug),
-                        eq(conf.versionSlug), ArgumentMatchers.any(Resource.class),
-                        ArgumentMatchers.anySet(), ArgumentMatchers.anyBoolean()))
+        when(translationFileService.parseUpdatedAdapterDocumentFile(
+                eq(conf.docId),
+                eq(conf.fileType), parserOptions.capture(),
+                ArgumentMatchers.any(Optional.class))).thenReturn(document);
+        when(documentService.saveDocument(eq(conf.projectSlug),
+                eq(conf.versionSlug), ArgumentMatchers.any(Resource.class),
+                ArgumentMatchers.anySet(), ArgumentMatchers.anyBoolean()))
                 .thenReturn(new HDocument());
     }
 
@@ -199,7 +192,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     @Test
     @InRequestScope
     public void canUploadNewDocument() throws IOException {
-        conf = defaultUpload().build();
+        conf = defaultUpload().projectStatus(EntityStatus.ACTIVE)
+                .versionStatus(EntityStatus.ACTIVE).build();
         mockRequiredServices();
         when(documentUploadUtil.isNewDocument(conf.id)).thenReturn(true);
 
@@ -215,7 +209,9 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     @Test
     @InRequestScope
     public void canUploadExistingDocument() throws IOException {
-        conf = defaultUpload().existingDocument(new HDocument()).build();
+        conf = defaultUpload().projectStatus(EntityStatus.ACTIVE)
+                .versionStatus(EntityStatus.ACTIVE)
+                .existingDocument(new HDocument()).build();
         mockRequiredServices();
         when(documentUploadUtil.isNewDocument(conf.id)).thenReturn(false);
 

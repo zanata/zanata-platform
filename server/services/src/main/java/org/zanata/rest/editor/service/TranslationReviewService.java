@@ -75,8 +75,7 @@ public class TranslationReviewService implements TranslationReviewResource {
                 hTextFlowTarget.getTextFlow().getDocument()
                         .getProjectIteration();
         HProject project = projectIteration.getProject();
-        if (project.getStatus() != EntityStatus.ACTIVE || projectIteration.getStatus()
-                != EntityStatus.ACTIVE) {
+        if (!projectIteration.isActive()) {
             return Response.status(
                     Response.Status.FORBIDDEN)
                     .entity(Lists.newArrayList("project or version is not active."))

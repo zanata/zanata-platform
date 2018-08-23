@@ -55,7 +55,6 @@ import org.zanata.events.DocumentLocaleKey;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ProjectType;
@@ -626,8 +625,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     private boolean isVersionActive() {
-        return getVersion().getProject().getStatus() == EntityStatus.ACTIVE
-                || getVersion().getStatus() == EntityStatus.ACTIVE;
+        return getVersion().isActive();
     }
 
     public void deleteDocument(String docId) {
@@ -774,6 +772,10 @@ public class VersionHomeAction extends AbstractSortAction
         return filePersistService.hasPersistedDocument(id);
     }
 
+    /**
+     * Check if the version has any source documents
+     * @return has documents
+     */
     public boolean hasDocuments() {
         return !getVersion().getDocuments().isEmpty();
     }

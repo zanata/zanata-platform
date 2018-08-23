@@ -13,20 +13,13 @@
 </composite:interface>
 
 <composite:implementation>
-  <ui:fragment rendered="#{cc.attrs.version.status == 'ACTIVE'}">
+  <ui:fragment rendered="#{cc.attrs.version.active}">
     #{cc.attrs.version.slug}
   </ui:fragment>
-  <ui:fragment rendered="#{cc.attrs.version.status == 'READONLY'}">
+  <ui:fragment rendered="#{!cc.attrs.version.active}">
     <span class="txt--neutral">#{cc.attrs.version.slug}
       <ui:fragment rendered="#{cc.attrs.showIcon}">
         <i class="i--small i--right i--lock" title="#{msgs['jsf.iteration.tooltip.readonly']}"></i>
-      </ui:fragment>
-    </span>
-  </ui:fragment>
-  <ui:fragment rendered="#{cc.attrs.version.status == 'OBSOLETE'}">
-    <span class="txt--neutral">#{cc.attrs.version.slug}
-      <ui:fragment rendered="#{cc.attrs.showIcon}">
-        <i class="i--small i--right i--trash" title="#{msgs['jsf.iteration.tooltip.obsolete']}"></i>
       </ui:fragment>
     </span>
   </ui:fragment>
