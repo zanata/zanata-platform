@@ -232,7 +232,6 @@ timestamps {
           // -Dmaven.test.failure.ignore: Continue building other modules
           // even after test failures.
           withEnv(['NODE_OPTIONS=--max_old_space_size=4096']) {
-            sh 'echo NODE_OPTIONS: $NODE_OPTIONS'
             sh """./run-clean.sh ./mvnw -e -V --builder singlethreaded \
               -Dbuildtime.output.csv -Dbuildtime.output.csv.file=buildtime.csv \
               clean install jxr:aggregate \
