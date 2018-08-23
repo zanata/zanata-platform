@@ -31,6 +31,8 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Size;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.i18n.Messages;
 import org.zanata.security.annotations.Authenticated;
@@ -76,10 +78,12 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     private HAccount authenticatedAccount;
     private String slug;
     private String projectSlug;
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<SelectableVersion> projectVersions = Lists.newArrayList();
     @Inject
     private EmailService emailServiceImpl;
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
     @Inject
     private FacesMessages facesMessages;
@@ -273,5 +277,13 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
 
     public void setMessage(final String message) {
         this.message = message;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

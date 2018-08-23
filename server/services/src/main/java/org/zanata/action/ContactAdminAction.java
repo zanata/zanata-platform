@@ -66,7 +66,8 @@ public class ContactAdminAction implements Serializable {
     private Messages msgs;
     @Inject
     private FacesMessages facesMessages;
-    @Size(max = 300)
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
     private String subject;
 
@@ -135,5 +136,13 @@ public class ContactAdminAction implements Serializable {
 
     public void setSubject(final String subject) {
         this.subject = subject;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

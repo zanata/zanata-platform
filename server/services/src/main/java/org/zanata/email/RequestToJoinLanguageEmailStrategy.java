@@ -24,7 +24,6 @@ import com.google.common.base.Optional;
 import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import javax.mail.internet.InternetAddress;
-
 import static org.zanata.email.Addresses.getReplyTo;
 import static org.zanata.util.HtmlUtil.textToSafeHtml;
 

@@ -5,6 +5,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
   class="modal" id="joinLanguageDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" >
 
@@ -65,9 +66,9 @@
           <span>#{msgs['jsf.language.request.introduction']}</span>
           <span class="txt--meta bx--block">#{msgs['jsf.language.email.AdditionalInfoMessage']}</span>
           <h:inputTextarea id="request-join-message" value="#{languageJoinAction.message}"
-            styleClass="l--push-bottom-0">
+            styleClass="l--push-bottom-0" a:maxlength="#{languageJoinAction.maxUserMessageSize}">
             <a4j:ajax event="blur" render="requestToJoinLanguageMessageField" execute="@this"/>
-            <f:validateLength maximum="1000" />
+            <f:validateLength maximum="#{languageJoinAction.maxUserMessageSize}" />
           </h:inputTextarea>
         </zanata:decorate>
       </div>

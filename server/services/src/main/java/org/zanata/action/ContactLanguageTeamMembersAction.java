@@ -37,6 +37,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import com.google.common.collect.Lists;
@@ -66,6 +67,8 @@ public class ContactLanguageTeamMembersAction implements Serializable {
     private ApplicationConfiguration applicationConfiguration;
     @Inject
     private LocaleMemberDAO localeMemberDAO;
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
     private String subject;
     private String localeId;
@@ -146,5 +149,13 @@ public class ContactLanguageTeamMembersAction implements Serializable {
 
     public void setLocaleId(final String localeId) {
         this.localeId = localeId;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

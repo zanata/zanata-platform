@@ -25,6 +25,8 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Size;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.model.HLocaleMember;
@@ -71,6 +73,8 @@ public class LanguageContactCoordinatorAction implements Serializable {
     @Inject
     private Messages msgs;
 
+    private int maxUserMessageSize = EmailService.DEFAULT_MAX_MESSAGE_LENGTH;
+    @Size(max = EmailService.DEFAULT_MAX_MESSAGE_LENGTH)
     private String message;
 
     private String localeId;
@@ -154,5 +158,13 @@ public class LanguageContactCoordinatorAction implements Serializable {
 
     public void setLocaleId(final String localeId) {
         this.localeId = localeId;
+    }
+
+    public int getMaxUserMessageSize() {
+        return this.maxUserMessageSize;
+    }
+
+    public void setMaxUserMessageSize(final int messageSize) {
+        this.maxUserMessageSize = messageSize;
     }
 }

@@ -4,6 +4,7 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
   class="modal" id="contactAdminDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" >
 
@@ -73,8 +74,9 @@
         <h:outputLabel for="messageField" rendered="#{not identity.loggedIn}">#{msgs['jsf.ContactAdminMessage']}</h:outputLabel>
         <zanata:decorate id="messageField" componentId="message">
           <h:inputTextarea id="contact-admin-message" value="#{contactAdminAction.message}" required="true"
-            onkeyup="ShowContactAdminMessageCharCount(this)" styleClass="l--push-bottom-0">
-            <f:validateLength maximum="300"/>
+            onkeyup="ShowContactAdminMessageCharCount(this)" styleClass="l--push-bottom-0"
+            a:maxlength="#{contactAdminAction.maxUserMessageSize}">
+            <f:validateLength maximum="#{contactAdminAction.maxUserMessageSize}"/>
           </h:inputTextarea>
           <rich:message for="contact-admin-message" ajaxRendered="true" errorClass="bg--danger"
             id="contact-admin-error-message" name="contact-admin-error-message"/>
