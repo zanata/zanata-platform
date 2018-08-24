@@ -186,17 +186,20 @@ class VersionHomeActionTest {
     @Test
     fun userFriendlyTimeSinceLastChanged() {
         val document = HDocument()
+        val aMinuteAndOneSecond = 61000L
         document.lastChanged = Date.from(Instant.now())
 
         assertThat(action.getLastUpdatedDescription(document))
                 .isEqualTo("moments ago")
 
         // Note test may be unreliable (uses clock)
-        document.lastChanged = Date.from(Instant.now().minusMillis(10*61000))
+        document.lastChanged = Date.from(Instant.now()
+                .minusMillis(10*aMinuteAndOneSecond))
         assertThat(action.getLastUpdatedDescription(document))
                 .isEqualTo("10 minutes ago")
 
-        document.lastChanged = Date.from(Instant.now().minusMillis(60*61000))
+        document.lastChanged = Date.from(Instant.now()
+                .minusMillis(60*aMinuteAndOneSecond))
         assertThat(action.getLastUpdatedDescription(document))
                 .isEqualTo("1 hour ago")
     }
@@ -204,9 +207,10 @@ class VersionHomeActionTest {
     @Test
     fun getFormattedDate() {
         val document = HDocument()
-        document.lastChanged = Date(846201600000)
+        val oct25th1996 = Date(846201600000)
+        document.lastChanged = oct25th1996
         assertThat(action.getFormattedDate(document))
-                .isEqualTo(DateUtil.formatShortDate(Date(846201600000)))
+                .isEqualTo(DateUtil.formatShortDate(oct25th1996))
     }
 
     @Test
@@ -349,7 +353,7 @@ class VersionHomeActionTest {
         assertThat(action.uploadTranslationFile(locale)).isEqualTo("success")
     }
 
-    fun genericProjectVersion() : HProjectIteration {
+    fun genericProjectVersion(): HProjectIteration {
         return HProjectIteration().apply {
             slug = "myversion"
             project = HProject().apply {
