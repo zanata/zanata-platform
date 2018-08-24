@@ -154,8 +154,7 @@ public class VersionHomeAction extends AbstractSortAction
     private HLocale selectedLocale;
     private HDocument selectedDocument;
     @Inject
-    @SuppressWarnings("deprecation")
-    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
+    private FacesMessages facesMessages;
     @Inject
     private FilePersistService filePersistService;
     @Inject
@@ -284,14 +283,14 @@ public class VersionHomeAction extends AbstractSortAction
         copyVersionHandler.setProjectSlug(projectSlug);
     }
 
-    @SuppressWarnings("deprecation")
     private void setMessage(FacesMessage.Severity severity, String message) {
-        conversationScopeMessages.setMessage(severity, message);
+        facesMessages.addGlobal(severity, message);
     }
 
-    @SuppressWarnings("deprecation")
     private void addMessages(List<FacesMessage> messages) {
-        conversationScopeMessages.addMessages(messages);
+        for (FacesMessage message : messages) {
+            facesMessages.addGlobal(message);
+        }
     }
 
     public void cancelCopyVersion() {
@@ -1016,11 +1015,11 @@ public class VersionHomeAction extends AbstractSortAction
             } else {
                 extensions = Collections.<String> emptySet();
             }
+            MergeType mergeType = translationFileUpload.isMergeTranslations()
+                    ? MergeType.AUTO : MergeType.IMPORT;
             List<String> warnings = translationServiceImpl.translateAllInDoc(
                     projectSlug, versionSlug, translationFileUpload.getDocId(),
-                    hLocale.getLocaleId(), transRes, extensions,
-                    translationFileUpload.isMergeTranslations() ? MergeType.AUTO
-                            : MergeType.IMPORT,
+                    hLocale.getLocaleId(), transRes, extensions, mergeType,
                     translationFileUpload.isAssignCreditToUploader(),
                     TranslationSourceType.WEB_UPLOAD);
             StringBuilder infoMsg = new StringBuilder("File ")

@@ -106,9 +106,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
     @Inject
     private LocaleDAO localeDAO;
     @Inject
-    @SuppressWarnings("deprecation")
-    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
-    @Inject
     private LocaleService localeServiceImpl;
     @Inject
     private ValidationService validationServiceImpl;
@@ -292,12 +289,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void setMessage(String message) {
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                message);
-    }
-
     public List<ValidationAction> getValidationList() {
         List<ValidationAction> sortedList =
                 Lists.newArrayList(getValidations().values());
@@ -388,7 +379,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
     public void copyVersion() {
         copyVersionManager.startCopyVersion(getProjectSlug(),
                 copyFromVersionSlug, inputSlugValue);
-        setMessage(msgs.format("jsf.copyVersion.started", inputSlugValue,
+        facesMessages.addGlobal(msgs.format("jsf.copyVersion.started", inputSlugValue,
                 copyFromVersionSlug));
     }
 
@@ -455,7 +446,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 .putAll(getInstance().getProject().getCustomizedValidations());
         availableValidations.clear();
         update();
-        setMessage(msgs.get("jsf.iteration.CopyProjectValidations.message"));
+        facesMessages.addGlobal(msgs.get("jsf.iteration.CopyProjectValidations.message"));
     }
 
     /**
@@ -542,7 +533,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
         getInstance().setProjectType(
                 getInstance().getProject().getDefaultProjectType());
         update();
-        setMessage(msgs.get("jsf.iteration.CopyProjectType.message"));
+        facesMessages.addGlobal(msgs.get("jsf.iteration.CopyProjectType.message"));
     }
 
     /**
@@ -601,7 +592,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
             }
         }
         update();
-        setMessage(msgs.format("jsf.validation.updated",
+        facesMessages.addGlobal(msgs.format("jsf.validation.updated",
                 validationId.getDisplayName(), state));
     }
 
