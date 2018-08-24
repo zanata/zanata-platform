@@ -35,6 +35,7 @@ import org.zanata.common.io.DigestWriter;
 import com.google.common.base.Charsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * @author Carlos Munoz <a
@@ -70,10 +71,15 @@ public class HashUtilTest {
         assertThat(hashUtilHash).isEqualTo(testSingleContentHash);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void singleSourceHashNullIsInvalid() {
         String nullString = null;
-        HashUtil.sourceHash(nullString);
+        try {
+            HashUtil.sourceHash(nullString);
+            fail("Should have had a NullPointer|IllegalArgument exception");
+        } catch (NullPointerException | IllegalArgumentException e) {
+            // Pass - can have one or the other?
+        }
     }
 
     @Test

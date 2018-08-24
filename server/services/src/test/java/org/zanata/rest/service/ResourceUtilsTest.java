@@ -98,7 +98,7 @@ public class ResourceUtilsTest extends ZanataTest {
         from.add(tf1);
 
         HDocument to = new HDocument();
-
+        to.setLocale(new HLocale(LocaleId.EN_US));
         boolean changed =
                 resourceUtils.transferFromTextFlows(from, to,
                         new HashSet<String>(), 1);
@@ -110,6 +110,7 @@ public class ResourceUtilsTest extends ZanataTest {
     public void mergeChangedTextFlow() {
         // set up HDocument with a text flow
         HDocument to = new HDocument();
+        to.setLocale(new HLocale(LocaleId.EN_US));
         int originalTFRevision = 1;
         to.setRevision(originalTFRevision);
         HTextFlow originalTF = new HTextFlow(to, "id", "original text");

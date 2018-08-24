@@ -429,7 +429,7 @@ class TSAdapterTest : AbstractAdapterTest<TSAdapter>() {
             }
         }
         try {
-            adapter.replaceLocaleInDocPart(event, LocaleId("en-GB"))
+            adapter.replaceLocaleInDocPart(event, LocaleId.fromBCP47("en-GB"))
             fail("FileFormatAdapterException expected")
         } catch (ffae: FileFormatAdapterException) {
             // Pass
