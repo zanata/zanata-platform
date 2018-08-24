@@ -116,18 +116,13 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                         .build());
             }
         } else if (restCredentials.hasOAuthToken()) {
-            Either<Response, String> usernameOrError =
-                getAuthenticatedUsernameOrError();
-            if (usernameOrError.isLeft()) {
-                context.abortWith(usernameOrError.leftOrElse(null));
-                return;
-            }
-            String username = usernameOrError.orElse(null);
-            zanataIdentity.getCredentials().setUsername(username);
-            zanataIdentity.setRequestUsingOAuth(true);
-            // login will always success since the check was done above
-            // here the tryLogin() will just set up the correct system state
-            zanataIdentity.tryLogin();
+            getAuthenticatedUsernameOrError().bipeek(context::abortWith, username -> {
+                zanataIdentity.getCredentials().setUsername(username);
+                zanataIdentity.setRequestUsingOAuth(true);
+                // login will always success since the check was done above
+                // here the tryLogin() will just set up the correct system state
+                zanataIdentity.tryLogin();
+            });
         } else if (!allowAnonymousAccessProvider.get() ||
                 !HttpUtil.isReadMethod(context.getMethod())){
             // special cases for path such as '/test/' or '/oauth/' are now
