@@ -213,8 +213,8 @@
 
     <hamcrest.version>1.3</hamcrest.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
-    <!-- Note: Fedora 23 has 2.4.4. -->
-    <groovy.version>2.4.4</groovy.version>
+    <!-- Note: Fedora 28 has 2.4.4. -->
+    <groovy.version>2.4.15</groovy.version>
     <!-- Fedora 27 is still on 18.0: https://apps.fedoraproject.org/packages/guava -->
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
@@ -222,7 +222,7 @@
     <!-- Fedora <= 27 still uses maven-javadoc-plugin version 2.9.1 -->
     <maven.javadoc.version>3.0.0</maven.javadoc.version>
     <maven.jxr.version>2.5</maven.jxr.version>
-    <resteasy.version>3.0.19.Final</resteasy.version>
+    <resteasy.version>3.0.26.Final</resteasy.version>
     <surefire.version>2.21.0</surefire.version>
     <maven.source.version>3.0.1</maven.source.version>
     <site-maven-plugin.version>0.12</site-maven-plugin.version>
@@ -1000,27 +1000,45 @@
           <name>depcheck</name>
         </property>
       </activation>
-      <properties>
-        <!-- for ossindex: -->
-        <audit.failOnError>true</audit.failOnError>
-        <audit.quiet>true</audit.quiet>
-
-        <!-- TODO ignore by ID, not GAV (need https://github.com/OSSIndex/ossindex-maven-plugin/pull/20) -->
-        <!-- wildfly: due to https://github.com/OSSIndex/ossindex-maven-plugin/issues/19 -->
-        <!-- picketlink*, jgroups: because we use the app server's version (scope=provided)-->
-        <!-- ognl is test only (via concordion) -->
-        <audit.ignore>
-          org.wildfly.core:wildfly-server:2.0.10.Final,
-          org.jgroups:jgroups,
-          org.picketlink:picketlink-common,
-          org.picketlink:picketlink-federation,
-          ognl:ognl:2.6.9,
-        </audit.ignore>
-
-        <!--<audit.warnOnIgnore>true</audit.warnOnIgnore>-->
-      </properties>
       <build>
         <plugins>
+          <plugin>
+            <groupId>org.sonatype.ossindex.maven</groupId>
+            <artifactId>ossindex-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>audit-dependencies</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>audit</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <excludeCoordinatesCsv>
+                <!--groupId:artifactId:version,-->
+              </excludeCoordinatesCsv>
+              <!-- See https://ossindex.sonatype.org/vuln/XYZ for details of the vulnerabilities -->
+              <excludeVulnerabilityIdsCsv>
+                <!-- PicketLink has scope=provided -->
+                dc429308-45ef-47ae-b8f6-b6dd1eef150f,
+                <!-- PicketLink has scope=provided -->
+                1610dd6a-dffe-47a9-85b1-41ed61d2d678,
+                <!-- Only applies if you use Struts with OGNL. Plus OGNL is 'test' only (for concordion). -->
+                74cddd35-3e8e-4460-bb8f-03eef3b4d382,
+                <!-- RESTEasy YamlProvider, fixed in 3.0.22, 3.1.2 -->
+                c2774909-55bf-4aac-b946-92f234227a25,
+                <!-- RESTEasy YamlProvider, fixed in 3.0.22, 3.1.2 -->
+                70e781a0-a997-496b-ac71-83fba7b70b3f,
+                <!-- Jetty (used in tests only) -->
+                f5b16237-266e-453c-9104-47292a89c672,
+              </excludeVulnerabilityIdsCsv>
+              <scope>runtime</scope>
+            </configuration>
+          </plugin>
+          <!-- Disabled due to https://github.com/victims/maven-security-versions/issues/4 -->
+          <!--
           <plugin>
             <groupId>com.redhat.victims.maven</groupId>
             <artifactId>security-versions</artifactId>
@@ -1029,25 +1047,12 @@
               <execution>
                 <phase>verify</phase>
                 <goals>
-                  <!-- Disabled due to https://github.com/victims/maven-security-versions/issues/4 -->
-                  <!-- <goal>check</goal> -->
+                  <goal>check</goal>
                 </goals>
               </execution>
             </executions>
           </plugin>
-          <plugin>
-            <groupId>net.ossindex</groupId>
-            <artifactId>ossindex-maven-plugin</artifactId>
-            <version>2.3.8</version>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>audit</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
+          -->
         </plugins>
       </build>
     </profile>
