@@ -584,6 +584,7 @@
       </activation>
       <properties>
         <tests>BasicAcceptanceTest | DetailedTest</tests>
+        <include.test.patterns>DetailedTest</include.test.patterns>
       </properties>
       <build>
         <plugins>
