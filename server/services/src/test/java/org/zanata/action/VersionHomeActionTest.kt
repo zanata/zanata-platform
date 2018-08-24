@@ -22,6 +22,7 @@ package org.zanata.action
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.jglue.cdiunit.InRequestScope
@@ -30,17 +31,25 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.zanata.common.DocumentType
 import org.zanata.common.EntityStatus
+import org.zanata.common.LocaleId
+import org.zanata.common.MergeType
+import org.zanata.common.ProjectType
 import org.zanata.config.MTServiceURL
 import org.zanata.dao.DocumentDAO
 import org.zanata.dao.LocaleDAO
 import org.zanata.dao.ProjectIterationDAO
 import org.zanata.dao.WebHookDAO
+import org.zanata.exception.AuthorizationException
 import org.zanata.file.FilePersistService
 import org.zanata.i18n.Messages
 import org.zanata.model.HDocument
+import org.zanata.model.HLocale
 import org.zanata.model.HProject
 import org.zanata.model.HProjectIteration
+import org.zanata.rest.dto.TranslationSourceType
+import org.zanata.rest.dto.resource.TranslationsResource
 import org.zanata.rest.service.VirusScanner
 import org.zanata.security.ZanataIdentity
 import org.zanata.service.DocumentService
@@ -51,10 +60,16 @@ import org.zanata.service.TranslationStateCache
 import org.zanata.service.VersionStateCache
 import org.zanata.service.impl.WebhookServiceImpl
 import org.zanata.test.CdiUnitRunner
+import org.zanata.ui.faces.FacesMessages
+import org.zanata.util.DateUtil
 import org.zanata.util.UrlUtil
 import java.net.URI
+import java.time.Instant
+import java.util.Date
 import javax.enterprise.inject.Produces
+import javax.faces.application.FacesMessage
 import javax.inject.Inject
+import kotlin.test.fail
 
 /**
  * @author djansen [djansen@redhat.com](mailto:djansen@redhat.com)
@@ -96,7 +111,7 @@ class VersionHomeActionTest {
     @Mock @Produces
     private lateinit var translationServiceImpl: TranslationService
     @Mock @Produces
-    private lateinit var conversationScopeMessages: org.zanata.seam.scope.ConversationScopeMessages
+    private lateinit var conversationScopeMessages: FacesMessages
     @Mock @Produces
     private lateinit var filePersistService: FilePersistService
     @Mock @Produces
@@ -115,11 +130,7 @@ class VersionHomeActionTest {
 
     @Test
     fun hasDocumentsReturnsTrueWhenNotEmpty() {
-        val hProjectIteration = HProjectIteration().apply {
-            slug = "myversion"
-            project = HProject().apply {
-                slug = "myproject"
-            }
+        val hProjectIteration = genericProjectVersion().apply {
             documents = mutableMapOf("testdoc" to HDocument().apply {
                 name = "testdoc"
                 docId = "testdoc"})
@@ -134,11 +145,7 @@ class VersionHomeActionTest {
 
     @Test
     fun hasDocumentsReturnsFalseWhenEmpty() {
-        val hProjectIteration = HProjectIteration().apply {
-            slug = "myversion"
-            project = HProject().apply {
-                slug = "myproject"
-            }
+        val hProjectIteration = genericProjectVersion().apply {
             documents = mutableMapOf()
         }
         action.projectSlug = "myproject"
@@ -151,14 +158,10 @@ class VersionHomeActionTest {
 
     @Test
     fun userCanOnlyUploadADocumentToActiveProjectVersion() {
-        val hProjectIteration = HProjectIteration().apply {
-            slug = "myversion"
-            project = HProject().apply {
-                slug = "myproject"
-                status = EntityStatus.ACTIVE
-            }
-            documents = mutableMapOf()
+        val hProjectIteration = genericProjectVersion().apply {
             status = EntityStatus.ACTIVE
+            project.status = EntityStatus.ACTIVE
+            documents = mutableMapOf()
         }
         action.projectSlug = "myproject"
         action.versionSlug = "myversion"
@@ -179,5 +182,179 @@ class VersionHomeActionTest {
         hProjectIteration.project.status = EntityStatus.ACTIVE
         hProjectIteration.status = EntityStatus.ACTIVE
         assertThat(action.isDocumentUploadAllowed).isTrue()
+    }
+
+    @Test
+    fun userFriendlyTimeSinceLastChanged() {
+        val document = HDocument()
+        document.lastChanged = Date.from(Instant.now())
+
+        assertThat(action.getLastUpdatedDescription(document))
+                .isEqualTo("moments ago")
+
+        document.lastChanged = Date.from(Instant.now().minusMillis(10*60000))
+        assertThat(action.getLastUpdatedDescription(document))
+                .isEqualTo("10 minutes ago")
+
+        document.lastChanged = Date.from(Instant.now().minusMillis(60*60000))
+        assertThat(action.getLastUpdatedDescription(document))
+                .isEqualTo("1 hour ago")
+    }
+
+    @Test
+    fun getFormattedDate() {
+        val document = HDocument()
+        document.lastChanged = Date(846201600000)
+        assertThat(action.getFormattedDate(document))
+                .isEqualTo(DateUtil.formatShortDate(Date(846201600000)))
+    }
+
+    @Test
+    fun failIfDocumentDeleteIsNotAllowed() {
+        val hProjectIteration = genericProjectVersion().apply {
+            status = EntityStatus.READONLY
+            documents = mutableMapOf("testdoc" to HDocument().apply {
+                name = "testdoc"
+                docId = "testdoc"})
+        }
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(hProjectIteration)
+        try {
+            action.checkDocumentRemovalAllowed()
+            fail("Should have resulted in AuthorizationException")
+        } catch (e: AuthorizationException) {
+            // OK
+        }
+    }
+
+    @Test
+    fun continueIfDocumentDeleteIsAllowed() {
+        val hProjectIteration = genericProjectVersion()
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        whenever(identity
+                .hasPermissionWithAnyTargets("import-template", hProjectIteration))
+                .thenReturn(true)
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(hProjectIteration)
+        action.checkDocumentRemovalAllowed()
+    }
+
+    @Test
+    fun isAPoProjectCheck() {
+        val hProjectIteration = genericProjectVersion()
+        hProjectIteration.status = EntityStatus.ACTIVE
+        hProjectIteration.project.defaultProjectType = ProjectType.File
+
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(hProjectIteration)
+
+        assertThat(action.isPoProject).isFalse()
+
+        hProjectIteration.projectType = ProjectType.File
+        assertThat(action.isPoProject).isFalse()
+
+        hProjectIteration.projectType = ProjectType.Gettext
+        assertThat(action.isPoProject).isTrue()
+
+        hProjectIteration.projectType = ProjectType.Podir
+        assertThat(action.isPoProject).isTrue()
+    }
+
+    @Test
+    fun cannotUploadANullTranslationFile() {
+        val locale = HLocale(LocaleId.EN)
+        val version = genericProjectVersion()
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(version)
+        assertThat(action.uploadTranslationFile(locale)).isEqualTo("failure")
+    }
+
+    @Test
+    fun cannotUploadAnUnsupportedTranslationFile() {
+        val locale = HLocale(LocaleId.EN)
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        action.translationFileUpload.fileName = "test.jar"
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(genericProjectVersion())
+
+        // Does not break
+        assertThat(action.uploadTranslationFile(locale)).isEqualTo("success")
+        // but sends a message
+        verify(conversationScopeMessages).addGlobal(FacesMessage.SEVERITY_ERROR,
+                "test.jar-Cannot upload files of this type")
+    }
+
+    @Test
+    fun displayWarningsForUploadedTranslationFile() {
+        val locale = HLocale(LocaleId.EN)
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        action.translationFileUpload.fileName = "test.po"
+        action.translationFileUpload.docId = "test.po"
+        action.translationFileUpload.isAssignCreditToUploader = true
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(genericProjectVersion())
+        whenever(translationFileServiceImpl.hasMultipleDocumentTypes("test.po"))
+                .thenReturn(false)
+        whenever(translationFileServiceImpl.getDocumentTypes("test.po"))
+                .thenReturn(mutableSetOf(DocumentType.GETTEXT))
+
+        // This function call though
+        whenever(translationServiceImpl.translateAllInDoc(eq(action.projectSlug),
+                eq(action.versionSlug),
+                eq(action.translationFileUpload.docId),
+                eq(locale.localeId),
+                eq(null),
+                eq(mutableSetOf("gettext")),
+                eq(MergeType.AUTO),
+                eq(true),
+                eq(TranslationSourceType.WEB_UPLOAD)))
+                .thenReturn(listOf("The file was not super green"))
+        assertThat(action.uploadTranslationFile(locale)).isEqualTo("success")
+        verify(conversationScopeMessages).addGlobal(FacesMessage.SEVERITY_INFO,
+                "File test.po uploaded. There were some warnings, see below.")
+        // TODO: test actual message content
+        verify(conversationScopeMessages).addGlobal(any<FacesMessage>())
+    }
+
+    @Test
+    fun uploadATranslationFile() {
+        val locale = HLocale(LocaleId.EN)
+        action.projectSlug = "myproject"
+        action.versionSlug = "myversion"
+        action.translationFileUpload.fileName = "test.po"
+        whenever(projectIterationDAO
+                .getBySlug("myproject", "myversion"))
+                .thenReturn(genericProjectVersion())
+        whenever(translationFileServiceImpl.hasMultipleDocumentTypes("test.po"))
+                .thenReturn(false)
+        whenever(translationFileServiceImpl.getDocumentTypes("test.po"))
+                .thenReturn(mutableSetOf(DocumentType.GETTEXT))
+        // Assume translationFileServiceImpl.parseTranslationFile and
+        // translationServiceImpl.translateAllInDoc are successful
+        assertThat(action.uploadTranslationFile(locale)).isEqualTo("success")
+    }
+
+    fun genericProjectVersion() : HProjectIteration {
+        return HProjectIteration().apply {
+            slug = "myversion"
+            project = HProject().apply {
+                slug = "myproject"
+            }
+        }
     }
 }
