@@ -62,8 +62,6 @@ public class AutocompleteTest extends ZanataTest {
     LocaleDAO localeDAO;
     @Produces @Mock
     Messages messages;
-    @Produces @Mock @SuppressWarnings("deprecation")
-    org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
 
     @Test
     public void suggestLocales() {

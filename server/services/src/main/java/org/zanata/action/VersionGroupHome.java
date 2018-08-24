@@ -86,9 +86,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     @Inject
     private Messages msgs;
     @Inject
-    @SuppressWarnings("deprecation")
-    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
-    @Inject
     private ZanataIdentity identity;
     @Inject
     private GroupMaintainerAutocomplete maintainerAutocomplete;
@@ -171,34 +168,26 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         return super.persist();
     }
 
-    @SuppressWarnings("deprecation")
-    private void setMessage(String message) {
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                message);
-    }
-
     @Override
     @Transactional
     public String update() {
         identity.checkPermission(getInstance(), "update");
         String state = super.update();
-        setMessage(msgs.get("jsf.group.settings.updated"));
+        facesMessages.addGlobal(msgs.get("jsf.group.settings.updated"));
         return state;
     }
     // TODO ask camunoz if this is still needed
 
     /**
-     * This is for autocomplete components of which ConversationScopeMessages
+     * This is for autocomplete components of which FacesMessages
      * will be null
      *
-     * @param conversationScopeMessages
+     * @param facesMessages
      * @return
      */
-    @SuppressWarnings("deprecation")
-    private String update(
-            org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages) {
-        if (this.conversationScopeMessages == null) {
-            this.conversationScopeMessages = conversationScopeMessages;
+    private String update(FacesMessages facesMessages) {
+        if (this.facesMessages == null) {
+            this.facesMessages = facesMessages;
         }
         return update();
     }
@@ -209,8 +198,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         String slug = getInstance().getSlug();
         versionGroupDAO.makeTransient(getInstance());
         versionGroupDAO.flush();
-        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.group.notification.deleted", slug));
+        facesMessages.addGlobal(msgs.format("jsf.group.notification.deleted", slug));
         urlUtil.redirectToInternal(urlUtil.dashboardUrl());
     }
 
@@ -219,7 +207,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         identity.checkPermission(getInstance(), "update");
         getInstance().getActiveLocales().remove(locale);
         update();
-        setMessage(msgs.format("jsf.LanguageRemoveFromGroup",
+        facesMessages.addGlobal(msgs.format("jsf.LanguageRemoveFromGroup",
                 locale.retrieveDisplayName()));
     }
 
@@ -228,7 +216,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         identity.checkPermission(getInstance(), "update");
         getInstance().getProjectIterations().remove(version);
         update();
-        setMessage(msgs.format("jsf.VersionRemoveFromGroup", version.getSlug(),
+        facesMessages.addGlobal(msgs.format("jsf.VersionRemoveFromGroup", version.getSlug(),
                 version.getProject().getSlug()));
     }
 
@@ -236,12 +224,12 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     public void removeMaintainer(HPerson maintainer) {
         identity.checkPermission(getInstance(), "update");
         if (getInstance().getMaintainers().size() <= 1) {
-            setMessage(msgs.get("jsf.group.NeedAtLeastOneMaintainer"));
+            facesMessages.addGlobal(msgs.get("jsf.group.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().removeMaintainer(maintainer);
             maintainerFilter.reset();
             super.update();
-            setMessage(msgs.format("jsf.MaintainerRemoveFromGroup",
+            facesMessages.addGlobal(msgs.format("jsf.MaintainerRemoveFromGroup",
                     maintainer.getName()));
             if (maintainer.equals(authenticatedAccount.getPerson())) {
                 urlUtil.redirectToInternal(
@@ -304,6 +292,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         return identity.hasPermission(version, "read");
     }
 
+    public FacesMessages getFacesMessages() {
+        return facesMessages;
+    }
+
     @ViewScoped
     public static class GroupMaintainerAutocomplete
             extends MaintainerAutocomplete {
@@ -330,7 +322,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
          */
         @Override
         @Transactional
-        @SuppressWarnings("deprecation")
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
@@ -338,11 +329,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             identity.checkPermission(getInstance(), "update");
             HPerson maintainer = personDAO.findByUsername(getSelectedItem());
             getInstance().getMaintainers().add(maintainer);
-            versionGroupHome.update(conversationScopeMessages);
+            versionGroupHome.update(versionGroupHome.getFacesMessages());
             reset();
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.format("jsf.MaintainerAddedToGroup",
-                            maintainer.getName()));
+            versionGroupHome.facesMessages.addGlobal(
+                    msgs.format("jsf.MaintainerAddedToGroup", maintainer.getName()));
         }
     }
 
@@ -388,9 +378,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             HProjectIteration version =
                     projectIterationDAO.findById(Long.valueOf(getSelectedItem()));
             getInstance().getProjectIterations().add(version);
-            versionGroupHome.update(conversationScopeMessages);
+            versionGroupHome.update(versionGroupHome.getFacesMessages());
             reset();
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            versionGroupHome.facesMessages.addGlobal(
                     msgs.format("jsf.VersionAddedToGroup", version.getSlug(),
                             version.getProject().getSlug()));
         }
@@ -457,10 +447,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             identity.checkPermission(getInstance(), "update");
             HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
             getInstance().getActiveLocales().add(locale);
-            versionGroupHome.update();
+            versionGroupHome.update(versionGroupHome.getFacesMessages());
             reset();
             versionGroupHome.getMaintainerFilter().reset();
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            versionGroupHome.facesMessages.addGlobal(
                     msgs.format("jsf.LanguageAddedToGroup",
                             locale.retrieveDisplayName()));
         }

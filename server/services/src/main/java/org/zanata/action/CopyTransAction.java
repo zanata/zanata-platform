@@ -40,6 +40,7 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransOptionFactory;
 import org.zanata.ui.CopyAction;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.DateUtil;
 import com.google.common.base.Optional;
 
@@ -63,8 +64,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
     private CopyTransManager copyTransManager;
 
     @Inject
-    @SuppressWarnings("deprecation")
-    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
+    private FacesMessages facesMessages;
 
     @Inject
     private Messages msgs;
@@ -154,27 +154,21 @@ public class CopyTransAction extends CopyAction implements Serializable {
         if (isInProgress()) {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
-            setMessage(msgs.get("jsf.iteration.CopyTrans.NoDocuments"));
+            facesMessages.addGlobal(msgs.get("jsf.iteration.CopyTrans.NoDocuments"));
             return;
         }
 
         HCopyTransOptions options = copyTransOptionsModel.getInstance();
 
         copyTransManager.startCopyTrans(getProjectIteration(), options);
-        setMessage(msgs.get("jsf.iteration.CopyTrans.Started"));
+        facesMessages.addGlobal(msgs.get("jsf.iteration.CopyTrans.Started"));
     }
 
     public void cancel() {
         copyTransManager.cancelCopyTrans(getProjectIteration());
-        setMessage(msgs.get("jsf.iteration.CopyTrans.Cancelled"));
+        facesMessages.addGlobal(msgs.get("jsf.iteration.CopyTrans.Cancelled"));
         copyTransOptionsModel.setInstance(CopyTransOptionFactory
             .getImplicitOptions());
-    }
-
-    @SuppressWarnings("deprecation")
-    private void setMessage(String message) {
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                message);
     }
 
     public String getCurrentProgress() {

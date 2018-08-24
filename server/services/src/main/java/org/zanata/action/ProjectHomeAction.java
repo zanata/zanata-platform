@@ -47,7 +47,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.handle.CopyVersionTaskHandle;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleMemberDAO;
@@ -72,6 +71,7 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
@@ -122,8 +122,7 @@ public class ProjectHomeAction extends AbstractSortAction
     @Inject
     private ProjectIterationDAO projectIterationDAO;
     @Inject
-    @SuppressWarnings("deprecation")
-    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
+    private FacesMessages facesMessages;
     @Inject
     private GlossaryDAO glossaryDAO;
     private SortingType VersionSortingList = new SortingType(Lists.newArrayList(
@@ -187,7 +186,8 @@ public class ProjectHomeAction extends AbstractSortAction
 
     public void cancelCopyVersion(String projectSlug, String versionSlug) {
         copyVersionManager.cancelCopyVersion(projectSlug, versionSlug);
-        setMessage(msgs.format("jsf.copyVersion.Cancelled", versionSlug));
+        facesMessages.addGlobal(msgs.format("jsf.copyVersion.Cancelled",
+                versionSlug));
     }
 
     public String getCopyVersionCompletePercent(String projectSlug,
@@ -198,18 +198,13 @@ public class ProjectHomeAction extends AbstractSortAction
             double completedPercent = (double) handler.getCurrentProgress()
                     / (double) handler.getMaxProgress() * 100;
             if (Double.compare(completedPercent, 100) == 0) {
-                setMessage(msgs.format("jsf.copyVersion.Completed", versionSlug));
+                facesMessages.addGlobal(msgs.format("jsf.copyVersion.Completed",
+                        versionSlug));
             }
             return String.format("%1$,.2f", completedPercent);
         } else {
             return "0";
         }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void setMessage(String message) {
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                message);
     }
 
     public String getCopyVersionTotalDocuments(String projectSlug,
