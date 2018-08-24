@@ -154,7 +154,7 @@ public class VersionHomeAction extends AbstractSortAction
     private HLocale selectedLocale;
     private HDocument selectedDocument;
     @Inject
-    private FacesMessages conversationScopeMessages;
+    private FacesMessages facesMessages;
     @Inject
     private FilePersistService filePersistService;
     @Inject
@@ -284,12 +284,12 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     private void setMessage(FacesMessage.Severity severity, String message) {
-        conversationScopeMessages.addGlobal(severity, message);
+        facesMessages.addGlobal(severity, message);
     }
 
     private void addMessages(List<FacesMessage> messages) {
         for (FacesMessage message : messages) {
-            conversationScopeMessages.addGlobal(message);
+            facesMessages.addGlobal(message);
         }
     }
 

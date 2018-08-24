@@ -49,7 +49,6 @@ import org.zanata.model.HLocale
 import org.zanata.model.HProject
 import org.zanata.model.HProjectIteration
 import org.zanata.rest.dto.TranslationSourceType
-import org.zanata.rest.dto.resource.TranslationsResource
 import org.zanata.rest.service.VirusScanner
 import org.zanata.security.ZanataIdentity
 import org.zanata.service.DocumentService
@@ -111,7 +110,7 @@ class VersionHomeActionTest {
     @Mock @Produces
     private lateinit var translationServiceImpl: TranslationService
     @Mock @Produces
-    private lateinit var conversationScopeMessages: FacesMessages
+    private lateinit var facesMessages: FacesMessages
     @Mock @Produces
     private lateinit var filePersistService: FilePersistService
     @Mock @Produces
@@ -192,11 +191,12 @@ class VersionHomeActionTest {
         assertThat(action.getLastUpdatedDescription(document))
                 .isEqualTo("moments ago")
 
-        document.lastChanged = Date.from(Instant.now().minusMillis(10*60000))
+        // Note test may be unreliable (uses clock)
+        document.lastChanged = Date.from(Instant.now().minusMillis(10*61000))
         assertThat(action.getLastUpdatedDescription(document))
                 .isEqualTo("10 minutes ago")
 
-        document.lastChanged = Date.from(Instant.now().minusMillis(60*60000))
+        document.lastChanged = Date.from(Instant.now().minusMillis(60*61000))
         assertThat(action.getLastUpdatedDescription(document))
                 .isEqualTo("1 hour ago")
     }
@@ -293,7 +293,7 @@ class VersionHomeActionTest {
         // Does not break
         assertThat(action.uploadTranslationFile(locale)).isEqualTo("success")
         // but sends a message
-        verify(conversationScopeMessages).addGlobal(FacesMessage.SEVERITY_ERROR,
+        verify(facesMessages).addGlobal(FacesMessage.SEVERITY_ERROR,
                 "test.jar-Cannot upload files of this type")
     }
 
@@ -325,10 +325,10 @@ class VersionHomeActionTest {
                 eq(TranslationSourceType.WEB_UPLOAD)))
                 .thenReturn(listOf("The file was not super green"))
         assertThat(action.uploadTranslationFile(locale)).isEqualTo("success")
-        verify(conversationScopeMessages).addGlobal(FacesMessage.SEVERITY_INFO,
+        verify(facesMessages).addGlobal(FacesMessage.SEVERITY_INFO,
                 "File test.po uploaded. There were some warnings, see below.")
         // TODO: test actual message content
-        verify(conversationScopeMessages).addGlobal(any<FacesMessage>())
+        verify(facesMessages).addGlobal(any<FacesMessage>())
     }
 
     @Test
