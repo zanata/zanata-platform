@@ -53,7 +53,12 @@ public class CorePage extends AbstractPage {
     protected static final By tableElement = By.tagName("table");
 
     public CorePage(WebDriver driver) {
-        super(driver);
+        super(driver, true);
+        assertNoCriticalErrors();
+    }
+
+    public CorePage(WebDriver driver, boolean hideNotifications) {
+        super(driver, hideNotifications);
         assertNoCriticalErrors();
     }
 

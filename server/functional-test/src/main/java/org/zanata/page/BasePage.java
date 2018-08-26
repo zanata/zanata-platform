@@ -58,6 +58,10 @@ public class BasePage extends CorePage {
         super(driver);
     }
 
+    public BasePage(final WebDriver driver, final boolean hideNotifications) {
+        super(driver, hideNotifications);
+    }
+
     public DashboardBasePage goToMyDashboard() {
         log.info("Click Dashboard menu link");
         clickLinkAfterAnimation(BY_DASHBOARD_LINK);

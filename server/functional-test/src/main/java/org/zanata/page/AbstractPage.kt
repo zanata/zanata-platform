@@ -42,20 +42,18 @@ import org.zanata.util.until
 /**
  * The base class for the page driver. Contains functionality not generally of a
  * user visible nature.
- * @author Sean Flanigan
- *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- * @author Damian Jansen
- *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Sean Flanigan [sflaniga@redhat.com][mailto:sflaniga@redhat.com"]
+ * @author Damian Jansen [djansen@redhat.com][mailto:djansen@redhat.com]
  */
-abstract class AbstractPage(val driver: WebDriver) {
+abstract class AbstractPage(val driver: WebDriver, val hideNotifications: Boolean = true) {
 
     companion object {
         private val log = org.slf4j.LoggerFactory.getLogger(AbstractPage::class.java)
     }
 
     init {
-        PageFactory.initElements(AjaxElementLocatorFactory(driver, 10),
-                this)
+        @Suppress("LeakingThis")
+        PageFactory.initElements(AjaxElementLocatorFactory(driver, 10), this)
         waitForPageSilence()
     }
 
@@ -102,14 +100,13 @@ abstract class AbstractPage(val driver: WebDriver) {
      */
     @Deprecated("")
     fun switchToAlert(): Alert? {
-        return waitForAMoment()
-                .until("alert") { driver ->
-                    try {
-                        driver.switchTo().alert();
-                    } catch (e: NoAlertPresentException) {
-                        null;
-                    }
-                }
+        return waitForAMoment().until("alert") { driver ->
+            try {
+                driver.switchTo().alert()
+            } catch (e: NoAlertPresentException) {
+                null
+            }
+        }
     }
 
     /**
@@ -144,30 +141,30 @@ abstract class AbstractPage(val driver: WebDriver) {
         get() = 0
 
     // TODO use this to wait for a page load after user input (eg click)
+    @Suppress("unused")
     fun execAndWaitForNewPage(runnable: Runnable) {
         val oldPage = driver.findElement(By.tagName("html"))
         runnable.run()
         val msg = "new page load"
         logWaiting(msg)
-        waitForAMoment()
-                .until(msg, { _ ->
-                    try {
-                        // ignore result
-                        oldPage.getAttribute("class")
-                        // if we get here, the old page is still there
-                        false
-                    } catch (e: StaleElementReferenceException) {
-                        // http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
-                        //
-                        // This exception means the new page has loaded
-                        // (or started to).
-                        val script = "return document.readyState === \'complete\' && window.deferScriptsFinished"
-                        val documentComplete = executor.executeScript(script) as Boolean?
-                        // TODO wait for ajax?
-                        // NB documentComplete might be null/undefined
-                        documentComplete == true
-                    }
-                })
+        waitForAMoment().until(msg) { _ ->
+            try {
+                // ignore result
+                oldPage.getAttribute("class")
+                // if we get here, the old page is still there
+                false
+            } catch (e: StaleElementReferenceException) {
+                // http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
+                //
+                // This exception means the new page has loaded
+                // (or started to).
+                val script = "return document.readyState === \'complete\' && window.deferScriptsFinished"
+                val documentComplete = executor.executeScript(script) as Boolean?
+                // TODO wait for ajax?
+                // NB documentComplete might be null/undefined
+                documentComplete == true
+            }
+        }
         logFinished(msg)
     }
 
@@ -182,34 +179,37 @@ abstract class AbstractPage(val driver: WebDriver) {
         // but not multi-second timeouts (eg global faces messages)
         val script = "return XMLHttpRequest.active"
         // Wait for AJAX/timeout requests to be 0
-        waitForAMoment().withMessage("page silence")
-                .until({ _ ->
-                    val outstanding = executor.executeScript(script) as Long?
-                    if (outstanding == null) {
-                        if (log.isWarnEnabled) {
-                            val url = driver.currentUrl
-                            val pageSource = driver.shortenPageSource()
-                            log.warn(
-                                    "XMLHttpRequest.active is null. Is zanata-testing-extension installed? URL: {}\nPartial page source follows:\n{}",
-                                    url, pageSource)
-                        }
-                        return@until true
-                    }
-                    if (outstanding < 0) {
-                        throw RuntimeException(
-                                "XMLHttpRequest.active and/or window.timeoutCounter is negative.  Please check the implementation of zanata-testing-extension, and ensure that the injected script is run before any other JavaScript in the page.")
-                    }
-                    val expected = expectedBackgroundRequests
-                    if (outstanding < expected) {
-                        log.warn(
-                                "Expected at least {} background requests, but actual count is {}",
-                                expected, outstanding, Throwable())
-                    } else {
-                        log.debug("Waiting: outstanding = {}, expected = {}",
-                                outstanding, expected)
-                    }
-                    outstanding <= expected
-                })
+        waitForAMoment().withMessage("page silence").until { _ ->
+            val outstanding = executor.executeScript(script) as Long?
+            if (outstanding == null) {
+                if (log.isWarnEnabled) {
+                    val url = driver.currentUrl
+                    val pageSource = driver.shortenPageSource()
+                    log.warn("XMLHttpRequest.active is null. " +
+                            "Is zanata-testing-extension installed? URL: {}\n" +
+                            "Partial page source follows:\n{}",
+                            url, pageSource)
+                }
+                return@until true
+            }
+            if (outstanding < 0) {
+                throw RuntimeException("XMLHttpRequest.active and/or " +
+                        "window.timeoutCounter is negative.  Please check " +
+                        "the implementation of zanata-testing-extension, " +
+                        "and ensure that the injected script is run before " +
+                        "any other JavaScript in the page.")
+            }
+            val expected = expectedBackgroundRequests
+            if (outstanding < expected) {
+                log.warn(
+                        "Expected at least {} background requests, but actual count is {}",
+                        expected, outstanding, Throwable())
+            } else {
+                log.debug("Waiting: outstanding = {}, expected = {}",
+                        outstanding, expected)
+            }
+            outstanding <= expected
+        }
         waitForLoaders()
     }
 
@@ -218,19 +218,19 @@ abstract class AbstractPage(val driver: WebDriver) {
      */
     private fun waitForLoaders() {
         waitForAMoment().withMessage("Loader indicator")
-                .until({ _ ->
+                .until { _ ->
                     // Find all elements with class name js-loader, or return []
                     val script = "return (typeof $ == \'undefined\') ?  [] : $(\'.js-loader\').toArray()"
                     val loaders = executor.executeScriptToElements(script)
                     for (loader in loaders) {
                         if (loader.getAttribute("class")
-                                .contains("is-active")) {
+                                        .contains("is-active")) {
                             log.info("Wait for loader finished")
                             return@until false
                         }
                     }
                     true
-                })
+                }
     }
 
     /**
@@ -306,7 +306,7 @@ abstract class AbstractPage(val driver: WebDriver) {
         logWaiting(msg)
         waitForPageSilence()
         return waitForAMoment().withMessage(msg)
-                .until(msg, { _ -> parentElement.findElement(elementBy) })
+                .until(msg) { _ -> parentElement.findElement(elementBy) }
     }
 
     /**
@@ -390,15 +390,14 @@ abstract class AbstractPage(val driver: WebDriver) {
             enterTextAction.sendKeys(text).perform()
         }
         if (check) {
-            waitForAMoment()
-                    .until("Text equal to entered", { _ ->
-                        val foundText = element.getAttribute("value")
-                        if (text != foundText) {
-                            log.info("Found: {}", foundText)
-                            triggerScreenshot("_textWaiting")
-                            false
-                        } else true
-                    })
+            waitForAMoment().until("Text equal to entered") { _ ->
+                val foundText = element.getAttribute("value")
+                if (text != foundText) {
+                    log.info("Found: {}", foundText)
+                    triggerScreenshot("_textWaiting")
+                    false
+                } else true
+            }
         } else {
             log.info("Not checking text entered")
         }
@@ -411,7 +410,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @param text text to enter
      */
     fun enterText(findBy: By, text: String) {
-        enterText(readyElement(findBy), text);
+        enterText(readyElement(findBy), text)
     }
 
     /**
@@ -420,7 +419,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @param findBy locator of target element
      */
     fun getText(findBy: By): String {
-        return getText(existingElement(findBy));
+        return getText(existingElement(findBy))
     }
 
     /**
@@ -429,9 +428,9 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @param webElement target element
      */
     fun getText(webElement: WebElement): String {
-        scrollIntoView(webElement);
-        waitForElementReady(webElement);
-        return webElement.getText();
+        scrollIntoView(webElement)
+        waitForElementReady(webElement)
+        return webElement.text
     }
 
     /**
@@ -462,16 +461,15 @@ abstract class AbstractPage(val driver: WebDriver) {
      * @param textField
      */
     fun touchTextField(textField: WebElement) {
-        waitForAMoment().until({ _ ->
+        waitForAMoment().until { _ ->
             enterText(textField, ".", true, false, false)
             textField.getAttribute("value") == "."
-        })
+        }
         textField.clear()
     }
 
     private fun waitForElementReady(elem: WebElement) {
-        waitForAMoment()
-                .withMessage("element ready: $elem")
+        waitForAMoment().withMessage("element ready: $elem")
                 .until { _ -> elem.isDisplayed && elem.isEnabled }
     }
 
@@ -484,7 +482,8 @@ abstract class AbstractPage(val driver: WebDriver) {
     /**
      * Remove any visible notifications
      */
-    fun removeNotifications() {
+    private fun removeNotifications() {
+        if (!hideNotifications) return
         val notifications = executor.executeScriptToElements(
                 "return (typeof $ == \'undefined\') ?  [] : $(\'a.message__remove\').toArray()")
         log.info("Closing {} notifications", notifications.size)
@@ -513,17 +512,16 @@ abstract class AbstractPage(val driver: WebDriver) {
     fun waitForNotificationsGone() {
         val script = "return (typeof $ == \'undefined\') ?  [] : $(\'ul.message--global\').toArray()"
         val message = "notifications box not displayed"
-        waitForAMoment().withMessage(message)
-                .until({ _ ->
-                    val boxes = executor.executeScriptToElements(script)
-                    for (box in boxes) {
-                        if (box.isDisplayed) {
-                            log.info(message)
-                            return@until false
-                        }
-                    }
-                    true
-                })
+        waitForAMoment().withMessage(message).until { _ ->
+            val boxes = executor.executeScriptToElements(script)
+            for (box in boxes) {
+                if (box.isDisplayed) {
+                    log.info(message)
+                    return@until false
+                }
+            }
+            true
+        }
     }
 
     /**
@@ -541,7 +539,7 @@ abstract class AbstractPage(val driver: WebDriver) {
         } else {
             log.warn("Unable to focus page container")
         }
-        waitForPageSilence();
+        waitForPageSilence()
     }
 
     /**
@@ -557,14 +555,14 @@ abstract class AbstractPage(val driver: WebDriver) {
     /**
      * Dismiss the Cookie Consent
      */
-    fun dismissCookieConsent() {
+    private fun dismissCookieConsent() {
         val consentButton = By.className("cc-dismiss")
         if (driver.findElements(consentButton).size > 0 &&
                 driver.findElement(consentButton).isDisplayed) {
             log.info("Closing Cookie Consent popup")
-            existingElement(By.className("cc-dismiss")).click();
+            existingElement(By.className("cc-dismiss")).click()
         }
-        waitForPageSilence();
+        waitForPageSilence()
     }
 
     /*
@@ -584,6 +582,7 @@ abstract class AbstractPage(val driver: WebDriver) {
         executor.executeScript("scroll(0, 0);")
     }
 
+    @Suppress("unused")
     fun getHtmlSource(webElement: WebElement): String {
         return executor
                 .executeScript("return arguments[0].innerHTML;", webElement) as String
