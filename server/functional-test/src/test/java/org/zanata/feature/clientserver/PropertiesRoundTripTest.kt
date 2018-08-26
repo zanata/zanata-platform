@@ -22,14 +22,12 @@ package org.zanata.feature.clientserver
 
 import com.google.common.io.Files
 import org.fedorahosted.openprops.Properties
-import org.junit.Before
 import org.junit.jupiter.api.Test
 import org.zanata.util.Trace
 import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.webtrans.EditorPage
 import org.zanata.util.TestFileGenerator
-import org.zanata.util.ZanataRestCaller
 import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.ClientWorkFlow
 import org.zanata.workflow.LoginWorkFlow
@@ -39,6 +37,7 @@ import java.io.FileReader
 import java.io.FileWriter
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.zanata.util.MavenHome.mvn
 import org.zanata.feature.clientserver.ProjectMaintainerTest.Companion.MAVEN_PLUGIN
 
@@ -50,19 +49,16 @@ class PropertiesRoundTripTest : ZanataTestCase() {
 
 
     private val client = ClientWorkFlow()
-    private lateinit var restCaller: ZanataRestCaller
-
     private val tempDir = Files.createTempDir()
 
     private val userConfigPath = ClientWorkFlow.getUserConfigPath("admin")
 
-    @Before
+    @BeforeEach
     fun setUp() {
-        restCaller = ZanataRestCaller()
         // generate a properties source
         val properties = Properties().apply {
             setProperty("hello", "hello world")
-            setProperty("greeting", "this is from Huston")
+            setProperty("greeting", "this is from Houston")
             setProperty("hey", "hey hey")
         }
         val propertiesSource = File(tempDir, "test.properties")
@@ -72,7 +68,7 @@ class PropertiesRoundTripTest : ZanataTestCase() {
     @Trace(summary = "The maintainer user may push and pull properties files")
     @Test
     fun canPushAndPullProperties() {
-        restCaller.createProjectAndVersion("properties-test", "master",
+        zanataRestCaller.createProjectAndVersion("properties-test", "master",
                 "properties")
         // generate a zanata.xml
         TestFileGenerator.generateZanataXml(File(tempDir, "zanata.xml"),
@@ -129,7 +125,7 @@ class PropertiesRoundTripTest : ZanataTestCase() {
         assertThat(editorPage.getMessageSourceAtRowIndex(0))
                 .isEqualTo("hello world")
         assertThat(editorPage.getMessageSourceAtRowIndex(1))
-                .isEqualTo("this is from Huston")
+                .isEqualTo("this is from Houston")
         assertThat(editorPage.getMessageSourceAtRowIndex(2))
                 .isEqualTo("hey hey")
 

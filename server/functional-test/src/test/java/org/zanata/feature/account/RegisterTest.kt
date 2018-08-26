@@ -30,11 +30,14 @@ import org.zanata.page.utility.HomePage
 import org.zanata.workflow.BasicWorkFlow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.extension.ExtendWith
+import org.zanata.util.HasEmailExtension
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @DetailedTest
+@ExtendWith(HasEmailExtension::class)
 class RegisterTest : ZanataTestCase() {
 
     private lateinit var fields: MutableMap<String, String>

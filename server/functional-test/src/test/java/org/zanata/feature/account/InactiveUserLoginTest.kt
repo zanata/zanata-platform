@@ -35,13 +35,16 @@ import org.zanata.workflow.RegisterWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.extension.ExtendWith
 import org.zanata.util.EmailQuery.LinkType.ACTIVATE
+import org.zanata.util.HasEmailExtension
 
 /**
  * @author Carlos Munoz [camunoz@redhat.com](mailto:camunoz@redhat.com)
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @DetailedTest
+@ExtendWith(HasEmailExtension::class)
 class InactiveUserLoginTest : ZanataTestCase() {
 
     @Trace(summary = "The user needs to verify their account before they may log in")
@@ -122,7 +125,7 @@ class InactiveUserLoginTest : ZanataTestCase() {
     }
 
     @Trace(summary = "The user can update the account activation email address",
-            testCaseIds = intArrayOf(5696))
+            testCaseIds = [5696])
     @Test
     @DisplayName("Update email address for activation")
     fun `Update email address for activation`() {

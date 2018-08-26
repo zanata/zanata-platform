@@ -23,16 +23,19 @@ package org.zanata.feature.account.comp
 import org.assertj.core.api.Assertions.assertThat
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.zanata.feature.testharness.ComprehensiveTest
 import org.zanata.util.Trace
 import org.zanata.feature.testharness.ZanataTestCase
-import org.zanata.feature.testharness.DetailedTest
+import org.zanata.util.HasEmailExtension
 import org.zanata.workflow.LoginWorkFlow
 import org.zanata.workflow.RegisterWorkFlow
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@DetailedTest
+@ComprehensiveTest
+@ExtendWith(HasEmailExtension::class)
 class InactiveUserLoginCTest : ZanataTestCase() {
 
     @Trace(summary = "The user can update the account activation email address",

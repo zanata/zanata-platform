@@ -33,15 +33,17 @@ import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.extension.ExtendWith
 import org.zanata.util.EmailQuery.LinkType.PASSWORD_RESET
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @DetailedTest
+@ExtendWith(HasEmailExtension::class)
 class SecurityTest : ZanataTestCase() {
 
-    @Trace(summary = "The user can log in", testCaseIds = intArrayOf(5698))
+    @Trace(summary = "The user can log in", testCaseIds = [5698])
     @Test
     fun signInSuccessful() {
         assertThat(LoginWorkFlow()
@@ -51,7 +53,7 @@ class SecurityTest : ZanataTestCase() {
                 .isEqualTo("admin")
     }
 
-    @Trace(summary = "The user must enter a correct username and " + "password to log in", testCaseIds = intArrayOf(5699))
+    @Trace(summary = "The user must enter a correct username and " + "password to log in", testCaseIds = [5699])
     @Test
     fun signInFailure() {
         assertThat(LoginWorkFlow()
@@ -61,7 +63,7 @@ class SecurityTest : ZanataTestCase() {
                 .contains("Login failed")
     }
 
-    @Trace(summary = "The user may reset their password via email", testCaseIds = intArrayOf(5700))
+    @Trace(summary = "The user may reset their password via email", testCaseIds = [5700])
     @Test
     fun resetPasswordSuccessful() {
         val resetPasswordPage = BasicWorkFlow()

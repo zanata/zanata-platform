@@ -29,6 +29,7 @@ import org.zanata.util.HasEmailExtension
 import org.zanata.workflow.LoginWorkFlow
 import org.zanata.workflow.RegisterWorkFlow
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.extension.ExtendWith
 import org.zanata.feature.testharness.DetailedTest
 import java.util.concurrent.TimeUnit
 
@@ -36,6 +37,7 @@ import java.util.concurrent.TimeUnit
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @DetailedTest
+@ExtendWith(HasEmailExtension::class)
 class ServerSettingsTest : ZanataTestCase() {
 
     @Test
@@ -128,6 +130,7 @@ class ServerSettingsTest : ZanataTestCase() {
     }
 
     @Test
+    @Disabled("Unstable")
     fun unsetTermsOfUseURL() {
         val registerPage = LoginWorkFlow()
                 .signIn("admin", "admin")

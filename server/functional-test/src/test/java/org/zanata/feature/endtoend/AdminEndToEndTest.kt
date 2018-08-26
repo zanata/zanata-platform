@@ -47,12 +47,12 @@ import org.zanata.util.HasEmailExtension
 @ExtendWith(HasEmailExtension::class)
 class AdminEndToEndTest : ZanataTestCase() {
 
-    private val ADMINUSER = "admin"
-    private val USERNAME = "aloy"
-    private val EMAIL = "aloy@example.com"
-    private val PASSWORD = "4me2test"
-    private val USERROLEREGEX = ".+lo.+"
-    private val ADMINEMAIL = "admin@test.com"
+    private val adminUser = "admin"
+    private val username = "aloy"
+    private val email = "aloy@example.com"
+    private val password = "4me2test"
+    private val userRoleRegex = ".+lo.+"
+    private val adminEmail = "admin@test.com"
 
     @Test
     fun adminEndToEndTest() {
@@ -88,10 +88,10 @@ class AdminEndToEndTest : ZanataTestCase() {
 
     private fun setUpAdminContactEmail(): ServerConfigurationPage {
         return LoginWorkFlow()
-                .signIn(ADMINUSER, ADMINUSER)
+                .signIn(adminUser, adminUser)
                 .goToAdministration()
                 .goToServerConfigPage()
-                .inputAdminEmail(ADMINEMAIL)
+                .inputAdminEmail(adminEmail)
                 .save()
         // Tested by user sending contact admin email
     }
@@ -99,8 +99,8 @@ class AdminEndToEndTest : ZanataTestCase() {
     private fun addNewUser(administrationPage: AdministrationPage): ManageUserPage {
         val manageUserPage = administrationPage.goToManageUserPage()
                 .selectCreateNewUser()
-                .enterUsername(USERNAME)
-                .enterEmail(EMAIL)
+                .enterUsername(username)
+                .enterEmail(email)
                 .clickRole("user")
                 .saveUser()
         // TODO should we? manageUserPage.removeNotifications();
@@ -108,23 +108,23 @@ class AdminEndToEndTest : ZanataTestCase() {
         manageUserPage.reload()
         assertThat(manageUserPage.userList)
                 .describedAs("Manage users page contains new user")
-                .contains(USERNAME)
+                .contains(username)
         val messages = hasEmailExtension.messages
         assertThat(messages).describedAs("one message").hasSize(1)
         val email = messages[0]
         assertThat(email.envelopeReceiver)
                 .describedAs("Outbox contains an email to the new user")
-                .contains(EMAIL)
+                .contains(this.email)
         return manageUserPage
     }
 
     private fun updateAndEnableUser(manageUserPage: ManageUserPage): ManageUserPage {
-        val userPage = manageUserPage.editUserAccount(USERNAME)
-                .enterPassword(PASSWORD)
-                .enterConfirmPassword(PASSWORD)
+        val userPage = manageUserPage.editUserAccount(username)
+                .enterPassword(password)
+                .enterConfirmPassword(password)
                 .clickEnabled()
                 .saveUser()
-        assertThat(userPage.isUserEnabled(USERNAME))
+        assertThat(userPage.isUserEnabled(username))
                 .describedAs("The new user is enabled")
                 .isTrue()
         return userPage
@@ -132,7 +132,7 @@ class AdminEndToEndTest : ZanataTestCase() {
 
     private fun newUserRequestsAdminAccess(): HomePage {
         val inputMessage = "Can you please make me admin?"
-        val homePage = LoginWorkFlow().signIn(USERNAME, PASSWORD)
+        val homePage = LoginWorkFlow().signIn(username, password)
                 .gotoMorePage()
                 .clickContactAdmin()
                 .inputMessage(inputMessage)
@@ -141,7 +141,7 @@ class AdminEndToEndTest : ZanataTestCase() {
         val email = hasEmailExtension.messages[1]
         assertThat(email.envelopeReceiver)
                 .describedAs("There is an email to the administrator")
-                .contains(ADMINEMAIL)
+                .contains(adminEmail)
         assertThat(email.data)
                 .describedAs("The email contains the user's message")
                 .contains(*inputMessage.toByteArray())
@@ -150,29 +150,29 @@ class AdminEndToEndTest : ZanataTestCase() {
 
     private fun adminCreatesRoleAssignmentRule(): RoleAssignmentsPage {
         val roleAssignmentsPage = LoginWorkFlow()
-                .signIn(ADMINUSER, ADMINUSER)
+                .signIn(adminUser, adminUser)
                 .goToAdministration()
                 .goToManageRoleAssignments()
                 .clickMoreActions()
                 .clickCreateNew()
-                .enterIdentityPattern(USERROLEREGEX)
+                .enterIdentityPattern(userRoleRegex)
                 .selectRole("admin")
                 .saveRoleAssignment()
         assertThat(roleAssignmentsPage.rulesByPattern)
                 .describedAs("The role rule was created")
-                .contains(USERROLEREGEX)
+                .contains(userRoleRegex)
         return roleAssignmentsPage
     }
 
     private fun userLogsInAndIsGrantedAdmin(): DashboardBasePage {
         var dashboardBasePage = LoginWorkFlow()
-                .signIn(USERNAME, PASSWORD)
+                .signIn(username, password)
         // May require two logins
         run {
             if (!dashboardBasePage.isAdministrator) {
                 dashboardBasePage.logout()
                 dashboardBasePage = LoginWorkFlow()
-                        .signIn(USERNAME, PASSWORD)
+                        .signIn(username, password)
             }
         }
         assertThat(dashboardBasePage.isAdministrator)

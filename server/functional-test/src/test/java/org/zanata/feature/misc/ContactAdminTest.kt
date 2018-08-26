@@ -30,11 +30,13 @@ import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
 @DetailedTest
+@ExtendWith(HasEmailExtension::class)
 class ContactAdminTest : ZanataTestCase() {
 
     @Trace(summary = "The user can contact the site administrator")
