@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
-import { reduce } from 'lodash'
+import { sumBy } from 'lodash'
 
 import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
@@ -58,9 +58,9 @@ class ProjectVersionPanels extends Component {
       )
     })
 
-    const totalVersions = reduce(this.props.projectVersions.map((proj) => {
+    const totalVersions = sumBy(this.props.projectVersions, (proj) => {
       return proj.versions.length
-    }), (sum, n) => { return sum + n }, 0)
+    })
 
     const allVersionsChecked = totalVersions ===
       this.props.selectedVersions.length
