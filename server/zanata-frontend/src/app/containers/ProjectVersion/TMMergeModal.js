@@ -3,7 +3,7 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { differenceWith, isEqual, isEmpty, throttle } from 'lodash'
+import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
@@ -356,7 +356,10 @@ class TMMergeModal extends Component {
       const projectSlug = project.id
       this.removeAllProjectVersions(projectSlug)
       if (checked) {
-        const versionsInProject = project.versions.map((version) => {
+        const versionsInProject = project.versions.filter((version) => {
+          return project.id !== projectSlug ||
+            version.id !== this.props.versionSlug
+        }).map((version) => {
           return {version, projectSlug}
         })
         this.pushAllProjectVersions(versionsInProject)
@@ -431,15 +434,13 @@ class TMMergeModal extends Component {
       processStatus
     } = this.props
     // Filter out the source project and version from search results
-    const projectVersions = isEmpty(this.props.projectVersions)
-      ? this.props.projectVersions
-      : this.props.projectVersions.map((project) => {
-        const filterSource = project.versions.filter((version) => {
-          return project.id !== projectSlug ||
-            version.id !== versionSlug
-        })
-        return {...project, versions: filterSource}
+    const projectVersions = this.props.projectVersions.map((project) => {
+      const filterSource = project.versions.filter((version) => {
+        return project.id !== projectSlug ||
+          version.id !== versionSlug
       })
+      return {...project, versions: filterSource}
+    })
     const modalBodyInner = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}

@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
-import { reduce } from 'lodash'
+import { sumBy, find } from 'lodash'
 
 import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
@@ -58,14 +58,25 @@ class ProjectVersionPanels extends Component {
       )
     })
 
-    const totalVersions = reduce(this.props.projectVersions.map((proj) => {
-      return proj.versions.length
-    }), (sum, n) => { return sum + n }, 0)
+    // loop this.props.projectVersions and see if all of them are
+    // in the this.props.selectedVersions
+    const selectedVersions = this.props.projectVersions.filter((project) => {
+      return find(this.props.selectedVersions, (v) => {
+        return v.projectSlug === project.id &&
+          find(project.versions, ver => ver.id === v.version.id)
+      })
+    })
 
-    const allVersionsChecked = totalVersions ===
-      this.props.selectedVersions.length
+    const totalVersions = sumBy(this.props.projectVersions, (proj) => {
+      return proj.versions.length
+    })
+    const totalSelectedVersions = sumBy(selectedVersions, (proj) => {
+      return proj.versions.length
+    })
+
+    const allVersionsChecked = totalVersions === totalSelectedVersions
     const someVersionsChecked = !allVersionsChecked &&
-      this.props.selectedVersions.length !== 0
+      totalSelectedVersions !== 0
     return (
       <span>
         <div className='checkbox'>
