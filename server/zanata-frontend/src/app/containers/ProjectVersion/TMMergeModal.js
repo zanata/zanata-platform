@@ -3,7 +3,7 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { differenceWith, isEqual, isEmpty, throttle } from 'lodash'
+import {differenceWith, remove, isEqual, throttle} from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
@@ -57,7 +57,7 @@ const MergeOptions = (
   {
     projectSlug,
     versionSlug,
-    projectVersions,
+    visibleProjectsWithVersions,
     locales,
     fetchingProject,
     fetchingLocale,
@@ -152,7 +152,7 @@ const MergeOptions = (
         </div>
       </Col>
       <Col>
-        <TMMergeProjectSources {...{projectVersions, fetchingProject,
+        <TMMergeProjectSources {...{visibleProjectsWithVersions, fetchingProject,
           mergeOptions, onFromAllProjectsChange, onProjectSearchChange,
           onAllVersionCheckboxChange, onVersionCheckboxChange,
           onAllProjectsCheckboxChange, onDragMoveEnd, removeProjectVersion}}
@@ -171,7 +171,7 @@ MergeOptions.propTypes = {
   projectSlug: PropTypes.string.isRequired,
   versionSlug: PropTypes.string.isRequired,
   locales: PropTypes.arrayOf(LocaleType).isRequired,
-  projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
+  visibleProjectsWithVersions: PropTypes.arrayOf(ProjectType).isRequired,
   fetchingProject: PropTypes.bool.isRequired,
   fetchingLocale: PropTypes.bool.isRequired,
   mergeOptions: PropTypes.shape({
@@ -208,7 +208,7 @@ class TMMergeModal extends Component {
     projectSlug: PropTypes.string.isRequired,
     versionSlug: PropTypes.string.isRequired,
     locales: PropTypes.arrayOf(LocaleType).isRequired,
-    projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
+    visibleProjectsWithVersions: PropTypes.arrayOf(ProjectType).isRequired,
     startMergeProcess: PropTypes.func.isRequired,
     notification: PropTypes.object,
     triggered: PropTypes.bool.isRequired,
@@ -322,7 +322,7 @@ class TMMergeModal extends Component {
        version: { id } }) => projectSlug !== project || id !== version.id)}))
   }
   // Remove all versions of a Project from fromProjectVersion array
-  removeAllProjectVersions = (projectSlug) => {
+  removeAllProjectVersionsFromSelection = (projectSlug) => {
     this.setState((prevState) => {
       return {
         selectedVersions: prevState.selectedVersions
@@ -351,11 +351,10 @@ class TMMergeModal extends Component {
 
   // check all projects
   onAllProjectsCheckboxChange = (event) => {
-    const checked = event.target.checked
-    this.props.projectVersions.map((project) => {
+    this.props.visibleProjectsWithVersions.map((project) => {
       const projectSlug = project.id
-      this.removeAllProjectVersions(projectSlug)
-      if (checked) {
+      this.removeAllProjectVersionsFromSelection(projectSlug)
+      if (event.target.checked) {
         const versionsInProject = project.versions.map((version) => {
           return {version, projectSlug}
         })
@@ -381,7 +380,7 @@ class TMMergeModal extends Component {
     if (diff.length === 0) {
       // we already have all versions in this project selected,
       // the operation is to remove them all
-      this.removeAllProjectVersions(projectSlug)
+      this.removeAllProjectVersionsFromSelection(projectSlug)
     } else {
       // we want to add all versions to the selection
       this.pushAllProjectVersions(diff)
@@ -431,15 +430,15 @@ class TMMergeModal extends Component {
       processStatus
     } = this.props
     // Filter out the source project and version from search results
-    const projectVersions = isEmpty(this.props.projectVersions)
-      ? this.props.projectVersions
-      : this.props.projectVersions.map((project) => {
+    const visibleProjectsWithVersions =
+      this.props.visibleProjectsWithVersions.map((project) => {
         const filterSource = project.versions.filter((version) => {
           return project.id !== projectSlug ||
             version.id !== versionSlug
         })
         return {...project, versions: filterSource}
       })
+
     const modalBodyInner = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
@@ -453,7 +452,7 @@ class TMMergeModal extends Component {
         Language Settings</a></p>
       : (
         <MergeOptions {...{
-          projectSlug, versionSlug, locales, projectVersions,
+          projectSlug, versionSlug, locales, visibleProjectsWithVersions,
           fetchingProject, fetchingLocale}}
           mergeOptions={this.state}
           onPercentSelection={this.onPercentSelection}
@@ -513,7 +512,7 @@ class TMMergeModal extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   const {
     projectVersion: {
       locales,
@@ -529,11 +528,22 @@ const mapStateToProps = (state) => {
       }
     }
   } = state
+
+  // remove version to merge into from the list
+  const visibleProjectsWithVersions = projectVersions.map((p) => {
+    if (p.id === props.projectSlug) {
+      p.versions = remove(p.versions, (it) => {
+        return it.id !== props.versionSlug
+      })
+    }
+    return {...p}
+  })
+
   return {
     showTMMergeModal: show,
     triggered,
     locales,
-    projectVersions,
+    visibleProjectsWithVersions,
     notification,
     fetchingProject,
     fetchingLocale,

@@ -4,7 +4,7 @@ import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
-import { reduce } from 'lodash'
+import { sumBy, find } from 'lodash'
 
 import {LockIcon, Icon, TriCheckbox} from '../../components'
 import {ProjectType, FromProjectVersionType,
@@ -17,7 +17,7 @@ const Panel = Collapse.Panel
  */
 class ProjectVersionPanels extends Component {
   static propTypes = {
-    projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
+    visibleProjectsWithVersions: PropTypes.arrayOf(ProjectType).isRequired,
     selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     /* params: version, projectSlug */
     onVersionCheckboxChange: PropTypes.func.isRequired,
@@ -42,30 +42,46 @@ class ProjectVersionPanels extends Component {
   }
 
   render () {
-    if (this.props.projectVersions.length === 0) {
+    if (this.props.visibleProjectsWithVersions.length === 0) {
       return <span><Panel /></span>
     }
-    const panels = this.props.projectVersions.map((project, index) => {
-      const selectedVersionsInProject =
+    const panels =
+      this.props.visibleProjectsWithVersions.map((project, index) => {
+        const selectedVersionsInProject =
         this.selectedVersionsOfProject(this.props.selectedVersions, project)
-      return (
-        <SelectableProjectPanel key={index} eventKey={index}
-          selectedVersionsInProject={selectedVersionsInProject}
-          project={project}
-          onAllVersionCheckboxChange={this.props.onAllVersionCheckboxChange}
-          onVersionCheckboxChange={this.props.onVersionCheckboxChange}
-        />
-      )
-    })
+        return (
+          <SelectableProjectPanel key={index} eventKey={index}
+            selectedVersionsInProject={selectedVersionsInProject}
+            project={project}
+            onAllVersionCheckboxChange={this.props.onAllVersionCheckboxChange}
+            onVersionCheckboxChange={this.props.onVersionCheckboxChange}
+          />
+        )
+      })
 
-    const totalVersions = reduce(this.props.projectVersions.map((proj) => {
-      return proj.versions.length
-    }), (sum, n) => { return sum + n }, 0)
+    // loop this.props.visibleProjectsWithVersions and see if all of them are
+    // in the this.props.selectedVersions
+    const selectedProjectsWithVersions =
+      this.props.visibleProjectsWithVersions.filter((visibleProject) => {
+        return find(this.props.selectedVersions, (v) => {
+          return v.projectSlug === visibleProject.id &&
+            find(visibleProject.versions, it => it.id === v.version.id)
+        })
+      })
 
-    const allVersionsChecked = totalVersions ===
-      this.props.selectedVersions.length
+    const totalVersions = sumBy(this.props.visibleProjectsWithVersions,
+      (proj) => {
+        return proj.versions.length
+      })
+    const totalSelectedVersions = sumBy(selectedProjectsWithVersions,
+      (proj) => {
+        return proj.versions.length
+      })
+
+    const allVersionsChecked = totalVersions === totalSelectedVersions
     const someVersionsChecked = !allVersionsChecked &&
-      this.props.selectedVersions.length !== 0
+      totalSelectedVersions !== 0
+
     return (
       <span>
         <div className='checkbox'>
