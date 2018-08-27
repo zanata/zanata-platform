@@ -45,7 +45,7 @@ const Search = Input.Search
  */
 class TMMergeProjectSources extends Component {
   static propTypes = {
-    projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
+    filteredProjectsWithVersions: PropTypes.arrayOf(ProjectType).isRequired,
     fetchingProject: PropTypes.bool.isRequired,
     mergeOptions: PropTypes.shape({
       selectedVersions: PropTypes.arrayOf(FromProjectVersionType),
@@ -91,7 +91,7 @@ class TMMergeProjectSources extends Component {
   }
   render () {
     const {
-      projectVersions,
+      filteredProjectsWithVersions,
       fetchingProject,
       mergeOptions,
       onVersionCheckboxChange,
@@ -101,7 +101,8 @@ class TMMergeProjectSources extends Component {
       removeProjectVersion
     } = this.props
     const disabled = !this.state.enabled
-    const noResults = (projectVersions.length === 0) ? 'No results' : ''
+    const noResults = (filteredProjectsWithVersions.length === 0)
+      ? 'No results' : ''
     const fromVersionsPanel = this.state.fromProjectSelection === ALL ||
     disabled
       ? DO_NOT_RENDER
@@ -119,8 +120,9 @@ class TMMergeProjectSources extends Component {
             <LoaderText loading={fetchingProject}
               loadingText={'Fetching Projects'} />
             <span className='txt-muted ml1'>{noResults}</span>
-            {projectVersions.length > 0 &&
-              <ProjectVersionPanels projectVersions={projectVersions}
+            {filteredProjectsWithVersions.length > 0 &&
+              <ProjectVersionPanels
+                visibleProjectsWithVersions={filteredProjectsWithVersions}
                 selectedVersions={mergeOptions.selectedVersions}
                 onVersionCheckboxChange={onVersionCheckboxChange}
                 onAllVersionCheckboxChange={onAllVersionCheckboxChange}
@@ -128,7 +130,7 @@ class TMMergeProjectSources extends Component {
             }
           </Col>
           <Col span={11}>
-            {projectVersions.length > 0 &&
+            {filteredProjectsWithVersions.length > 0 &&
               <DraggableVersionPanels
                 selectedVersions={mergeOptions.selectedVersions}
                 onDraggableMoveEnd={onDragMoveEnd}
