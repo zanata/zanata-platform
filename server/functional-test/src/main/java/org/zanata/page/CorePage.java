@@ -53,12 +53,7 @@ public class CorePage extends AbstractPage {
     protected static final By tableElement = By.tagName("table");
 
     public CorePage(WebDriver driver) {
-        super(driver, true);
-        assertNoCriticalErrors();
-    }
-
-    public CorePage(WebDriver driver, boolean hideNotifications) {
-        super(driver, hideNotifications);
+        super(driver);
         assertNoCriticalErrors();
     }
 
@@ -144,8 +139,7 @@ public class CorePage extends AbstractPage {
 
     public String getNotificationMessage(By elementBy) {
         log.info("Query notification message");
-        List<WebElement> messages =
-                existingElement(elementBy).findElements(By.tagName("li"));
+        List<WebElement> messages = getNotificationMessages(elementBy);
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }
 
@@ -153,24 +147,25 @@ public class CorePage extends AbstractPage {
         return getNotificationMessage(By.id("messages"));
     }
 
+    private List<WebElement> getNotificationMessages(By inputElement) {
+        return existingElement(inputElement).findElements(By.tagName("li"));
+    }
+
     public boolean expectNotification(final String notification) {
-        String msg = "notification " + notification;
+        String msg = "Expecting notification " + notification;
         logWaiting(msg);
-        boolean result = waitForAMoment().withMessage(msg)
-                .until(driver -> {
-                    List<WebElement> messages =
-                            getDriver().findElement(By.id("messages"))
-                                    .findElements(By.tagName("li"));
-                    List<String> notifications = new ArrayList<String>();
-                    for (WebElement message : messages) {
-                        notifications.add(message.getText().trim());
-                    }
-                    if (!notifications.isEmpty()) {
-                        triggerScreenshot("_notify");
-                        log.info("Notifications: {}", notifications);
-                    }
-                    return notifications.contains(notification);
-                });
+        boolean result = waitForAMoment().withMessage(msg) .until(driver -> {
+            List<WebElement> messages = getNotificationMessages(By.id("messages"));
+            List<String> notifications = new ArrayList<String>();
+            for (WebElement message : messages) {
+                notifications.add(message.getText().trim());
+            }
+            if (!notifications.isEmpty()) {
+                triggerScreenshot("_notify");
+                log.info("Notifications: {}", notifications);
+            }
+            return notifications.contains(notification);
+        });
         logFinished(msg);
         return result;
     }

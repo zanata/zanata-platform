@@ -80,7 +80,7 @@ class UploadTest : ZanataTestCase() {
                 .gotoVersion("txt-upload").gotoSettingsTab()
                 .gotoSettingsDocumentsTab().pressUploadFileButton()
         assertThat(versionDocumentsTab.canSubmitDocument())
-                .`as`("The upload button is not available")
+                .describedAs("The upload button is not available")
                 .isFalse()
     }
 

@@ -49,11 +49,7 @@ public class DashboardBasePage extends BasePage {
             "Your password has been successfully changed.";
 
     public DashboardBasePage(final WebDriver driver) {
-        super(driver, true);
-    }
-
-    public DashboardBasePage(final WebDriver driver, boolean hideNotifications) {
-        super(driver, hideNotifications);
+        super(driver);
     }
 
     public String getUserFullName() {

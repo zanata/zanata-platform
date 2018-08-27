@@ -41,7 +41,7 @@ class EditHomePageTest : ZanataTestCase() {
     fun before() {
         BasicWorkFlow().goToHome().deleteCookiesAndRefresh()
         assertThat(LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .`as`("Admin is logged in")
+                .describedAs("Admin is logged in")
                 .isEqualTo("admin")
     }
 
@@ -56,7 +56,7 @@ class EditHomePageTest : ZanataTestCase() {
                 .update()
 
         assertThat(homePage.mainBodyContent)
-                .`as`("Homepage text has been updated")
+                .describedAs("Homepage text has been updated")
                 .isEqualTo("This text contains some markup")
     }
 }

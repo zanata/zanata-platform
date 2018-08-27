@@ -59,14 +59,14 @@ class ChangePasswordTest : ZanataTestCase() {
         dashboard.logout()
 
         assertThat(BasicWorkFlow().goToHome().hasLoggedIn())
-                .`as`("User is logged out")
+                .describedAs("User is logged out")
                 .isFalse()
 
         val dashboardPage = LoginWorkFlow()
                 .signIn("translator", "newpassword")
 
         assertThat(dashboardPage.hasLoggedIn())
-                .`as`("User has logged in with the new password")
+                .describedAs("User has logged in with the new password")
                 .isTrue()
     }
 
@@ -83,7 +83,7 @@ class ChangePasswordTest : ZanataTestCase() {
                 .clickUpdatePasswordButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("Old password is incorrect error is shown")
+                .describedAs("Old password is incorrect error is shown")
                 .contains(DashboardAccountTab.INCORRECT_OLD_PASSWORD_ERROR)
     }
 
@@ -98,7 +98,7 @@ class ChangePasswordTest : ZanataTestCase() {
                 .clickUpdatePasswordButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("Empty password message displayed")
+                .describedAs("Empty password message displayed")
                 .contains(DashboardAccountTab.FIELD_EMPTY_ERROR)
     }
 
@@ -117,7 +117,7 @@ class ChangePasswordTest : ZanataTestCase() {
                 .clickUpdatePasswordButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("Incorrect password length message displayed")
+                .describedAs("Incorrect password length message displayed")
                 .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
     }
 }

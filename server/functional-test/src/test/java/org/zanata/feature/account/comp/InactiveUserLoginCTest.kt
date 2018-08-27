@@ -50,7 +50,7 @@ class InactiveUserLoginCTest : ZanataTestCase() {
                 .signInInactive(usernamepassword, usernamepassword)
 
         assertThat(inactiveAccountPage.title)
-                .`as`("The account is inactive")
+                .describedAs("The account is inactive")
                 .isEqualTo("Zanata: Account is not activated")
 
         inactiveAccountPage = inactiveAccountPage

@@ -57,7 +57,7 @@ class InvalidGlossaryPushTest : ZanataTestCase() {
         log.info("output:\n{}", output)
         assertThat(output).containsIgnoringCase("unexpected token")
         assertThat(clientWorkFlow.isPushSuccessful(result))
-                .`as`("glossary push should fail").isFalse()
+                .describedAs("glossary push should fail").isFalse()
     }
 
     fun push(command: String, configPath: String?): List<String> {

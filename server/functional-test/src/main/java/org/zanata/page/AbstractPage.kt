@@ -42,10 +42,10 @@ import org.zanata.util.until
 /**
  * The base class for the page driver. Contains functionality not generally of a
  * user visible nature.
- * @author Sean Flanigan [sflaniga@redhat.com][mailto:sflaniga@redhat.com"]
- * @author Damian Jansen [djansen@redhat.com][mailto:djansen@redhat.com]
+ * @author Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-abstract class AbstractPage(val driver: WebDriver, val hideNotifications: Boolean = true) {
+abstract class AbstractPage(val driver: WebDriver) {
 
     companion object {
         private val log = org.slf4j.LoggerFactory.getLogger(AbstractPage::class.java)
@@ -328,7 +328,6 @@ abstract class AbstractPage(val driver: WebDriver, val hideNotifications: Boolea
      *            element to be clicked
      */
     fun clickElement(element: WebElement) {
-        removeNotifications()
         waitForNotificationsGone()
         dismissCookieConsent()
         scrollIntoView(element)
@@ -483,7 +482,6 @@ abstract class AbstractPage(val driver: WebDriver, val hideNotifications: Boolea
      * Remove any visible notifications
      */
     private fun removeNotifications() {
-        if (!hideNotifications) return
         val notifications = executor.executeScriptToElements(
                 "return (typeof $ == \'undefined\') ?  [] : $(\'a.message__remove\').toArray()")
         log.info("Closing {} notifications", notifications.size)

@@ -54,10 +54,6 @@ public class DashboardAccountTab extends DashboardBasePage {
         super(driver);
     }
 
-    public DashboardAccountTab(WebDriver driver, boolean hideNotifications) {
-        super(driver, hideNotifications);
-    }
-
     public DashboardAccountTab typeNewAccountEmailAddress(String emailAddress) {
         log.info("Enter email {}", emailAddress);
         readyElement(emailField).clear();
@@ -88,7 +84,7 @@ public class DashboardAccountTab extends DashboardBasePage {
     public DashboardAccountTab clickUpdatePasswordButton() {
         log.info("Click Update Password");
         clickElement(changePasswordButton);
-        return new DashboardAccountTab(getDriver(), false);
+        return new DashboardAccountTab(getDriver());
     }
 
     public String getExportUserDataURL() {

@@ -49,19 +49,19 @@ class ProfileTest : ZanataTestCase() {
                 .goToSettingsClientTab()
 
         assertThat(dashboardClientTab.apiKey)
-                .`as`("The correct api key is present")
+                .describedAs("The correct api key is present")
                 .isEqualTo(adminsApiKey)
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration url is correct")
+                .describedAs("The configuration url is correct")
                 .contains("localhost.url=$serverUrl")
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration username is correct")
+                .describedAs("The configuration username is correct")
                 .contains("localhost.username=admin")
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration api key is correct")
+                .describedAs("The configuration api key is correct")
                 .contains("localhost.key=$adminsApiKey")
     }
 
@@ -81,15 +81,15 @@ class ProfileTest : ZanataTestCase() {
         dashboardClientTab.expectApiKeyChanged(currentApiKey)
 
         assertThat(dashboardClientTab.apiKey)
-                .`as`("The user's api key is different")
+                .describedAs("The user's api key is different")
                 .isNotEqualTo(currentApiKey)
 
         assertThat(dashboardClientTab.apiKey)
-                .`as`("The user's api key is not empty")
+                .describedAs("The user's api key is not empty")
                 .isNotEmpty()
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration api key matches the label")
+                .describedAs("The configuration api key matches the label")
                 .contains("localhost.key=" + dashboardClientTab.apiKey)
     }
 
@@ -101,14 +101,14 @@ class ProfileTest : ZanataTestCase() {
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .goToSettingsProfileTab()
-                .enterName("Tranny")
+                .enterName("Nonjima")
                 .clickUpdateProfileButton()
 
         dashboardProfileTab.expectUsernameChanged("translator")
 
         assertThat(dashboardProfileTab.userFullName)
-                .`as`("The user's name has been changed")
-                .isEqualTo("Tranny")
+                .describedAs("The user's name has been changed")
+                .isEqualTo("Nonjima")
     }
 
     @Trace(summary = "The user's email address change is validated")
@@ -123,7 +123,7 @@ class ProfileTest : ZanataTestCase() {
                 .clickUpdateEmailButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("The email is rejected, being already taken")
+                .describedAs("The email is rejected, being already taken")
                 .contains(DashboardAccountTab.EMAIL_TAKEN_ERROR)
 
         dashboardAccountTab = dashboardAccountTab
@@ -134,13 +134,13 @@ class ProfileTest : ZanataTestCase() {
                 .clickUpdateEmailButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("The email is rejected, being of invalid format")
+                .describedAs("The email is rejected, being of invalid format")
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
     }
 
     companion object {
 
-        private val adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98"
+        private const val adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98"
         private val serverUrl = PropertiesHolder
                 .getProperty(Constants.zanataInstance.value())
     }
