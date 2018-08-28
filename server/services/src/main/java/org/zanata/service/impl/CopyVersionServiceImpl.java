@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.zanata.async.Async;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.EntityStatus;
@@ -168,7 +168,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     }
 
     @Override
-    @Async
+    @Futureable
     public Future<Void> startCopyVersion(@Nonnull String projectSlug,
             @Nonnull String versionSlug, @Nonnull String newVersionSlug,
             CopyVersionTaskHandle handle) {

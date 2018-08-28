@@ -35,7 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.zanata.async.Async;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
@@ -112,7 +112,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     private static final int TEXTFLOWS_PER_BATCH = 20;
 
     @Override
-    @Async
+    @Futureable
     public Future<Void> startMergeTranslations(String sourceProjectSlug,
             String sourceVersionSlug, String targetProjectSlug,
             String targetVersionSlug, boolean useNewerTranslation,

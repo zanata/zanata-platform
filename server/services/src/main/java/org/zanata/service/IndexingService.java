@@ -20,8 +20,8 @@
  */
 package org.zanata.service;
 
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.action.ReindexClassOptions;
-import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -34,7 +34,7 @@ import java.util.concurrent.Future;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public interface IndexingService extends Serializable {
-    @Async
+    @Futureable
     Future<Void> startIndexing(
             Map<Class<?>, ReindexClassOptions> indexingOptions,
             AsyncTaskHandle<Void> handle)
@@ -43,7 +43,7 @@ public interface IndexingService extends Serializable {
     /**
      * This will re-index all HTextFlowTargets under a given project.
      */
-    @Async
+    @Futureable
     Future<Void> reindexHTextFlowTargetsForProject(HProject hProject,
             AsyncTaskHandle<Void> handle)
             throws Exception;
@@ -53,7 +53,7 @@ public interface IndexingService extends Serializable {
      * @param iteration project version
      * @param handle async handle
      */
-    @Async
+    @Futureable
     Future<Void> reindexHTextFlowTargetsForProjectIteration(HProjectIteration iteration,
             AsyncTaskHandle<Void> handle);
 }

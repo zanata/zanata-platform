@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
@@ -37,12 +36,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MachineTranslationPrefillTaskHandle;
 import org.zanata.common.ContentState;
@@ -58,8 +57,8 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.rest.dto.MachineTranslationPrefill;
+import org.zanata.rest.dto.TranslationSourceType;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MachineTranslationService;
 import org.zanata.service.TranslationService;
@@ -72,7 +71,6 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.search.FilterConstraints;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -197,7 +195,7 @@ public class MachineTranslationServiceImpl implements
         }
     }
 
-    @Async
+    @Futureable
     @Override
     public Future<Void> prefillProjectVersionWithMachineTranslation(
             long versionId, MachineTranslationPrefill options,

@@ -8,9 +8,10 @@
     <class>org.zanata.jpa.NoNestingTransactionStrategy</class>
   </alternatives>
   <interceptors>
-    <!-- AsyncMethodInterceptor should be first, because we don't need to run
+    <!-- Async/Futureable should be first, because we don't need to run
          the other interceptors in the original thread -->
     <class>org.zanata.async.AsyncMethodInterceptor</class>
+    <class>org.apache.deltaspike.core.impl.future.FutureableInterceptor</class>
     <class>org.zanata.util.SynchronizationInterceptor</class>
     <class>org.zanata.util.WithRequestScopeInterceptor</class>
     <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>

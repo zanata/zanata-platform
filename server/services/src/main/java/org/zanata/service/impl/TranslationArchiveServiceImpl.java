@@ -26,9 +26,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.common.LocaleId;
@@ -169,7 +169,7 @@ public class TranslationArchiveServiceImpl
     }
 
     @Override
-    @Async
+    @Futureable
     public Future<String> startBuildingTranslationFileArchive(
             String projectSlug, String iterationSlug, String localeId,
             String userName, AsyncTaskHandle<String> handle) throws Exception {

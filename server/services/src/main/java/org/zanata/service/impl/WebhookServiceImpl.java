@@ -2,7 +2,6 @@ package org.zanata.service.impl;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,10 +14,9 @@ import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.ocpsoft.common.util.Strings;
-import org.zanata.async.Async;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.events.WebhookEvent;
@@ -33,13 +31,14 @@ import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.DocumentMilestoneEvent;
 import org.zanata.webhook.events.DocumentStatsEvent;
+import org.zanata.webhook.events.ManuallyTriggeredEvent;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 import org.zanata.webhook.events.SourceDocumentChangedEvent;
 import org.zanata.webhook.events.TestEvent;
-import org.zanata.webhook.events.ManuallyTriggeredEvent;
 import org.zanata.webhook.events.VersionChangedEvent;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -63,9 +62,9 @@ public class WebhookServiceImpl implements Serializable {
     private String serverUrl;
 
     /**
-     * Need @Async annotation for TransactionPhase.AFTER_SUCCESS event
+     * Need @Futureable annotation for TransactionPhase.AFTER_SUCCESS event
      */
-    @Async
+    @Futureable
     public void onPublishWebhook(@Observes(
             during = TransactionPhase.AFTER_SUCCESS) WebhookEvent event) {
         WebHooksPublisher.publish(event.getUrl(), event.getType(),

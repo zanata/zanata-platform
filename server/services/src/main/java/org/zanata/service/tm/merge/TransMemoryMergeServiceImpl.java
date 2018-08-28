@@ -39,11 +39,11 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
@@ -273,7 +273,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      * @param asyncTaskHandle
      * @return
      */
-    @Async
+    @Futureable
     @Override
     @Transactional
     public Future<List<TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
@@ -286,7 +286,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     /**
      * TM Merge for an entire project version
      */
-    @Async
+    @Futureable
     @Override
     public Future<Void> startMergeTranslations(Long targetVersionId,
             VersionTMMerge mergeRequest,

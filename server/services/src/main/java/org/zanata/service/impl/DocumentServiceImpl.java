@@ -26,15 +26,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import com.google.common.collect.Lists;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.common.ContentState;
@@ -44,7 +44,6 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.DocumentUploadedEvent;
-import org.zanata.model.type.WebhookType;
 import org.zanata.i18n.Messages;
 import org.zanata.lock.Lock;
 import org.zanata.model.HAccount;
@@ -53,6 +52,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
+import org.zanata.model.type.WebhookType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
@@ -65,11 +65,11 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.annotations.VisibleForTesting;
-import javax.enterprise.event.Event;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.SourceDocumentChangedEvent;
-import javax.enterprise.event.Observes;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Default implementation of the {@link DocumentService} business service
@@ -140,7 +140,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @Async
+    @Futureable
     @Transactional
     public CompletableFuture<HDocument> saveDocumentAsync(String projectSlug,
             String iterationSlug, Resource sourceDoc, Set<String> extensions,

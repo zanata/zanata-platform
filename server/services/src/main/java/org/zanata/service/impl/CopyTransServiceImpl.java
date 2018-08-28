@@ -25,8 +25,8 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import com.google.common.annotations.VisibleForTesting;
-import org.zanata.async.Async;
+
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
@@ -41,6 +41,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationStateCache;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 // Not @Transactional, because we use CopyTransWorkFactory.runCopyTransInNewTx
@@ -220,7 +221,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     }
 
     @Override
-    @Async
+    @Futureable
     public Future<Void> startCopyTransForDocument(HDocument document,
             HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle) {
         copyTransForDocument(document, copyTransOptions, handle);
@@ -228,7 +229,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     }
 
     @Override
-    @Async
+    @Futureable
     public Future<Void> startCopyTransForIteration(HProjectIteration iteration,
             HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle) {
         copyTransForIteration(iteration, copyTransOptions, handle);

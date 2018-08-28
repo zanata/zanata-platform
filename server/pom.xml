@@ -32,7 +32,7 @@
 -->
     <surefire.version>2.19.1</surefire.version>
 
-    <deltaspike.version>1.7.0</deltaspike.version>
+    <deltaspike.version>1.7.2</deltaspike.version>
     <picketlink.version>2.5.5.SP2</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
