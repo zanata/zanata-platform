@@ -20,16 +20,17 @@
  */
 package org.zanata.async;
 
-import com.google.common.base.Optional;
-import org.zanata.util.ServiceLocator;
-
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+
+import org.apache.deltaspike.core.api.future.Futureable;
+import org.zanata.util.ServiceLocator;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -75,7 +76,7 @@ public class AsyncMethodInterceptor {
             // If there is a Task handle parameter (only the first one will be
             // registered)
             final Optional<AsyncTaskHandle> handle =
-                    Optional.fromNullable(findHandleIfPresent(ctx
+                    Optional.ofNullable(findHandleIfPresent(ctx
                             .getParameters()));
 
             AsyncTask asyncTask = () -> {
@@ -83,9 +84,7 @@ public class AsyncMethodInterceptor {
                 // thread will skip the AsyncTask:
                 shouldRunAsyncThreadLocal.set(false);
                 try {
-                    if (handle.isPresent()) {
-                        handle.get().startTiming();
-                    }
+                    handle.ifPresent(AsyncTaskHandle::startTiming);
                     // TODO Handle CDI Qualifiers
                     Object target =
                             ServiceLocator.instance().getInstance(
@@ -97,18 +96,16 @@ public class AsyncMethodInterceptor {
                     // exception thrown from the invoked method
                     throw itex.getCause();
                 } finally {
-                    if (handle.isPresent()) {
-                        handle.get().finishTiming();
-                        taskHandleManager.taskFinished(handle.get());
-                    }
+                    handle.ifPresent(h -> {
+                        h.finishTiming();
+                        taskHandleManager.taskFinished(h);
+                    });
                 }
             };
 
             CompletableFuture<Object> futureResult =
                     taskManager.startTask(asyncTask);
-            if (handle.isPresent()) {
-                handle.get().setFutureResult(futureResult);
-            }
+            handle.ifPresent(h -> h.setFutureResult(futureResult));
             return futureResult;
             // Async methods should return ListenableFuture
         } else {
