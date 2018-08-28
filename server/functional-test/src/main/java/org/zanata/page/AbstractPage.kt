@@ -328,6 +328,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      *            element to be clicked
      */
     fun clickElement(element: WebElement) {
+        removeNotifications()
         waitForNotificationsGone()
         dismissCookieConsent()
         scrollIntoView(element)
@@ -509,7 +510,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      */
     fun waitForNotificationsGone() {
         val script = "return (typeof $ == \'undefined\') ?  [] : $(\'ul.message--global\').toArray()"
-        val message = "notifications box not displayed"
+        val message = "Waiting for notifications box not displayed"
         waitForAMoment().withMessage(message).until { _ ->
             val boxes = executor.executeScriptToElements(script)
             for (box in boxes) {

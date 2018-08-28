@@ -28,6 +28,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
+import org.zanata.page.CorePage;
 import org.zanata.util.Checkbox;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
@@ -65,7 +66,7 @@ public class ManageSearchPage extends BasePage {
             if (tableRow.getCellContents().contains(clazz)) {
                 WebElement allActionsChkBox =
                         tableRow.getCells().get(SELECT_ALL_COLUMN)
-                                .findElement(inputElement);
+                                .findElement(CorePage.Companion.getInputElement());
                 Checkbox.of(allActionsChkBox).check();
             }
         }
@@ -93,13 +94,13 @@ public class ManageSearchPage extends BasePage {
         log.info("Query all actions selected");
         List<TableRow> tableRows =
                 WebElementUtil.getTableRows(getDriver(), readyElement(
-                        existingElement(classesTable), tableElement));
+                        existingElement(classesTable), CorePage.Companion.getTableElement()));
         for (TableRow tableRow : tableRows) {
             // column 2, 3, 4 are checkboxes for purge, reindex and optimize
             for (int i = 1; i <= 3; i++) {
                 try {
                     WebElement checkBox = tableRow.getCells().get(i)
-                            .findElement(inputElement);
+                            .findElement(CorePage.Companion.getInputElement());
                     if (!Checkbox.of(checkBox).checked()) {
                         return false;
                     }

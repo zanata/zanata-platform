@@ -84,6 +84,9 @@ public class DashboardAccountTab extends DashboardBasePage {
     public DashboardAccountTab clickUpdatePasswordButton() {
         log.info("Click Update Password");
         clickElement(changePasswordButton);
+        // For some reason, returning a new page immediately after click
+        // causes the notifications to close
+        slightPause();
         return new DashboardAccountTab(getDriver());
     }
 

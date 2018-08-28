@@ -22,6 +22,8 @@ package org.zanata.page.administration;
 
 import org.openqa.selenium.*;
 import org.zanata.page.BasePage;
+import org.zanata.page.CorePage;
+
 import java.util.ArrayList;
 import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -246,7 +248,8 @@ public class TranslationMemoryPage extends BasePage {
      * Check to see if the TM list is empty
      */
     private boolean noTmsCreated() {
-        for (WebElement element : readyElement(tmList).findElements(paragraph)) {
+        for (WebElement element : readyElement(tmList)
+                .findElements(CorePage.Companion.getParagraph())) {
             if (getText(element).equals(NO_MEMORIES)) {
                 return true;
             }
@@ -278,7 +281,8 @@ public class TranslationMemoryPage extends BasePage {
 
     // Get the name substring of a TM entry
     private String getListEntryName(WebElement listElement) {
-        String title = getText(existingElement(listElement, h3Header)).trim();
+        String title = getText(existingElement(listElement,
+                CorePage.Companion.getH3Header())).trim();
         return title
                 .substring(0, title.lastIndexOf(getListEntryCount(listElement)))
                 .trim();
@@ -287,6 +291,7 @@ public class TranslationMemoryPage extends BasePage {
     // Get the entry count substring for a TM entry
     private String getListEntryCount(WebElement listElement) {
         return getText(existingElement(
-                existingElement(listElement, h3Header), listItemCount));
+                existingElement(listElement,
+                        CorePage.Companion.getH3Header()), listItemCount));
     }
 }
