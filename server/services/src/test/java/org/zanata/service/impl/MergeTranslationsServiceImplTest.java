@@ -250,9 +250,9 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
                 HTextFlowTarget targetTft =
                         data[1].getTargets().get(locale.getId());
 
-                if(targetTft == null) {
+                if (targetTft == null) {
                     // If untranslated, create a dummy untranslated target
-                    targetTft = new HTextFlowTarget(null, sourceTft.getLocale());
+                    targetTft = new HTextFlowTarget(data[1], sourceTft.getLocale());
                 }
                 if (MergeTranslationsServiceImpl.shouldMerge(sourceTft,
                         targetTft, useNewerTranslation)) {
