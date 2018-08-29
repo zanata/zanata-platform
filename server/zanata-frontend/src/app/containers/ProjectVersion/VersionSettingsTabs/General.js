@@ -15,6 +15,7 @@ import Radio from 'antd/lib/radio'
 import 'antd/lib/radio/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Tooltip from "antd/lib/tooltip";
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -23,6 +24,17 @@ const RadioGroup = Radio.Group
 class General extends Component {
 
   render() {
+    const info = 'Example: my-project. This will become part of your project\'s URL. Changing it may break other people\'s bookmarks to the project.'
+    const versionIdLabel = (
+      <span className='di'>
+        Project ID
+        <Tooltip title={info}
+                 className='tc fr' placement='top' arrowPointAtCenter>
+          <Button icon='info-circle-o' className='btn-link' />
+        </Tooltip>
+      </span>
+    )
+    const versionType = 'Help: Creating a version and project type'
 
     return (
       /* eslint-disable max-len */
@@ -32,7 +44,7 @@ class General extends Component {
         <Form layout='horizontal'>
           <Row>
             <Col span={24}>
-              <FormItem label='Version ID'>
+              <FormItem label={versionIdLabel}>
                 <Input placeholder='Version ID' />
               </FormItem>
             </Col>
@@ -41,7 +53,13 @@ class General extends Component {
             <Col span={24}>
               <h3>Project type</h3>
               <p>Determines how the project is treated for upload and download by
-                clients or through the website. </p>
+                clients or through the website.
+              <Tooltip title={versionType}
+                         className='tc fr' placement='top' arrowPointAtCenter>
+                  <Button icon='question-circle-o' target='_blank'
+                          href='http://docs.zanata.org/en/release/user-guide/versions/create-version/'
+                          className='btn-link' />
+                </Tooltip></p>
               <Button disabled size='small'>
                 Copy project type from project</Button>
               <RadioGroup>

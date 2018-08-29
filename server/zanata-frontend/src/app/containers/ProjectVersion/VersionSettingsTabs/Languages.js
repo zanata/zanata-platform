@@ -13,7 +13,10 @@ import Table from 'antd/lib/table'
 import 'antd/lib/table/style/css'
 import Divider from 'antd/lib/divider'
 import 'antd/lib/divider/style/css'
+import Tooltip from "antd/lib/tooltip";
+import Button from "antd/lib/button";
 
+const info = 'A locale code that clients should use in translation file names, instead of the standard locale code for this language. If this is not set, clients should use the standard locale code for translation file names.'
 const columnsEnabled = [{
   title: 'Name',
   dataIndex: 'name',
@@ -32,7 +35,12 @@ const columnsEnabled = [{
   key: 'action',
   render: (text, record) => (
     <span>
-      <a href="javascript:;">Add alias</a>
+      <Tooltip title={info}
+        className='tc fr' placement='top' arrowPointAtCenter>
+        <a href="javascript:;">Add alias
+          <Button icon='info-circle-o' className='btn-link' />
+        </a>
+      </Tooltip>
       <Divider type="vertical" />
       <a href="javascript:;">Disable</a>
     </span>

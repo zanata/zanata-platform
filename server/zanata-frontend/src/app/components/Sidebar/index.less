@@ -6,7 +6,6 @@
 @progress-bar-needswork-bg: @unsure-color;
 @progress-bar-rejected-bg: @warning-color;
 @progress-bar-approved-bg: @info-color;
-
 .ant-layout-sider {
   background: #EEF2F5 !important;
   height: 100vh;
@@ -15,6 +14,7 @@
 
 .ant-layout-content {
   background: #fff;
+  padding: 2rem;
 }
 
 .ant-layout-sider-zero-width-trigger {
@@ -62,26 +62,16 @@
 }
 
 .pvSidebar {
-
   .ant-menu {
     background-color: #EEF2F5;
     border-right: 0;
   }
-
   .ant-menu-item {
     color: @info-color;
     font-weight: 600;
   }
-
-  .ant-menu-item:active, .ant-menu-item:hover,
-  .ant-menu-item:focus,  .ant-menu-item-selected,
-  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected{
+  .ant-menu-item:active, .ant-menu-item:hover, .ant-menu-item:focus, .ant-menu-item-selected, .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
     background-color: @info-color;
     color: #fff;
   }
-
-}
-
-.ant-layout-content {
-  padding: 2rem;
 }

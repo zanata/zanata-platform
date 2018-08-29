@@ -13,9 +13,22 @@ import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
 import Card from 'antd/lib/card'
 import 'antd/lib/card/style/css'
+import Collapse from 'antd/lib/collapse'
+import 'antd/lib/collapse/style/css'
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+import Tooltip from "antd/lib/tooltip"
+import Highlight from 'react-highlight'
+
+const Panel = Collapse.Panel
 
 class Translation extends Component {
   render() {
+    const copyTrans = 'Help: Set this project\'s default settings for "Copy' +
+      ' Translations.'
+
     return (
       /* eslint-disable max-len */
       <div className='flexTab wideView'>
@@ -32,7 +45,22 @@ class Translation extends Component {
         <p>Use these validations to keep translations consistent with the
           source text.</p>
         <h3>HTML/XML tags</h3>
-        <p>Check that XML/HTML tags are consistent. More…</p>
+        <p className='w-100'>Check that XML/HTML tags are consistent.
+          <Collapse bordered={false}>
+          <Panel showArrow={false}  header="Show example..." key="1">
+            <Row>
+              <Col span={12}>
+                SOURCE
+                <Highlight innerHTML={false}>
+                  {'<p><strong>Hello world</strong></p>'}
+                </Highlight>
+              </Col>
+              <Col span={12}>
+                TARGET
+              </Col>
+            </Row>
+          </Panel>
+        </Collapse></p>
         <Radio.Group>
           <Radio.Button>Off</Radio.Button>
           <Radio.Button className='btn-warn'>Warning</Radio.Button>
@@ -87,6 +115,12 @@ class Translation extends Component {
           entered in Zanata by matching them with untranslated strings in your
           project/version. Consequently, "Copy Translations" is best used
           before translation and review work is initiated on a project.
+          <Tooltip title={copyTrans}
+                   className='tc fr' placement='top' arrowPointAtCenter>
+            <Button icon='question-circle-o' target='_blank'
+                    href='http://docs.zanata.org/en/release/user-guide/translation-reuse/copy-trans/'
+                    className='btn-link' />
+          </Tooltip>
         </p>
         <Alert message="A translation has to pass through each of these checks
         before it will be copied." type="info" showIcon />

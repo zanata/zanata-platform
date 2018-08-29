@@ -1,9 +1,55 @@
 @import "../../styles/antdvars.less";
-/* Modal specific css */
+.people .ant-table thead, .permissions .ant-table thead, .documents .ant-table thead {
+  display: none;
+}
+
+.ant-layout-has-sider .ant-layout-content, .ant-layout-has-sider .flexTab.wideView {
+  padding-top: 0;
+}
+
+.avatar {
+  height: 40px;
+  width: 40px;
+  border-radius: 40px;
+}
+
+.ant-collapse-no-arrow {
+  border: 0;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: @info-color !important;
+}
+
+.ant-collapse-borderless > .ant-collapse-item {
+  border-bottom: 0 !important;
+}
+
+.row1 td {
+  padding: 16px 16px 4px 0;
+}
+
+tr.row2 {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+tr.row-combined {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.ant-form-item-label label:after {
+  content: "" !important;
+}
+
+.row-combined td {
+  padding: 16px;
+}
 
 .mt-toggleHeading {
   margin-bottom: 0 !important;
 }
+
+/* Modal specific css */
 
 #tmMergeModal {
   visibility: visible;
@@ -48,7 +94,6 @@
     padding: @spacing-md !important;
     cursor: ns-resize !important;
   }
-
   .button.btn-primary {
     color: #fff !important;
     border-color: @neutral-color !important;
@@ -154,33 +199,4 @@
       margin-top: @spacing-md;
     }
   }
-}
-
-.people .ant-table thead, .permissions .ant-table thead, .documents .ant-table thead {
-  display: none;
-}
-.ant-layout-has-sider .ant-layout-content, .ant-layout-has-sider .flexTab.wideView {
-  padding-top: 0;
-}
-
-.avatar {
-  height: 40px;
-  width: 40px;
-  border-radius: 40px;
-}
-
-.row1 td {
-  padding: 16px 16px 4px 0;
-}
-
-tr.row2 {
-  border-bottom: 1px solid #e8e8e8;
-}
-
-tr.row-combined {
-  border-bottom: 1px solid #e8e8e8;
-}
-
-.row-combined td {
-  padding: 16px;
 }

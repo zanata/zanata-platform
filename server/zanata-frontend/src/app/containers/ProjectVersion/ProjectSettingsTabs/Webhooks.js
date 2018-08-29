@@ -11,20 +11,19 @@ import Form from 'antd/lib/form'
 import 'antd/lib/form/style/css'
 import Row from 'antd/lib/row'
 import 'antd/lib/row/style/css'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
 import Collapse from 'antd/lib/collapse'
 import 'antd/lib/collapse/style/css'
 import Checkbox from 'antd/lib/checkbox'
 import 'antd/lib/checkbox/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 const FormItem = Form.Item
-const Option = Select.Option
 const Panel = Collapse.Panel
 
 class Webhooks extends Component {
-
   render() {
+    const webhook = 'Help: Project Webhooks'
     const addWebhookContent = (
       <Form layout='horizontal'>
         <Row>
@@ -73,7 +72,14 @@ class Webhooks extends Component {
       /* eslint-disable max-len */
       <div className='flexTab wideView permissions'>
         <h1 className='txt-info'><Icon name='code' className='s5 v-sub mr2' />
-          <span className='fw4'>Webhooks</span></h1>
+          <span className='fw4'>Webhooks</span>
+          <Tooltip title={webhook}
+                   className='tc fr' placement='top' arrowPointAtCenter>
+            <Button icon='question-circle-o' target='_blank'
+                    href='http://docs.zanata.org/en/release/user-guide/projects/project-settings/#webhooks'
+                    className='btn-link' />
+          </Tooltip>
+        </h1>
         <Collapse defaultActiveKey={'1'}>
           <Panel header="Add webhook" key="1">
             <h2>New webhook</h2>

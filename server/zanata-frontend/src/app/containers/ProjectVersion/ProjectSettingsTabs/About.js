@@ -27,7 +27,7 @@ class About extends Component {
         <Row>
           <TextArea rows={4} placeholder='Installed from: git clone git://github.com/definite/ibus-chewing.git'/>
         </Row>
-        <p>Notes are parsed as <a href="">CommonMark Markdown</a></p>
+        <p>Notes are parsed as <a href="https://spec.commonmark.org/0.18/">CommonMark Markdown</a></p>
         <Row>
           <Button type='primary'>Save notes</Button>
         </Row>

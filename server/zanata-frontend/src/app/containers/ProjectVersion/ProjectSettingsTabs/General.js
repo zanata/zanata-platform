@@ -15,6 +15,8 @@ import Radio from 'antd/lib/radio'
 import 'antd/lib/radio/style/css'
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -23,7 +25,17 @@ const RadioGroup = Radio.Group
 class General extends Component {
 
   render() {
-
+    const info = 'Example: my-project. This will become part of your project\'s URL. Changing it may break other people\'s bookmarks to the project.'
+    const projIdLabel = (
+      <span className='di'>
+        Project ID
+        <Tooltip title={info}
+          className='tc fr' placement='top' arrowPointAtCenter>
+          <Button icon='info-circle-o' className='btn-link' />
+        </Tooltip>
+      </span>
+    )
+    const projectType = 'Help: Creating a project and project type'
     return (
       /* eslint-disable max-len */
       <div className='flexTab wideView'>
@@ -37,7 +49,7 @@ class General extends Component {
               </FormItem>
             </Col>
             <Col span={8} offset={2}>
-              <FormItem label='Project ID'>
+              <FormItem label={projIdLabel}>
                 <Input placeholder='Project ID' />
               </FormItem>
             </Col>
@@ -53,7 +65,14 @@ class General extends Component {
             <Col span={24}>
               <h3>Project type</h3>
               <p>Determines how the project is treated for upload and download by
-                clients or through the website. </p>
+                clients or through the website.
+                <Tooltip title={projectType}
+                  className='tc fr' placement='top' arrowPointAtCenter>
+                  <Button icon='question-circle-o' target='_blank'
+                    href='http://docs.zanata.org/en/release/user-guide/projects/create-project/'
+                    className='btn-link' />
+                </Tooltip>
+              </p>
               <RadioGroup>
                 <Radio className='w-100' value="a">File
                   <span className='ml2 txt-muted'>

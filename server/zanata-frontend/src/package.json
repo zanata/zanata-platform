@@ -198,6 +198,7 @@
     "react-dom": "16.4.0",
     "react-draggable": "2.2.6",
     "react-helmet": "5.2.0",
+    "react-highlight": "^0.12.0",
     "react-intl": "2.4.0",
     "react-list": "0.8.8",
     "react-loading": "0.1.2",
