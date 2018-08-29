@@ -189,12 +189,12 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(
                 getKey(projectSlug, targetVersionSlug));
-        Future<Void> future = service.startMergeTranslations(projectSlug,
+        service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true,
-                handle);
+                handle)
+                // wait for the async process to finish...
+                .get();
         verifyZeroInteractions(authenticatedAccount);
-        // wait for the async process to finish...
-        future.get();
         // No translations were performed
         assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
@@ -207,18 +207,19 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(
                 getKey(projectSlug, targetVersionSlug));
-        Future<Void> future = service.startMergeTranslations(projectSlug,
-                sourceVersionSlug, projectSlug, targetVersionSlug, true, null);
+        service.startMergeTranslations(projectSlug,
+                sourceVersionSlug, projectSlug, targetVersionSlug, true, null)
+                // wait for the async process to finish...
+                .get();
+
         verifyZeroInteractions(authenticatedAccount);
-        // wait for the async process to finish...
-        future.get();
         // No translations were performed
         assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
 
     @Test
     @InRequestScope
-    public void testMergeTranslations1() {
+    public void testMergeTranslations1() throws Exception {
         String sourceVersionSlug = "1.0";
         String targetVersionSlug = "2.0";
         boolean useNewerTranslation = false;
@@ -240,7 +241,9 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
                 service.getSupportedLocales(projectSlug, targetVersionSlug);
 
         service.startMergeTranslations(projectSlug, sourceVersionSlug,
-            projectSlug, targetVersionSlug, useNewerTranslation, null);
+            projectSlug, targetVersionSlug, useNewerTranslation, null)
+                // wait for the async process to finish...
+                .get();
 
         List<HTextFlowTarget[]> expectedMergeData = Lists.newArrayList();
         for (HTextFlow[] data : matchingTextFlows) {
