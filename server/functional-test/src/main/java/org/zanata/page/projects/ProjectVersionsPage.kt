@@ -33,16 +33,16 @@ import org.zanata.util.WebElementUtil
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 class ProjectVersionsPage(driver: WebDriver) : ProjectBasePage(driver) {
-    private val versionTabMoreAction = By.id("versionsList-more-actions")
+    private val versionTabMoreAction = By.id("versions-more-actions")
     private val createNewVersion = By.id("new-version-link")
     private val versionCount = By.id("versionSearch:versionSearch-page-info")
-    private val versionsList = By.id("versionsList")
+    private val versionsList = By.id("versions")
     private val searchIcon = By.className("panel__search__button")
     private val versionSearchInput = By.id("versionSearch__input")
 
     val numberOfDisplayedVersions: Int
         get() {
-            log.info("Query number of displayed versionsList")
+            log.info("Query number of displayed versions")
             return Integer.parseInt(readyElement(versionCount).text)
         }
 
@@ -86,9 +86,9 @@ class ProjectVersionsPage(driver: WebDriver) : ProjectBasePage(driver) {
     }
 
     fun expectDisplayedVersions(expected: Int): ProjectVersionsPage {
-        log.info("Wait for number of displayed versionsList to be {}", expected)
+        log.info("Wait for number of displayed versions to be {}", expected)
         waitForPageSilence()
-        waitForAMoment().withMessage("Waiting for versionsList").until {
+        waitForAMoment().withMessage("Waiting for versions").until {
             numberOfDisplayedVersions == expected
         }
         assertThat(numberOfDisplayedVersions).isEqualTo(expected)

@@ -18,55 +18,49 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.util
 
-import java.util.List;
+import org.codehaus.jackson.annotate.JsonAutoDetect
+import com.google.common.primitives.Ints
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import com.google.common.primitives.Ints;
-
-import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
+import org.apache.commons.lang3.ObjectUtils.firstNonNull
 
 /**
  * This object will be converted to JSON.
  * @see org.zanata.util.TestTracing
  *
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class TraceEntry {
-    @SuppressWarnings("unused")
-    private String testName;
-    @SuppressWarnings("unused")
-    private String summary;
-    @SuppressWarnings("unused")
-    private String testResult;
-    @SuppressWarnings("unused")
-    private List<Integer> testIds;
-    @SuppressWarnings("unused")
-    private List<Integer> planIds;
+class TraceEntry {
+    private lateinit var testName: String
+    private lateinit var summary: String
+    private lateinit var testResult: String
+    private lateinit var testIds: List<Int>
+    private lateinit var planIds: List<Int>
 
-    TraceEntry() {
+    @Suppress("unused")
+    internal constructor() {
         // used by JSON serializer/deserializer
     }
 
-    public TraceEntry(Trace trace, String displayName,
-                      TestResult result) {
-        testName = displayName;
-        summary = trace.summary();
-        testIds = toList(trace.testCaseIds());
-        planIds = toList(trace.testPlanIds());
-        testResult = result.name();
+    constructor(trace: Trace, displayName: String,
+                result: TestResult) {
+        testName = displayName
+        summary = trace.summary
+        testIds = toList(trace.testCaseIds)
+        planIds = toList(trace.testPlanIds)
+        testResult = result.name
     }
 
-    private static List<Integer> toList(int[] ints) {
-        return Ints.asList(firstNonNull(ints, new int[0]));
+    private fun toList(ints: IntArray): List<Int> {
+        return Ints.asList(*firstNonNull(ints, IntArray(0)))
     }
 
-    public static enum TestResult {
+    enum class TestResult {
         Passed, Failed, Ignored
     }
 }

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtendWith
 import org.zanata.util.HasEmailExtension
-import org.zanata.util.HasEmailExtension.getEmailContent
+import org.zanata.util.HasEmailExtension.Companion.getEmailContent
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
@@ -61,7 +61,7 @@ class JoinLanguageTeamTest : ZanataTestCase() {
                 TimeUnit.SECONDS))
                 .describedAs("The email arrived within thirty seconds")
                 .isTrue()
-        val emailMessage = hasEmailExtension.getMessages().get(0)
+        val emailMessage = hasEmailExtension.messages[0]
         assertThat(getEmailContent(emailMessage))
                 .contains("Administrator has changed your permissions")
     }

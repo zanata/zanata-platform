@@ -42,8 +42,8 @@ import org.zanata.util.PropertiesHolder
 import org.zanata.util.ZanataRestCaller
 
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.ZanataRestCaller.buildSourceResource
-import org.zanata.util.ZanataRestCaller.buildTextFlow
+import org.zanata.util.ZanataRestCaller.Companion.buildSourceResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlow
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2018, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,19 +18,26 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.util
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.log4j.LogManager
+import org.apache.log4j.Logger
+import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.TestInstancePostProcessor
 
-/**
- * Annotate on test class or method level to disable screenshot for the target.
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface NoScreenshot {
+class LoggingExtension : TestInstancePostProcessor {
+
+    @Throws(Exception::class)
+    override fun postProcessTestInstance(testInstance: Any,
+                                         context: ExtensionContext) {
+        val logger = LogManager.getLogger(testInstance.javaClass)
+        try {
+            testInstance.javaClass
+                    .getMethod("setLogger", Logger::class.java)
+                    .invoke(testInstance, logger)
+        } catch (e: NoSuchMethodException) {
+            println("Unable to set logger " + this.javaClass)
+        }
+
+    }
 }

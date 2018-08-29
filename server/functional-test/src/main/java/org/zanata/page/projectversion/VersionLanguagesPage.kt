@@ -85,15 +85,15 @@ class VersionLanguagesPage(driver: WebDriver) : VersionBasePage(driver) {
         val document = waitForAMoment()
                 .withMessage("find document $docName")
                 .until<WebElement> {
-                    for (document1 in languageTabDocumentList) {
-                        if (existingElement(document1, documentListItemTitle)
+                    for (documentElement in languageTabDocumentList) {
+                        if (existingElement(documentElement, documentListItemTitle)
                                         .text == docName) {
-                            return@until document1
+                            return@until documentElement
                         }
                     }
                     null
                 }
-        clickLinkAfterAnimation(document)
+        clickElement(document)
         return EditorPage(driver)
     }
 

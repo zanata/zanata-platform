@@ -18,32 +18,31 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.util
 
 /**
  * The assume functions of junit skip tests if the preconditions are not met.
  * This is not favourable. If the test system cannot properly prepare the
  * environment then the test execution is not valid.
  *
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-public class FunctionalTestHelper {
+object FunctionalTestHelper {
 
     /**
      * Assume a condition is true, and throw an exception if the assumption
      * fails
      *
      * @param message
-     *            The assumption made
+     * The assumption made
      * @param condition
-     *            the result of the assumption challenge
+     * the result of the assumption challenge
      * @throws RuntimeException
-     *             if the challenge result is false
+     * if the challenge result is false
      */
-    public static void assumeTrue(String message, boolean condition) {
+    fun assumeTrue(message: String, condition: Boolean) {
         if (!condition)
-            throw new RuntimeException(message);
+            throw RuntimeException(message)
     }
 
     /**
@@ -51,15 +50,16 @@ public class FunctionalTestHelper {
      * fails
      *
      * @param message
-     *            The assumption made
+     * The assumption made
      * @param condition
-     *            the result of the assumption challenge
+     * the result of the assumption challenge
      * @throws RuntimeException
-     *             if the challenge result is true
+     * if the challenge result is true
      */
-    public static void assumeFalse(String message, boolean condition) {
+    @Suppress("unused")
+    fun assumeFalse(message: String, condition: Boolean) {
         if (condition)
-            throw new RuntimeException(message);
+            throw RuntimeException(message)
     }
 
     /**
@@ -68,8 +68,9 @@ public class FunctionalTestHelper {
      * @param text
      * @return
      */
-    public static String loosely(String text) {
-        return "(.|\n)*" + text.replace(" ", "\\s+") + "(.|\n)*";
+    @Suppress("unused")
+    fun loosely(text: String): String {
+        return "(.|\n)*" + text.replace(" ", "\\s+") + "(.|\n)*"
     }
 
 

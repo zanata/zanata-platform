@@ -28,8 +28,8 @@ import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.dashboard.DashboardBasePage
 import org.zanata.workflow.LoginWorkFlow
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.ZanataRestCaller.buildSourceResource
-import org.zanata.util.ZanataRestCaller.buildTextFlow
+import org.zanata.util.ZanataRestCaller.Companion.buildSourceResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlow
 
 /**
  * @author Alex Eng [aeng@redhat.com](mailto:aeng@redhat.com)
@@ -78,6 +78,6 @@ class DashboardActivityTest : ZanataTestCase() {
 
     private fun projectListIsNotEmpty(): Boolean {
         val projectsTab = dashboard.gotoProjectsTab()
-        return projectsTab.maintainedProjectList.size > 0
+        return projectsTab.maintainedProjectList.isNotEmpty()
     }
 }

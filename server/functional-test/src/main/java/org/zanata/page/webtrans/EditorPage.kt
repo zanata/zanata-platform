@@ -534,7 +534,7 @@ class EditorPage(driver: WebDriver) : BasePage(driver) {
     }
 
     fun clickCompareVersionsTab(): EditorPage {
-        log.info("Click on Compare versionsList tab")
+        log.info("Click on Compare versions tab")
         compareTab.click()
         readyElement(translationHistoryBox, By.className("html-face"))
         return EditorPage(driver)

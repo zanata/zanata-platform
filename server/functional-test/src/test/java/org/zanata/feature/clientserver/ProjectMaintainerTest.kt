@@ -45,8 +45,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.zanata.util.MavenHome.mvn
 import org.zanata.util.TestFileGenerator.Companion.generateZanataXml
 import org.zanata.util.TestFileGenerator.Companion.makePropertiesFile
-import org.zanata.util.ZanataRestCaller.buildTextFlowTarget
-import org.zanata.util.ZanataRestCaller.buildTranslationResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlowTarget
+import org.zanata.util.ZanataRestCaller.Companion.buildTranslationResource
 import org.zanata.workflow.BasicWorkFlow.Companion.PROJECT_VERSION_TEMPLATE
 
 /**

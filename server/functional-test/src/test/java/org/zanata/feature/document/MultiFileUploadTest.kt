@@ -50,7 +50,7 @@ class MultiFileUploadTest : ZanataTestCase() {
         zanataRestCaller.createProjectAndVersion("multi-upload",
                 "multi-upload", "file")
         val documentStorageDirectory = CleanDocumentStorageExtension
-                .getDocumentStoragePath() +
+                .documentStoragePath +
                 File.separator + "documents" + File.separator
         if (File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)")

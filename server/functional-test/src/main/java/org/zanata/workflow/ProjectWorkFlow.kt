@@ -29,7 +29,7 @@ import java.util.HashMap
 
 /**
  * This class represents the work-flows involved when interacting with projects,
- * such as creating projects and versionsList and altering settings.
+ * such as creating projects and versions and altering settings.
  */
 class ProjectWorkFlow : AbstractWebWorkFlow() {
 

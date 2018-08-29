@@ -59,14 +59,14 @@ class VersionGroupPage(driver: WebDriver) : BasePage(driver) {
         get() = readyElement(groupNameLabel).findElement(By.tagName("h1")).text
 
     /**
-     * Get the list of project versionsList attached to the group
+     * Get the list of project versions attached to the group
      *
      * @return a list of version group identifiers in the format "$projectID
      * $version"
      */
     val projectVersionsInGroup: List<String>
         get() {
-            log.info("Query Group project versionsList")
+            log.info("Query Group project versions")
             val elements = WebElementUtil.getListItems(driver, versionsInGroupTable)
             val result = ArrayList<String>()
             for (element in elements) {

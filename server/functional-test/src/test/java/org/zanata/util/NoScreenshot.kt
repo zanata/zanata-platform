@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,25 +18,16 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.util
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
 
-public class LoggingExtension implements TestInstancePostProcessor {
-
-    @Override
-    public void postProcessTestInstance(Object testInstance,
-                                        ExtensionContext context) throws Exception {
-        Logger logger = LogManager.getLogger(testInstance.getClass());
-        try {
-            testInstance.getClass()
-                    .getMethod("setLogger", Logger.class)
-                    .invoke(testInstance, logger);
-        } catch (NoSuchMethodException e) {
-            System.out.println("Unable to set logger " + this.getClass());
-        }
-    }
-}
+/**
+ * Annotate on test class or method level to disable screenshot for the target.
+ * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE, AnnotationTarget.FUNCTION,
+        AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+annotation class NoScreenshot

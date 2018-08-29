@@ -30,14 +30,13 @@ import org.zanata.util.ZanataRestCaller
 import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.ZanataRestCaller.buildSourceResource
-import org.zanata.util.ZanataRestCaller.buildTextFlow
-import org.zanata.util.ZanataRestCaller.buildTextFlowTarget
-import org.zanata.util.ZanataRestCaller.buildTranslationResource
+import org.zanata.util.ZanataRestCaller.Companion.buildSourceResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlow
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlowTarget
+import org.zanata.util.ZanataRestCaller.Companion.buildTranslationResource
 
 /**
- * @author Patrick Huang
- * [pahuang@redhat.com](mailto:pahuang@redhat.com)
+ * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
 @DetailedTest
 class ConcurrentEditTest : ZanataTestCase() {

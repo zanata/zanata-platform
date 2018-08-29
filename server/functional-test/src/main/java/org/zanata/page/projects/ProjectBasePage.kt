@@ -39,7 +39,7 @@ open class ProjectBasePage(driver: WebDriver) : BasePage(driver) {
     private val peopleTab = By.id("people_tab")
     private val aboutTab = By.id("about_tab")
     private val settingsTab = By.id("settings_tab")
-    private val versionsTabBody = By.id("versionsList")
+    private val versionsTabBody = By.id("versions")
     private val peopleTabBody = By.id("people")
     private val aboutTabBody = By.id("about")
     private val settingsTabBody = By.id("settings")
@@ -100,7 +100,7 @@ open class ProjectBasePage(driver: WebDriver) : BasePage(driver) {
         log.info("Click Versions tab")
         existingElement(versionsTabBody)
         clickWhenTabEnabled(readyElement(versionsTab))
-        readyElement(By.id("versionsList"))
+        readyElement(By.id("versions"))
         return ProjectVersionsPage(driver)
     }
 

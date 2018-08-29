@@ -15,10 +15,10 @@ import org.zanata.util.SampleDataResourceClient
 import org.zanata.util.ZanataRestCaller
 
 import org.zanata.util.RandomStringUtils.randomAlphabetic
-import org.zanata.util.ZanataRestCaller.buildSourceResource
-import org.zanata.util.ZanataRestCaller.buildTranslationResource
-import org.zanata.util.ZanataRestCaller.buildTextFlow
-import org.zanata.util.ZanataRestCaller.buildTextFlowTarget
+import org.zanata.util.ZanataRestCaller.Companion.buildSourceResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTranslationResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlow
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlowTarget
 
 /**
  * This is a manual test that will help tuning/troubleshooting copyTrans. This
@@ -111,8 +111,7 @@ class CopyTransTuningTest : ZanataTestCase() {
     class Pair private constructor(val source: Resource, val target: TranslationsResource) {
         companion object {
 
-            fun of(source: Resource,
-                   target: TranslationsResource): Pair {
+            fun of(source: Resource, target: TranslationsResource): Pair {
                 return Pair(source, target)
             }
         }
@@ -121,21 +120,20 @@ class CopyTransTuningTest : ZanataTestCase() {
     companion object {
         private val log = org.slf4j.LoggerFactory.getLogger(CopyTransTuningTest::class.java)
 
-        private val PROJECT_SLUG = "ovirt-reports-history"
+        private const val PROJECT_SLUG = "ovirt-reports-history"
 
-        private fun generateTextFlows(numOfTextFlows: Int): Array<TextFlow?> {
-            val textFlows = arrayOfNulls<TextFlow>(numOfTextFlows)
-            for (i in textFlows.indices) {
-                textFlows[i] = buildTextFlow("res$i",
-                        randomAlphabetic(10))
+        private fun generateTextFlows(numOfTextFlows: Int): Array<TextFlow> {
+            var textFlows = arrayOf<TextFlow>()
+            for (i in 0..numOfTextFlows) {
+                textFlows = textFlows.plus(buildTextFlow("res$i", randomAlphabetic(10)))
             }
             return textFlows
         }
 
-        private fun generateTextFlowTargets(numOfTargets: Int): Array<TextFlowTarget?> {
-            val targets = arrayOfNulls<TextFlowTarget>(numOfTargets)
-            for (i in targets.indices) {
-                targets[i] = buildTextFlowTarget("res$i", "translation no. $i")
+        private fun generateTextFlowTargets(numOfTargets: Int): Array<TextFlowTarget> {
+            var targets = arrayOf<TextFlowTarget>()
+            for (i in 0..numOfTargets) {
+                targets = targets.plus(buildTextFlowTarget("res$i", "translation no. $i"))
             }
             return targets
         }

@@ -63,18 +63,18 @@ import org.zanata.util.HasEmailExtension
 @ExtendWith(HasEmailExtension::class)
 class UserEndToEndTest : ZanataTestCase() {
 
-    var testFileGenerator = TestFileGenerator()
+    private var testFileGenerator = TestFileGenerator()
 
-    private val USERNAME = "Leeloominaï Lekatariba Lamina-TchaïEkbat De Sebat"
-    private val USERUSERNAME = "leeloo"
-    private val USEREMAIL = "leeloo@example.com"
-    private val PASSWORD = "4me2test"
+    private val userName = "Leeloominaï Lekatariba Lamina-TchaïEkbat De Sebat"
+    private val userUserName = "leeloo"
+    private val userEmail = "leeloo@example.com"
+    private val userPassword = "4me2test"
 
-    private val PROJECTID = "plavalaguna"
-    private val PROJECTNAME = "Phloston Paradise"
-    private val PROJECTDESCRIPTION = "The stones are in me"
+    private val projectId = "plavalaguna"
+    private val projectName = "Phloston Paradise"
+    private val projectDescription = "The stones are in me"
 
-    private val ADDEDLOCALE = "en-US"
+    private val addedLocale = "en-US"
 
     private lateinit var dswid: String
     private lateinit var testFile: File
@@ -193,10 +193,10 @@ class UserEndToEndTest : ZanataTestCase() {
 
     private fun registerSuccessfully(registerPage: RegisterPage): SignInPage {
         val signInPage = registerPage.clearFields()
-                .enterName(USERNAME)
-                .enterUserName(USERUSERNAME)
-                .enterEmail(USEREMAIL)
-                .enterPassword(PASSWORD)
+                .enterName(userName)
+                .enterUserName(userUserName)
+                .enterEmail(userEmail)
+                .enterPassword(userPassword)
                 .register()
 
         assertThat(signInPage.notificationMessage)
@@ -242,12 +242,12 @@ class UserEndToEndTest : ZanataTestCase() {
     }
 
     private fun signInSuccessfully(signInPage: SignInPage): DashboardBasePage {
-        val dashboardBasePage = signInPage.enterUsername(USERUSERNAME)
-                .enterPassword(PASSWORD)
+        val dashboardBasePage = signInPage.enterUsername(userUserName)
+                .enterPassword(userPassword)
                 .clickSignIn()
         assertThat(dashboardBasePage.notificationMessage)
                 .describedAs("The page shows a welcome message")
-                .contains("Welcome, $USERNAME!")
+                .contains("Welcome, $userName!")
         return dashboardBasePage
     }
 
@@ -267,12 +267,12 @@ class UserEndToEndTest : ZanataTestCase() {
 
     private fun successfullyCreateAProject(createProjectPage: CreateProjectPage): ProjectVersionsPage {
         val projectVersionsPage = createProjectPage
-                .enterProjectId(PROJECTID)
-                .enterProjectName(PROJECTNAME)
-                .enterDescription(PROJECTDESCRIPTION)
+                .enterProjectId(projectId)
+                .enterProjectName(projectName)
+                .enterDescription(projectDescription)
                 .pressCreateProject()
         assertThat(projectVersionsPage.numberOfDisplayedVersions)
-                .describedAs("A project is created, with no versionsList")
+                .describedAs("A project is created, with no versions")
                 .isEqualTo(0)
         return projectVersionsPage
     }
@@ -281,10 +281,10 @@ class UserEndToEndTest : ZanataTestCase() {
         val projectLanguagesTab = projectVersionsPage
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .addLanguage(ADDEDLOCALE)
+                .addLanguage(addedLocale)
         assertThat(projectLanguagesTab.enabledLocaleList)
                 .describedAs("The locale was added to the project")
-                .contains(ADDEDLOCALE)
+                .contains(addedLocale)
         return projectLanguagesTab
     }
 
@@ -363,7 +363,7 @@ class UserEndToEndTest : ZanataTestCase() {
     private fun goToEditor(versionDocumentsTab: VersionDocumentsTab): EditorPage {
         val editorPage = versionDocumentsTab
                 .gotoLanguageTab()
-                .clickLocale(ADDEDLOCALE)
+                .clickLocale(addedLocale)
                 .clickDocument(testFile.name)
         assertThat(editorPage.getMessageSourceAtRowIndex(0))
                 .describedAs("The first textflow entry is displayed")

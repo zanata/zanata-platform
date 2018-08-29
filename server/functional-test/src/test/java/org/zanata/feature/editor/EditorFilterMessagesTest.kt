@@ -31,8 +31,8 @@ import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.ZanataRestCaller.buildSourceResource
-import org.zanata.util.ZanataRestCaller.buildTextFlow
+import org.zanata.util.ZanataRestCaller.Companion.buildSourceResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlow
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
