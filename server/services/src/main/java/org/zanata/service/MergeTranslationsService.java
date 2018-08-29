@@ -21,7 +21,7 @@
 package org.zanata.service;
 
 import java.io.Serializable;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletionStage;
 
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.model.HProjectIteration;
@@ -39,7 +39,7 @@ public interface MergeTranslationsService extends Serializable {
      * @param handle - task handler for merge translation
      */
     //@formatter:on
-    Future<Void> startMergeTranslations(String sourceProjectSlug,
+    CompletionStage<Void> startMergeTranslations(String sourceProjectSlug,
         String sourceVersionSlug, String targetProjectSlug,
         String targetVersionSlug, boolean useNewerTranslation,
         MergeTranslationsTaskHandle handle);

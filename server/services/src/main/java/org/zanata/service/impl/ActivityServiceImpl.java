@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.locks.Lock;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
@@ -182,7 +184,7 @@ public class ActivityServiceImpl implements ActivityService {
     // uses Async to ensure transaction environment is reset, because
     // this is triggered during transaction.commit
     @Futureable
-    public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event_) {
+    public CompletionStage<Void> logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event_) {
         // workaround for https://issues.jboss.org/browse/WELD-2019
         final TextFlowTargetStateEvent event = event_;
 
@@ -240,6 +242,7 @@ public class ActivityServiceImpl implements ActivityService {
                 lock.unlock();
             }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     /**

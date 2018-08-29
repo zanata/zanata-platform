@@ -26,7 +26,7 @@ import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletionStage;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
@@ -113,7 +113,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
 
     @Override
     @Futureable
-    public Future<Void> startMergeTranslations(String sourceProjectSlug,
+    public CompletionStage<Void> startMergeTranslations(String sourceProjectSlug,
             String sourceVersionSlug, String targetProjectSlug,
             String targetVersionSlug, boolean useNewerTranslation,
             MergeTranslationsTaskHandle handle) {

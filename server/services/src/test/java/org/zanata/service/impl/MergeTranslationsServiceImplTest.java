@@ -74,7 +74,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -193,7 +192,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
                 sourceVersionSlug, projectSlug, targetVersionSlug, true,
                 handle)
                 // wait for the async process to finish...
-                .get();
+                .toCompletableFuture().get();
         verifyZeroInteractions(authenticatedAccount);
         // No translations were performed
         assertThat(handle.getTotalTextFlows()).isEqualTo(0);
@@ -210,7 +209,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true, null)
                 // wait for the async process to finish...
-                .get();
+                .toCompletableFuture().get();
 
         verifyZeroInteractions(authenticatedAccount);
         // No translations were performed
@@ -243,7 +242,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         service.startMergeTranslations(projectSlug, sourceVersionSlug,
             projectSlug, targetVersionSlug, useNewerTranslation, null)
                 // wait for the async process to finish...
-                .get();
+                .toCompletableFuture().get();
 
         List<HTextFlowTarget[]> expectedMergeData = Lists.newArrayList();
         for (HTextFlow[] data : matchingTextFlows) {
