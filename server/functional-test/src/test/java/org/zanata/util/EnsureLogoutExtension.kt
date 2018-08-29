@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.zanata.page.WebDriverFactory
 import org.zanata.page.utility.HomePage
 import org.zanata.workflow.BasicWorkFlow
+import java.util.function.Supplier
 
 /**
  * A test rule that will ensure tests have a clean browser session before and
@@ -37,12 +38,14 @@ import org.zanata.workflow.BasicWorkFlow
 class EnsureLogoutExtension : BeforeEachCallback, AfterTestExecutionCallback {
 
     override fun beforeEach(context: ExtensionContext) {
-        WebDriverFactory.INSTANCE.ignoringDswid { logoutIfLoggedIn() }
+        WebDriverFactory.INSTANCE.ignoringDswid (Supplier
+        { return@Supplier logoutIfLoggedIn() })
 
     }
 
     override fun afterTestExecution(context: ExtensionContext) {
-        WebDriverFactory.INSTANCE.ignoringDswid { logoutIfLoggedIn() }
+        WebDriverFactory.INSTANCE.ignoringDswid(Supplier
+        { return@Supplier logoutIfLoggedIn() })
     }
 
     private fun logoutIfLoggedIn(): HomePage {

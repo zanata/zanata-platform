@@ -68,7 +68,7 @@ open class ZanataTestCase {
         WebDriverFactory.INSTANCE.testEntry()
         zanataRestCaller = ZanataRestCaller()
         zanataRestCaller.signalBeforeTest(javaClass.name, "null")
-        mainWindowHandle = WebDriverFactory.INSTANCE.driver.windowHandle
+        mainWindowHandle = WebDriverFactory.INSTANCE.getDriver().windowHandle
     }
 
     @AfterEach
@@ -83,15 +83,15 @@ open class ZanataTestCase {
                 .appendSuffix("ms").toFormatter()
         log.info(periodFormatter.print(duration.toPeriod()))
         cleanUpWindows()
-        WebDriverFactory.INSTANCE.ignoringDswid{
+        WebDriverFactory.INSTANCE.ignoringDswid(Runnable {
             WebDriverFactory.INSTANCE.testExit()
-        }
+        })
     }
 
     // Close all windows other than the original one
     private fun cleanUpWindows() {
 
-        val driverRef = WebDriverFactory.INSTANCE.driver
+        val driverRef = WebDriverFactory.INSTANCE.getDriver()
         val windows = driverRef.windowHandles
         for (windowHandle in windows) {
             if (windowHandle != mainWindowHandle) {

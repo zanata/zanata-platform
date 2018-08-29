@@ -52,7 +52,7 @@ public class HasEmailExtension implements BeforeTestExecutionCallback, AfterTest
     public void beforeTestExecution(ExtensionContext context) throws UnknownHostException  {
         synchronized (wiserLock) {
             if (HasEmailExtension.wiser == null) {
-                String port = PropertiesHolder.getProperty("smtp.port");
+                String port = PropertiesHolder.INSTANCE.getProperty("smtp.port");
                 int portNum = Integer.parseInt(port);
                 Wiser w = new Wiser(portNum);
                 w.getServer()

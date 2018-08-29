@@ -73,7 +73,7 @@ public class ZanataRestCaller {
      */
     public ZanataRestCaller() {
         this("admin",
-                PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
+                PropertiesHolder.INSTANCE.getProperty(Constants.zanataApiKey.value()));
     }
 
     /**
@@ -87,7 +87,7 @@ public class ZanataRestCaller {
     public ZanataRestCaller(String username, String apiKey) {
         this.apiKey = apiKey;
         this.baseUrl =
-                PropertiesHolder.getProperty(Constants.zanataInstance.value());
+                PropertiesHolder.INSTANCE.getProperty(Constants.zanataInstance.value());
         VersionInfo versionInfo = VersionUtility.getAPIVersionInfo();
         try {
             restClientFactory = new RestClientFactory(new URI(baseUrl),

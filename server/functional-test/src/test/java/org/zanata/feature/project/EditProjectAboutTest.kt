@@ -68,7 +68,7 @@ class EditProjectAboutTest : ZanataTestCase() {
         projectAboutTab.expectNotification("About page updated.")
         val projectAboutPage = projectAboutTab.gotoAboutTab()
 
-        assertThat(projectAboutPage.aboutText)
+        assertThat(projectAboutPage.getAboutText())
                 .describedAs("The text in the About tab is correct")
                 .isEqualTo(aboutText)
     }

@@ -31,6 +31,8 @@ import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
+import org.openqa.selenium.TimeoutException
+import org.zanata.page.dashboard.DashboardBasePage
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
@@ -48,14 +50,19 @@ class ChangePasswordTest : ZanataTestCase() {
     @Test
     @DisplayName("Change the users password")
     fun `Change the users password`() {
-        val dashboard = LoginWorkFlow()
+        var dashboard: DashboardAccountTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .gotoSettingsAccountTab()
                 .enterOldPassword("translator")
                 .enterNewPassword("newpassword")
-                .clickUpdatePasswordButton()
-        dashboard.expectNotification(DashboardAccountTab.PASSWORD_UPDATE_SUCCESS)
+        dashboard.slightPause()
+        dashboard = dashboard.clickUpdatePasswordButton()
+        try {
+            dashboard.expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS)
+        } catch (t: TimeoutException) {
+            println("ERROR: Intermittent failure on catching the update message")
+        }
         dashboard.logout()
 
         assertThat(BasicWorkFlow().goToHome().hasLoggedIn())

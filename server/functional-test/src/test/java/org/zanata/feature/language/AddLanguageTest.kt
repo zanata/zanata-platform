@@ -150,10 +150,10 @@ class AddLanguageTest : ZanataTestCase() {
                 .enterSearchLanguage(language)
                 .selectSearchLanguage(language)
 
-        assertThat(addLanguagePage.newLanguageName)
+        assertThat(addLanguagePage.getNewLanguageName())
                 .describedAs("The name is correct")
                 .isEqualTo("Russian (Russia)")
-        assertThat(addLanguagePage.newLanguageNativeName)
+        assertThat(addLanguagePage.getNewLanguageNativeName())
                 .describedAs("The native name is correct")
                 .isEqualTo("русский (Россия)")
         assertThat(addLanguagePage.newLanguageCode)

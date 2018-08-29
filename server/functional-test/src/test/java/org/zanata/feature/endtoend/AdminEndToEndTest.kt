@@ -187,7 +187,7 @@ class AdminEndToEndTest : ZanataTestCase() {
                 .goToEditPageContent()
                 .enterText("This is some stuff right here")
                 .update()
-        assertThat(homePage.mainBodyContent)
+        assertThat(homePage.getMainBodyContent())
                 .describedAs("The home page was updated with the new text")
                 .contains("This is some stuff right here")
         return homePage

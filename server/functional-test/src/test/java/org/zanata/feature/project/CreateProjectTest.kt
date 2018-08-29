@@ -30,7 +30,6 @@ import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 import org.zanata.workflow.ProjectWorkFlow
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.workflow.ProjectWorkFlow.projectDefaults
 
 /**
  * @author Damian Jansen
@@ -61,7 +60,7 @@ class CreateProjectTest : ZanataTestCase() {
     @Trace(summary = "The user can create a project with description")
     @Test
     fun createABasicProjectWithDescription() {
-        val projectSettings = projectDefaults()
+        val projectSettings = ProjectWorkFlow.projectDefaults()
         projectSettings["Project ID"] = "descriptionproject"
         projectSettings["Name"] = "Project With Description Test"
         projectSettings["Description"] = "Project Description!"

@@ -181,7 +181,7 @@ class UserEndToEndTest : ZanataTestCase() {
         assertThat(errors)
                 .describedAs("The registration page contains multiple errors")
                 .contains(
-                        RegisterPage.USERDISPLAYNAME_LENGTH_ERROR,
+                        RegisterPage.USER_DISPLAY_NAME_LENGTH_ERROR,
                         RegisterPage.MALFORMED_EMAIL_ERROR,
                         RegisterPage.PASSWORD_LENGTH_ERROR)
         // May be one or the other
@@ -272,7 +272,7 @@ class UserEndToEndTest : ZanataTestCase() {
                 .enterDescription(PROJECTDESCRIPTION)
                 .pressCreateProject()
         assertThat(projectVersionsPage.numberOfDisplayedVersions)
-                .describedAs("A project is created, with no versions")
+                .describedAs("A project is created, with no versionsList")
                 .isEqualTo(0)
         return projectVersionsPage
     }

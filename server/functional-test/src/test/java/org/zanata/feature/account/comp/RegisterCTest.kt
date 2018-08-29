@@ -153,13 +153,13 @@ class RegisterCTest : ZanataTestCase() {
 
         assertThat(registerPage.errors)
                 .describedAs("A name greater than 1 character must be specified")
-                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR)
+                .contains(RegisterPage.USER_DISPLAY_NAME_LENGTH_ERROR)
 
         registerPage = registerPage.enterName(longName).registerFailure()
 
         assertThat(registerPage.errors)
                 .describedAs("A name shorter than 81 characters is specified")
-                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR)
+                .contains(RegisterPage.USER_DISPLAY_NAME_LENGTH_ERROR)
     }
 
     @Trace(summary = "The user must provide a username to register",

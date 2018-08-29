@@ -71,7 +71,7 @@ public class ScreenshotEnabledTestRunListener extends RunListener {
     }
 
     private static void deleteScreenshots(String testDisplayName) {
-        File testDir = ScreenshotDirForTest.screenshotForTest(testDisplayName);
+        File testDir = ScreenshotDirForTest.INSTANCE.screenshotForTest(testDisplayName);
         try {
             log.info("Deleting screenshots for {}", testDisplayName);
             FileUtils.deleteDirectory(testDir);

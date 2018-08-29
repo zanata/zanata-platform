@@ -195,7 +195,7 @@ class ServerSettingsTest : ZanataTestCase() {
                 .inputPiwikID("12345")
                 .save()
 
-        assertThat(serverConfigurationPage.piwikUrl)
+        assertThat(serverConfigurationPage.getPiwikUrl())
                 .describedAs("Piwik url is correct is correct")
                 .isEqualTo("http://example.com/piwik")
         assertThat(serverConfigurationPage.piwikID)

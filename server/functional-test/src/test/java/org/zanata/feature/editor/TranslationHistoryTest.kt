@@ -72,7 +72,7 @@ class TranslationHistoryTest : ZanataTestCase() {
                 .clickCompareOn(1)
 
         assertThat(editorPage.translationHistoryCompareTabtext)
-                .describedAs("The tab displays compared versions")
+                .describedAs("The tab displays compared versionsList")
                 .isEqualTo("Compare ver. 2 and 1")
 
         editorPage = editorPage.clickCompareVersionsTab()

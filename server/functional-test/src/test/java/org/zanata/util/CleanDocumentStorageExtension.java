@@ -67,7 +67,7 @@ public class CleanDocumentStorageExtension implements BeforeEachCallback,
                     org.jboss.naming.remote.client.InitialContextFactory.class
                             .getName());
             long portOffset = Integer.parseInt(
-                    PropertiesHolder.getProperty("cargo.port.offset", "0"));
+                    PropertiesHolder.INSTANCE.getProperty("cargo.port.offset", "0"));
             String rmiPort = System.getenv("JBOSS_REMOTING_PORT");
             int rmiPortNum = rmiPort != null ? parseInt(rmiPort) : 4547;
             long realRmiPort = portOffset + rmiPortNum;

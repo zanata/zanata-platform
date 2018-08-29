@@ -66,7 +66,7 @@ class EditVersionSlugTest : ZanataTestCase() {
         val versionGeneralTab = versionLanguagesPage
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
-        assertThat(versionGeneralTab.getVersionID())
+        assertThat(versionGeneralTab.versionID)
                 .describedAs("The version slug has been changed")
                 .isEqualTo("newSlug")
     }

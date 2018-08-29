@@ -43,11 +43,11 @@ import java.io.IOException
 
 import org.assertj.core.api.Assertions.assertThat
 import org.zanata.util.MavenHome.mvn
-import org.zanata.util.TestFileGenerator.generateZanataXml
-import org.zanata.util.TestFileGenerator.makePropertiesFile
+import org.zanata.util.TestFileGenerator.Companion.generateZanataXml
+import org.zanata.util.TestFileGenerator.Companion.makePropertiesFile
 import org.zanata.util.ZanataRestCaller.buildTextFlowTarget
 import org.zanata.util.ZanataRestCaller.buildTranslationResource
-import org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE
+import org.zanata.workflow.BasicWorkFlow.Companion.PROJECT_VERSION_TEMPLATE
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)

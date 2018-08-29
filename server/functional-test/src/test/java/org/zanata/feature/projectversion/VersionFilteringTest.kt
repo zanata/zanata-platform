@@ -41,7 +41,7 @@ import org.assertj.core.api.Assertions.assertThat
 @DetailedTest
 class VersionFilteringTest : ZanataTestCase() {
 
-    @Trace(summary = "The user can filter project versions by name")
+    @Trace(summary = "The user can filter project versionsList by name")
     @Disabled("dodgy test (intermittent timeout)")
     @Test
     fun versionSearchFiltering() {
@@ -109,8 +109,8 @@ class VersionFilteringTest : ZanataTestCase() {
                 .describedAs("The version count is $versionsCount")
                 .isEqualTo(versionsCount)
 
-        assertThat(page.versions)
-                .describedAs("The versions are correct")
+        assertThat(page.getVersions())
+                .describedAs("The versionsList are correct")
                 .contains(*versionNames)
     }
 }
