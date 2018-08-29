@@ -21,6 +21,8 @@
 package org.zanata.async;
 
 
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +58,7 @@ public class AsyncTaskHandleTest {
     @Test
     public void testResult() throws Exception {
         AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
+        CompletableFuture<String> result = new CompletableFuture<>();
         handle.setFutureResult(result);
 
         result.complete("result");
@@ -68,7 +70,7 @@ public class AsyncTaskHandleTest {
 //            expectedExceptionsMessageRegExp = ".*Exception thrown.*"
     public void testException() throws Exception {
         AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
+        CompletableFuture<String> result = new CompletableFuture<>();
         handle.setFutureResult(result);
 
         result.completeExceptionally(new Exception("Exception thrown"));
@@ -79,7 +81,7 @@ public class AsyncTaskHandleTest {
     @Test
     public void testIsDone() throws Exception {
         AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
+        CompletableFuture<String> result = new CompletableFuture<>();
         handle.setFutureResult(result);
 
         result.complete("result");
@@ -90,7 +92,7 @@ public class AsyncTaskHandleTest {
     @Test
     public void testIsCancelled() throws Exception {
         AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
+        CompletableFuture<String> result = new CompletableFuture<>();
         handle.setFutureResult(result);
         handle.cancel(true);
 
@@ -101,7 +103,7 @@ public class AsyncTaskHandleTest {
     public void testEstimatedTimeRemaining() throws Exception {
         AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
         handle.setMaxProgress(10);
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
+        CompletableFuture<String> result = new CompletableFuture<>();
         handle.setFutureResult(result);
         handle.startTiming();
 
@@ -115,7 +117,7 @@ public class AsyncTaskHandleTest {
     @Test
     public void testCompleteCallback() throws Exception {
         AsyncTaskHandle<Boolean> handle = new AsyncTaskHandle<>();
-        AsyncTaskResult<Boolean> result = new AsyncTaskResult<>();
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
         ThreadLocal<Boolean> noException =
                 ThreadLocal.withInitial(() -> false);
 
@@ -132,7 +134,7 @@ public class AsyncTaskHandleTest {
     @Test
     public void testCompleteCallbackWithException() throws Exception {
         AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
+        CompletableFuture<String> result = new CompletableFuture<>();
         ThreadLocal<Boolean> withException =
                 ThreadLocal.withInitial(() -> false);
 

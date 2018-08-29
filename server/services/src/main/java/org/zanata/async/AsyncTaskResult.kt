@@ -18,32 +18,21 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.async;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import java.util.concurrent.CompletableFuture;
-
 /**
- * Represents the result of an asynchronous task.
- * At this point this is a rename of Java's CompletableFuture class with some
- * utility methods for creating instances.
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * Utility/compatibility class for creating CompletableFuture instances.
+ * @author Carlos Munoz [camunoz@redhat.com](mailto:camunoz@redhat.com)
+ * @author Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
  */
-public class AsyncTaskResult<V> extends CompletableFuture<V> {
 
-    AsyncTaskResult() {
-    }
+@file:JvmName("AsyncTaskResult")
+package org.zanata.async
 
-    public static <T> AsyncTaskResult<T> completed(T value) {
-        AsyncTaskResult<T> result = new AsyncTaskResult<T>();
-        result.complete(value);
-        return result;
-    }
+import java.util.concurrent.CompletableFuture
 
-    @SuppressFBWarnings(value = "NP_NULL_PARAM_DEREF_NONVIRTUAL",
-            justification = "Need to refactor async framework")
-    public static <T> AsyncTaskResult<T> completed() {
-        return completed(null);
-    }
+fun <T> completed(value: T?): CompletableFuture<T> {
+    return CompletableFuture.completedFuture(value)
+}
+
+fun completed(): CompletableFuture<Void> {
+    return completed(null)
 }

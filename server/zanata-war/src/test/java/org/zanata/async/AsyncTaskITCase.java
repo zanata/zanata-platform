@@ -157,7 +157,7 @@ public class AsyncTaskITCase extends ArquillianTest {
             handle.setCurrentProgress(50);
             handle.setCurrentProgress(75);
             handle.setCurrentProgress(100);
-            return AsyncTaskResult.completed();
+            return AsyncTaskResult.completed("DONE");
         }
     }
 }

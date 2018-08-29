@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.locks.Lock;
 import javax.enterprise.context.RequestScoped;
@@ -37,6 +36,7 @@ import javax.persistence.EntityManager;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.action.DashboardUserStats;
+import org.zanata.async.AsyncTaskResult;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -242,7 +242,7 @@ public class ActivityServiceImpl implements ActivityService {
                 lock.unlock();
             }
         }
-        return CompletableFuture.completedFuture(null);
+        return AsyncTaskResult.completed();
     }
 
     /**
