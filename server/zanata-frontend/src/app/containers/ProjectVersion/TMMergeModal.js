@@ -3,7 +3,7 @@ import React from 'react'
 import { Component } from 'react'
 import * as PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {differenceWith, remove, isEqual, throttle} from 'lodash'
+import {differenceWith, isEqual, throttle, remove} from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
@@ -522,7 +522,7 @@ const mapStateToProps = (state, props) => {
       TMMerge: {
         show,
         triggered,
-        projectVersions,
+        projectsWithVersions,
         processStatus,
         queryStatus
       }
@@ -530,13 +530,15 @@ const mapStateToProps = (state, props) => {
   } = state
 
   // remove version to merge into from the list
-  const visibleProjectsWithVersions = projectVersions.map((p) => {
+  const visibleProjectsWithVersions = projectsWithVersions.map((p, index) => {
     if (p.id === props.projectSlug) {
-      p.versions = remove(p.versions, (it) => {
+      const versions = remove(p.versions.slice(), (it) => {
         return it.id !== props.versionSlug
       })
+      return {...p, versions}
+    } else {
+      return {...p}
     }
-    return {...p}
   })
 
   return {

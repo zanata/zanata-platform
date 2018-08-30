@@ -33,7 +33,7 @@ export type ProjectVersionState = {
     triggered: boolean
     processStatus?: ProcessStatus
     queryStatus?: string
-    projectVersions: ProjectSearchResult[]
+    projectsWithVersions: ProjectSearchResult[]
   }
   projectResultsTimestamp: Date
   locales: Locale[]

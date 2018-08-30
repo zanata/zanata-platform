@@ -43,7 +43,7 @@ export const defaultState = {
     triggered: false,
     processStatus: undefined,
     queryStatus: undefined,
-    projectVersions: []
+    projectsWithVersions: []
   },
   // this works unless the code is sent back in time to the 1960s or earlier.
   projectResultsTimestamp: new Date(0),
@@ -117,11 +117,11 @@ const version = handleActions({
     // @ts-ignore
     if (action.meta.timestamp > state.projectResultsTimestamp) {
       // filter out project with empty versions
-      const filteredProjects = filter(action.payload, project => {
+      const filteredProjects = filter(action.payload, (project) => {
         return !isEmpty(project.versions)
       })
       return update(state, {
-        TMMerge: { projectVersions: { $set: filteredProjects } },
+        TMMerge: { projectsWithVersions: { $set: filteredProjects } },
         fetchingProject: { $set: false },
         notification: { $set: undefined },
         // @ts-ignore
