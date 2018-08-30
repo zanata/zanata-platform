@@ -76,13 +76,13 @@ class ProjectPermissionsTab(driver: WebDriver) : ProjectBasePage(driver) {
 
     fun clickRemoveOn(maintainer: String): ProjectPermissionsTab {
         log.info("Click Remove on {}", maintainer)
-        getMaintainerElementFromList(maintainer).click()
+        clickElement(getMaintainerElementFromList(maintainer).findElement(By.tagName("a")))
         return ProjectPermissionsTab(driver)
     }
 
     fun clickRemoveOnSelf(maintainer: String): ProjectBasePage {
         log.info("Click Remove on (self) {}", maintainer)
-        getMaintainerElementFromList(maintainer).click()
+        clickElement(getMaintainerElementFromList(maintainer).findElement(By.tagName("a")))
         return ProjectBasePage(driver)
     }
 

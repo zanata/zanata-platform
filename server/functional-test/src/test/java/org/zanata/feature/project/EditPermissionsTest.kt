@@ -39,7 +39,7 @@ import org.assertj.core.api.Assertions.assertThat
 @DetailedTest
 class EditPermissionsTest : ZanataTestCase() {
 
-    private val TRANSLATOR_KEY = PropertiesHolder
+    private val translatorKey = PropertiesHolder
             .getProperty(Constants.zanataTranslatorKey.value())
 
     @Trace(summary = "The user can view maintainers for a project")
@@ -111,7 +111,7 @@ class EditPermissionsTest : ZanataTestCase() {
     @Trace(summary = "The maintainer can add a maintainer to a project")
     @Test
     fun addMaintainerAsMaintainer() {
-        ZanataRestCaller("translator", TRANSLATOR_KEY)
+        ZanataRestCaller("translator", translatorKey)
                 .createProjectAndVersion("addmaintainer", "addmaintainer",
                         "file")
 
@@ -159,7 +159,7 @@ class EditPermissionsTest : ZanataTestCase() {
     @Trace(summary = "The maintainer can remove a maintainer from a project")
     @Test
     fun removeMaintainer() {
-        ZanataRestCaller("translator", TRANSLATOR_KEY)
+        ZanataRestCaller("translator", translatorKey)
                 .createProjectAndVersion("removemaintainer", "removemaintainer",
                         "file")
         assertThat(LoginWorkFlow()
@@ -194,7 +194,7 @@ class EditPermissionsTest : ZanataTestCase() {
     @Disabled("rhbz1151935")
     @Test
     fun removeSelfAsMaintainer() {
-        ZanataRestCaller("translator", TRANSLATOR_KEY)
+        ZanataRestCaller("translator", translatorKey)
                 .createProjectAndVersion(
                         "removemaintainer", "removemaintainer", "file")
 
