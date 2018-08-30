@@ -30,6 +30,7 @@ import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
@@ -135,28 +136,28 @@ public class AsyncTaskITCase extends ArquillianTest {
     @Named("testAsyncBean")
     public static class TestAsyncBean {
 
-        @Async
+        @Futureable
         public Future<String> asyncString() {
             return AsyncTaskResult.completed("EXPECTED");
         }
 
-        @Async
+        @Futureable
         public void doesNotReturn(AsyncTaskHandle<Void> handle) {
             handle.setCurrentProgress(100);
         }
 
-        @Async
+        @Futureable
         public Future<String> throwsError() {
             throw new RuntimeException("Expected Exception");
         }
 
-        @Async
+        @Futureable
         public Future<String> progressUpdates(AsyncTaskHandle<Void> handle) {
             handle.setCurrentProgress(25);
             handle.setCurrentProgress(50);
             handle.setCurrentProgress(75);
             handle.setCurrentProgress(100);
-            return AsyncTaskResult.completed();
+            return AsyncTaskResult.completed("DONE");
         }
     }
 }

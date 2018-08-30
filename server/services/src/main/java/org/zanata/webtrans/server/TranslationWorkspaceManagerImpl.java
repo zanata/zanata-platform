@@ -12,7 +12,7 @@ import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.zanata.async.Async;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.common.ProjectType;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
@@ -122,7 +122,7 @@ public class TranslationWorkspaceManagerImpl
     // properties (otherwise exception like javax.resource.ResourceException:
     // IJ000460: Error checking for a transaction: Transactions are not active)
 
-    @Async
+    @Futureable
     public void projectUpdate(@Observes final ProjectUpdate payload) {
         // avoid WELD-2019
         final ProjectUpdate event = payload;
@@ -146,7 +146,7 @@ public class TranslationWorkspaceManagerImpl
         }
     }
 
-    @Async
+    @Futureable
     public void
             projectIterationUpdate(@Observes ProjectIterationUpdate payload) {
         projectIterationUpdate(payload.getIteration(),

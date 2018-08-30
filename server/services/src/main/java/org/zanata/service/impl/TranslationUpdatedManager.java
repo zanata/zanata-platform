@@ -3,22 +3,23 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.async.Async;
+
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocStatsEvent;
-import org.zanata.model.type.WebhookType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.WebHook;
+import org.zanata.model.type.WebhookType;
 import com.google.common.annotations.VisibleForTesting;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 // not @Transactional (no DB modifications... yet)
 
 /**
@@ -40,7 +41,7 @@ public class TranslationUpdatedManager {
     @Inject
     private WebhookServiceImpl webhookServiceImpl;
 
-    @Async
+    @Futureable
     public void docStatsUpdated(@Observes(
             during = TransactionPhase.AFTER_SUCCESS) DocStatsEvent event) {
         processWebHookEvent(event);

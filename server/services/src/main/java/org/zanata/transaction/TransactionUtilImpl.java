@@ -96,7 +96,7 @@ public class TransactionUtilImpl implements TransactionUtil {
         transaction = getUserTransaction();
         if (transaction.getStatus() == Status.STATUS_COMMITTED) {
             throw new RuntimeException(
-                    "Nested transactions not supported. @Async may help.");
+                    "Nested transactions not supported. @Futureable may help.");
         }
         transactionActive = isActiveOrMarkedRollback(transaction)
                 || isRolledBack(transaction); // TODO: temp workaround,

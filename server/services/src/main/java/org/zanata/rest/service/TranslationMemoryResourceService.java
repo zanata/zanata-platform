@@ -34,8 +34,8 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.security.annotations.CheckRole;
-import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.common.LocaleId;
@@ -231,7 +231,7 @@ public class TranslationMemoryResourceService
      * @param slug
      * @return
      */
-    @Async
+    @Futureable
     public Future<Object> deleteTranslationUnitsUnguardedAsync(String slug,
             AsyncTaskHandle<?> handle) {
         // TODO the handle is not being used for progress tracking in the

@@ -24,20 +24,19 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.locks.Lock;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
-import javax.persistence.EntityManager;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang3.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.zanata.action.DashboardUserStats;
-import org.zanata.async.Async;
+import org.zanata.async.AsyncTaskResult;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -54,6 +53,7 @@ import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 import org.zanata.transaction.TransactionUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -183,8 +183,8 @@ public class ActivityServiceImpl implements ActivityService {
      */
     // uses Async to ensure transaction environment is reset, because
     // this is triggered during transaction.commit
-    @Async
-    public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event_) {
+    @Futureable
+    public CompletionStage<Void> logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event_) {
         // workaround for https://issues.jboss.org/browse/WELD-2019
         final TextFlowTargetStateEvent event = event_;
 
@@ -242,6 +242,7 @@ public class ActivityServiceImpl implements ActivityService {
                 lock.unlock();
             }
         }
+        return AsyncTaskResult.completed();
     }
 
     /**
@@ -249,7 +250,7 @@ public class ActivityServiceImpl implements ActivityService {
      */
     // uses Async to ensure transaction environment is reset, because
     // this is triggered during transaction.commit
-    @Async
+    @Futureable
     public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event_)
             throws Exception {
         // workaround for https://issues.jboss.org/browse/WELD-2019

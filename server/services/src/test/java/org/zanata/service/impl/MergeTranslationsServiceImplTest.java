@@ -74,7 +74,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -189,12 +188,12 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(
                 getKey(projectSlug, targetVersionSlug));
-        Future<Void> future = service.startMergeTranslations(projectSlug,
+        service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true,
-                handle);
+                handle)
+                // wait for the async process to finish...
+                .toCompletableFuture().get();
         verifyZeroInteractions(authenticatedAccount);
-        // wait for the async process to finish...
-        future.get();
         // No translations were performed
         assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
@@ -207,18 +206,19 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(
                 getKey(projectSlug, targetVersionSlug));
-        Future<Void> future = service.startMergeTranslations(projectSlug,
-                sourceVersionSlug, projectSlug, targetVersionSlug, true, null);
+        service.startMergeTranslations(projectSlug,
+                sourceVersionSlug, projectSlug, targetVersionSlug, true, null)
+                // wait for the async process to finish...
+                .toCompletableFuture().get();
+
         verifyZeroInteractions(authenticatedAccount);
-        // wait for the async process to finish...
-        future.get();
         // No translations were performed
         assertThat(handle.getTotalTextFlows()).isEqualTo(0);
     }
 
     @Test
     @InRequestScope
-    public void testMergeTranslations1() {
+    public void testMergeTranslations1() throws Exception {
         String sourceVersionSlug = "1.0";
         String targetVersionSlug = "2.0";
         boolean useNewerTranslation = false;
@@ -240,7 +240,9 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
                 service.getSupportedLocales(projectSlug, targetVersionSlug);
 
         service.startMergeTranslations(projectSlug, sourceVersionSlug,
-            projectSlug, targetVersionSlug, useNewerTranslation, null);
+            projectSlug, targetVersionSlug, useNewerTranslation, null)
+                // wait for the async process to finish...
+                .toCompletableFuture().get();
 
         List<HTextFlowTarget[]> expectedMergeData = Lists.newArrayList();
         for (HTextFlow[] data : matchingTextFlows) {
@@ -250,9 +252,9 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
                 HTextFlowTarget targetTft =
                         data[1].getTargets().get(locale.getId());
 
-                if(targetTft == null) {
+                if (targetTft == null) {
                     // If untranslated, create a dummy untranslated target
-                    targetTft = new HTextFlowTarget(null, sourceTft.getLocale());
+                    targetTft = new HTextFlowTarget(data[1], sourceTft.getLocale());
                 }
                 if (MergeTranslationsServiceImpl.shouldMerge(sourceTft,
                         targetTft, useNewerTranslation)) {

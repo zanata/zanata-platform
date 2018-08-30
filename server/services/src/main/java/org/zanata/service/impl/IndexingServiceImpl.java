@@ -22,17 +22,16 @@ package org.zanata.service.impl;
 
 import java.util.Map;
 import java.util.concurrent.Future;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.zanata.action.ReindexClassOptions;
-import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.model.HProject;
@@ -62,7 +61,7 @@ public class IndexingServiceImpl implements IndexingService {
     private EntityManagerFactory entityManagerFactory;
 
     @Override
-    @Async
+    @Futureable
     public Future<Void> startIndexing(
             Map<Class<?>, ReindexClassOptions> indexingOptions,
             AsyncTaskHandle<Void> handle) throws Exception {
@@ -166,7 +165,7 @@ public class IndexingServiceImpl implements IndexingService {
     }
 
     @Override
-    @Async
+    @Futureable
     public Future<Void> reindexHTextFlowTargetsForProject(HProject hProject,
             AsyncTaskHandle<Void> handle) throws Exception {
         FullTextSession session = openFullTextSession();
@@ -202,7 +201,7 @@ public class IndexingServiceImpl implements IndexingService {
     }
 
     @Override
-    @Async
+    @Futureable
     public Future<Void> reindexHTextFlowTargetsForProjectIteration(
             HProjectIteration iteration, AsyncTaskHandle<Void> handle) {
         try (FullTextSession session = openFullTextSession()) {

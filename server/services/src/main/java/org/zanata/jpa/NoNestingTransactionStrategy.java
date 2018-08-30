@@ -48,7 +48,7 @@ public class NoNestingTransactionStrategy
             UserTransaction ut = resolveUserTransaction();
             if (ut.getStatus() == Status.STATUS_COMMITTED) {
                 RuntimeException e = new RuntimeException(
-                        "Nested transactions not supported. @Async may help.");
+                        "Nested transactions not supported. @Futureable may help.");
                 // If this happens in an event observer, Weld doesn't log the
                 // exception type or stack trace, just
                 // "WELD-000401 Failure while notifying an observer of event

@@ -8,9 +8,9 @@ import javax.inject.Inject;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Named;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.async.Async;
 import org.zanata.events.ConfigurationChanged;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.util.Introspectable;
@@ -53,7 +53,7 @@ public class RateLimitManager implements Introspectable {
         maxActive = appConfig.getMaxActiveRequestsPerApiKey();
     }
 
-    @Async
+    @Futureable
     @Transactional
     public void configurationChanged(@Observes(
             during = TransactionPhase.AFTER_SUCCESS) ConfigurationChanged payload) {

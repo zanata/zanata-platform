@@ -3,9 +3,10 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
   <interceptors>
-    <!-- AsyncMethodInterceptor should be first, because we don't need to run
+    <!-- Async/Futureable should be first, because we don't need to run
          the other interceptors in the original thread -->
     <!--DISABLED <class>org.zanata.async.AsyncMethodInterceptor</class>-->
+    <!--DISABLED <class>org.apache.deltaspike.core.impl.future.FutureableInterceptor</class>-->
     <class>org.zanata.util.WithRequestScopeInterceptor</class>
     <class>org.zanata.util.SynchronizationInterceptor</class>
     <!--<class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>-->

@@ -20,108 +20,84 @@
  */
 package org.zanata.async;
 
-import com.google.common.base.Optional;
-import org.zanata.util.ServiceLocator;
-
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+
+import org.apache.deltaspike.core.api.future.Futureable;
 
 /**
+ * A second interceptor for the {@code @Futureable} annotation which adds support for
+ * AsyncTaskHandle parameters: setting the start and finish times and passing
+ * the result of the method execution as a Future result. It must run after
+ * {@code org.apache.deltaspike.core.impl.future.FutureableInterceptor} in beans.xml,
+ * not before.
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Async
+// TODO create a new annotation for AsyncTaskHandle parameter handling? more efficient
+@Futureable
 @Interceptor
 //@Priority(Interceptor.Priority.LIBRARY_BEFORE)
 public class AsyncMethodInterceptor {
 
-    private static final ThreadLocal<Boolean> shouldRunAsyncThreadLocal =
-            ThreadLocal.withInitial(() -> true);
+    private final AsyncTaskHandleManager taskHandleManager;
 
     @Inject
-    private AsyncTaskManager taskManager;
+    public AsyncMethodInterceptor(AsyncTaskHandleManager taskHandleManager) {
+        this.taskHandleManager = taskHandleManager;
+    }
 
-    @Inject
-    private AsyncTaskHandleManager taskHandleManager;
+    @SuppressWarnings("unused")
+    AsyncMethodInterceptor() {
+        this(null);
+    }
 
-    //    AsyncMethodInterceptor() {}
-
-//    @Inject
-//    AsyncMethodInterceptor(AsynchronousTaskManager taskManager, AsyncTaskHandleManager taskHandleManager) {
-//        this.taskManager = taskManager;
-//        this.taskHandleManager = taskHandleManager;
-//    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     @AroundInvoke
     public Object aroundInvoke(final InvocationContext ctx) throws Exception {
 
-        Class<?> methodReturnType = ctx.getMethod().getReturnType();
-        if (methodReturnType != void.class
-                && !Future.class.isAssignableFrom(methodReturnType)) {
-            throw new RuntimeException("Async method "
-                    + ctx.getMethod().getName()
-                    + " must return java.lang.Future or nothing at all");
-        }
-        // if this is already an AsyncTask, this will be false:
-        boolean shouldRunAsync = shouldRunAsyncThreadLocal.get();
-        // reset the state in case this thread triggers *other* Async methods
-        shouldRunAsyncThreadLocal.remove();
-        if (shouldRunAsync) {
-            // If there is a Task handle parameter (only the first one will be
-            // registered)
-            final Optional<AsyncTaskHandle> handle =
-                    Optional.fromNullable(findHandleIfPresent(ctx
-                            .getParameters()));
+        // If there is a Task handle parameter (only the first one will be
+        // registered)
+        Optional<AsyncTaskHandle<?>> handle = findHandleIfPresent(
+                ctx.getParameters());
 
-            AsyncTask asyncTask = () -> {
-                // ensure that the next invocation of this interceptor in this
-                // thread will skip the AsyncTask:
-                shouldRunAsyncThreadLocal.set(false);
-                try {
-                    if (handle.isPresent()) {
-                        handle.get().startTiming();
-                    }
-                    // TODO Handle CDI Qualifiers
-                    Object target =
-                            ServiceLocator.instance().getInstance(
-                                    ctx.getMethod()
-                                            .getDeclaringClass());
-                    return ctx.getMethod().invoke(target,
-                            ctx.getParameters());
-                } catch (InvocationTargetException itex) {
-                    // exception thrown from the invoked method
-                    throw itex.getCause();
-                } finally {
-                    if (handle.isPresent()) {
-                        handle.get().finishTiming();
-                        taskHandleManager.taskFinished(handle.get());
-                    }
-                }
-            };
+        // This would only make sense if we used a dedicated annotation
+        //.orElseThrow(() -> new RuntimeException("No AsyncTaskHandle parameter found"));
 
-            CompletableFuture<Object> futureResult =
-                    taskManager.startTask(asyncTask);
-            if (handle.isPresent()) {
-                handle.get().setFutureResult(futureResult);
-            }
-            return futureResult;
-            // Async methods should return ListenableFuture
-        } else {
-            return ctx.proceed();
+        CompletableFuture future = new CompletableFuture<>();
+        try {
+            handle.ifPresent(h -> {
+                h.startTiming();
+                h.setFutureResult(future);
+            });
+            Object result = ctx.proceed();
+            future.complete(result);
+            return result;
+        } catch (Exception e) {
+            future.completeExceptionally(e);
+            throw e;
+        } catch (Throwable e) {
+            future.completeExceptionally(e);
+            throw new InvocationTargetException(e);
+        } finally {
+            handle.ifPresent(h -> {
+                h.finishTiming();
+                taskHandleManager.taskFinished(h);
+            });
         }
     }
 
-    private AsyncTaskHandle<?> findHandleIfPresent(Object[] params) {
+    private Optional<AsyncTaskHandle<?>> findHandleIfPresent(Object[] params) {
         for (Object param : params) {
             if (param instanceof AsyncTaskHandle) {
-                return (AsyncTaskHandle<?>) param;
+                return Optional.of((AsyncTaskHandle<?>) param);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }
