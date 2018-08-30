@@ -43,6 +43,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.Async;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MachineTranslationPrefillTaskHandle;
 import org.zanata.common.ContentState;
@@ -50,6 +51,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.config.MTServiceToken;
 import org.zanata.config.MTServiceURL;
 import org.zanata.config.MTServiceUser;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -100,6 +102,7 @@ public class MachineTranslationServiceImpl implements
     private TextFlowsToMTDoc textFlowsToMTDoc;
     private TextFlowDAO textFlowDAO;
     private TextFlowTargetDAO textFlowTargetDAO;
+    private ProjectIterationDAO projectIterationDAO;
     private LocaleService localeService;
     private EntityManager entityManager;
     private TransactionUtil transactionUtil;
@@ -118,6 +121,7 @@ public class MachineTranslationServiceImpl implements
             TextFlowsToMTDoc textFlowsToMTDoc,
             TextFlowDAO textFlowDAO,
             TextFlowTargetDAO textFlowTargetDAO,
+            ProjectIterationDAO projectIterationDAO,
             LocaleService localeService,
             EntityManager entityManager,
             TransactionUtil transactionUtil,
@@ -136,6 +140,7 @@ public class MachineTranslationServiceImpl implements
         this.translationService = translationService;
         this.versionStateCache = versionStateCache;
         this.attributionService = attributionService;
+        this.projectIterationDAO = projectIterationDAO;
     }
 
     @Override
@@ -209,7 +214,9 @@ public class MachineTranslationServiceImpl implements
             log.info("No documents in {}", version.userFriendlyToString());
             return AsyncTaskResult.completed();
         }
-        taskHandle.setMaxProgress(documents.size());
+        // Set taskHandle to count the textflows of all documents
+        taskHandle.setMaxProgress(projectIterationDAO
+                        .getTotalMessageCountForIteration(versionId));
         HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
@@ -228,15 +235,15 @@ public class MachineTranslationServiceImpl implements
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
             Long docId = doc.getId();
-
             if (!attributionService.supportsAttribution(doc)) {
                 log.warn("Attribution not supported for {}; skipping MT", doc);
+                taskHandle.increaseProgress(doc.getTextFlows().size());
                 continue;
             }
             String requestedBackend = BACKEND_GOOGLE;
             String backendId = addMachineTranslationsToDoc(doc, targetLocale,
                     projectSlug, versionSlug, options.getSaveState(),
-                    options.getOverwriteFuzzy(), requestedBackend);
+                    options.getOverwriteFuzzy(), requestedBackend, taskHandle);
             if (backendId != null) {
                 try {
                     transactionUtil.run(() -> {
@@ -249,7 +256,6 @@ public class MachineTranslationServiceImpl implements
                     throw new RuntimeException("error adding attribution for machine translation", e);
                 }
             }
-            taskHandle.increaseProgress(1);
         }
         // Clear the cache again to force recalculation (just in case of
         // concurrent activity):
@@ -262,15 +268,24 @@ public class MachineTranslationServiceImpl implements
     }
 
     private @Nullable String addMachineTranslationsToDoc(HDocument doc,
-            HLocale targetLocale, String projectSlug,
-            String versionSlug, ContentState saveState, boolean overwriteFuzzy,
-            String backendId) {
+                                                         HLocale targetLocale,
+                                                         String projectSlug,
+                                                         String versionSlug,
+                                                         ContentState saveState,
+                                                         boolean overwriteFuzzy,
+                                                         String backendId,
+                                                         AsyncTaskHandle taskHandle) {
         DocumentId documentId = new DocumentId(doc.getId(),
                 doc.getDocId());
         entityManager.clear();
         List<HTextFlow> textFlowsToTranslate =
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
                         documentId, overwriteFuzzy);
+        // Increase progress for non-translated items
+        int textFlowsToSkip = entityManager
+                .find(HDocument.class, doc.getId()).getTextFlows().size()
+                - textFlowsToTranslate.size();
+        taskHandle.increaseProgress(textFlowsToSkip);
         if (textFlowsToTranslate.isEmpty()) {
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
             return null;
@@ -281,12 +296,12 @@ public class MachineTranslationServiceImpl implements
             int batchEnd = Math.min(
                     startBatch + REQUEST_BATCH_SIZE, textFlowsToTranslate.size());
             log.debug("[PERF] Starting batch {} - {}", startBatch, batchEnd);
-            List<HTextFlow> next =
+            List<HTextFlow> textFlowBatch =
                     textFlowsToTranslate.subList(startBatch, batchEnd);
             MTDocument mtDocument = textFlowsToMTDoc
                     .fromTextFlows(projectSlug, versionSlug,
                             doc.getDocId(), doc.getSourceLocaleId(),
-                            next,
+                            textFlowBatch,
                             TextFlowsToMTDoc::extractPluralIfPresent,
                             backendId);
 
@@ -296,10 +311,11 @@ public class MachineTranslationServiceImpl implements
                     targetLocale.getLocaleId());
             log.debug("[PERF] Received response [{} contents] ({}ms)",
                     result.getContents().size(), mtProviderStopwatch);
-            saveTranslationsInBatches(next, result, targetLocale, saveState);
+            saveTranslationsInBatches(textFlowBatch, result, targetLocale, saveState);
             // TODO we only return the backendId from the final batch
             backendIdConfirmation = result.getBackendId();
             startBatch = batchEnd;
+            taskHandle.increaseProgress(textFlowBatch.size());
         }
         if (backendIdConfirmation == null) {
             log.warn("Error getting confirmation backend ID for {}", doc.getDocId());

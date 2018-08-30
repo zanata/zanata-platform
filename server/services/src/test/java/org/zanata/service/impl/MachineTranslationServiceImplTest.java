@@ -50,6 +50,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.config.MTServiceToken;
 import org.zanata.config.MTServiceURL;
 import org.zanata.config.MTServiceUser;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
@@ -86,6 +87,7 @@ import com.google.common.base.Joiner;
         TextFlowsToMTDoc.class,
         TextFlowDAO.class,
         TextFlowTargetDAO.class,
+        ProjectIterationDAO.class,
         UrlUtil.class })
 public class MachineTranslationServiceImplTest extends ZanataJpaTest {
     private static final int NUM_OF_TEXTFLOWS = 110;

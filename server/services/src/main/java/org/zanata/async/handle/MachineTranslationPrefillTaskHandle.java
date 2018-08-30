@@ -24,7 +24,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.UserTriggeredTaskHandle;
-
 import com.google.common.base.MoreObjects;
 
 /**
