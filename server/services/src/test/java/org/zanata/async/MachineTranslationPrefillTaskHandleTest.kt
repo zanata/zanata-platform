@@ -33,19 +33,18 @@ class MachineTranslationPrefillTaskHandleTest {
 
     @Test
     fun testToString() {
-        val handle = MachineTranslationPrefillTaskHandle { "12345" }
-        handle.triggeredBy = "Leeloo"
-        handle.maxProgress = 100
-        handle.setTargetVersion("zanata-server-master")
-        handle.increaseProgress(50)
+        val handle = MachineTranslationPrefillTaskHandle { "12345" }.apply {
+            triggeredBy = "Leeloo"
+            taskName = "Test MT Fill"
+            maxProgress = 100
+            setTargetVersion("zanata-server-master")
+            increaseProgress(50)
+        }
         assertThat(handle.triggeredBy).isEqualTo("Leeloo")
-        assertThat(handle.toString()).isEqualTo("""
-            |MachineTranslationPrefillTaskHandle{
-            |targetVersion=zanata-server-master,
-            | currentProgress=50,
-            | maxProgress=100,
-            | triggeredBy=Leeloo}"""
-                .trimMargin().replace("\n", ""))
+        assertThat(handle.taskName).isEqualTo("Test MT Fill")
+        assertThat(handle.toString()).contains("targetVersion=zanata-server-master")
+                .contains("currentProgress=50")
+                .contains("triggeredBy=Leeloo")
     }
 
 }
