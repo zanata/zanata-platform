@@ -18,55 +18,54 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.editor;
+package org.zanata.feature.editor
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.webtrans.EditorPage;
-import org.zanata.util.RetryRule;
-import org.zanata.workflow.LoginWorkFlow;
-import org.zanata.workflow.ProjectWorkFlow;
+import org.junit.Ignore
+import org.junit.Rule
+import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.feature.testharness.ZanataTestCase
+import org.zanata.util.RetryRule
+import org.zanata.workflow.LoginWorkFlow
+import org.zanata.workflow.ProjectWorkFlow
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions.assertThat
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest.class)
-public class TranslationHistoryTest extends ZanataTestCase {
+@Category(DetailedTest::class)
+class TranslationHistoryTest : ZanataTestCase() {
 
-    @Rule
-    public RetryRule retryRule = new RetryRule(0);
+    @get:Rule
+    var retryRule = RetryRule(0)
 
     @Test
-    public void showTranslationHistory() {
-        new LoginWorkFlow().signIn("admin", "admin");
-        EditorPage editorPage = new ProjectWorkFlow()
+    fun showTranslationHistory() {
+        LoginWorkFlow().signIn("admin", "admin")
+        val editorPage = ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .translate("pl", "About_Fedora")
                 .translateTargetAtRowIndex(0, "historytest")
                 .saveAsFuzzyAtRow(0)
-                .clickShowHistoryForRow(0);
+                .clickShowHistoryForRow(0)
 
         assertThat(editorPage.getHistoryEntryAuthor(0))
-                .as("The user is displayed")
-                .startsWith("admin");
+                .describedAs("The user is displayed")
+                .startsWith("admin")
         assertThat(editorPage.getHistoryEntryContent(0))
-                .as("The content change is displayed")
-                .contains("historytest");
+                .describedAs("The content change is displayed")
+                .contains("historytest")
     }
 
     @Test
     // fails intermittently
     @Ignore
-    public void compareTranslationHistory() {
-        new LoginWorkFlow().signIn("admin", "admin");
-        EditorPage editorPage = new ProjectWorkFlow()
+    fun compareTranslationHistory() {
+        LoginWorkFlow().signIn("admin", "admin")
+        var editorPage = ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .translate("pl", "About_Fedora")
@@ -76,22 +75,22 @@ public class TranslationHistoryTest extends ZanataTestCase {
                 .approveTranslationAtRow(0)
                 .clickShowHistoryForRow(0)
                 .clickCompareOn(0)
-                .clickCompareOn(1);
+                .clickCompareOn(1)
 
-        assertThat(editorPage.getTranslationHistoryCompareTabtext())
-                .as("The tab displays compared versions")
-                .isEqualTo("Compare ver. 2 and 1");
+        assertThat(editorPage.translationHistoryCompareTabtext)
+                .describedAs("The tab displays compared versions")
+                .isEqualTo("Compare ver. 2 and 1")
 
-        editorPage = editorPage.clickCompareVersionsTab();
+        editorPage = editorPage.clickCompareVersionsTab()
 
         assertThat(editorPage.getComparisonTextInRow(0))
-                .as("The new text is displayed")
-                .isEqualTo("historytest2");
+                .describedAs("The new text is displayed")
+                .isEqualTo("historytest2")
         assertThat(editorPage.getComparisonTextInRow(1))
-                .as("The old text is also displayed")
-                .isEqualTo("historytest2");
-        assertThat(editorPage.getComparisonTextDiff())
-                .as("The diff is displayed")
-                .contains("--2");
+                .describedAs("The old text is also displayed")
+                .isEqualTo("historytest2")
+        assertThat(editorPage.comparisonTextDiff)
+                .describedAs("The diff is displayed")
+                .contains("--2")
     }
 }

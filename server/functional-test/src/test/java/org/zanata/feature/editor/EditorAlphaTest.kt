@@ -18,39 +18,37 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.editor;
+package org.zanata.feature.editor
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.TestPlan;
-import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.editor.ReactEditorPage;
-import org.zanata.workflow.BasicWorkFlow;
-import org.zanata.workflow.LoginWorkFlow;
+import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.zanata.feature.testharness.TestPlan
+import org.zanata.feature.testharness.ZanataTestCase
+import org.zanata.workflow.BasicWorkFlow
+import org.zanata.workflow.LoginWorkFlow
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions.assertThat
 
 /**
- * @author Damian Jansen
- *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(TestPlan.BasicAcceptanceTest.class)
-public class EditorAlphaTest extends ZanataTestCase {
+@Category(TestPlan.BasicAcceptanceTest::class)
+class EditorAlphaTest : ZanataTestCase() {
 
     // Test that the alpha button works
-    @Test(timeout = MAX_SHORT_TEST_DURATION)
-    public void showAlphaEditor() {
-        new LoginWorkFlow()
-                .signIn("admin", "admin");
-        ReactEditorPage reactEditorPage = new BasicWorkFlow()
+    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    fun showAlphaEditor() {
+        LoginWorkFlow()
+                .signIn("admin", "admin")
+        val reactEditorPage = BasicWorkFlow()
                 .goToEditor("about-fedora", "master", "fr", "About_Fedora")
                 .pressAlphaEditorButton()
-                .switchToEditorWindow();
+                .switchToEditorWindow()
 
-        assertThat(reactEditorPage.isReactEditor()).isTrue();
+        assertThat(reactEditorPage.isReactEditor).isTrue()
 
         // Wait for the phrases to load
-        reactEditorPage.expectNumberOfTargets(1);
-        assertThat(reactEditorPage.getTransunitTargets().size()).isEqualTo(1);
+        reactEditorPage.expectNumberOfTargets(1)
+        assertThat(reactEditorPage.transunitTargets.size).isEqualTo(1)
     }
 }
