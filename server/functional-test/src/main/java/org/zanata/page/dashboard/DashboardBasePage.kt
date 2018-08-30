@@ -42,6 +42,15 @@ open class DashboardBasePage(driver: WebDriver) : BasePage(driver) {
     private val settingsClientTab = By.id("client_tab")
     private val profileOverview = By.id("profile-overview")
 
+    init {
+        try {
+            executor.executeScript("var ele = arguments[0]; ele.parentNode.removeChild(ele);",
+                    driver.findElement(By.id("tasks_poll")))
+        } catch (n: org.openqa.selenium.NoSuchElementException) {
+            // OK
+        }
+    }
+
     val userFullName: String
         get() {
             log.info("Query user full name")

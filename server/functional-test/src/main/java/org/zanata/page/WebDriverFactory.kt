@@ -334,6 +334,7 @@ enum class WebDriverFactory {
         log().info("Adding Chrome extension: {}", extensionDir)
         capabilities.setCapability(ChromeOptions.CAPABILITY, options)
         enableLogging(capabilities)
+        @Suppress("ConstantConditionIf")
         if (useProxy) {
             // start the proxy
             proxy = BrowserMobProxyServer()
@@ -372,17 +373,15 @@ enum class WebDriverFactory {
         val pathToFirefox = Strings.emptyToNull(
                 PropertiesHolder.properties.getProperty("firefox.path"))
         val firefoxBinary: FirefoxBinary
-        if (pathToFirefox != null) {
-            firefoxBinary = FirefoxBinary(File(pathToFirefox))
+        firefoxBinary = if (pathToFirefox != null) {
+            FirefoxBinary(File(pathToFirefox))
         } else {
-            firefoxBinary = FirefoxBinary()
+            FirefoxBinary()
         }
         val options = FirefoxOptions()
                 .setBinary(firefoxBinary)
                 .setProfile(makeFirefoxProfile())
-        val capabilities = options.addTo(DesiredCapabilities.firefox())
-        enableLogging(capabilities)
-        val driver = FirefoxDriver(capabilities)
+        val driver = FirefoxDriver(options)
         return EventFiringWebDriver(driver)
     }
 
@@ -492,7 +491,7 @@ enum class WebDriverFactory {
         }
         // can reuse, share globally
         private val mapper = ObjectMapper()
-        private val useProxy = true
+        private const val useProxy = true
         // we can't declare this as a field because it is needed during init
 
         private fun log(): Logger {
