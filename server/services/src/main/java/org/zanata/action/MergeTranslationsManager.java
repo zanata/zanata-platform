@@ -9,6 +9,7 @@ import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
+import org.zanata.i18n.Messages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
 
@@ -35,6 +36,8 @@ public class MergeTranslationsManager implements Serializable {
     private MergeTranslationsService mergeTranslationsServiceImpl;
     @Inject
     private ZanataIdentity identity;
+    @Inject
+    private Messages msgs;
 
     /**
      * Merge translations from an existing version to another.
@@ -54,10 +57,12 @@ public class MergeTranslationsManager implements Serializable {
     public void start(String sourceProjectSlug, String sourceVersionSlug,
             String targetProjectSlug, String targetVersionSlug,
             boolean useNewerTranslation) {
-        AsyncTaskKey
-                key = MergeVersionKey
+        AsyncTaskKey key = MergeVersionKey
                 .getKey(targetProjectSlug, targetVersionSlug);
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(key);
+        handle.setTaskName(msgs.format("jsf.tasks.mergeTranslations",
+                sourceProjectSlug, sourceVersionSlug,
+                targetProjectSlug, targetVersionSlug));
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         mergeTranslationsServiceImpl.startMergeTranslations(sourceProjectSlug,
                 sourceVersionSlug, targetProjectSlug, targetVersionSlug,

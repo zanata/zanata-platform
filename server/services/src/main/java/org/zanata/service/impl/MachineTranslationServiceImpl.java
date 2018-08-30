@@ -85,7 +85,8 @@ import static java.util.stream.Collectors.toList;
 @RequestScoped
 public class MachineTranslationServiceImpl implements
         MachineTranslationService {
-    private static final int BATCH_SIZE = 100;
+    private static final int SAVE_BATCH_SIZE = 100;
+    private static final int REQUEST_BATCH_SIZE = 1000;
     private static final Logger log =
             LoggerFactory.getLogger(MachineTranslationServiceImpl.class);
 
@@ -205,18 +206,17 @@ public class MachineTranslationServiceImpl implements
         HProjectIteration version = entityManager.find(HProjectIteration.class, versionId);
         Map<String, HDocument> documents = version.getDocuments();
         if (documents.isEmpty()) {
-            log.info("no documents in {}", version.userFriendlyToString());
+            log.info("No documents in {}", version.userFriendlyToString());
             return AsyncTaskResult.completed();
         }
         taskHandle.setMaxProgress(documents.size());
         HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
-
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
         String projectSlug = version.getProject().getSlug();
         String versionSlug = version.getSlug();
 
-        log.info("about to send {} document(s) to MT", documents.size());
+        log.info("Sending {} document(s) to MT", documents.size());
 
         // We clear the cache because we apparently don't trust the incremental
         // stats calculations. By clearing first, we save the cache from
@@ -227,6 +227,7 @@ public class MachineTranslationServiceImpl implements
         for (Iterator<HDocument> iterator = documents.values().iterator();
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
+            Long docId = doc.getId();
 
             if (!attributionService.supportsAttribution(doc)) {
                 log.warn("Attribution not supported for {}; skipping MT", doc);
@@ -239,8 +240,10 @@ public class MachineTranslationServiceImpl implements
             if (backendId != null) {
                 try {
                     transactionUtil.run(() -> {
-                        attributionService.addAttribution(doc, targetLocale, backendId);
-                        entityManager.merge(doc);
+                        // Refresh HDocument after being cleared in processing
+                        HDocument refreshedDoc = entityManager.find(HDocument.class, docId);
+                        attributionService.addAttribution(refreshedDoc, targetLocale, backendId);
+                        entityManager.merge(refreshedDoc);
                     });
                 } catch (Exception e) {
                     throw new RuntimeException("error adding attribution for machine translation", e);
@@ -264,6 +267,7 @@ public class MachineTranslationServiceImpl implements
             String backendId) {
         DocumentId documentId = new DocumentId(doc.getId(),
                 doc.getDocId());
+        entityManager.clear();
         List<HTextFlow> textFlowsToTranslate =
                 getTextFlowsByDocumentIdWithConstraints(targetLocale,
                         documentId, overwriteFuzzy);
@@ -271,17 +275,36 @@ public class MachineTranslationServiceImpl implements
             log.info("No eligible text flows in document {}", doc.getQualifiedDocId());
             return null;
         }
+        int startBatch = 0;
+        String backendIdConfirmation = null;
+        while (startBatch < textFlowsToTranslate.size()) {
+            int batchEnd = Math.min(
+                    startBatch + REQUEST_BATCH_SIZE, textFlowsToTranslate.size());
+            log.debug("[PERF] Starting batch {} - {}", startBatch, batchEnd);
+            List<HTextFlow> next =
+                    textFlowsToTranslate.subList(startBatch, batchEnd);
+            MTDocument mtDocument = textFlowsToMTDoc
+                    .fromTextFlows(projectSlug, versionSlug,
+                            doc.getDocId(), doc.getSourceLocaleId(),
+                            next,
+                            TextFlowsToMTDoc::extractPluralIfPresent,
+                            backendId);
 
-        MTDocument mtDocument = textFlowsToMTDoc
-                .fromTextFlows(projectSlug, versionSlug,
-                        doc.getDocId(), doc.getSourceLocaleId(),
-                        textFlowsToTranslate,
-                        TextFlowsToMTDoc::extractPluralIfPresent,
-                        backendId);
-        MTDocument result = getTranslationFromMT(mtDocument,
-                targetLocale.getLocaleId());
-        saveTranslationsInBatches(textFlowsToTranslate, result, targetLocale, saveState);
-        return result.getBackendId();
+            log.debug("[PERF] Sending batch {} - {}", startBatch, batchEnd);
+            Stopwatch mtProviderStopwatch = Stopwatch.createStarted();
+            MTDocument result = getTranslationFromMT(mtDocument,
+                    targetLocale.getLocaleId());
+            log.debug("[PERF] Received response [{} contents] ({}ms)",
+                    result.getContents().size(), mtProviderStopwatch);
+            saveTranslationsInBatches(next, result, targetLocale, saveState);
+            // TODO we only return the backendId from the final batch
+            backendIdConfirmation = result.getBackendId();
+            startBatch = batchEnd;
+        }
+        if (backendIdConfirmation == null) {
+            log.warn("Error getting confirmation backend ID for {}", doc.getDocId());
+        }
+        return backendIdConfirmation;
     }
 
     private List<HTextFlow> getTextFlowsByDocumentIdWithConstraints(
@@ -300,12 +323,16 @@ public class MachineTranslationServiceImpl implements
             MTDocument transDoc,
             HLocale targetLocale, ContentState saveState) {
         int batchStart = 0;
+        log.debug("[PERF] Saving {} translations in batches", textFlows.size());
+        Stopwatch saveAllTimer = Stopwatch.createStarted();
         while (batchStart < textFlows.size()) {
             // work out upper bound of index for each batch
-            int batchEnd = Math.min(batchStart + BATCH_SIZE, textFlows.size());
+            int batchEnd = Math.min(batchStart + SAVE_BATCH_SIZE, textFlows.size());
             List<HTextFlow> sourceBatch = textFlows.subList(batchStart, batchEnd);
             List<TypeString> transContentBatch =
                     transDoc.getContents().subList(batchStart, batchEnd);
+            log.debug("[PERF] Batch save transaction {} - {}", batchStart, batchEnd);
+            Stopwatch transactionTime = Stopwatch.createStarted();
             try {
                 transactionUtil.run(() -> {
                     List<TransUnitUpdateRequest> updateRequests =
@@ -314,13 +341,22 @@ public class MachineTranslationServiceImpl implements
                                     saveState,
                                     sourceBatch,
                                     transContentBatch);
+                    Stopwatch storeTranslations = Stopwatch.createStarted();
                     translationService.translate(targetLocale.getLocaleId(), updateRequests);
+                    log.debug("[PERF] Commit translations to database ({}ms)", storeTranslations);
+
                 });
             } catch (Exception e) {
-                log.error("error prefilling translation with machine translation", e);
+                log.error("Error filling target with machine translation", e);
             }
+
+            // Clear here to reduce the entityManager cache
+            entityManager.clear();
             batchStart = batchEnd;
+            log.debug("[PERF] Transaction complete {} - {} ({}ms)", batchStart,
+                    batchEnd, transactionTime);
         }
+        log.debug("[PERF] Batches complete ({}ms)", saveAllTimer);
     }
 
     /**
@@ -333,7 +369,8 @@ public class MachineTranslationServiceImpl implements
             List<HTextFlow> sourceBatch,
             List<TypeString> transContentBatch) {
         List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
-
+        log.debug("[PERF] Creating {} save requests", sourceBatch.size());
+        Stopwatch createRequestsTimer = Stopwatch.createStarted();
         for (int i = 0; i < sourceBatch.size(); i++) {
             HTextFlow textFlow = sourceBatch.get(i);
             ContentState saveState =
@@ -360,6 +397,8 @@ public class MachineTranslationServiceImpl implements
             updateRequest.addRevisionComment(getRevisionComment(backendId));
             updateRequests.add(updateRequest);
         }
+        log.debug("[PERF] Created {} requests ({}ms)", updateRequests.size(),
+                createRequestsTimer);
         return updateRequests;
     }
 

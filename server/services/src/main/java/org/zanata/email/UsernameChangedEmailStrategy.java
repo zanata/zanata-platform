@@ -20,9 +20,10 @@
  */
 package org.zanata.email;
 
-import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 import javax.mail.internet.InternetAddress;
+
+import com.oath.cyclops.types.persistent.PersistentMap;
 
 /**
  * @author Sean Flanigan
@@ -43,9 +44,9 @@ public class UsernameChangedEmailStrategy extends VelocityEmailStrategy {
     }
 
     @Override
-    public Map<String, Object> makeContext(Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context =
+        PersistentMap<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
         return context.put("toName", toAddresses[0].getPersonal())
                 .put("newUsername", newUserName)

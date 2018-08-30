@@ -382,7 +382,8 @@ button.ant-btn.btn-link:focus {
   background-color: #fff;
 }
 
-.ant-select-selection:hover {
+.ant-select-selection:hover,
+.ant-calendar-picker:focus .ant-calendar-picker-input:not(.ant-input-disabled){
   border: solid 2px @info-color;
 }
 
@@ -431,7 +432,9 @@ input.ant-input:focus,
 .textInput:focus,
 .textInput:hover,
 textarea:hover,
-textarea:focus {
+textarea:focus,
+.ant-input:hover,
+.ant-input:focus {
   border: 2px solid @info-color !important;
 }
 
@@ -828,6 +831,19 @@ span.svg {
 
 .ant-notification-notice-icon-danger {
   color: @error-color;
+}
+
+.ant-calendar-today .ant-calendar-date {
+  color: @info-color;
+  border-color: @info-color;
+}
+
+.ant-calendar-selected-day .ant-calendar-date {
+  background-color: @info-color;
+}
+
+.ant-calendar-selected-day .ant-calendar-date:hover {
+  background-color: @primary-color;
 }
 
 table {

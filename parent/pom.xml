@@ -250,7 +250,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.8</version>
+        <version>0.8.2</version>
         <executions>
           <execution>
             <id>default-prepare-agent</id>
@@ -539,7 +539,7 @@
             <!-- TODO remove references to org.hibernate.internal.SessionImpl -->
             <!-- TODO remove references to org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator -->
             <!-- TODO block *.impl.* except org.zanata.*, com.google.gwt.i18n.server.impl, antlr.collections.impl.BitSet -->
-            <restriction>org.zanata.* to *.internal.*,!kotlin.jvm.internal.*,!org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator,!org.hibernate.engine.jdbc.connections.internal.*,!org.hibernate.internal.SessionImpl</restriction>
+            <restriction>org.zanata.* to *.internal.*,!kotlin.jvm.internal.*,!com.nhaarman.mockitokotlin2.*,!org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator,!org.hibernate.engine.jdbc.connections.internal.*,!org.hibernate.internal.SessionImpl</restriction>
           </restrictions>
         </configuration>
       </plugin>

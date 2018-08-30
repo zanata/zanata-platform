@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import javaslang.control.Either;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -39,6 +38,7 @@ import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.MoreObjects;
+import cyclops.control.Either;
 
 /**
  * This class is responsible for checking for all REST requests: a) valid
@@ -116,18 +116,13 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                         .build());
             }
         } else if (restCredentials.hasOAuthToken()) {
-            Either<Response, String> usernameOrError =
-                getAuthenticatedUsernameOrError();
-            if (usernameOrError.isLeft()) {
-                context.abortWith(usernameOrError.getLeft());
-                return;
-            }
-            String username = usernameOrError.get();
-            zanataIdentity.getCredentials().setUsername(username);
-            zanataIdentity.setRequestUsingOAuth(true);
-            // login will always success since the check was done above
-            // here the tryLogin() will just set up the correct system state
-            zanataIdentity.tryLogin();
+            getAuthenticatedUsernameOrError().bipeek(context::abortWith, username -> {
+                zanataIdentity.getCredentials().setUsername(username);
+                zanataIdentity.setRequestUsingOAuth(true);
+                // login will always success since the check was done above
+                // here the tryLogin() will just set up the correct system state
+                zanataIdentity.tryLogin();
+            });
         } else if (!allowAnonymousAccessProvider.get() ||
                 !HttpUtil.isReadMethod(context.getMethod())){
             // special cases for path such as '/test/' or '/oauth/' are now

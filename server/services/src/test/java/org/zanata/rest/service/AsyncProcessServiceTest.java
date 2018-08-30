@@ -360,5 +360,10 @@ public class AsyncProcessServiceTest {
         public String getTriggeredBy() {
             return triggerBy;
         }
+
+        @Override
+        public String getTaskName() {
+            return "TestAsyncTaskName";
+        }
     }
 }

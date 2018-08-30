@@ -251,8 +251,26 @@ public class HProjectIteration extends SlugEntityBase
         return projectType;
     }
 
+    /**
+     * Get the active / read-only status of the version
+     * @return EntityStatus status
+     *
+     * @see HProjectIteration#isActive() if checking for 'actual' version
+     * active status, considering the status of the parent
+     */
     public EntityStatus getStatus() {
         return this.status;
+    }
+
+    /**
+     * Query if the version is effectively active, considering also the status
+     * of the parent project
+     * @return version and project are both ACTIVE
+     */
+    public boolean isActive() {
+        return getProject() != null &&
+                getProject().getStatus() == EntityStatus.ACTIVE &&
+                getStatus() == EntityStatus.ACTIVE;
     }
 
     public HProjectIteration() {

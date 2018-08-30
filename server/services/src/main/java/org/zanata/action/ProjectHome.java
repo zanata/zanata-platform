@@ -901,7 +901,8 @@ public class ProjectHome extends SlugHome<HProject>
     @Transactional
     public void updateStatus(char initial) {
         identity.checkPermission(getInstance(), "update");
-        getInstance().setStatus(EntityStatus.valueOf(initial));
+        EntityStatus status = EntityStatus.valueOf(initial);
+        getInstance().setStatus(status);
         if (getInstance().getStatus() == EntityStatus.READONLY) {
             for (HProjectIteration version : getInstance()
                     .getProjectIterations()) {
@@ -920,7 +921,6 @@ public class ProjectHome extends SlugHome<HProject>
             }
         }
         update();
-        EntityStatus status = EntityStatus.valueOf(initial);
         if (status.equals(EntityStatus.OBSOLETE)) {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.project.notification.deleted", getSlug()));

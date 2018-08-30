@@ -30,12 +30,11 @@ import java.util.List;
 public abstract class AbstractAutocomplete<T> implements Serializable {
 
     private static final long serialVersionUID = 8982902239785894826L;
-    @SuppressWarnings("deprecation")
-    protected org.zanata.seam.scope.ConversationScopeMessages
-            conversationScopeMessages =
-            org.zanata.seam.scope.ConversationScopeMessages.instance();
-    private String query; // String of the input box
-    private String selectedItem; // Selected item from the suggestion
+
+    // String of the input box
+    private String query;
+    // Selected item from the suggestion
+    private String selectedItem;
 
     /**
      * Return results on search

@@ -305,8 +305,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang</artifactId>
+      <groupId>com.oath.cyclops</groupId>
+      <artifactId>cyclops</artifactId>
     </dependency>
 
     <dependency>
@@ -1222,8 +1222,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.nhaarman</groupId>
-      <artifactId>mockito-kotlin-kt1.1</artifactId>
+      <groupId>com.nhaarman.mockitokotlin2</groupId>
+      <artifactId>mockito-kotlin</artifactId>
     </dependency>
 
     <dependency>

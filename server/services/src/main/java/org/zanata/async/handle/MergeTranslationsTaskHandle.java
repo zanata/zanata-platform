@@ -20,6 +20,7 @@
  */
 package org.zanata.async.handle;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.UserTriggeredTaskHandle;
@@ -58,5 +59,10 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implement
     @Override
     public void setTriggeredBy(final String triggeredBy) {
         this.triggeredBy = triggeredBy;
+    }
+
+    @Override
+    public String getTaskName() {
+        return ObjectUtils.firstNonNull(this.taskName, "Unnamed Translation Merge");
     }
 }

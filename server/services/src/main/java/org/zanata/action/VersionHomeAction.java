@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -48,12 +49,12 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 import org.zanata.adapter.FileFormatAdapter.ParserOptions;
+import org.zanata.config.MTServiceURL;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ProjectType;
@@ -153,8 +154,7 @@ public class VersionHomeAction extends AbstractSortAction
     private HLocale selectedLocale;
     private HDocument selectedDocument;
     @Inject
-    @SuppressWarnings("deprecation")
-    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
+    private FacesMessages facesMessages;
     @Inject
     private FilePersistService filePersistService;
     @Inject
@@ -163,6 +163,10 @@ public class VersionHomeAction extends AbstractSortAction
     private WebhookServiceImpl webhookService;
     @Inject
     private WebHookDAO webHookDAO;
+    @Inject
+    @MTServiceURL
+    private URI mtServiceURL;
+
     private List<HLocale> supportedLocale;
     private List<HDocument> documents;
     private Map<LocaleId, WordStatistic> localeStatisticMap;
@@ -279,14 +283,14 @@ public class VersionHomeAction extends AbstractSortAction
         copyVersionHandler.setProjectSlug(projectSlug);
     }
 
-    @SuppressWarnings("deprecation")
     private void setMessage(FacesMessage.Severity severity, String message) {
-        conversationScopeMessages.setMessage(severity, message);
+        facesMessages.addGlobal(severity, message);
     }
 
-    @SuppressWarnings("deprecation")
     private void addMessages(List<FacesMessage> messages) {
-        conversationScopeMessages.addMessages(messages);
+        for (FacesMessage message : messages) {
+            facesMessages.addGlobal(message);
+        }
     }
 
     public void cancelCopyVersion() {
@@ -620,8 +624,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     private boolean isVersionActive() {
-        return getVersion().getProject().getStatus() == EntityStatus.ACTIVE
-                || getVersion().getStatus() == EntityStatus.ACTIVE;
+        return getVersion().isActive();
     }
 
     public void deleteDocument(String docId) {
@@ -668,8 +671,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public boolean isPoProject() {
-        HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        HProjectIteration projectIteration = getVersion();
         ProjectType type = projectIteration.getProjectType();
         if (type == null) {
             type = projectIteration.getProject().getDefaultProjectType();
@@ -695,9 +697,7 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public boolean isKnownProjectType() {
-        ProjectType type = projectIterationDAO
-                .getBySlug(projectSlug, versionSlug).getProjectType();
-        return type != null;
+        return getVersion().getProjectType() != null;
     }
 
     public boolean isFileUploadAllowed(HLocale hLocale) {
@@ -763,9 +763,20 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public boolean hasOriginal(String docPath, String docName) {
+        if (!isKnownProjectType() || getVersion().getProjectType() != ProjectType.File) {
+            return false;
+        }
         GlobalDocumentId id = new GlobalDocumentId(projectSlug, versionSlug,
                 docPath + docName);
         return filePersistService.hasPersistedDocument(id);
+    }
+
+    /**
+     * Check if the version has any source documents
+     * @return has documents
+     */
+    public boolean hasDocuments() {
+        return !getVersion().getDocuments().isEmpty();
     }
 
     private void showUploadSuccessMessage() {
@@ -1004,11 +1015,11 @@ public class VersionHomeAction extends AbstractSortAction
             } else {
                 extensions = Collections.<String> emptySet();
             }
+            MergeType mergeType = translationFileUpload.isMergeTranslations()
+                    ? MergeType.AUTO : MergeType.IMPORT;
             List<String> warnings = translationServiceImpl.translateAllInDoc(
                     projectSlug, versionSlug, translationFileUpload.getDocId(),
-                    hLocale.getLocaleId(), transRes, extensions,
-                    translationFileUpload.isMergeTranslations() ? MergeType.AUTO
-                            : MergeType.IMPORT,
+                    hLocale.getLocaleId(), transRes, extensions, mergeType,
                     translationFileUpload.isAssignCreditToUploader(),
                     TranslationSourceType.WEB_UPLOAD);
             StringBuilder infoMsg = new StringBuilder("File ")
@@ -1401,5 +1412,9 @@ public class VersionHomeAction extends AbstractSortAction
 
     public AbstractListFilter<HLocale> getDocumentsTabLanguageFilter() {
         return this.documentsTabLanguageFilter;
+    }
+
+    public boolean isMTEnabled() {
+        return mtServiceURL != null && identity.hasRole("mt-bulk");
     }
 }

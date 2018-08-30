@@ -106,9 +106,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
     @Inject
     private LocaleDAO localeDAO;
     @Inject
-    @SuppressWarnings("deprecation")
-    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
-    @Inject
     private LocaleService localeServiceImpl;
     @Inject
     private ValidationService validationServiceImpl;
@@ -133,14 +130,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
     private String selectedProjectType;
     private boolean copyFromVersion = true;
     private String copyFromVersionSlug;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
-    private final Function<HProjectIteration, VersionItem> VERSION_ITEM_FN =
-            iter -> {
-                boolean selected = StringUtils
-                        .isNotEmpty(copyFromVersionSlug)
-                        && copyFromVersionSlug.equals(iter.getSlug());
-                return new VersionItem(selected, iter);
-            };
 
     private void setDefaultCopyFromVersion() {
         List<VersionItem> otherVersions = getOtherVersions();
@@ -213,7 +202,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
                             EntityStatus.ACTIVE, EntityStatus.READONLY);
             versionList.sort(ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
             List<VersionItem> versionItems =
-                    versionList.stream().map(VERSION_ITEM_FN)
+                    versionList.stream().map(this::makeVersionItem)
                             .collect(Collectors.toList());
             if (isEmpty(copyFromVersionSlug) && !versionItems.isEmpty()) {
                 versionItems.get(0).setSelected(true);
@@ -221,6 +210,12 @@ public class VersionHome extends SlugHome<HProjectIteration>
             return versionItems;
         }
         return Collections.emptyList();
+    }
+
+    private VersionItem makeVersionItem(HProjectIteration iter) {
+        boolean selected = StringUtils.isNotEmpty(copyFromVersionSlug) &&
+                copyFromVersionSlug.equals(iter.getSlug());
+        return new VersionItem(selected, iter);
     }
 
     public static class VersionItem {
@@ -292,12 +287,6 @@ public class VersionHome extends SlugHome<HProjectIteration>
                     getProjectSlug(), project);
             throw new ProjectNotFoundException(getProjectSlug());
         }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void setMessage(String message) {
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                message);
     }
 
     public List<ValidationAction> getValidationList() {
@@ -390,7 +379,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
     public void copyVersion() {
         copyVersionManager.startCopyVersion(getProjectSlug(),
                 copyFromVersionSlug, inputSlugValue);
-        setMessage(msgs.format("jsf.copyVersion.started", inputSlugValue,
+        facesMessages.addGlobal(msgs.format("jsf.copyVersion.started", inputSlugValue,
                 copyFromVersionSlug));
     }
 
@@ -457,7 +446,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
                 .putAll(getInstance().getProject().getCustomizedValidations());
         availableValidations.clear();
         update();
-        setMessage(msgs.get("jsf.iteration.CopyProjectValidations.message"));
+        facesMessages.addGlobal(msgs.get("jsf.iteration.CopyProjectValidations.message"));
     }
 
     /**
@@ -509,6 +498,11 @@ public class VersionHome extends SlugHome<HProjectIteration>
     @Transactional
     public void updateStatus(char initial) {
         identity.checkPermission(getInstance(), "update");
+        if (getProject().getStatus() == EntityStatus.READONLY) {
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    "Parent project is read-only!");
+            return;
+        }
         String message = msgs.format("jsf.iteration.status.updated",
                 EntityStatus.valueOf(initial));
         getInstance().setStatus(EntityStatus.valueOf(initial));
@@ -539,7 +533,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
         getInstance().setProjectType(
                 getInstance().getProject().getDefaultProjectType());
         update();
-        setMessage(msgs.get("jsf.iteration.CopyProjectType.message"));
+        facesMessages.addGlobal(msgs.get("jsf.iteration.CopyProjectType.message"));
     }
 
     /**
@@ -598,7 +592,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
             }
         }
         update();
-        setMessage(msgs.format("jsf.validation.updated",
+        facesMessages.addGlobal(msgs.format("jsf.validation.updated",
                 validationId.getDisplayName(), state));
     }
 

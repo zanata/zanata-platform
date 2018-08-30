@@ -186,8 +186,6 @@ public class FacesMessages implements Serializable {
      *
      * @param message
      *            The message string (not a key).
-     * @param params
-     *            The parameters to be interpolated into the template.
      */
     public void addGlobal(String message) {
         addGlobal(SEVERITY_INFO, message);
@@ -200,8 +198,6 @@ public class FacesMessages implements Serializable {
      *            Message severity
      * @param message
      *            The message string (not a key).
-     * @param params
-     *            The parameters to be interpolated into the template.
      */
     public void addGlobal(Severity severity, String message) {
         addToControl(null, severity, message);

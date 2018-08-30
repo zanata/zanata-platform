@@ -37,6 +37,7 @@ import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
+import org.zanata.i18n.Messages;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TransMemoryMergeService;
@@ -65,6 +66,8 @@ public class TransMemoryMergeManager implements Serializable {
     private final TransMemoryMergeService transMemoryMergeService;
 
     private final ZanataIdentity identity;
+    @Inject
+    private Messages messages;
 
     @Inject
     public TransMemoryMergeManager(
@@ -94,6 +97,9 @@ public class TransMemoryMergeManager implements Serializable {
         if (AsyncTaskHandle.taskIsNotRunning(handleByKey)) {
             TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
             handle.setTriggeredBy(identity.getAccountUsername());
+            handle.setTaskName(messages.format("jsf.tasks.translationMemoryMerge",
+                    request.projectIterationId.getProjectSlug(),
+                    request.projectIterationId.getIterationSlug()));
             asyncTaskHandleManager.registerTaskHandle(handle, key);
             transMemoryMergeService.executeMergeAsync(request, handle);
             return true;
@@ -131,7 +137,8 @@ public class TransMemoryMergeManager implements Serializable {
                 (MergeTranslationsTaskHandle) asyncTaskHandleManager.getHandleByKey(key);
         if (AsyncTaskHandle.taskIsNotRunning(handleByKey)) {
             handleByKey = new MergeTranslationsTaskHandle(key);
-
+            handleByKey.setTaskName(
+                    messages.format("jsf.tasks.TMMerge", mergeRequest.getLocaleId()));
             handleByKey.setTriggeredBy(identity.getAccountUsername());
             asyncTaskHandleManager.registerTaskHandle(handleByKey, key);
             transMemoryMergeService.startMergeTranslations(versionId,
@@ -173,5 +180,10 @@ public class TransMemoryMergeManager implements Serializable {
     @VisibleForTesting
     protected static AsyncTaskKey makeKey(Long versionId, LocaleId localeId) {
         return new GenericAsyncTaskKey(joinFields(KEY_NAME, versionId, localeId));
+    }
+
+    @VisibleForTesting
+    protected void setMessages(Messages msgs) {
+        messages = msgs;
     }
 }

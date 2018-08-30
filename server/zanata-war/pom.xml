@@ -712,11 +712,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.javaslang</groupId>
-      <artifactId>javaslang</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.tngtech.java</groupId>
       <artifactId>junit-dataprovider</artifactId>
       <version>1.10.2</version>
@@ -1534,8 +1529,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.nhaarman</groupId>
-      <artifactId>mockito-kotlin-kt1.1</artifactId>
+      <groupId>com.nhaarman.mockitokotlin2</groupId>
+      <artifactId>mockito-kotlin</artifactId>
     </dependency>
 
     <dependency>

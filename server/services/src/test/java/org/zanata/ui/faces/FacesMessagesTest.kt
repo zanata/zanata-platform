@@ -20,9 +20,9 @@
  */
 package org.zanata.ui.faces
 
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.isNull
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.isNull
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.KotlinAssertions.assertThat
 import org.jglue.cdiunit.AdditionalClasses
 import org.jglue.cdiunit.InRequestScope

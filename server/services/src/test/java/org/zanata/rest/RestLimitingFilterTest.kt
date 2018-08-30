@@ -1,5 +1,12 @@
 package org.zanata.rest
 
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.doNothing
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -10,23 +17,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers.RETURNS_DEEP_STUBS
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.same
-import org.mockito.Mockito
-import org.mockito.stubbing.Answer
 import org.zanata.ZanataTest
 import org.zanata.limits.RateLimitingProcessor
 import org.zanata.model.HAccount
 import org.zanata.test.CdiUnitRunner
 import org.zanata.util.HttpUtil
 import org.zanata.util.RunnableEx
-
-import org.mockito.Mockito.doNothing
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
@@ -36,15 +34,15 @@ import org.mockito.Mockito.`when`
 class RestLimitingFilterTest : ZanataTest() {
 
     companion object {
-        private val API_KEY = "apiKey123"
-        private val clientIP = "255.255.0.1"
+        private const val API_KEY = "apiKey123"
+        private const val clientIP = "255.255.0.1"
     }
 
-    private val request = mock<HttpServletRequest>(RETURNS_DEEP_STUBS)
-    private val response = mock<HttpServletResponse>(RETURNS_DEEP_STUBS)
-    private final val processor = mock<RateLimitingProcessor>()
-    private val filterChain = mock<FilterChain>()
-    private val taskCaptor = captor<RunnableEx>()
+    private val request: HttpServletRequest = mock(defaultAnswer = RETURNS_DEEP_STUBS)
+    private val response: HttpServletResponse = mock(defaultAnswer = RETURNS_DEEP_STUBS)
+    private final val processor: RateLimitingProcessor = mock()
+    private val filterChain: FilterChain = mock()
+    private val taskCaptor = argumentCaptor<RunnableEx>()
 
     private final var authenticatedUser: HAccount? = null
     // Using @Inject would be better, but some tests currently require
@@ -54,100 +52,95 @@ class RestLimitingFilterTest : ZanataTest() {
 
     @Before
     fun beforeMethod() {
-        `when`(request.method).thenReturn("GET")
+        whenever(request.method).thenReturn("GET")
 
         // this way we can verify the task actually called super.invoke()
-        doNothing().`when`<FilterChain>(filterChain).doFilter(request, response)
+        doNothing().whenever(filterChain).doFilter(request, response)
     }
 
     @Test
     fun willUseApiKeyIfPresent() {
-        `when`(request.getHeader(HttpUtil.API_KEY_HEADER_NAME)).thenReturn(
-                API_KEY)
+        whenever(request.getHeader(HttpUtil.API_KEY_HEADER_NAME))
+                .thenReturn(API_KEY)
 
         filter.doFilter(request, response, filterChain)
 
-        verify<RateLimitingProcessor>(processor).processForApiKey(same(API_KEY), same(response),
+        verify(processor).processForApiKey(same(API_KEY), same(response),
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
-        verify<FilterChain>(filterChain).doFilter(request, response)
+        verify(filterChain).doFilter(request, response)
     }
 
     @Test
     fun willUseUsernameIfNoApiKeyButAuthenticated() {
-        authenticatedUser = HAccount()
-        authenticatedUser!!.username = "admin"
-        doReturn(authenticatedUser).`when`<RestLimitingFilter>(filter).authenticatedUser
+        authenticatedUser = HAccount().apply {
+            username = "admin"
+        }
+        doReturn(authenticatedUser).whenever(filter).authenticatedUser
 
         filter.doFilter(request, response, filterChain)
 
-        verify<RateLimitingProcessor>(processor).processForUser(same("admin"), same(response),
+        verify(processor).processForUser(same("admin"), same(response),
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
-        verify<FilterChain>(filterChain).doFilter(request, response)
+        verify(filterChain).doFilter(request, response)
     }
 
     @Test
     fun willUseAuthorizationCodeIfItPresents() {
         val authCode = "abc123"
-        `when`(request.getParameter(OAuth.OAUTH_CODE)).thenReturn(
-                authCode)
+        whenever(request.getParameter(OAuth.OAUTH_CODE))
+                .thenReturn(authCode)
 
         filter.doFilter(request, response, filterChain)
 
-        verify<RateLimitingProcessor>(processor).processForToken(same(authCode), same(response),
+        verify(processor).processForToken(same(authCode), same(response),
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
-        verify<FilterChain>(filterChain).doFilter(request, response)
+        verify(filterChain).doFilter(request, response)
     }
 
     @Test
     fun willUseAccessTokenIfItPresents() {
-        `when`(request.getHeader(OAuth.HeaderType.AUTHORIZATION)).thenReturn(
-                "Bearer abc123")
+        whenever(request.getHeader(OAuth.HeaderType.AUTHORIZATION))
+                .thenReturn("Bearer abc123")
 
         filter.doFilter(request, response, filterChain)
 
-        verify<RateLimitingProcessor>(processor).processForToken(ArgumentMatchers.eq("abc123"), same(response),
+        verify(processor).processForToken(ArgumentMatchers.eq("abc123"), same(response),
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
-        verify<FilterChain>(filterChain).doFilter(request, response)
+        verify(filterChain).doFilter(request, response)
     }
 
     @Test
     fun willProcessAnonymousWithGETAndNoApiKey() {
-        `when`(request.getHeader(HttpUtil.API_KEY_HEADER_NAME)).thenReturn(null)
-        `when`(request.requestURI).thenReturn("/rest/in/peace")
-        `when`(request.remoteAddr).thenReturn(clientIP)
-        doReturn(null).`when`<RestLimitingFilter>(filter).authenticatedUser
+        whenever(request.getHeader(HttpUtil.API_KEY_HEADER_NAME)).thenReturn(null)
+        whenever(request.requestURI).thenReturn("/rest/in/peace")
+        whenever(request.remoteAddr).thenReturn(clientIP)
+        doReturn(null).whenever(filter).authenticatedUser
 
         filter.doFilter(request, response, filterChain)
 
-        verify<RateLimitingProcessor>(processor).processForAnonymousIP(same(clientIP), same(response),
+        verify(processor).processForAnonymousIP(same(clientIP), same(response),
                 taskCaptor.capture())
 
         // verify task is calling filter chain
-        val task = taskCaptor.value
+        val task = taskCaptor.firstValue
         task.run()
-        verify<FilterChain>(filterChain).doFilter(request, response)
+        verify(filterChain).doFilter(request, response)
     }
 
 }
-
-// borrowed from https://github.com/nhaarman/mockito-kotlin
-// TODO use mockito-kotlin?
-inline fun <reified T : Any> mock(): T = Mockito.mock(T::class.java)!!
-inline fun <reified T : Any> mock(defaultAnswer: Answer<Any>): T = Mockito.mock(T::class.java, defaultAnswer)!!
-inline fun <reified T : Any> captor(): ArgumentCaptor<T> = ArgumentCaptor.forClass(T::class.java)

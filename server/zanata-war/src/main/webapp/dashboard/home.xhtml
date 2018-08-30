@@ -145,13 +145,21 @@
                   <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.groups.title']}</span>
                 </a>
               </li>
+              <li>
+                <a id="tasks_tab"
+                   href="#{request.contextPath}/dashboard/tasks"
+                   class="js-url-mod" data-content="#tasks">
+                  <i class="i i--group"></i>
+                  <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.tasks.title']}</span>
+                </a>
+              </li>
               <li class="tab__end">
                 <a href="#{request.contextPath}/dashboard/settings"
                   id="settings_tab" class="js-url-mod" title="Account Settings"
                   data-content="#settings">
                 <span
-                  class="is-hidden--s i__text--left">#{msgs['jsf.dashboard.settings.tab.title']}</span><i class="i i--settings"
-                  ></i>
+                  class="is-hidden--s i__text--left">#{msgs['jsf.dashboard.settings.tab.title']}</span>
+                  <i class="i i--settings"></i>
                 </a>
               </li>
             </ul>
@@ -164,6 +172,9 @@
               </li>
               <li id="groups">
                 <ui:include src="/WEB-INF/layout/dashboard/groups.xhtml"/>
+              </li>
+              <li id="tasks">
+                <ui:include src="/WEB-INF/layout/dashboard/tasks.xhtml"/>
               </li>
               <li id="settings">
                 <ui:include src="/WEB-INF/layout/dashboard/settings.xhtml"/>

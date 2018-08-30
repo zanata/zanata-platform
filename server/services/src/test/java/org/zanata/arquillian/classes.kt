@@ -3,7 +3,7 @@
 
 package org.zanata.arquillian
 
-import javaslang.collection.Seq
+import cyclops.data.Seq
 import org.apache.maven.shared.dependency.analyzer.asm.DependencyClassFileVisitor
 import org.slf4j.LoggerFactory
 import org.zanata.arquillian.ArquillianUtil.IN_ZANATA
@@ -14,8 +14,6 @@ import java.io.InputStream
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 typealias ClassNameFilter = (String) -> Boolean
-// javaslang being renamed to vavr, hence the V
-private typealias VList<T> = javaslang.collection.List<T>
 
 private object Classes
 private val log = LoggerFactory.getLogger(Classes::class.java)
@@ -33,19 +31,19 @@ fun findAllClassDependencies(classes: List<Class<*>>, filter: ClassNameFilter): 
  * (in reverse, with the `Class` in question at the *front*).
  */
 fun findAllClassDependencyChains(classes: List<Class<*>>, filter: ClassNameFilter): Map<Class<*>, Seq<Class<*>>> {
-    var nextDeps = mutableSetOf<VList<Class<*>>>()
-    val analysedDeps = mutableMapOf<Class<*>, VList<Class<*>>>()
+    var nextDeps = mutableSetOf<Seq<Class<*>>>()
+    val analysedDeps = mutableMapOf<Class<*>, Seq<Class<*>>>()
 
-    var currentDeps: Iterator<VList<Class<*>>> = classes.map { VList.of(it) }.iterator()
+    var currentDeps: Iterator<Seq<Class<*>>> = classes.map { Seq.of(it) }.iterator()
     while (true) {
         if (!currentDeps.hasNext()) {
             if (nextDeps.isEmpty()) break
             currentDeps = nextDeps.iterator()
-            nextDeps = mutableSetOf<VList<Class<*>>>()
+            nextDeps = mutableSetOf()
         }
-        val clazzes: VList<Class<*>> = currentDeps.next()
-        val clazz = clazzes.head()
-        analysedDeps.put(clazz, clazzes)
+        val clazzes: Seq<Class<*>> = currentDeps.next()
+        val clazz = clazzes.first()
+        analysedDeps[clazz] = clazzes
         val newDeps: Set<Class<*>> = findDirectClassDependencies(clazz)
                 .filter(filter)
                 .mapNotNull {

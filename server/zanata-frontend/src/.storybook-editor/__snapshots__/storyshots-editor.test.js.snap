@@ -6708,10 +6708,12 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
           <input
             className="ant-input"
             disabled={false}
+            onChange={[Function]}
             onKeyDown={[Function]}
             placeholder="Search in project"
             style={null}
             type="text"
+            value=""
           />
         </span>
       </div>
@@ -6753,10 +6755,12 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
           <input
             className="ant-input"
             disabled={false}
+            onChange={[Function]}
             onKeyDown={[Function]}
             placeholder="Replace in project"
             style={null}
             type="text"
+            value=""
           />
         </span>
       </div>
@@ -7092,19 +7096,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7191,19 +7192,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7290,19 +7288,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7389,19 +7384,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7488,19 +7480,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7587,19 +7576,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7686,19 +7672,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7785,19 +7768,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7884,19 +7864,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td
@@ -7983,19 +7960,16 @@ exports[`Editor Storyshots SearchReplace default 1`] = `
                         className=""
                         onClick={[Function]}
                       >
-                        text source
+                        <span>
+                          source text
+                        </span>
                       </td>
                       <td
                         className=""
                         onClick={[Function]}
                       >
                         <span>
-                          text 
-                          <span
-                            className="highlight"
-                          >
-                            target
-                          </span>
+                          source text
                         </span>
                       </td>
                       <td

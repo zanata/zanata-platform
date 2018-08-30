@@ -1,3 +1,23 @@
+## 4.6.2
+##### Bug Fixes
+ * [ZNTA-2751](https://zanata.atlassian.net/browse/ZNTA-2751) - Cannot upload .po translation via documents list
+ * [ZNTA-2745](https://zanata.atlassian.net/browse/ZNTA-2745) - Lazy load fail on documents.isEmpty check
+
+-----------------------
+
+## 4.6.1
+##### Bug Fixes
+ * [ZNTA-2744](https://zanata.atlassian.net/browse/ZNTA-2744) - Download Translated (raw) showing for some gettext files
+ * [ZNTA-2743](https://zanata.atlassian.net/browse/ZNTA-2743) - MT merge option should be hidden if no url is being configured
+ * [ZNTA-2740](https://zanata.atlassian.net/browse/ZNTA-2740) - Exception while accessing roles
+ * [ZNTA-2735](https://zanata.atlassian.net/browse/ZNTA-2735) - Handle XML tags (eg 'link') in MT Merge
+ * [ZNTA-2731](https://zanata.atlassian.net/browse/ZNTA-2731) - Handle TM and MT merge modal when there is no document in the version.
+ * [ZNTA-2730](https://zanata.atlassian.net/browse/ZNTA-2730) - Progressively degrading performance saving MT to database
+ * [ZNTA-2727](https://zanata.atlassian.net/browse/ZNTA-2727) - TM Merge and MT Merge modals will not open
+ * [ZNTA-2721](https://zanata.atlassian.net/browse/ZNTA-2721) - Poor MT performance with large documents
+
+-----------------------
+
 ## 4.6.0
 ##### Magpie Translation (MT)
 [Magpie Translation (MT)](https://github.com/zanata/zanata-mt/) provides the results from machine translation
@@ -21,7 +41,6 @@ These will now use an object path for the ID, and updating an existing document 
 Users can utilize the Copy Translations or TM Merge features to restore them.
 
 ##### Changes
- * [ZNTA-2694](https://zanata.atlassian.net/browse/ZNTA-2694) - Upgrade Okapi to M35
  * [ZNTA-2692](https://zanata.atlassian.net/browse/ZNTA-2692) - Create Webpack Draft Build
  * [ZNTA-2679](https://zanata.atlassian.net/browse/ZNTA-2679) - React Editor error status icon, disabled editor button styles
  * [ZNTA-2663](https://zanata.atlassian.net/browse/ZNTA-2663) - editor TM suggestions heading colour
@@ -37,12 +56,12 @@ Users can utilize the Copy Translations or TM Merge features to restore them.
  * [ZNTA-2538](https://zanata.atlassian.net/browse/ZNTA-2538) - Refactor RejectionsForm to antd
  * [ZNTA-2537](https://zanata.atlassian.net/browse/ZNTA-2537) - custom component stories in storybook
  * [ZNTA-2534](https://zanata.atlassian.net/browse/ZNTA-2534) - refactor editor react-bootstrap components to antd
- * [ZNTA-2529](https://zanata.atlassian.net/browse/ZNTA-2529) - Migrate required css from style.less to antd 
+ * [ZNTA-2529](https://zanata.atlassian.net/browse/ZNTA-2529) - Migrate required css from style.less to antd
  * [ZNTA-2528](https://zanata.atlassian.net/browse/ZNTA-2528) - Refactor notifications and alerts to antd
  * [ZNTA-2514](https://zanata.atlassian.net/browse/ZNTA-2514) - refactor frontend containers into antd
  * [ZNTA-2487](https://zanata.atlassian.net/browse/ZNTA-2487) - Leverage MT merge for project versions
  * [ZNTA-2459](https://zanata.atlassian.net/browse/ZNTA-2459) - Improve Activity Panel rendering performance
- * [ZNTA-2437](https://zanata.atlassian.net/browse/ZNTA-2437) - CLI ability to specify if Zanata brings only approved or also includes translated 
+ * [ZNTA-2437](https://zanata.atlassian.net/browse/ZNTA-2437) - CLI ability to specify if Zanata brings only approved or also includes translated
  * [ZNTA-2390](https://zanata.atlassian.net/browse/ZNTA-2390) - Trigger full functional test build with Github PR keyword
  * [ZNTA-2300](https://zanata.atlassian.net/browse/ZNTA-2300) - Concurrent editors [backend]
  * [ZNTA-2279](https://zanata.atlassian.net/browse/ZNTA-2279) - Css fixes to glossary: select component and icons
@@ -64,7 +83,7 @@ Users can utilize the Copy Translations or TM Merge features to restore them.
  * [ZNTA-2698](https://zanata.atlassian.net/browse/ZNTA-2698) - modal - footer margin
  * [ZNTA-2697](https://zanata.atlassian.net/browse/ZNTA-2697) - Project list alignment
  * [ZNTA-2696](https://zanata.atlassian.net/browse/ZNTA-2696) - Unable to reset language search
- * [ZNTA-2695](https://zanata.atlassian.net/browse/ZNTA-2695) - Terms of Use on sign-up page redirecting to page not found. 
+ * [ZNTA-2695](https://zanata.atlassian.net/browse/ZNTA-2695) - Terms of Use on sign-up page redirecting to page not found.
  * [ZNTA-2687](https://zanata.atlassian.net/browse/ZNTA-2687) - can't get project list per language in a group
  * [ZNTA-2682](https://zanata.atlassian.net/browse/ZNTA-2682) - Languages page pageSize dropdown not working
  * [ZNTA-2681](https://zanata.atlassian.net/browse/ZNTA-2681) - Languages page sort dropdown not working
@@ -74,7 +93,7 @@ Users can utilize the Copy Translations or TM Merge features to restore them.
  * [ZNTA-2674](https://zanata.atlassian.net/browse/ZNTA-2674) - Project version settings "Inherit from project" button not aligned correctly
  * [ZNTA-2671](https://zanata.atlassian.net/browse/ZNTA-2671) - Attribution check happens post translate, allowing unattributed translations
  * [ZNTA-2662](https://zanata.atlassian.net/browse/ZNTA-2662) - MT fill silently dismisses translations with validation errors
- * [ZNTA-2638](https://zanata.atlassian.net/browse/ZNTA-2638) - Unnecessary square box around a few buttons. 
+ * [ZNTA-2638](https://zanata.atlassian.net/browse/ZNTA-2638) - Unnecessary square box around a few buttons.
  * [ZNTA-2634](https://zanata.atlassian.net/browse/ZNTA-2634) - TS file language property is not changed on write
  * [ZNTA-2627](https://zanata.atlassian.net/browse/ZNTA-2627) - Button loadertext changes button positioning
  * [ZNTA-2610](https://zanata.atlassian.net/browse/ZNTA-2610) - Ant Design (antd) requires React 16, but we only have React 15

@@ -1,6 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import { Component } from 'react'
+import * as PropTypes from 'prop-types'
+import { diffChars } from 'diff'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
 import Button from 'antd/lib/button'
@@ -24,6 +26,11 @@ import 'antd/lib/tag/style/css'
 import Table from 'antd/lib/table'
 import 'antd/lib/table/style/css'
 
+// @ts-ignore any
+function compare (text1, text2) {
+  return diffChars(text1, text2, { ignoreCase: true })
+}
+
 const columns = [{
   title: 'Index',
   dataIndex: 'index',
@@ -38,25 +45,20 @@ const columns = [{
   dataIndex: 'edit',
 }]
 
-const data = []
-for (let i = 0; i < 12; i++) {
-  data.push({
-    key: i,
-    index: `${i}`,
-    source: `text source`,
-    target: <span>text <span className='highlight'>target</span></span>,
-    edit: <Button className='btn-link fr'>
-      <Icon type='edit' className='f4' />
-    </Button>
-  })
-}
-
 const Option = Select.Option
 
 class SearchReplace extends Component {
+  static propTypes = {
+    phrases: PropTypes.arrayOf(PropTypes.shape({
+      sources: PropTypes.arrayOf(PropTypes.string),
+      translations: PropTypes.arrayOf(PropTypes.string),
+    })),
+  }
   state = {
     visible: true,
-    selectedRowKeys: [] // Check here to configure the default column
+    selectedRowKeys: [], // Check here to configure the default column
+    searchText: '',
+    replaceText: '',
   }
   handleOk = (e) => {
     this.setState({
@@ -80,12 +82,43 @@ class SearchReplace extends Component {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys })
   }
+  handleSearchChange = (e) => {
+    const content = e.target.value
+    this.setState({ searchText: content })
+  }
+  handleReplaceChange = (e) => {
+    const content = e.target.value
+    this.setState({ replaceText: content })
+  }
   render () {
-    const { selectedRowKeys } = this.state
+    const { phrases } = this.props
+    const { selectedRowKeys, searchText, replaceText } = this.state
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
     }
+    const data = phrases.map((phrase, i) => {
+      var differences = compare(phrase.sources[0], searchText)
+      // @ts-ignore any
+      const result = differences.map((part, index) => {
+        if (part.added) {
+          return ''
+        }
+        if (part.removed) {
+          return (<span key={index}>{part.value}</span>)
+        }
+        return (<span className="highlight" key={index}>{part.value}</span>)
+      })
+      return {
+        key: `${i}`,
+        index: `${i}`,
+        source: result,
+        target: result,
+        edit: <Button className='btn-link fr'>
+          <Icon type='edit' className='f4' />
+        </Button>
+      }
+    })
     return (
       <React.Fragment>
         <Modal className='searchReplaceModal'
@@ -110,6 +143,8 @@ class SearchReplace extends Component {
             <Col span={23}>
               <Input
                 placeholder="Search in project"
+                onChange={this.handleSearchChange}
+                value={searchText}
                 prefix={<Icon type="search"
                   style={{ color: 'rgba(84,102,119,1)' }} />}
               />
@@ -124,6 +159,8 @@ class SearchReplace extends Component {
             <Col span={23}>
               <Input
                 placeholder="Replace in project"
+                onChange={this.handleReplaceChange}
+                value={replaceText}
                 prefix={<Icon type="swap"
                   style={{ color: 'rgba(84,102,119,1)' }} />}
               />
