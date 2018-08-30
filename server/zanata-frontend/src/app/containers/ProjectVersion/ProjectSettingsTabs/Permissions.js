@@ -76,7 +76,7 @@ class Permissions extends Component {
         <h2>Maintainers</h2>
         <Table pagination={pagination} dataSource={dataSource} columns={columns} />
         <Row className='mb4'>
-          <h3>Add a maintainer</h3>
+          <h3 className='mt4'>Add a maintainer</h3>
           <Search
             placeholder="Search users"
             enterButton

@@ -24,15 +24,15 @@ class About extends Component {
         <h1 className='txt-info'><Icon name='info' className='s5 v-sub mr2' />
           <span className='fw4'>About</span></h1>
         <Alert message="This section can be used to add notes for translators or other contributors to help answer questions or complete translations." type="info" showIcon />
-        <Row>
+        <Row  className='mt3' >
           <TextArea rows={4} placeholder='Installed from: git clone git://github.com/definite/ibus-chewing.git'/>
         </Row>
         <p>Notes are parsed as <a href="https://spec.commonmark.org/0.18/">CommonMark Markdown</a></p>
         <Row>
-          <Button type='primary'>Save notes</Button>
+          <Button type='primary' className='mb3'>Save notes</Button>
         </Row>
         <hr />
-        <h2>Preview</h2>
+        <h2 className='mt3'>Preview</h2>
         <p>Installed from: git clone git://github.com/definite/ibus-chewing.git
         </p>
       </div>

@@ -29,17 +29,17 @@ class Translation extends Component {
         <h2>Validation</h2>
         <p>Use these validations to keep translations consistent with the
           source text.</p>
-        <Button size='small' type='primary'>Copy translation validation settings
+        <Button size='small' className='mb4' type='primary'>Copy translation validation settings
           from project</Button>
         <h3>HTML/XML tags</h3>
         <p className='w-100'>Check that XML/HTML tags are consistent.</p>
-        <Radio.Group>
-          <Radio.Button>Off</Radio.Button>
-          <Radio.Button className='btn-warn'>Warning</Radio.Button>
-          <Radio.Button className='btn-danger'>Error</Radio.Button>
+        <Radio.Group defaultValue='a'>
+          <Radio.Button value='a'>Off</Radio.Button>
+          <Radio.Button value='b' className='btn-warn'>Warning</Radio.Button>
+          <Radio.Button value='c' className='btn-danger'>Error</Radio.Button>
         </Radio.Group>
         <Collapse bordered={false}>
-          <Panel showArrow={false}  header="Show example..." key="1">
+          <Panel header="Show example..." key="1">
             <Row>
               <Col span={11}>
                 <span className='fw5 txt-newblue'>SOURCE</span>
@@ -56,15 +56,15 @@ class Translation extends Component {
             </Row>
           </Panel>
         </Collapse>
-        <h3>Java variables</h3>
+        <h3 className='mt3'>Java variables</h3>
         <p>Check that java style variables are consistent.</p>
-        <Radio.Group>
-          <Radio.Button>Off</Radio.Button>
-          <Radio.Button className='btn-warn'>Warning</Radio.Button>
-          <Radio.Button className='btn-danger'>Error</Radio.Button>
+        <Radio.Group defaultValue='a'>
+          <Radio.Button value='a'>Off</Radio.Button>
+          <Radio.Button value='b' className='btn-warn'>Warning</Radio.Button>
+          <Radio.Button value='c' className='btn-danger'>Error</Radio.Button>
         </Radio.Group>
         <Collapse bordered={false}>
-          <Panel showArrow={false}  header="Show example..." key="2">
+          <Panel header="Show example..." key="2">
             <Row>
               <Col span={11}>
                 <span className='fw5 txt-newblue'>SOURCE</span>
@@ -81,15 +81,15 @@ class Translation extends Component {
             </Row>
           </Panel>
         </Collapse>
-        <h3>Leading/trailing newline</h3>
+        <h3 className='mt3'>Leading/trailing newline</h3>
         <p>Check for consistent leading and trailing newline.</p>
-        <Radio.Group>
-          <Radio.Button>Off</Radio.Button>
-          <Radio.Button className='btn-warn'>Warning</Radio.Button>
-          <Radio.Button className='btn-danger'>Error</Radio.Button>
+        <Radio.Group defaultValue='a'>
+          <Radio.Button value='a'>Off</Radio.Button>
+          <Radio.Button value='b' className='btn-warn'>Warning</Radio.Button>
+          <Radio.Button value='c' className='btn-danger'>Error</Radio.Button>
         </Radio.Group>
         <Collapse bordered={false}>
-          <Panel showArrow={false}  header="Show example..." key="3">
+          <Panel header="Show example..." key="3">
             <Row>
               <Col span={11}>
                 <span className='fw5 txt-newblue'>SOURCE</span>
@@ -106,15 +106,15 @@ class Translation extends Component {
             </Row>
           </Panel>
         </Collapse>
-        <h3>Positional printf (XSI extension)</h3>
+        <h3 className='mt3'>Positional printf (XSI extension)</h3>
         <p>Check that positional printf style (%n$x) variables are consistent.</p>
-        <Radio.Group>
-          <Radio.Button>Off</Radio.Button>
-          <Radio.Button className='btn-warn'>Warning</Radio.Button>
-          <Radio.Button className='btn-danger'>Error</Radio.Button>
+        <Radio.Group defaultValue='a'>
+          <Radio.Button value='a'>Off</Radio.Button>
+          <Radio.Button value='b' className='btn-warn'>Warning</Radio.Button>
+          <Radio.Button value='c' className='btn-danger'>Error</Radio.Button>
         </Radio.Group>
         <Collapse bordered={false}>
-          <Panel showArrow={false}  header="Show example..." key="4">
+          <Panel header="Show example..." key="4">
             <Row>
               <Col span={11}>
                 <span className='fw5 txt-newblue'>SOURCE</span>
@@ -131,15 +131,15 @@ class Translation extends Component {
             </Row>
           </Panel>
         </Collapse>
-        <h3>Printf variables</h3>
+        <h3 className='mt3'>Printf variables</h3>
         <p>Check that printf style (%x) variables are consistent.</p>
-        <Radio.Group>
-          <Radio.Button>Off</Radio.Button>
-          <Radio.Button className='btn-warn'>Warning</Radio.Button>
-          <Radio.Button className='btn-danger'>Error</Radio.Button>
+        <Radio.Group defaultValue='a'>
+          <Radio.Button value='a'>Off</Radio.Button>
+          <Radio.Button value='b' className='btn-warn'>Warning</Radio.Button>
+          <Radio.Button value='c' className='btn-danger'>Error</Radio.Button>
         </Radio.Group>
         <Collapse bordered={false}>
-          <Panel showArrow={false}  header="Show example..." key="5">
+          <Panel header="Show example..." key="5">
             <Row>
               <Col span={11}>
                 <span className='fw5 txt-newblue'>SOURCE</span>
@@ -156,16 +156,16 @@ class Translation extends Component {
             </Row>
           </Panel>
         </Collapse>
-        <h3>Tab characters</h3>
+        <h3 className='mt3'>Tab characters</h3>
         <p>Check whether source and target have the same number of tabs.
         </p>
-        <Radio.Group>
-          <Radio.Button>Off</Radio.Button>
-          <Radio.Button className='btn-warn'>Warning</Radio.Button>
-          <Radio.Button className='btn-danger'>Error</Radio.Button>
+        <Radio.Group defaultValue='a'>
+          <Radio.Button value='a'>Off</Radio.Button>
+          <Radio.Button value='b' className='btn-warn'>Warning</Radio.Button>
+          <Radio.Button value='c' className='btn-danger'>Error</Radio.Button>
         </Radio.Group>
         <Collapse bordered={false}>
-          <Panel showArrow={false}  header="Show example..." key="6">
+          <Panel header="Show example..." key="6">
             <Row>
               <Col span={11}>
                 <span className='fw5 txt-newblue'>SOURCE</span>
@@ -182,15 +182,15 @@ class Translation extends Component {
             </Row>
           </Panel>
         </Collapse>
-        <h3>XML entity reference</h3>
+        <h3 className='mt3'>XML entity reference</h3>
         <p>Check that XML entities are complete.</p>
-        <Radio.Group>
-          <Radio.Button>Off</Radio.Button>
-          <Radio.Button className='btn-warn'>Warning</Radio.Button>
-          <Radio.Button className='btn-danger'>Error</Radio.Button>
+        <Radio.Group defaultValue='a'>
+          <Radio.Button value='a'>Off</Radio.Button>
+          <Radio.Button value='b' className='btn-warn'>Warning</Radio.Button>
+          <Radio.Button value='c' className='btn-danger'>Error</Radio.Button>
         </Radio.Group>
         <Collapse bordered={false}>
-          <Panel showArrow={false}  header="Show example..." key="7">
+          <Panel header="Show example..." key="7">
             <Row>
               <Col span={11}>
                 <span className='fw5 txt-newblue'>SOURCE</span>

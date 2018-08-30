@@ -121,16 +121,16 @@ class General extends Component {
             </Col>
           </Row>
           <Row>
-            <Button type='primary'>Update general settings</Button>
+            <Button className='mb2' type='primary'>Update general settings</Button>
           </Row>
           <hr />
           <Row>
-            <Col span={12}>
+            <Col span={12} className='mt2'>
               <Button className='btn-warn'>
                 <Icon name='locked' className='s0 v-sub mr2' />
               Make this project read only</Button>
             </Col>
-            <Col span={12}>
+            <Col span={12} className='mt2'>
               <Button className='btn-danger'>
                 <Icon name='trash' className='s0 v-sub mr2' />
                 Delete this project</Button>

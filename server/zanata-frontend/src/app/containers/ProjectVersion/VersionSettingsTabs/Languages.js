@@ -119,7 +119,7 @@ class Languages extends Component {
             </Col>
           </Row>
           <Table columns={columnsEnabled} dataSource={dataEnabled} pagination={pagination}/>
-          <h3 className='txt-primary'>Disabled</h3>
+          <h3 className='txt-primary mt4'>Disabled</h3>
           <Row className='mb3'>
             <Col span={8}>
               {searchBox}
