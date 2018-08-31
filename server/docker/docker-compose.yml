@@ -13,7 +13,13 @@ services:
       - $HOME/docker-volumes/zanata-mariadb:/var/lib/mysql:Z
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
   zanata:
+    depends_on:
+      zanatadb:
+        condition: service_healthy
     # build: .
     image: zanata-dev
     links:

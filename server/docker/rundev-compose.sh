@@ -1,4 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -eu
+
+# TODO
+# Implement rundev.sh options:
+#      -e for smtp server
+#      -l for smtp login
+#      -p for port offset
+#      -n for docker network
+# Add Zanata MT integration
+
 
 # determine directory containing this script
 SOURCE="${BASH_SOURCE[0]}"
@@ -11,13 +21,26 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd $DIR
 
-docker build --tag wildfly-zanata-base .
+ZANATA_WAR=$(echo $PWD/../zanata-war/target/zanata-*.war)
+if ! [ -f "$ZANATA_WAR" ]
+then
+    echo "===== NO war file found (or more than one). Please build Zanata war first (or delete old versions) ====="
+    exit 1
+fi
+
+set -x
+
+# make config scripts available inside Docker
+mkdir -p target
+cp -a ../etc/scripts/jboss-cli-jjs ../etc/scripts/configure-app-server.js target/
+
+docker build --tag zanata/server-dev --file Dockerfile .
 
 # First transform flattens everything
 # Second transform renames the versioned zanata war to ROOT.war
 tar --create \
   Dockerfile.zanata \
-  ../zanata-war/target/zanata-*.war \
+  ${ZANATA_WAR} \
   --transform 's,.*/,,' \
   --transform 's/zanata-.*\.war/ROOT.war/' |
     docker build -t zanata-dev --file Dockerfile.zanata -
