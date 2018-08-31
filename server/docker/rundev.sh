@@ -1,4 +1,5 @@
-#!/bin/bash -xeu
+#!/usr/bin/env bash
+set -eu
 
 # determine directory containing this script
 SOURCE="${BASH_SOURCE[0]}"
@@ -14,25 +15,6 @@ source $SCRIPT_DIR/common
 
 # change to the server directory
 cd $SCRIPT_DIR/../
-ZANATA_WAR=$(echo $PWD/zanata-war/target/zanata-*.war)
-
-# volume mapping for JBoss deployment folder (put exploded war or war file here to deploy)
-ZANATA_DEPLOYMENTS_DIR=$HOME/docker-volumes/zanata-deployments
-# make zanata deployment directory accessible to docker containers (SELinux)
-mkdir -p ${ZANATA_DEPLOYMENTS_DIR}
-
-if [ -f "$ZANATA_WAR" ]
-then
-    # remove old file (hardlink) first
-    rm -f ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
-    # we can not use symlink as JBoss inside docker can't properly read the symlink file
-    # try to link or copy the war file to deployments directory
-    ln ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war || cp ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
-else
-    echo "===== NO war file found. Please build Zanata war first ====="
-    exit 1
-fi
-
 # JBoss ports
 HTTP_PORT=8080
 DEBUG_PORT=8787
@@ -83,6 +65,7 @@ while getopts ":e:p:n:hl:" opt; do
       DOCKER_NETWORK=$OPTARG
       ;;
     h)
+      set +x
       echo "========   HELP   ========="
       echo "-e <smtp email host>  : smtp mail host"
       echo "-l <username:password>: smtp login: username and password separated by colon"
@@ -97,6 +80,27 @@ while getopts ":e:p:n:hl:" opt; do
       ;;
   esac
 done
+
+ZANATA_WAR=$(echo $PWD/zanata-war/target/zanata-*.war)
+
+# volume mapping for JBoss deployment folder (put exploded war or war file here to deploy)
+ZANATA_DEPLOYMENTS_DIR=$HOME/docker-volumes/zanata-deployments
+# make zanata deployment directory accessible to docker containers (SELinux)
+mkdir -p ${ZANATA_DEPLOYMENTS_DIR}
+
+if [ -f "$ZANATA_WAR" ]
+then
+    # remove old file (hardlink) first
+    rm -f ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
+    # we can not use symlink as JBoss inside docker can't properly read the symlink file
+    # try to link or copy the war file to deployments directory
+    ln ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war || cp ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
+else
+    echo "===== NO war file found (or more than one). Please build Zanata war first (or delete old versions) ====="
+    exit 1
+fi
+
+set -x
 
 ensure_docker_network
 
@@ -120,7 +124,7 @@ docker build --tag zanata/server-dev --file docker/Dockerfile docker/
 
 JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
 
-# TODO run docker-compose up, passing in user options
+# TODO run docker-compose up, passing in user options. see rundev-compose.sh
 
 # runs zanata/server-dev:latest docker image
 docker run \
