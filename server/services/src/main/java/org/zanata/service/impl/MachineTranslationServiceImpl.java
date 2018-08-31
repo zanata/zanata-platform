@@ -202,6 +202,53 @@ public class MachineTranslationServiceImpl implements
         }
     }
 
+    private void prefillSingleDocument(HDocument doc, HLocale targetLocale,
+                                         String projectSlug, String versionSlug,
+                                         ContentState saveState, boolean overwriteFuzzy,
+                                         String requestedBackend,
+                                         MachineTranslationPrefillTaskHandle taskHandle) {
+        if (!attributionService.supportsAttribution(doc)) {
+            log.warn("Attribution not supported for {}; skipping MT", doc);
+            taskHandle.increaseProgress(doc.getTextFlows().size());
+            return;
+        }
+        String backendId = addMachineTranslationsToDoc(doc, targetLocale,
+                projectSlug, versionSlug, saveState, overwriteFuzzy,
+                requestedBackend, taskHandle);
+        if (backendId != null) {
+            try {
+                transactionUtil.run(() -> {
+                    // Refresh HDocument after being cleared in processing
+                    HDocument refreshedDoc = entityManager.find(HDocument.class, doc.getId());
+                    attributionService.addAttribution(refreshedDoc, targetLocale, backendId);
+                    entityManager.merge(refreshedDoc);
+                });
+            } catch (Exception e) {
+                throw new RuntimeException("error adding attribution for machine translation", e);
+            }
+        }
+    }
+
+    @Async
+    @Override
+    public Future<Void> prefillDocumentWithMachineTranslation(
+            long docId, MachineTranslationPrefill options,
+            @Nonnull MachineTranslationPrefillTaskHandle taskHandle) {
+        Stopwatch overallStopwatch = Stopwatch.createStarted();
+
+        HDocument targetDocument = entityManager.find(HDocument.class, docId);
+        taskHandle.setMaxProgress(targetDocument.getTextFlows().size());
+        HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
+        prefillSingleDocument(targetDocument, targetLocale,
+                targetDocument.getProjectIteration().getProject().getSlug(),
+                targetDocument.getProjectIteration().getSlug(),
+                options.getSaveState(),
+                options.getOverwriteFuzzy(), BACKEND_GOOGLE, taskHandle);
+        log.info("Pre-fill with MT for {}, {}", "COMPLETED",
+                targetDocument.getDocId(), overallStopwatch);
+        return AsyncTaskResult.completed();
+    }
+
     @Async
     @Override
     public Future<Void> prefillProjectVersionWithMachineTranslation(
@@ -217,11 +264,8 @@ public class MachineTranslationServiceImpl implements
         // Set taskHandle to count the textflows of all documents
         taskHandle.setMaxProgress(projectIterationDAO
                         .getTotalMessageCountForIteration(versionId));
-        HLocale targetLocale = localeService.getByLocaleId(options.getToLocale());
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         Long targetVersionId = version.getId();
-        String projectSlug = version.getProject().getSlug();
-        String versionSlug = version.getSlug();
 
         log.info("Sending {} document(s) to MT", documents.size());
 
@@ -234,28 +278,11 @@ public class MachineTranslationServiceImpl implements
         for (Iterator<HDocument> iterator = documents.values().iterator();
                 iterator.hasNext() && !(cancelled = taskHandle.isCancelled()); ) {
             HDocument doc = iterator.next();
-            Long docId = doc.getId();
-            if (!attributionService.supportsAttribution(doc)) {
-                log.warn("Attribution not supported for {}; skipping MT", doc);
-                taskHandle.increaseProgress(doc.getTextFlows().size());
-                continue;
-            }
-            String requestedBackend = BACKEND_GOOGLE;
-            String backendId = addMachineTranslationsToDoc(doc, targetLocale,
-                    projectSlug, versionSlug, options.getSaveState(),
-                    options.getOverwriteFuzzy(), requestedBackend, taskHandle);
-            if (backendId != null) {
-                try {
-                    transactionUtil.run(() -> {
-                        // Refresh HDocument after being cleared in processing
-                        HDocument refreshedDoc = entityManager.find(HDocument.class, docId);
-                        attributionService.addAttribution(refreshedDoc, targetLocale, backendId);
-                        entityManager.merge(refreshedDoc);
-                    });
-                } catch (Exception e) {
-                    throw new RuntimeException("error adding attribution for machine translation", e);
-                }
-            }
+            prefillSingleDocument(doc,
+                    localeService.getByLocaleId(options.getToLocale()),
+                    version.getProject().getSlug(),
+                    version.getSlug(), options.getSaveState(),
+                    options.getOverwriteFuzzy(), BACKEND_GOOGLE, taskHandle);
         }
         // Clear the cache again to force recalculation (just in case of
         // concurrent activity):

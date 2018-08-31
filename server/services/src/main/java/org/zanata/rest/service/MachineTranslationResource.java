@@ -169,4 +169,48 @@ public class MachineTranslationResource {
                         HttpUtil.stripProtocol(url));
         return Response.accepted(processStatus).build();
     }
+
+    @CheckRole("mt-bulk")
+    @POST
+    @Path("project/{projectSlug}/version/{versionSlug}/document/{docId}")
+    public Response prefillDocumentByMachineTranslation(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("versionSlug") String versionSlug,
+            @PathParam("docId") String docId,
+            MachineTranslationPrefill prefillRequest) {
+        if (mtServiceURL == null) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+        HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug,
+                versionSlug, docId);
+        if (doc == null) {
+            throw new NoSuchEntityException(
+                    "can not find document with docId:" + docId + " in project "
+                            + projectSlug + " and version " + versionSlug);
+        }
+
+        Optional<Response> response = activeProjectVersionAndLocaleValidator
+                .getResponseIfProjectLocaleAndVersionAreNotActive(projectSlug,
+                        versionSlug, prefillRequest.getToLocale());
+
+        if (response.isPresent()) {
+            return response.get();
+        }
+
+        HProject hProject = activeProjectVersionAndLocaleValidator.getProject();
+        HProjectIteration version =
+                activeProjectVersionAndLocaleValidator.getVersion();
+        HLocale locale = activeProjectVersionAndLocaleValidator.getLocale();
+
+        identity.checkPermission("modify-translation", hProject, locale);
+
+        AsyncTaskHandle<Void> handle = machineTranslationsManager
+                .prefillDocumentWithMachineTranslations(doc.getId(),projectSlug,
+                        versionSlug, version, prefillRequest);
+
+        String url = uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId();
+        ProcessStatus processStatus = AsyncProcessService
+                .handleToProcessStatus(handle, HttpUtil.stripProtocol(url));
+        return Response.accepted(processStatus).build();
+    }
 }

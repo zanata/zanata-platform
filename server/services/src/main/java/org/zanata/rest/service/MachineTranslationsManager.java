@@ -90,6 +90,38 @@ public class MachineTranslationsManager {
         return taskHandle;
     }
 
+    public AsyncTaskHandle<Void> prefillDocumentWithMachineTranslations(
+            long documentId, String projectSlug, String versionSlug,
+            HProjectIteration projectIteration,
+            MachineTranslationPrefill prefillRequest) {
+        ProjectIterationId projectIterationId =
+                new ProjectIterationId(projectSlug, versionSlug,
+                        projectIteration.getProjectType());
+        MachineTranslationsForVersionTaskKey taskKey =
+                new MachineTranslationsForVersionTaskKey(projectIterationId);
+
+        // Allow only one MT request per version
+        MachineTranslationPrefillTaskHandle taskHandle =
+                (MachineTranslationPrefillTaskHandle) asyncTaskHandleManager.getHandleByKey(taskKey);
+
+        if (AsyncTaskHandle.taskIsNotRunning(taskHandle)) {
+            taskHandle = new MachineTranslationPrefillTaskHandle(taskKey);
+            taskHandle.setTaskName(
+                    messages.format("jsf.tasks.machineTranslation", projectSlug,
+                            versionSlug, prefillRequest.getToLocale().getId()));
+            taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
+            taskHandle.setTargetVersion(projectIterationId.toString());
+            asyncTaskHandleManager.registerTaskHandle(taskHandle, taskKey);
+            machineTranslationService.prefillDocumentWithMachineTranslation(
+                    documentId, prefillRequest, taskHandle);
+        } else {
+            log.warn("There is already a task running {}", taskKey);
+            throw new UnsupportedOperationException("Task already running for this version");
+        }
+
+        return taskHandle;
+    }
+
     @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")
     public static class MachineTranslationsForVersionTaskKey extends
             GenericAsyncTaskKey {
