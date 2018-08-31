@@ -111,10 +111,13 @@
 
                 <!-- without this, the above button only works the second time it is clicked -->
                 <!-- TODO put this somewhere more general
-                     See https://stackoverflow.com/a/11412138/14379 and
-                     http://showcase.omnifaces.org/scripts/FixViewState
+                     See https://stackoverflow.com/a/11412138/14379
+                     This script is available in OmniFaces (before 3.0), but
+                     omnifaces.jar is 700KB and adds extra server-side code to
+                     the JSF lifecycle (complexity) when we just need the JS.
+                     NB Issue doesn't exist in JSF 2.3.
                  -->
-                <h:outputScript library="omnifaces" name="fixviewstate.js" target="head" />
+                <h:outputScript library="script" name="jsf-ajax-viewstate-fix.js" target="head"/>
               </p>
 
               <hr/>
