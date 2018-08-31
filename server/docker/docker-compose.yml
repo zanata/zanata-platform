@@ -1,6 +1,5 @@
 ---
-# TODO upgrade to version 2.1 after Fedora 27 is GA (when F25 is EOL)
-version: '2.0'
+version: '2.1'
 services:
   zanatadb:
     image: mariadb:10.1
@@ -12,9 +11,8 @@ services:
       MYSQL_PASSWORD: zanatapw
     volumes:
       - $HOME/docker-volumes/zanata-mariadb:/var/lib/mysql:Z
-    # This requires docker-compose file version 2.1
-    # healthcheck:
-    #   test: ["CMD", "mysqladmin", "ping", "--silent"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
   zanata:
     # build: .
     image: zanata-dev
