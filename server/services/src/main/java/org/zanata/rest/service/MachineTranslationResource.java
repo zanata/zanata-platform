@@ -152,21 +152,18 @@ public class MachineTranslationResource {
             return response.get();
         }
 
-        HProject hProject = activeProjectVersionAndLocaleValidator.getProject();
-        HProjectIteration version =
-                activeProjectVersionAndLocaleValidator.getVersion();
-        HLocale locale = activeProjectVersionAndLocaleValidator.getLocale();
-
-        identity.checkPermission("modify-translation", hProject, locale);
+        identity.checkPermission("modify-translation",
+                activeProjectVersionAndLocaleValidator.getProject(),
+                activeProjectVersionAndLocaleValidator.getLocale());
 
         AsyncTaskHandle<Void> handle = machineTranslationsManager
-                .prefillVersionWithMachineTranslations(projectSlug, versionSlug,
-                        version, prefillRequest);
+                .prefillVersionWithMachineTranslations(
+                        activeProjectVersionAndLocaleValidator.getVersion(),
+                        prefillRequest);
 
         String url = uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId();
         ProcessStatus processStatus = AsyncProcessService
-                .handleToProcessStatus(handle,
-                        HttpUtil.stripProtocol(url));
+                .handleToProcessStatus(handle, HttpUtil.stripProtocol(url));
         return Response.accepted(processStatus).build();
     }
 
@@ -197,20 +194,18 @@ public class MachineTranslationResource {
             return response.get();
         }
 
-        HProject hProject = activeProjectVersionAndLocaleValidator.getProject();
-        HProjectIteration version =
-                activeProjectVersionAndLocaleValidator.getVersion();
-        HLocale locale = activeProjectVersionAndLocaleValidator.getLocale();
-
-        identity.checkPermission("modify-translation", hProject, locale);
+        identity.checkPermission("modify-translation",
+                activeProjectVersionAndLocaleValidator.getProject(),
+                activeProjectVersionAndLocaleValidator.getLocale());
 
         AsyncTaskHandle<Void> handle = machineTranslationsManager
-                .prefillDocumentWithMachineTranslations(doc.getId(), projectSlug,
-                        versionSlug, version, prefillRequest);
+                .prefillDocumentWithMachineTranslations(doc.getId(),
+                        activeProjectVersionAndLocaleValidator.getVersion(),
+                        prefillRequest);
 
-        String url = uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId();
-        ProcessStatus processStatus = AsyncProcessService
-                .handleToProcessStatus(handle, HttpUtil.stripProtocol(url));
-        return Response.accepted(processStatus).build();
+        return Response.accepted(AsyncProcessService
+                .handleToProcessStatus(handle, HttpUtil.stripProtocol(
+                        uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId())))
+                .build();
     }
 }

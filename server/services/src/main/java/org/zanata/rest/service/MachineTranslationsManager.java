@@ -58,49 +58,60 @@ public class MachineTranslationsManager {
     @Inject
     private Messages messages;
 
-    public AsyncTaskHandle<Void> prefillVersionWithMachineTranslations(String projectSlug, String versionSlug, HProjectIteration projectIteration, MachineTranslationPrefill prefillRequest) {
-        ProjectIterationId projectIterationId =
-                new ProjectIterationId(projectSlug, versionSlug,
-                        projectIteration.getProjectType());
-        MachineTranslationsForVersionTaskKey
-                taskKey =
-                new MachineTranslationsForVersionTaskKey(
-                        projectIterationId);
-
-
+    /**
+     * Fill a project version with translations from an MT source
+     *
+     * @param projectIteration version to fill
+     * @param prefillRequest options for MT fill
+     * @return async handle for process
+     */
+    public AsyncTaskHandle<Void> prefillVersionWithMachineTranslations(
+            HProjectIteration projectIteration,
+            MachineTranslationPrefill prefillRequest) {
         MachineTranslationPrefillTaskHandle taskHandle =
-                (MachineTranslationPrefillTaskHandle) asyncTaskHandleManager.getHandleByKey(taskKey);
-
-        if (AsyncTaskHandle.taskIsNotRunning(taskHandle)) {
-            taskHandle = new MachineTranslationPrefillTaskHandle(taskKey);
-            taskHandle.setTaskName(
-                    messages.format("jsf.tasks.machineTranslation", projectSlug,
-                            versionSlug, prefillRequest.getToLocale().getId()));
-            taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
-            taskHandle.setTargetVersion(projectIterationId.toString());
-            asyncTaskHandleManager.registerTaskHandle(taskHandle, taskKey);
-            machineTranslationService.prefillProjectVersionWithMachineTranslation(
-                    projectIteration.getId(), prefillRequest,
-                    taskHandle);
-        } else {
-            log.warn("there is already a task running {}", taskKey);
-            throw new UnsupportedOperationException("task already running");
-        }
-
+                createMTTaskHandle(projectIteration, prefillRequest);
+        machineTranslationService.prefillProjectVersionWithMachineTranslation(
+                projectIteration.getId(), prefillRequest, taskHandle);
         return taskHandle;
     }
 
+    /**
+     * Fill a single document with translations from an MT source
+     *
+     * @param documentId id of target document
+     * @param projectIteration version to fill
+     * @param prefillRequest options for MT fill
+     * @return async handle for process
+     */
     public AsyncTaskHandle<Void> prefillDocumentWithMachineTranslations(
-            long documentId, String projectSlug, String versionSlug,
+            long documentId, HProjectIteration projectIteration,
+            MachineTranslationPrefill prefillRequest) {
+        MachineTranslationPrefillTaskHandle taskHandle =
+                createMTTaskHandle(projectIteration, prefillRequest);
+        machineTranslationService.prefillDocumentWithMachineTranslation(
+                documentId, prefillRequest, taskHandle);
+        return taskHandle;
+    }
+
+    /**
+     * Create a Machine Translation task handle for the given version, failing
+     * with an UnsupportedOperationException if one already exists
+
+     * @param projectIteration version to create handle for
+     * @param prefillRequest machine translation request for handle
+     * @return async task handle
+     * @throws UnsupportedOperationException if task exists
+     */
+    private MachineTranslationPrefillTaskHandle createMTTaskHandle(
             HProjectIteration projectIteration,
             MachineTranslationPrefill prefillRequest) {
+        String projectSlug = projectIteration.getProject().getSlug();
+        String versionSlug = projectIteration.getSlug();
         ProjectIterationId projectIterationId =
                 new ProjectIterationId(projectSlug, versionSlug,
                         projectIteration.getProjectType());
         MachineTranslationsForVersionTaskKey taskKey =
                 new MachineTranslationsForVersionTaskKey(projectIterationId);
-
-        // Allow only one MT request per version
         MachineTranslationPrefillTaskHandle taskHandle =
                 (MachineTranslationPrefillTaskHandle) asyncTaskHandleManager.getHandleByKey(taskKey);
 
@@ -112,11 +123,9 @@ public class MachineTranslationsManager {
             taskHandle.setTriggeredBy(authenticatedAccount.getUsername());
             taskHandle.setTargetVersion(projectIterationId.toString());
             asyncTaskHandleManager.registerTaskHandle(taskHandle, taskKey);
-            machineTranslationService.prefillDocumentWithMachineTranslation(
-                    documentId, prefillRequest, taskHandle);
         } else {
-            log.warn("There is already a task running {}", taskKey);
-            throw new UnsupportedOperationException("Task already running for this version");
+            log.warn("there is already a task running {}", taskKey);
+            throw new UnsupportedOperationException("task already running");
         }
 
         return taskHandle;

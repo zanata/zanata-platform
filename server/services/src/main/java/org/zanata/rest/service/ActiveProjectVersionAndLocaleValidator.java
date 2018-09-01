@@ -26,10 +26,8 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
-import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;

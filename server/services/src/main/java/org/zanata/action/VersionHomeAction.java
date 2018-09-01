@@ -21,7 +21,6 @@
  */
 package org.zanata.action;
 
-import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
