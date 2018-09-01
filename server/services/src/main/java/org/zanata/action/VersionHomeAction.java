@@ -21,6 +21,7 @@
  */
 package org.zanata.action;
 
+import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -168,7 +169,7 @@ public class VersionHomeAction extends AbstractSortAction
     @MTServiceURL
     private URI mtServiceURL;
     @Inject
-    private AttributionService attributionService;
+    private transient AttributionService attributionService;
 
     private List<HLocale> supportedLocale;
     private List<HDocument> documents;
@@ -1422,12 +1423,6 @@ public class VersionHomeAction extends AbstractSortAction
     }
 
     public boolean canMTDocument(String docId) {
-        boolean isEnabled = isMTEnabled();
-        GlobalDocumentId gid =
-                        new GlobalDocumentId(projectSlug, versionSlug, docId);
-        boolean supported = attributionService.supportsAttribution(
-                documentDAO.getByGlobalId(
-                        new GlobalDocumentId(projectSlug, versionSlug, docId)));
         return isMTEnabled() && attributionService.supportsAttribution(
                 documentDAO.getByGlobalId(
                         new GlobalDocumentId(projectSlug, versionSlug, docId)));

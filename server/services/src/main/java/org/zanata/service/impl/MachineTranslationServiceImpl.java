@@ -244,7 +244,7 @@ public class MachineTranslationServiceImpl implements
                 targetDocument.getProjectIteration().getSlug(),
                 options.getSaveState(),
                 options.getOverwriteFuzzy(), BACKEND_GOOGLE, taskHandle);
-        log.info("Pre-fill with MT for {}, {}", "COMPLETED",
+        log.info("Pre-fill with MT for {} completed, {}",
                 targetDocument.getDocId(), overallStopwatch);
         return AsyncTaskResult.completed();
     }

@@ -205,7 +205,7 @@ public class MachineTranslationResource {
         identity.checkPermission("modify-translation", hProject, locale);
 
         AsyncTaskHandle<Void> handle = machineTranslationsManager
-                .prefillDocumentWithMachineTranslations(doc.getId(),projectSlug,
+                .prefillDocumentWithMachineTranslations(doc.getId(), projectSlug,
                         versionSlug, version, prefillRequest);
 
         String url = uri.getBaseUri() + "process/key?keyId=" + handle.getKeyId();
