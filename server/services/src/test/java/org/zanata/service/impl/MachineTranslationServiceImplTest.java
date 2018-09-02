@@ -362,6 +362,53 @@ public class MachineTranslationServiceImplTest extends ZanataJpaTest {
                 .allMatch(it -> it.equals(expectedState));
     }
 
+    @Test
+    @InRequestScope
+    public void canGetTranslationFromMTForDocument() throws Exception {
+        HProjectIteration version = makeProjectVersion("project", "master");
+        HDocument doc =
+                new HDocument("pot/message", ContentType.PO, sourceLocale);
+        doc.setProjectIteration(version);
+        doc.setPoHeader(new HPoHeader());
+        version.getDocuments().put(doc.getDocId(), doc);
+        getEm().persist(doc);
+        // each document has the same number of text flows
+        for (int j = 0; j < NUM_OF_TEXTFLOWS; j++) {
+            List<String> contents = singletonList("content" + j);
+            HTextFlow textFlow = new HTextFlow(doc, "resId" + j);
+            textFlow.setContents(contents);
+            doc.getTextFlows().add(textFlow);
+            getEm().persist(textFlow);
+        }
+        when(localeService.getByLocaleId(
+                targetLocale.getLocaleId())).thenReturn(targetLocale);
+        stubForMachineTranslationRequest();
+
+        Future<Void> future =
+                service.prefillDocumentWithMachineTranslation(doc.getId(),
+                        new MachineTranslationPrefill(LocaleId.DE,
+                                ContentState.Translated, true), taskHandle);
+
+        // not running via AsyncMethodInterceptor, so we don't need to wait
+        future.get(0, SECONDS);
+
+        verify(translationService, times(2))
+                .translate(Mockito.eq(targetLocale.getLocaleId()),
+                        transUnitUpdateRequestCaptor.capture());
+        List<List<TransUnitUpdateRequest>> allRequestsLists =
+                transUnitUpdateRequestCaptor.getAllValues();
+        List<TransUnitUpdateRequest> allRequestsFlat =
+                allRequestsLists.stream().flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+
+        assertThat(allRequestsFlat)
+                .as("number of translations added")
+                .hasSize(NUM_OF_TEXTFLOWS)
+                .as("state of translations")
+                .extracting(TransUnitUpdateRequest::getNewContentState)
+                .allMatch(it -> it.equals(ContentState.Translated));
+    }
+
     private void stubForMachineTranslationRequest() {
         // we construct an array of translations
         String[] allTranslations = new String[NUM_OF_TEXTFLOWS];
