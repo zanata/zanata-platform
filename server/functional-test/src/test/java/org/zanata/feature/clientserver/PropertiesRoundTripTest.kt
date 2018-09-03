@@ -38,7 +38,7 @@ import java.io.FileWriter
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.zanata.util.MavenHome.mvn
+import org.zanata.util.mvn
 import org.zanata.feature.clientserver.ProjectMaintainerTest.Companion.MAVEN_PLUGIN
 
 /**
@@ -73,7 +73,7 @@ class PropertiesRoundTripTest : ZanataTestCase() {
         // generate a zanata.xml
         TestFileGenerator.generateZanataXml(File(tempDir, "zanata.xml"),
                 "properties-test", "master", "properties", arrayListOf("pl"))
-        var output = client.callWithTimeout(tempDir, "${mvn()} -B " +
+        var output = client.callWithTimeout(tempDir, "$mvn -B " +
                 "$MAVEN_PLUGIN:push " +
                 "-Dzanata.srcDir=. " +
                 "-Dzanata.userConfig=$userConfigPath")
@@ -88,7 +88,7 @@ class PropertiesRoundTripTest : ZanataTestCase() {
         editorPage.translateTargetAtRowIndex(1, "translation updated fuzzy")
                 .saveAsFuzzyAtRow(1)
 
-        output = client.callWithTimeout(tempDir, "${mvn()} -e -B " +
+        output = client.callWithTimeout(tempDir, "$mvn -e -B " +
                 "$MAVEN_PLUGIN:pull " +
                 "-Dzanata.userConfig=$userConfigPath")
 
@@ -107,7 +107,7 @@ class PropertiesRoundTripTest : ZanataTestCase() {
 
         // push again
         client.callWithTimeout(tempDir,
-                "${mvn()} -e -B $MAVEN_PLUGIN:push " +
+                "$mvn -e -B $MAVEN_PLUGIN:push " +
                         "-Dzanata.pushType=trans -Dzanata.srcDir=. " +
                         "-Dzanata.userConfig=$userConfigPath")
 
