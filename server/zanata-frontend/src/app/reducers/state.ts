@@ -23,10 +23,12 @@ export type RootState = DeepReadonly<{
 // TODO verify types
 export type ProjectVersionState = {
   MTMerge: {
-    showMTMerge: boolean
+    show: boolean
     triggered: boolean
     processStatus?: ProcessStatus
     queryStatus?: string
+    localeId?: LocaleId
+    docId?: string
   }
   TMMerge: {
     show: boolean

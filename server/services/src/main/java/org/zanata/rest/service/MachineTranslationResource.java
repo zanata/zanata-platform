@@ -169,11 +169,11 @@ public class MachineTranslationResource {
 
     @CheckRole("mt-bulk")
     @POST
-    @Path("project/{projectSlug}/version/{versionSlug}/document/{docId}")
+    @Path("project/{projectSlug}/version/{versionSlug}/document")
     public Response prefillDocumentByMachineTranslation(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
-            @PathParam("docId") String docId,
+            @QueryParam("docId") String docId,
             MachineTranslationPrefill prefillRequest) {
         if (mtServiceURL == null) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
