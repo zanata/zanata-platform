@@ -25,6 +25,7 @@ import {
   MT_MERGE_CANCEL_SUCCESS
 } from '../actions/version-action-types'
 import { SEVERITY, statusToSeverity } from '../actions/common-actions'
+import { filter, isEmpty } from 'lodash'
 
 /** @typedef {import('./state').ProjectVersionState} ProjectVersionState */
 
@@ -42,7 +43,7 @@ export const defaultState = {
     triggered: false,
     processStatus: undefined,
     queryStatus: undefined,
-    projectVersions: []
+    projectsWithVersions: []
   },
   // this works unless the code is sent back in time to the 1960s or earlier.
   projectResultsTimestamp: new Date(0),
@@ -115,8 +116,12 @@ const version = handleActions({
   [PROJECT_PAGE_SUCCESS]: (state, action) => {
     // @ts-ignore
     if (action.meta.timestamp > state.projectResultsTimestamp) {
+      // filter out project with empty versions
+      const filteredProjects = filter(action.payload, (project) => {
+        return !isEmpty(project.versions)
+      })
       return update(state, {
-        TMMerge: { projectVersions: { $set: action.payload } },
+        TMMerge: { projectsWithVersions: { $set: filteredProjects } },
         fetchingProject: { $set: false },
         notification: { $set: undefined },
         // @ts-ignore

@@ -39,21 +39,21 @@ describe('version-reducer test', () => {
     expect(initial.TMMerge).toEqual({
       processStatus: undefined,
       queryStatus: undefined,
-      projectVersions: [],
+      projectsWithVersions: [],
       show: false,
       triggered: false
     })
     expect(shown.TMMerge).toEqual({
       processStatus: undefined,
       queryStatus: undefined,
-      projectVersions: [],
+      projectsWithVersions: [],
       show: true,
       triggered: false
     })
     expect(hidden.TMMerge).toEqual({
       processStatus: undefined,
       queryStatus: undefined,
-      projectVersions: [],
+      projectsWithVersions: [],
       show: false,
       triggered: false
     })
@@ -174,7 +174,7 @@ describe('version-reducer test', () => {
     )
     expect(projectsRequested.fetchingProject).toEqual(true)
     expect(projectsReceived.fetchingProject).toEqual(false)
-    expect(projectsReceived.TMMerge.projectVersions).toEqual([
+    expect(projectsReceived.TMMerge.projectsWithVersions).toEqual([
       {
         contributorCount: 0,
         description: 'A project',
@@ -264,8 +264,8 @@ describe('version-reducer test', () => {
     )
 
     expect(withStaleAction.projectResultsTimestamp).toEqual(highTea)
-    expect(withStaleAction.TMMerge.projectVersions[0]).toEqual(
-      newestResults.TMMerge.projectVersions[0]
+    expect(withStaleAction.TMMerge.projectsWithVersions[0]).toEqual(
+      newestResults.TMMerge.projectsWithVersions[0]
     )
   })
   it('can request a TM merge', () => {
@@ -300,7 +300,7 @@ describe('version-reducer test', () => {
             statusCode: 'Running',
             url: 'http://localhost:8080/rest/process/key/TMMergeForVerKey-1-ja'
           },
-          projectVersions: [],
+          projectsWithVersions: [],
           queryStatus: undefined,
           show: false,
           triggered: false
@@ -344,7 +344,7 @@ describe('version-reducer test', () => {
       },
       TMMerge: {
         processStatus: undefined,
-        projectVersions: [],
+        projectsWithVersions: [],
         queryStatus: undefined,
         show: false,
         triggered: false
@@ -375,7 +375,7 @@ describe('version-reducer test', () => {
       },
       TMMerge: {
         processStatus: undefined,
-        projectVersions: [],
+        projectsWithVersions: [],
         queryStatus: undefined,
         show: false,
         triggered: false

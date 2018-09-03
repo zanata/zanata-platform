@@ -45,7 +45,7 @@ const Search = Input.Search
  */
 class TMMergeProjectSources extends Component {
   static propTypes = {
-    projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
+    visibleProjectsWithVersions: PropTypes.arrayOf(ProjectType).isRequired,
     fetchingProject: PropTypes.bool.isRequired,
     mergeOptions: PropTypes.shape({
       selectedVersions: PropTypes.arrayOf(FromProjectVersionType),
@@ -55,6 +55,7 @@ class TMMergeProjectSources extends Component {
     onProjectSearchChange: PropTypes.func.isRequired,
     onVersionCheckboxChange: PropTypes.func.isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired,
+    onAllProjectsCheckboxChange: PropTypes.func.isRequired,
     onDragMoveEnd: PropTypes.func.isRequired,
     removeProjectVersion: PropTypes.func.isRequired,
     thisProjectSlug: PropTypes.string.isRequired
@@ -90,16 +91,18 @@ class TMMergeProjectSources extends Component {
   }
   render () {
     const {
-      projectVersions,
+      visibleProjectsWithVersions,
       fetchingProject,
       mergeOptions,
       onVersionCheckboxChange,
       onAllVersionCheckboxChange,
+      onAllProjectsCheckboxChange,
       onDragMoveEnd,
       removeProjectVersion
     } = this.props
     const disabled = !this.state.enabled
-    const noResults = (projectVersions.length === 0) ? 'No results' : ''
+    const noResults = (visibleProjectsWithVersions.length === 0)
+      ? 'No results' : ''
     const fromVersionsPanel = this.state.fromProjectSelection === ALL ||
     disabled
       ? DO_NOT_RENDER
@@ -116,16 +119,18 @@ class TMMergeProjectSources extends Component {
             </span>
             <LoaderText loading={fetchingProject}
               loadingText={'Fetching Projects'} />
-            <span className='txt-muted'>{noResults}</span>
-            {projectVersions.length > 0 &&
-              <ProjectVersionPanels projectVersions={projectVersions}
+            <span className='txt-muted ml1'>{noResults}</span>
+            {visibleProjectsWithVersions.length > 0 &&
+              <ProjectVersionPanels
+                visibleProjectsWithVersions={visibleProjectsWithVersions}
                 selectedVersions={mergeOptions.selectedVersions}
                 onVersionCheckboxChange={onVersionCheckboxChange}
-                onAllVersionCheckboxChange={onAllVersionCheckboxChange} />
+                onAllVersionCheckboxChange={onAllVersionCheckboxChange}
+                onAllProjectsCheckboxChange={onAllProjectsCheckboxChange} />
             }
           </Col>
           <Col span={11}>
-            {projectVersions.length > 0 &&
+            {visibleProjectsWithVersions.length > 0 &&
               <DraggableVersionPanels
                 selectedVersions={mergeOptions.selectedVersions}
                 onDraggableMoveEnd={onDragMoveEnd}
