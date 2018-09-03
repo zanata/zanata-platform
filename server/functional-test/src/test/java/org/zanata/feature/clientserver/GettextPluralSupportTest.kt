@@ -46,7 +46,7 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.MavenHome.mvn
+import org.zanata.util.mvn
 import org.zanata.feature.clientserver.ProjectMaintainerTest.Companion.MAVEN_PLUGIN
 import org.zanata.util.ZanataRestCaller
 
@@ -87,7 +87,7 @@ class GettextPluralSupportTest : ZanataTestCase() {
     @Test
     fun canPushAndPullPlural() {
         restCaller.createProjectAndVersion("plurals", "master", "podir")
-        var output = client.callWithTimeout(tempDir, "${mvn()} -e -B " +
+        var output = client.callWithTimeout(tempDir, "$mvn -e -B " +
                 "$MAVEN_PLUGIN:push -Dzanata.pushType=both " +
                 "-Dzanata.userConfig=$userConfigPath")
 
@@ -97,7 +97,7 @@ class GettextPluralSupportTest : ZanataTestCase() {
 
         val pullDir = Files.createTempDir()
         val pullDirPath = pullDir.absolutePath
-        val command = ("${mvn()} -e -B $MAVEN_PLUGIN:pull " +
+        val command = ("$mvn -e -B $MAVEN_PLUGIN:pull " +
                 "-Dzanata.pullType=both " +
                 "-Dzanata.srcDir=$pullDirPath " +
                 "-Dzanata.transDir=$pullDirPath " +

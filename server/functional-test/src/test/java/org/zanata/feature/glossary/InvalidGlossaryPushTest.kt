@@ -29,7 +29,7 @@ import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.workflow.ClientWorkFlow
 import java.io.File
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.MavenHome.mvn
+import org.zanata.util.mvn
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
@@ -37,7 +37,7 @@ import org.zanata.util.MavenHome.mvn
 @DetailedTest
 class InvalidGlossaryPushTest : ZanataTestCase() {
 
-    private val pushCommand = "${mvn()} -e --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr_invalid.po -Dzanata.userConfig="
+    private val pushCommand = "$mvn -e --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr_invalid.po -Dzanata.userConfig="
     private lateinit var clientWorkFlow: ClientWorkFlow
     private lateinit var userConfigPath: String
     private lateinit var projectRootPath: File

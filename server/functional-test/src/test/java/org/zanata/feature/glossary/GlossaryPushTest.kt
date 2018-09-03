@@ -29,7 +29,7 @@ import org.zanata.workflow.ClientWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 import java.io.File
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.MavenHome.mvn
+import org.zanata.util.mvn
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
@@ -40,8 +40,8 @@ class GlossaryPushTest : ZanataTestCase() {
     private lateinit var clientWorkFlow: ClientWorkFlow
     private lateinit var projectRootPath: File
     private lateinit var userConfigPath: String
-    private val pushCommand = "${mvn()} -e -U --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr.po -Dzanata.userConfig="
-    private val pushCSVCommand = "${mvn()} -e -U --batch-mode zanata:glossary-push -Dzanata.file=compendium_invalid.csv -Dglossary.lang=hi -Dzanata.userConfig="
+    private val pushCommand = "$mvn -e -U --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr.po -Dzanata.userConfig="
+    private val pushCSVCommand = "$mvn -e -U --batch-mode zanata:glossary-push -Dzanata.file=compendium_invalid.csv -Dglossary.lang=hi -Dzanata.userConfig="
 
     @BeforeEach
     fun before() {

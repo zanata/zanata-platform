@@ -42,7 +42,7 @@ import java.io.FilenameFilter
 import java.io.IOException
 
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.MavenHome.mvn
+import org.zanata.util.mvn
 import org.zanata.util.TestFileGenerator.Companion.generateZanataXml
 import org.zanata.util.TestFileGenerator.Companion.makePropertiesFile
 import org.zanata.util.ZanataRestCaller.Companion.buildTextFlowTarget
@@ -70,7 +70,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
 
         // translator tries to push
         val output = client.callWithTimeout(projectRootPath,
-                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.userConfig=$translatorConfig")
+                "$mvn -e -B $MAVEN_PLUGIN:push -Dzanata.userConfig=$translatorConfig")
 
         val joinedOutput = Joiner.on("\n").skipNulls().join(output)
         assertThat(joinedOutput).contains("Authorization check failed")
@@ -84,7 +84,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
                 .getProperty(Constants.zanataTranslatorKey.value()))
         restCaller.createProjectAndVersion("plurals", "master", "podir")
         val output = client.callWithTimeout(projectRootPath,
-                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.copyTrans=false " +
+                "$mvn -e -B $MAVEN_PLUGIN:push -Dzanata.copyTrans=false " +
                         "-Dzanata.userConfig=$translatorConfig")
 
         assertThat(client.isPushSuccessful(output)).isTrue()
@@ -99,7 +99,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
         // push trans
         client.callWithTimeout(
                 projectRootPath,
-                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.pushType=trans " +
+                "$mvn -e -B $MAVEN_PLUGIN:push -Dzanata.pushType=trans " +
                         "-Dzanata.copyTrans=false " +
                         "-Dzanata.userConfig=$translatorConfig")
 
@@ -114,7 +114,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
         // push source and run copyTrans
         client.callWithTimeout(
                 projectRootPath,
-                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.pushType=source " +
+                "$mvn -e -B $MAVEN_PLUGIN:push -Dzanata.pushType=source " +
                         "-Dzanata.copyTrans=true " +
                         "-Dzanata.userConfig=$translatorConfig " +
                         "-Dzanata.projectConfig=${updatedZanataXml.absolutePath}")
@@ -150,7 +150,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
         generateZanataXml(File(workDir, "zanata.xml"), projectSlug,
                 iterationSlug, projectType, Lists.newArrayList("pl"))
         client.callWithTimeout(workDir,
-                "${mvn()} -e -B $MAVEN_PLUGIN:push -Dzanata.userConfig=$translatorConfig")
+                "$mvn -e -B $MAVEN_PLUGIN:push -Dzanata.userConfig=$translatorConfig")
 
         // only message1 has translation
         val translationsResource = buildTranslationResource(
@@ -161,14 +161,14 @@ class ProjectMaintainerTest : ZanataTestCase() {
         // dryRun creates nothing
         val transDir = Files.createTempDir()
         client.callWithTimeout(workDir,
-                "${mvn()} -e -B $MAVEN_PLUGIN:pull -DdryRun " +
+                "$mvn -e -B $MAVEN_PLUGIN:pull -DdryRun " +
                         "-Dzanata.userConfig=$translatorConfig " +
                         "-Dzanata.transDir=$transDir")
         assertThat(transDir.listFiles(propFilter)).isEmpty()
 
         // create skeletons is false will only pull translated files
         client.callWithTimeout(workDir,
-                "${mvn()} -e -B $MAVEN_PLUGIN:pull " +
+                "$mvn -e -B $MAVEN_PLUGIN:pull " +
                         "-Dzanata.createSkeletons=false " +
                         "-Dzanata.userConfig=$translatorConfig" +
                         " -Dzanata.transDir=${transDir.absolutePath}")
@@ -178,7 +178,7 @@ class ProjectMaintainerTest : ZanataTestCase() {
 
         // pull both
         client.callWithTimeout(workDir,
-                "${mvn()} -e -B $MAVEN_PLUGIN:pull -Dzanata.pullType=both " +
+                "$mvn -e -B $MAVEN_PLUGIN:pull -Dzanata.pullType=both " +
                         "-Dzanata.userConfig=$translatorConfig " +
                         "-Dzanata.transDir=${transDir.absolutePath}")
 

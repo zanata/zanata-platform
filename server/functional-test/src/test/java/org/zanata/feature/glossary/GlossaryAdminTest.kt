@@ -26,7 +26,7 @@ import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.workflow.ClientWorkFlow
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.MavenHome.mvn
+import org.zanata.util.mvn
 
 /**
  * @author Carlos Munoz [camunoz@redhat.com](mailto:camunoz@redhat.com)
@@ -48,7 +48,7 @@ class GlossaryAdminTest : ZanataTestCase() {
         val projectRootPath = clientWorkFlow.getProjectRootPath("glossary")
         val userConfigPath = ClientWorkFlow.getUserConfigPath("glossaryadmin")
         val result = clientWorkFlow.callWithTimeout(projectRootPath,
-                "${mvn()} -e -U --batch-mode zanata:glossary-push " +
+                "$mvn -e -U --batch-mode zanata:glossary-push " +
                         "-Dglossary.lang=hi " +
                         "-Dzanata.file=compendium.csv " +
                         "-Dzanata.userConfig=${userConfigPath}")

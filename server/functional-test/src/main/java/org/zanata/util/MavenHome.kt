@@ -21,25 +21,16 @@
 package org.zanata.util
 
 /**
+ * When using mvnw, the Maven process has maven.home pointing at the maven install.
+ * Failsafe is configured to propagate maven.home as a system property.
+ *
+ * This tries to return the full path to the script "mvn" in the Maven home
+ * directory (if maven.home is set), otherwise returns simply "mvn" for
+ * resolution via system PATH.
+ *
  * @author Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
  */
-object MavenHome {
-    private val mvn: String
 
-    init {
-        // When using mvnw, the Maven process has maven.home pointing at the maven install.
-        // Failsafe is configured to propagate maven.home as a system property.
-        val mavenHome = System.getProperty("maven.home")
-        // TODO will this work on windows (mvn.cmd)?
-        mvn = if (mavenHome != null) "$mavenHome/bin/mvn" else "mvn"
-    }
+private val mavenHome = System.getProperty("maven.home")
+val mvn = if (mavenHome != null) "$mavenHome/bin/mvn" else "mvn"
 
-    /**
-     * Tries to return the full path to the script "mvn" in the Maven home
-     * directory (if maven.home is set), otherwise returns simply "mvn" for
-     * resolution via system PATH.
-     */
-    fun mvn(): String {
-        return mvn
-    }
-}
