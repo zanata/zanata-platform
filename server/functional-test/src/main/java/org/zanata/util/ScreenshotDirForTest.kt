@@ -25,16 +25,11 @@ import java.io.File
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-object ScreenshotDirForTest {
 
-    private val baseDirPath: String? =
-            PropertiesHolder.getProperty("webdriver.screenshot.dir")
-    private val screenshotBaseDir = File(baseDirPath)
+private val baseDirPath: String? =
+        PropertiesHolder.getProperty("webdriver.screenshot.dir")
+private val screenshotBaseDir = File(baseDirPath)
 
-    val isScreenshotEnabled: Boolean
-        get() = baseDirPath != null
+val isScreenshotEnabled: Boolean = baseDirPath != null
 
-    fun screenshotForTest(testId: String): File {
-        return File(screenshotBaseDir, testId)
-    }
-}
+fun screenshotForTest(testId: String): File = File(screenshotBaseDir, testId)

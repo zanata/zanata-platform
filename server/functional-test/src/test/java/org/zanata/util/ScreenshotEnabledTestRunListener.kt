@@ -73,7 +73,7 @@ class ScreenshotEnabledTestRunListener : RunListener() {
         }
 
         private fun deleteScreenshots(testDisplayName: String) {
-            val testDir = ScreenshotDirForTest.screenshotForTest(testDisplayName)
+            val testDir = screenshotForTest(testDisplayName)
             try {
                 log.info("Deleting screenshots for {}", testDisplayName)
                 FileUtils.deleteDirectory(testDir)

@@ -58,7 +58,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.zanata.util.PropertiesHolder
 import com.google.common.base.Strings
-import org.zanata.util.ScreenshotDirForTest
+import org.zanata.util.isScreenshotEnabled
 import org.zanata.util.TestEventForScreenshotListener
 import javax.annotation.ParametersAreNonnullByDefault
 import java.lang.reflect.Proxy.newProxyInstance
@@ -245,7 +245,7 @@ enum class WebDriverFactory {
     }
 
     fun registerScreenshotListener(testName: String) {
-        if (!ScreenshotDirForTest.isScreenshotEnabled)
+        if (!isScreenshotEnabled)
             return
         log.info("Enabling screenshot module...")
         val driver = getDriver()

@@ -98,7 +98,7 @@ class TestEventForScreenshotListener
     private fun createScreenshot(ofType: String) {
         var testIDDir: File? = null
         try {
-            testIDDir = ScreenshotDirForTest.screenshotForTest(testId)
+            testIDDir = screenshotForTest(testId)
             if (!testIDDir.exists()) {
                 log.info("[Screenshot]: Creating screenshot dir {}",
                         testIDDir.absolutePath)
