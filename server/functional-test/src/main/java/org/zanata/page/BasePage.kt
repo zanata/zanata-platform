@@ -33,6 +33,15 @@ import org.zanata.page.utility.HomePage
 import org.zanata.workflow.BasicWorkFlow
 import com.google.common.base.Preconditions
 
+private val NAV = By.id("nav")
+private val languagesLink = By.id("nav_language")
+private val exploreLink = By.id("nav_search")
+private val BY_SIGN_IN = By.id("nav_login")
+private val BY_SIGN_OUT = By.id("nav_logout")
+private val BY_DASHBOARD_LINK = By.id("nav_dashboard")
+private val BY_ADMINISTRATION_LINK = By.id("nav_admin")
+private val registrationLink = By.id("nav_sign_up")
+
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar
  * and sidebar links common to most pages outside of the editor.
@@ -120,7 +129,7 @@ open class BasePage(driver: WebDriver) : CorePage(driver) {
 
     /**
      * This is a workaround for
-     * https://code.google.com/p/selenium/issues/detail?id=2766 Elemenet not
+     * https://code.google.com/p/selenium/issues/detail?id=2766 Element not
      * clickable at point due to the change coordinate of element in page.
      *
      * @param locator
@@ -144,13 +153,5 @@ open class BasePage(driver: WebDriver) : CorePage(driver) {
 
     companion object {
         private val log = org.slf4j.LoggerFactory.getLogger(BasePage::class.java)
-        private val NAV = By.id("nav")
-        private val languagesLink = By.id("nav_language")
-        private val exploreLink = By.id("nav_search")
-        private val BY_SIGN_IN = By.id("nav_login")
-        private val BY_SIGN_OUT = By.id("nav_logout")
-        private val BY_DASHBOARD_LINK = By.id("nav_dashboard")
-        private val BY_ADMINISTRATION_LINK = By.id("nav_admin")
-        private val registrationLink = By.id("nav_sign_up")
     }
 }
