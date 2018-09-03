@@ -32,10 +32,12 @@ import { SEVERITY, statusToSeverity } from '../actions/common-actions'
 export const defaultState = {
   // See mapReduxStateToProps in MTMergeContainer.ts
   MTMerge: {
-    showMTMerge: false,
+    show: false,
     triggered: false,
     processStatus: undefined,
     queryStatus: undefined,
+    localeId: undefined,
+    docId: undefined
   },
   TMMerge: {
     show: false,
@@ -56,10 +58,18 @@ export const defaultState = {
 // Should be fixed by Redux 4: https://github.com/reactjs/redux/pull/2773
 /** @type {import('redux').Reducer<ProjectVersionState>} */
 const version = handleActions({
-  [TOGGLE_MT_MERGE_MODAL]: (state, _action) => {
-    return update(state, {
-      MTMerge: { showMTMerge: { $set: !state.MTMerge.showMTMerge } }
-    })
+  [TOGGLE_MT_MERGE_MODAL]: (state, action) => {
+    const {show, docId, localeId} = action.payload ? action.payload.MTMerge
+      : state.MTMerge
+    return {
+      ...state,
+      MTMerge: {
+        ...state.MTMerge,
+        show,
+        docId,
+        localeId
+      }
+    }
   },
   [TOGGLE_TM_MERGE_MODAL]: (state, _action) => {
     return update(state, {
@@ -223,6 +233,10 @@ const version = handleActions({
   [MT_MERGE_PROCESS_FINISHED]: (state, _action) => {
     return update(state, {
       // MTMerge: { processStatus: { $set: undefined } },
+      MTMerge: {
+        docId: { $set: undefined },
+        localeId: { $set: undefined }
+      },
       notification: {
         $set: {
           severity: `${state.MTMerge.processStatus

@@ -96,7 +96,7 @@ storiesOf('MTMergeModal', module)
     <MTMergeModal
       processStatus={undefined}
       allowMultiple={false}
-      showMTMerge={true}
+      show={true}
       availableLocales={testLocales}
       projectSlug='myProject'
       versionSlug='myVersion'

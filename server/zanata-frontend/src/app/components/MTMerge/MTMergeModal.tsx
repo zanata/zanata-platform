@@ -15,6 +15,7 @@ import CancellableProgressBar from '../ProgressBar/CancellableProgressBar'
 export type MTTranslationStatus = MTTranslationStatus
 
 export interface MTMergeAPIOptions {
+  selectedDocId?: string
   selectedLocales: LocaleId[]
   saveAs: MTTranslationStatus
   overwriteFuzzy?: boolean
@@ -22,9 +23,11 @@ export interface MTMergeAPIOptions {
 
 // Redux state, ie connect's TStateProps
 export type MTMergeModalStateProps = Readonly<{
-  showMTMerge: boolean
+  show: boolean
   availableLocales: Locale[]
   processStatus?: ProcessStatus
+  docId?: string
+  localeId?: LocaleId
 }>
 
 // Redux dispatch, ie connect's TDispatchProps
@@ -78,15 +81,20 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
 
   public render() {
     const {
-      showMTMerge,
+      show,
       projectSlug,
       versionSlug,
       availableLocales,
       processStatus,
       onCancelMTMerge,
       queryMTMergeProgress,
+      docId,
+      localeId
     } = this.props
-    const enableSubmit = this.state.checkedLocales.length > 0 && !processStatus
+
+    const isSingleDocument = docId && localeId
+    const enableSubmit = isSingleDocument ? true
+      : (this.state.checkedLocales.length > 0 && !processStatus)
     const queryProgress = () => {
       queryMTMergeProgress(processStatus ? processStatus.url : '')
     }
@@ -101,7 +109,7 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
     return (
       <Modal
         title='Machine Translation Merge'
-        visible={showMTMerge}
+        visible={show}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         destroyOnClose={true}
@@ -133,6 +141,8 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
         </p>
         : (
         <MTMergeOptions
+          docId={docId}
+          localeId={localeId}
           allowMultiple={this.props.allowMultiple}
           availableLocales={availableLocales}
           checkedLocales={this.state.checkedLocales}
@@ -149,8 +159,12 @@ export class MTMergeModal extends Component<Props, MTMergeUIState> {
   }
 
   private handleOk = (_: React.MouseEvent<any>) => {
+    const isSingleDoc = this.props.docId && this.props.localeId
+    const locales = isSingleDoc && this.props.localeId ?
+      [this.props.localeId] : this.state.checkedLocales
     const opts: MTMergeAPIOptions =  {
-      selectedLocales: this.state.checkedLocales,
+      selectedDocId: isSingleDoc ? this.props.docId : undefined,
+      selectedLocales: locales,
       saveAs: this.state.saveAs,
       overwriteFuzzy: this.state.overwriteFuzzy
     }
