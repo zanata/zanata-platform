@@ -24,28 +24,27 @@ import java.io.File
 import java.io.IOException
 
 import org.codehaus.jackson.map.ObjectMapper
-import org.junit.runner.Description
-import org.junit.runner.Result
-import org.junit.runner.notification.Failure
-import org.junit.runner.notification.RunListener
 
-import com.google.common.base.Optional
-import com.google.common.collect.Lists
+import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.launcher.TestExecutionListener
+import org.junit.platform.launcher.TestIdentifier
+import org.junit.platform.launcher.TestPlan
+import java.util.*
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-class TestTracing : RunListener() {
+class TestTracing : TestExecutionListener {
 
     private var fileReport: Boolean = false
     private val currentSpecification = ThreadLocal<Trace>()
     private var report: File? = null
     private val objectMapper = ObjectMapper()
-    private val entries = Lists.newArrayList<TraceEntry>()
+    private val entries = ArrayList<TraceEntry>()
+    private var testPlan: TestPlan? = null
 
-    @Throws(Exception::class)
-    override fun testRunStarted(description: Description?) {
-        super.testRunStarted(description)
+    override fun testPlanExecutionStarted(testPlan: TestPlan) {
+        this.testPlan = testPlan
         val locationPath = System.getProperty("traceLocation",
                 "./target/test-classes/traceability")
         val location = File(locationPath)
@@ -59,19 +58,31 @@ class TestTracing : RunListener() {
         fileReport = report!!.createNewFile()
     }
 
-    @Throws(Exception::class)
-    override fun testRunFinished(result: Result?) {
-        super.testRunFinished(result)
+    override fun testPlanExecutionFinished(testPlan: TestPlan) {
         objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValue(report, entries)
     }
 
-    @Throws(Exception::class)
-    override fun testStarted(description: Description?) {
-        super.testStarted(description)
-        val specOptional = getSpecification(description!!)
-        if (specOptional.isPresent) {
-            currentSpecification.set(specOptional.get())
+    override fun executionStarted(testIdentifier: TestIdentifier) {
+        getSpecification(testIdentifier).ifPresent { spec ->
+            currentSpecification.set(spec)
+        }
+    }
+
+    override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
+        when(testExecutionResult.status!!) {
+            TestExecutionResult.Status.SUCCESSFUL ->
+                reportSpecification(TraceEntry.TestResult.Passed, testIdentifier.displayName)
+            TestExecutionResult.Status.FAILED ->
+                reportSpecification(TraceEntry.TestResult.Failed, testIdentifier
+                        .displayName)
+            TestExecutionResult.Status.ABORTED -> {
+                getSpecification(testIdentifier).ifPresent { spec ->
+                    currentSpecification.set(spec)
+                }
+                // technically not ignored
+                reportSpecification(TraceEntry.TestResult.Ignored, testIdentifier.displayName)
+            }
         }
     }
 
@@ -80,37 +91,17 @@ class TestTracing : RunListener() {
      * moment class level annotation will cause multiple entries in the result
      * if there are more than one test methods.
      */
-    private fun getSpecification(description: Description): Optional<Trace> {
-        val testClassTrace = description.testClass.getAnnotation(Trace::class.java)
-        val testMethodTrace = description.getAnnotation(Trace::class.java)
-        return Optional.fromNullable(testMethodTrace).or(
-                Optional.fromNullable(testClassTrace))
-    }
+    private fun getSpecification(testIdentifier: TestIdentifier): Optional<Trace> {
+        return Optional.empty()
+        // FIXME we can't get the test class or method easily
+        // but there are some ideas here:
+        // https://stackoverflow.com/questions/42781020/junit5-is-there-any-reliable-way-to-get-class-of-an-executed-test
+        // and https://github.com/junit-team/junit5/issues/737
 
-    @Throws(Exception::class)
-    override fun testFinished(description: Description?) {
-        super.testFinished(description)
-        reportSpecification(TraceEntry.TestResult.Passed,
-                description!!.displayName)
-    }
-
-    @Throws(Exception::class)
-    override fun testFailure(failure: Failure?) {
-        super.testFailure(failure)
-        reportSpecification(TraceEntry.TestResult.Failed, failure!!
-                .description
-                .displayName)
-    }
-
-    @Throws(Exception::class)
-    override fun testIgnored(description: Description?) {
-        super.testIgnored(description)
-        val specOptional = getSpecification(description!!)
-        if (specOptional.isPresent) {
-            currentSpecification.set(specOptional.get())
-        }
-        reportSpecification(TraceEntry.TestResult.Ignored,
-                description.displayName)
+//        val testClassTrace = testIdentifier.testClass.getAnnotation(Trace::class.java)
+//        val testMethodTrace = testIdentifier.getAnnotation(Trace::class.java)
+//        return Optional.fromNullable(testMethodTrace).or(
+//                Optional.fromNullable(testClassTrace))
     }
 
     private fun reportSpecification(result: TraceEntry.TestResult,
@@ -122,7 +113,6 @@ class TestTracing : RunListener() {
         val entry = TraceEntry(trace, displayName, result)
         if (fileReport) {
             entries.add(entry)
-
         } else {
             // display to console
             try {

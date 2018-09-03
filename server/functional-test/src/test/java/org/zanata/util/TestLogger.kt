@@ -20,43 +20,34 @@
  */
 package org.zanata.util
 
-import org.junit.runner.Description
-import org.junit.runner.notification.Failure
-import org.junit.runner.notification.RunListener
-import com.google.common.base.Throwables.getRootCause
+import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.launcher.TestExecutionListener
+import org.junit.platform.launcher.TestIdentifier
+import org.slf4j.LoggerFactory.getLogger
 
 /**
  * @author Sean Flanigan
  * [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
+ * @see org.junit.platform.launcher.listeners.LoggingListener
  */
-class TestLogger : RunListener() {
+class TestLogger : TestExecutionListener {
 
-    @Throws(Exception::class)
-    override fun testStarted(description: Description?) {
-        log.info("Test starting: {}", description)
+    override fun executionStarted(testIdentifier: TestIdentifier) {
+        super.executionStarted(testIdentifier)
+        log.info("Test starting: {}", testIdentifier)
     }
 
     @Throws(Exception::class)
-    override fun testFinished(description: Description?) {
-        log.info("Test finished: {}", description)
+    override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
+        val status = testExecutionResult.status
+        log.info("Test finished ({}): {}", status, testIdentifier)
     }
 
-    @Throws(Exception::class)
-    override fun testIgnored(description: Description?) {
-        log.error("Test IGNORED: {}", description)
-    }
-
-    @Throws(Exception::class)
-    override fun testFailure(failure: Failure?) {
-        val e = failure!!.exception
-        log.error("Test FAILED: $failure", getRootCause(e))
-    }
-
-    override fun testAssumptionFailure(failure: Failure?) {
-        log.error("Test FAILED ASSUMPTION: " + failure!!, failure.exception)
+    override fun executionSkipped(testIdentifier: TestIdentifier, reason: String?) {
+        log.error("Test skipped ({}): {}", reason, testIdentifier)
     }
 
     companion object {
-        private val log = org.slf4j.LoggerFactory.getLogger(TestLogger::class.java)
+        private val log = getLogger(TestLogger::class.java)
     }
 }
