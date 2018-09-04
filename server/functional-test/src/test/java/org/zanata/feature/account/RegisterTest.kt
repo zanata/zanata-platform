@@ -20,112 +20,101 @@
  */
 package org.zanata.feature.account
 
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.experimental.categories.Category
-import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.zanata.util.Trace
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.RegisterPage
 import org.zanata.page.utility.HomePage
-import org.zanata.util.HasEmailRule
 import org.zanata.workflow.BasicWorkFlow
-
-import java.util.HashMap
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.extension.ExtendWith
+import org.zanata.util.HasEmailExtension
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
+@ExtendWith(HasEmailExtension::class)
 class RegisterTest : ZanataTestCase() {
 
-    @get:Rule
-    val emailRule = HasEmailRule()
+    private lateinit var fields: MutableMap<String, String>
 
-    private var fields: MutableMap<String, String>? = null
-    private var homePage: HomePage? = null
-
-    @Before
+    @BeforeEach
     fun before() {
         // fields contains a set of data that can be successfully registered
-        fields = HashMap()
-
-        // Conflicting fields - must be set for each test function to avoid
-        // "not available" errors
-        fields!!["email"] = "test@example.com"
-        fields!!["username"] = "testusername"
-        fields!!["name"] = "test"
-        fields!!["password"] = "testpassword"
-        homePage = BasicWorkFlow().goToHome()
-        homePage!!.deleteCookiesAndRefresh()
+        fields = hashMapOf(
+                "email" to "test@example.com",
+                "username" to "testusername",
+                "name" to "test",
+                "password" to "testpassword")
     }
 
     @Trace(summary = "The user can register an account with Zanata",
             testPlanIds = [5681], testCaseIds = [5688])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun registerSuccessful() {
-        val registerPage = homePage!!
+    @Test
+    @DisplayName("User can register a new account")
+    fun `User can register a new account`() {
+        val registerPage = BasicWorkFlow().goToHome()
                 .goToRegistration()
                 .setFields(fields)
 
         assertThat(registerPage.errors)
-                .`as`("No errors are shown")
+                .describedAs("No errors are shown")
                 .isEmpty()
 
         val signInPage = registerPage.register()
 
         assertThat(signInPage.notificationMessage)
-                .`as`("Sign up is successful")
+                .describedAs("Sign up is successful")
                 .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
     }
 
     @Trace(summary = "The user must enter a username of between 3 and " +
             "20 (inclusive) characters to register",
             testPlanIds = [5681], testCaseIds = [5690])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun usernameLengthValidation() {
-        fields!!["email"] = "length.test@example.com"
-        var registerPage = homePage!!.goToRegistration()
+    @Test
+    @DisplayName("Registration fails on incorrect username length")
+    fun `Registration fails on incorrect username length`() {
+        fields["email"] = "length.test@example.com"
+        var registerPage = BasicWorkFlow().goToHome().goToRegistration()
 
-        fields!!["username"] = "bo"
+        fields["username"] = "bo"
         registerPage = registerPage.setFields(fields)
 
         assertThat(containsUsernameError(registerPage.errors))
-                .`as`("Size errors are shown for string too short")
+                .describedAs("Size errors are shown for string too short")
                 .isTrue()
 
-        fields!!["username"] = "testusername"
+        fields["username"] = "testusername"
         registerPage = registerPage.setFields(fields)
 
         assertThat(containsUsernameError(registerPage.errors))
-                .`as`("Size errors are not shown")
+                .describedAs("Size errors are not shown")
                 .isFalse()
 
-        fields!!["username"] = "12345678901234567890a"
+        fields["username"] = "12345678901234567890a"
         registerPage = registerPage.setFields(fields)
 
         assertThat(containsUsernameError(registerPage.errors))
-                .`as`("Size errors are shown for string too long")
+                .describedAs("Size errors are shown for string too long")
                 .isTrue()
     }
 
     @Trace(summary = "The user must enter a unique username to register",
             testPlanIds = [5681], testCaseIds = [5690])
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun usernamePreExisting() {
-        val registerPage = homePage!!
+    @Test
+    @DisplayName("Registration fails on taken username")
+    fun `Registration fails on taken username`() {
+        val registerPage = BasicWorkFlow().goToHome()
                 .goToRegistration()
                 .enterUserName("admin")
         registerPage.defocus(registerPage.usernameField)
 
         assertThat(registerPage.errors)
-                .`as`("Username not available message is shown")
+                .describedAs("Username not available message is shown")
                 .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
     }
 

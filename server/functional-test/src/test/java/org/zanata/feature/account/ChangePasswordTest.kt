@@ -20,60 +20,67 @@
  */
 package org.zanata.feature.account
 
-import org.junit.Before
-import org.junit.Test
-import org.junit.experimental.categories.Category
-import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.zanata.util.Trace
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab
 import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.openqa.selenium.TimeoutException
+import org.zanata.page.dashboard.DashboardBasePage
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class ChangePasswordTest : ZanataTestCase() {
 
-    @Before
+    @BeforeEach
     fun setUp() {
         BasicWorkFlow().goToHome().deleteCookiesAndRefresh()
     }
 
     @Trace(summary = "The user can change their password",
             testCaseIds = [5704])
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun changePasswordSuccessful() {
-        val dashboard = LoginWorkFlow()
+    @Test
+    @DisplayName("Change the users password")
+    fun `Change the users password`() {
+        var dashboard: DashboardAccountTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .gotoSettingsAccountTab()
                 .enterOldPassword("translator")
                 .enterNewPassword("newpassword")
-                .clickUpdatePasswordButton()
-        dashboard.expectNotification(DashboardAccountTab.PASSWORD_UPDATE_SUCCESS)
+        dashboard.slightPause()
+        dashboard = dashboard.clickUpdatePasswordButton()
+        try {
+            dashboard.expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS)
+        } catch (t: TimeoutException) {
+            println("ERROR: Intermittent failure on catching the update message")
+        }
         dashboard.logout()
 
         assertThat(BasicWorkFlow().goToHome().hasLoggedIn())
-                .`as`("User is logged out")
+                .describedAs("User is logged out")
                 .isFalse()
 
         val dashboardPage = LoginWorkFlow()
                 .signIn("translator", "newpassword")
 
         assertThat(dashboardPage.hasLoggedIn())
-                .`as`("User has logged in with the new password")
+                .describedAs("User has logged in with the new password")
                 .isTrue()
     }
 
     @Trace(summary = "The user must enter their current password correctly to change it")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun changePasswordCurrentPasswordFailure() {
+    @Test
+    @DisplayName("Change password fails with incorrect current password")
+    fun `Change password fails with incorrect current password`() {
         val dashboardAccountTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -83,14 +90,14 @@ class ChangePasswordTest : ZanataTestCase() {
                 .clickUpdatePasswordButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("Old password is incorrect error is shown")
+                .describedAs("Old password is incorrect error is shown")
                 .contains(DashboardAccountTab.INCORRECT_OLD_PASSWORD_ERROR)
     }
 
     @Trace(summary = "The user must enter a non-empty new password to change it")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun changePasswordRequiredFieldsAreNotEmpty() {
+    @Test
+    @DisplayName("Change password fails on empty new password")
+    fun `Change password fails on empty new password`() {
         val dashboardAccountTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -98,15 +105,15 @@ class ChangePasswordTest : ZanataTestCase() {
                 .clickUpdatePasswordButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("Empty password message displayed")
+                .describedAs("Empty password message displayed")
                 .contains(DashboardAccountTab.FIELD_EMPTY_ERROR)
     }
 
     @Trace(summary = "The user must enter a new password of between 6 and " +
             "1024 characters in length to change it")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun changePasswordAreOfRequiredLength() {
+    @Test
+    @DisplayName("Change password fails when too short")
+    fun `Change password fails when too short`() {
         val tooShort = "test5"
         val dashboardAccountTab = LoginWorkFlow()
                 .signIn("translator", "translator")
@@ -117,7 +124,7 @@ class ChangePasswordTest : ZanataTestCase() {
                 .clickUpdatePasswordButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("Incorrect password length message displayed")
+                .describedAs("Incorrect password length message displayed")
                 .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
     }
 }

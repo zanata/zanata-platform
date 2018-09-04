@@ -30,7 +30,7 @@
     <kotlin.compiler.languageVersion>1.2</kotlin.compiler.languageVersion>
     <kotlin.compiler.apiVersion>1.2</kotlin.compiler.apiVersion>
 -->
-    <surefire.version>2.19.1</surefire.version>
+    <surefire.version>2.22.0</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
     <picketlink.version>2.5.5.SP2</picketlink.version>

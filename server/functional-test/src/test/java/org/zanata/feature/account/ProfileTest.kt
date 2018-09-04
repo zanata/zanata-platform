@@ -20,10 +20,9 @@
  */
 package org.zanata.feature.account
 
-import org.junit.Test
-import org.junit.experimental.categories.Category
-import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.junit.jupiter.api.Test
+import org.zanata.util.Trace
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.page.account.RegisterPage
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab
@@ -32,44 +31,45 @@ import org.zanata.util.PropertiesHolder
 import org.zanata.workflow.LoginWorkFlow
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class ProfileTest : ZanataTestCase() {
 
     @Trace(summary = "The user can view their account details")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun verifyProfileData() {
+    @Test
+    @DisplayName("User account details are visible")
+    fun `User account details are visible`() {
         val dashboardClientTab = LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToSettingsTab()
                 .goToSettingsClientTab()
 
         assertThat(dashboardClientTab.apiKey)
-                .`as`("The correct api key is present")
+                .describedAs("The correct api key is present")
                 .isEqualTo(adminsApiKey)
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration url is correct")
+                .describedAs("The configuration url is correct")
                 .contains("localhost.url=$serverUrl")
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration username is correct")
+                .describedAs("The configuration username is correct")
                 .contains("localhost.username=admin")
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration api key is correct")
+                .describedAs("The configuration api key is correct")
                 .contains("localhost.key=$adminsApiKey")
     }
 
     @Trace(summary = "The user can change their API key")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     //@Ignore("Procedure call tracking appears to be flaky in this test")
-    @Throws(Exception::class)
-    fun changeUsersApiKey() {
+    @DisplayName("User's api key can be changed")
+    fun `User's api key can be changed`() {
         var dashboardClientTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -81,40 +81,40 @@ class ProfileTest : ZanataTestCase() {
         dashboardClientTab.expectApiKeyChanged(currentApiKey)
 
         assertThat(dashboardClientTab.apiKey)
-                .`as`("The user's api key is different")
+                .describedAs("The user's api key is different")
                 .isNotEqualTo(currentApiKey)
 
         assertThat(dashboardClientTab.apiKey)
-                .`as`("The user's api key is not empty")
+                .describedAs("The user's api key is not empty")
                 .isNotEmpty()
 
         assertThat(dashboardClientTab.configurationDetails)
-                .`as`("The configuration api key matches the label")
+                .describedAs("The configuration api key matches the label")
                 .contains("localhost.key=" + dashboardClientTab.apiKey)
     }
 
     @Trace(summary = "The user can change their display name")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun changeUsersName() {
+    @Test
+    @DisplayName("User's display name can be changed")
+    fun `User's display name can be changed`() {
         val dashboardProfileTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .goToSettingsProfileTab()
-                .enterName("Tranny")
+                .enterName("Nonjima")
                 .clickUpdateProfileButton()
 
         dashboardProfileTab.expectUsernameChanged("translator")
 
         assertThat(dashboardProfileTab.userFullName)
-                .`as`("The user's name has been changed")
-                .isEqualTo("Tranny")
+                .describedAs("The user's name has been changed")
+                .isEqualTo("Nonjima")
     }
 
     @Trace(summary = "The user's email address change is validated")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
-    @Throws(Exception::class)
-    fun emailValidationIsUsedOnProfileEdit() {
+    @Test
+    @DisplayName("User's email can be changed")
+    fun `User's email can be changed`() {
         var dashboardAccountTab = LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -123,7 +123,7 @@ class ProfileTest : ZanataTestCase() {
                 .clickUpdateEmailButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("The email is rejected, being already taken")
+                .describedAs("The email is rejected, being already taken")
                 .contains(DashboardAccountTab.EMAIL_TAKEN_ERROR)
 
         dashboardAccountTab = dashboardAccountTab
@@ -134,13 +134,13 @@ class ProfileTest : ZanataTestCase() {
                 .clickUpdateEmailButton()
 
         assertThat(dashboardAccountTab.errors)
-                .`as`("The email is rejected, being of invalid format")
+                .describedAs("The email is rejected, being of invalid format")
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
     }
 
     companion object {
 
-        private val adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98"
+        private const val adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98"
         private val serverUrl = PropertiesHolder
                 .getProperty(Constants.zanataInstance.value())
     }

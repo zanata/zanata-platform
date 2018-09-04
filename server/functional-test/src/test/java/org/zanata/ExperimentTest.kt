@@ -20,19 +20,17 @@
  */
 package org.zanata
 
-import org.junit.Rule
-import org.junit.Test
-import org.zanata.util.SampleDataRule
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.zanata.util.SampleDataExtension
 
 /**
  * This is a class for experiment some things i.e. populate cargo instance with
  * some example users and languages so that a manual test can be performed.
  * Under normal circumstances it will have no active tests in it.
  */
+@ExtendWith(SampleDataExtension::class)
 class ExperimentTest {
-    @get:Rule
-    var sampleDataRule = SampleDataRule()
-
     @Test
     fun test() {
         // we need at least a non-empty test to apply the rule

@@ -20,38 +20,36 @@
  */
 package org.zanata.feature.concurrentedit
 
-import org.junit.Before
-import org.junit.Test
-import org.junit.experimental.categories.Category
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.zanata.common.LocaleId
-import org.zanata.feature.Trace
-import org.zanata.feature.testharness.TestPlan.DetailedTest
+import org.zanata.util.Trace
+import org.zanata.feature.testharness.DetailedTest
 import org.zanata.feature.testharness.ZanataTestCase
 import org.zanata.util.ZanataRestCaller
 import org.zanata.workflow.BasicWorkFlow
 import org.zanata.workflow.LoginWorkFlow
 import org.assertj.core.api.Assertions.assertThat
-import org.zanata.util.ZanataRestCaller.buildSourceResource
-import org.zanata.util.ZanataRestCaller.buildTextFlow
-import org.zanata.util.ZanataRestCaller.buildTextFlowTarget
-import org.zanata.util.ZanataRestCaller.buildTranslationResource
+import org.zanata.util.ZanataRestCaller.Companion.buildSourceResource
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlow
+import org.zanata.util.ZanataRestCaller.Companion.buildTextFlowTarget
+import org.zanata.util.ZanataRestCaller.Companion.buildTranslationResource
 
 /**
- * @author Patrick Huang
- * [pahuang@redhat.com](mailto:pahuang@redhat.com)
+ * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-@Category(DetailedTest::class)
+@DetailedTest
 class ConcurrentEditTest : ZanataTestCase() {
     private lateinit var restCaller: ZanataRestCaller
 
-    @Before
+    @BeforeEach
     fun setUp() {
         restCaller = ZanataRestCaller()
     }
 
     @Trace(summary = "The system will propagate translations done by upload " +
             "and copyTrans to editor")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun editorReceivesRestServiceResults() {
         // create project and push source
         val projectSlug = "base"
@@ -85,7 +83,7 @@ class ConcurrentEditTest : ZanataTestCase() {
 
     @Trace(summary = "The system will show concurrently changed translations " +
             "to the web editor user")
-    @Test(timeout = MAX_SHORT_TEST_DURATION.toLong())
+    @Test
     fun editorReceivesCopyTransResults() {
         // create project and populate master version
         val projectSlug = "base"
