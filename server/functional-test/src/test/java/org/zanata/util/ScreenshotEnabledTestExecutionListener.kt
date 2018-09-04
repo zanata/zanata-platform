@@ -50,7 +50,7 @@ class ScreenshotEnabledTestExecutionListener : TestExecutionListener {
 
     override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
         unregisterScreenshot()
-        if (testExecutionResult.status == TestExecutionResult.Status.FAILED) {
+        if (testExecutionResult.status !== TestExecutionResult.Status.FAILED) {
             deleteScreenshots(testIdentifier.displayName)
         }
     }
