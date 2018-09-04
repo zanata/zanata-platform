@@ -103,6 +103,14 @@ public class GlossaryClient {
                 .getName();
     }
 
+    public Response find(String query, String qualifiedName) {
+        return webResource().path("entries")
+                .queryParam("qualifiedName", qualifiedName)
+                .queryParam("filter", query)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get();
+    }
+
     private WebTarget webResource() {
         return factory.getClient().target(baseUri)
                 .path(GlossaryResource.SERVICE_PATH);
