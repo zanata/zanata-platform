@@ -37,7 +37,7 @@
                 url="#{request.contextPath}/files/upload?p=#{versionHome.projectSlug}&amp;v=#{versionHome.slug}"
                 maxfiles="#{applicationConfiguration.maxFilesPerUpload}">
                 #{msgs['jsf.iteration.files.UploadNewSourceDocument']}
-                <i class="i i--import i__item__icon"></i>
+                <i class="i i--upload i__item__icon"></i>
               </zanata:multi-file-upload>
             </li>
           </ui:fragment>
@@ -172,7 +172,7 @@
                       <a href="#" class="i__item--right"
                         onclick="openUploadSourcePanel('#{document.docId}'); return false;">
                         #{msgs['jsf.iteration.files.UpdateDocument']}
-                        <i class="i i--import i__item__icon"></i>
+                        <i class="i i--upload i__item__icon"></i>
                       </a>
                     </li>
                   </ui:fragment>
