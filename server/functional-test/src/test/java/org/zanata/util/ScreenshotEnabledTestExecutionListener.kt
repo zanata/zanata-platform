@@ -33,7 +33,7 @@ import org.zanata.page.WebDriverFactory
  * @author Patrick Huang
  * [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-class ScreenshotEnabledTestRunListener : TestExecutionListener {
+class ScreenshotEnabledTestExecutionListener : TestExecutionListener {
 
     override fun executionStarted(testIdentifier: TestIdentifier) {
         // FIXME we can't get the test class or method easily
@@ -56,7 +56,7 @@ class ScreenshotEnabledTestRunListener : TestExecutionListener {
     }
 
     companion object {
-        private val log = getLogger(ScreenshotEnabledTestRunListener::class.java)
+        private val log = getLogger(ScreenshotEnabledTestExecutionListener::class.java)
 
         private fun enableScreenshotForTest(testDisplayName: String) {
             WebDriverFactory.INSTANCE.registerScreenshotListener(testDisplayName)
