@@ -33,19 +33,27 @@ import org.slf4j.LoggerFactory.getLogger
 class TestLogger : TestExecutionListener {
 
     override fun executionStarted(testIdentifier: TestIdentifier) {
-        super.executionStarted(testIdentifier)
-        log.info("Test starting: {}", testIdentifier)
+        if (testIdentifier.type.isTest) {
+            log.info("Test starting: {}", describe(testIdentifier))
+        }
     }
 
     @Throws(Exception::class)
     override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
-        val status = testExecutionResult.status
-        log.info("Test finished ({}): {}", status, testIdentifier)
+        if (testIdentifier.type.isTest) {
+            val status = testExecutionResult.status
+            log.info("Test finished ({}): {}", status, describe(testIdentifier))
+        }
     }
 
     override fun executionSkipped(testIdentifier: TestIdentifier, reason: String?) {
-        log.error("Test skipped ({}): {}", reason, testIdentifier)
+        if (testIdentifier.type.isTest) {
+            log.error("Test skipped ({}): {}", reason, describe(testIdentifier))
+        }
     }
+
+    private fun describe(testIdentifier: TestIdentifier): String =
+            "${testIdentifier.displayName} - ${testIdentifier.uniqueId}"
 
     companion object {
         private val log = getLogger(TestLogger::class.java)

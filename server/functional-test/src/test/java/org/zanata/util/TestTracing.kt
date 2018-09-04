@@ -20,16 +20,15 @@
  */
 package org.zanata.util
 
-import java.io.File
-import java.io.IOException
-
+import com.google.common.base.MoreObjects.firstNonNull
 import org.codehaus.jackson.map.ObjectMapper
-
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.launcher.TestExecutionListener
 import org.junit.platform.launcher.TestIdentifier
 import org.junit.platform.launcher.TestPlan
-import java.util.*
+import java.io.File
+import java.io.IOException
+import java.util.Optional
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
@@ -41,26 +40,23 @@ class TestTracing : TestExecutionListener {
     private var report: File? = null
     private val objectMapper = ObjectMapper()
     private val entries = ArrayList<TraceEntry>()
-    private var testPlan: TestPlan? = null
 
     override fun testPlanExecutionStarted(testPlan: TestPlan) {
-        this.testPlan = testPlan
         val locationPath = System.getProperty("traceLocation",
-                "./target/test-classes/traceability")
+                "./target")
         val location = File(locationPath)
-        report = File(location, "traceability.json")
-        if (!location.exists() && !location.mkdirs()) {
-            throw RuntimeException("Unable to create traceability report dir")
+        this.report = File(location, "traceability.json").also { report ->
+            if (report.exists() && !report.delete()) {
+                throw RuntimeException("Unable to remove traceability report")
+            }
+            fileReport = report.createNewFile()
         }
-        if (report!!.exists() && !report!!.delete()) {
-            throw RuntimeException("Unable to remove traceability report")
-        }
-        fileReport = report!!.createNewFile()
     }
 
     override fun testPlanExecutionFinished(testPlan: TestPlan) {
         objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValue(report, entries)
+        this.report = null
     }
 
     override fun executionStarted(testIdentifier: TestIdentifier) {
@@ -70,18 +66,20 @@ class TestTracing : TestExecutionListener {
     }
 
     override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
-        when(testExecutionResult.status!!) {
-            TestExecutionResult.Status.SUCCESSFUL ->
-                reportSpecification(TraceEntry.TestResult.Passed, testIdentifier.displayName)
-            TestExecutionResult.Status.FAILED ->
-                reportSpecification(TraceEntry.TestResult.Failed, testIdentifier
-                        .displayName)
-            TestExecutionResult.Status.ABORTED -> {
-                getSpecification(testIdentifier).ifPresent { spec ->
-                    currentSpecification.set(spec)
+        findTestMethod(testIdentifier).ifPresent { testMethod ->
+            val name = getQualifiedName(testMethod)
+            when (testExecutionResult.status!!) {
+                TestExecutionResult.Status.SUCCESSFUL ->
+                    reportSpecification(TraceEntry.TestResult.Passed, name)
+                TestExecutionResult.Status.FAILED ->
+                    reportSpecification(TraceEntry.TestResult.Failed, name)
+                TestExecutionResult.Status.ABORTED -> {
+                    getSpecification(testIdentifier).ifPresent { spec ->
+                        currentSpecification.set(spec)
+                    }
+                    // technically aborted is not ignored
+                    reportSpecification(TraceEntry.TestResult.Ignored, name)
                 }
-                // technically not ignored
-                reportSpecification(TraceEntry.TestResult.Ignored, testIdentifier.displayName)
             }
         }
     }
@@ -92,16 +90,12 @@ class TestTracing : TestExecutionListener {
      * if there are more than one test methods.
      */
     private fun getSpecification(testIdentifier: TestIdentifier): Optional<Trace> {
-        return Optional.empty()
-        // FIXME we can't get the test class or method easily
-        // but there are some ideas here:
-        // https://stackoverflow.com/questions/42781020/junit5-is-there-any-reliable-way-to-get-class-of-an-executed-test
-        // and https://github.com/junit-team/junit5/issues/737
-
-//        val testClassTrace = testIdentifier.testClass.getAnnotation(Trace::class.java)
-//        val testMethodTrace = testIdentifier.getAnnotation(Trace::class.java)
-//        return Optional.fromNullable(testMethodTrace).or(
-//                Optional.fromNullable(testClassTrace))
+        return findTestMethod(testIdentifier).flatMap { testMethod ->
+            val testClass = testMethod.declaringClass
+            val testClassTrace = testClass.getAnnotation(Trace::class.java)
+            val testMethodTrace = testMethod.getAnnotation(Trace::class.java)
+            return@flatMap Optional.ofNullable(firstNonNull(testMethodTrace, testClassTrace))
+        }
     }
 
     private fun reportSpecification(result: TraceEntry.TestResult,

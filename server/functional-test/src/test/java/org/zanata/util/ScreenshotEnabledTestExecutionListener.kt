@@ -20,14 +20,14 @@
  */
 package org.zanata.util
 
-import java.io.IOException
-import java.util.Date
 import org.apache.commons.io.FileUtils
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.launcher.TestExecutionListener
 import org.junit.platform.launcher.TestIdentifier
 import org.slf4j.LoggerFactory.getLogger
 import org.zanata.page.WebDriverFactory
+import java.io.IOException
+import java.util.Date
 
 /**
  * @author Patrick Huang
@@ -36,38 +36,49 @@ import org.zanata.page.WebDriverFactory
 class ScreenshotEnabledTestExecutionListener : TestExecutionListener {
 
     override fun executionStarted(testIdentifier: TestIdentifier) {
-        // FIXME we can't get the test class or method easily
-        // but there are some ideas here:
-        // https://stackoverflow.com/questions/42781020/junit5-is-there-any-reliable-way-to-get-class-of-an-executed-test
-        // and https://github.com/junit-team/junit5/issues/737
-
-        // NB We don't have access to the test class in a TestExecutionListener
-        // (to check annotations like NoScreenshot)
-        // (The closest thing is testIdentifier.legacyReportingName which _may_
-        // start with a class name)
-        enableScreenshotForTest(testIdentifier.displayName)
+        if (!testIdentifier.type.isTest) return
+        val name = getName(testIdentifier)
+        if (name != null) {
+            enableScreenshotForTest(name)
+        } else {
+            log.warn("Unable to enable screenshots for {}", testIdentifier.uniqueId)
+        }
     }
 
     override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
         unregisterScreenshot()
         if (testExecutionResult.status !== TestExecutionResult.Status.FAILED) {
-            deleteScreenshots(testIdentifier.displayName)
+            getName(testIdentifier)?.let { deleteScreenshots(it) }
         }
+    }
+
+    private fun getName(testIdentifier: TestIdentifier): String? {
+        val testMethod = findTestMethod(testIdentifier)
+        return if (testMethod.isPresent) {
+            val method = testMethod.get()
+            if (method.javaClass.isAnnotationPresent(NoScreenshot::class.java) ||
+                    method.isAnnotationPresent(NoScreenshot::class.java)) {
+                log.debug("Skipping screenshots for @NoScreenshot test {}", testIdentifier.uniqueId)
+                null
+            } else {
+                getQualifiedName(method)
+            }
+        } else null
     }
 
     companion object {
         private val log = getLogger(ScreenshotEnabledTestExecutionListener::class.java)
 
-        private fun enableScreenshotForTest(testDisplayName: String) {
-            WebDriverFactory.INSTANCE.registerScreenshotListener(testDisplayName)
+        private fun enableScreenshotForTest(name: String) {
+            WebDriverFactory.INSTANCE.registerScreenshotListener(name)
             val date = Date().toString()
-            log.debug("[TEST] {}:{}", testDisplayName, date)
+            log.debug("[TEST] {}:{}", name, date)
         }
 
-        private fun deleteScreenshots(testDisplayName: String) {
-            val testDir = screenshotForTest(testDisplayName)
+        private fun deleteScreenshots(name: String) {
+            val testDir = screenshotForTest(name)
             try {
-                log.info("Deleting screenshots for {}", testDisplayName)
+                log.info("Deleting screenshots for {}", name)
                 FileUtils.deleteDirectory(testDir)
             } catch (e: IOException) {
                 log.warn("error deleting screenshot base directory: {}",
