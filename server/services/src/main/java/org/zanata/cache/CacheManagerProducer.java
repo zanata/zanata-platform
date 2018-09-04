@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 import org.infinispan.AdvancedCache;
+import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.zanata.util.Zanata;
 
@@ -40,8 +41,11 @@ public class CacheManagerProducer {
     private static final String CACHE_MANAGER_NAME =
             "java:jboss/infinispan/container/zanata";
 
-    @Resource(lookup = CACHE_MANAGER_NAME)
+    @Resource(name = CACHE_MANAGER_NAME)
     private EmbeddedCacheManager manager;
+
+    @Resource(lookup = "java:jboss/infinispan/configuration/zanata/default")
+    private Configuration configuration;
 
     @Produces
     @ApplicationScoped
