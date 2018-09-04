@@ -929,6 +929,11 @@
           <include>**/*.idml</include>
         </includes>
       </testResource>
+      <testResource>
+        <directory>src/test/resources/META-INF</directory>
+        <filtering>false</filtering>
+        <targetPath>META-INF</targetPath>
+      </testResource>
       <!-- browser extension(s), no filtering -->
       <testResource>
         <directory>src/test/resources/zanata-testing-extension</directory>
