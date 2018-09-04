@@ -24,6 +24,7 @@ import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -34,6 +35,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,6 +58,12 @@ public class ResourceUtilsTest extends ZanataTest {
 
     @Produces @Mock
     private LocaleDAO mockLocaleDAO;
+
+    @Produces @Mock
+    private ZanataIdentity identity;
+
+    @Produces @Mock
+    private DatabaseBackedConfig config;
 
     @BeforeClass
     public static void logMemoryForTests() {
