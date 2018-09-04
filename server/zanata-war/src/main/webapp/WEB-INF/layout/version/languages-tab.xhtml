@@ -402,7 +402,7 @@
                              data-target="#uploadTranslationDialog"
                              title="#{msgs['jsf.Upload.Description']}">
                             #{msgs.format('jsf.Upload.Label', versionHomeAction.isPoDocument(document.docId) ? '.po' : 'offline .po')}
-                            <i class="i i--import i__item__icon"></i>
+                            <i class="i i--upload i__item__icon"></i>
                           </a>
                         </li>
                         <ui:fragment rendered="#{versionHomeAction.canUploadRawFileTranslation(document.name)}">
@@ -412,7 +412,7 @@
                                data-target="#uploadTranslationDialog"
                                title="#{msgs['jsf.Upload.Description.Raw']}">
                               #{msgs.format('jsf.Upload.Label', versionHomeAction.translationExtensionOf(document.path, document.name).concat('*'))}
-                              <i class="i i--import i__item__icon"></i>
+                              <i class="i i--upload i__item__icon"></i>
                             </a>
                           </li>
                         </ui:fragment>
