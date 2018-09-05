@@ -220,7 +220,7 @@ class Translation extends Component {
           </Panel>
         </Collapse>
         <h2 className='mt4'>Copy translations</h2>
-        <p>Copy Translations" attempts to reuse translations that have been
+        <p>Copy Translations attempts to reuse translations that have been
           entered in Zanata by matching them with untranslated strings in your
           project/version. Consequently, "Copy Translations" is best used
           before translation and review work is initiated on a project.
