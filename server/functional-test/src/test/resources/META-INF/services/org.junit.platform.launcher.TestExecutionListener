@@ -1,0 +1,3 @@
+org.zanata.util.ScreenshotEnabledTestExecutionListener
+org.zanata.util.TestLogger
+org.zanata.util.TestTracing

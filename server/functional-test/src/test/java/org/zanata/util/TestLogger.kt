@@ -20,43 +20,42 @@
  */
 package org.zanata.util
 
-import org.junit.runner.Description
-import org.junit.runner.notification.Failure
-import org.junit.runner.notification.RunListener
-import com.google.common.base.Throwables.getRootCause
+import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.launcher.TestExecutionListener
+import org.junit.platform.launcher.TestIdentifier
+import org.slf4j.LoggerFactory.getLogger
 
 /**
  * @author Sean Flanigan
  * [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
+ * @see org.junit.platform.launcher.listeners.LoggingListener
  */
-class TestLogger : RunListener() {
+class TestLogger : TestExecutionListener {
 
-    @Throws(Exception::class)
-    override fun testStarted(description: Description?) {
-        log.info("Test starting: {}", description)
+    override fun executionStarted(testIdentifier: TestIdentifier) {
+        if (testIdentifier.type.isTest) {
+            log.info("Test starting: {}", describe(testIdentifier))
+        }
     }
 
     @Throws(Exception::class)
-    override fun testFinished(description: Description?) {
-        log.info("Test finished: {}", description)
+    override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
+        if (testIdentifier.type.isTest) {
+            val status = testExecutionResult.status
+            log.info("Test finished ({}): {}", status, describe(testIdentifier))
+        }
     }
 
-    @Throws(Exception::class)
-    override fun testIgnored(description: Description?) {
-        log.error("Test IGNORED: {}", description)
+    override fun executionSkipped(testIdentifier: TestIdentifier, reason: String?) {
+        if (testIdentifier.type.isTest) {
+            log.error("Test skipped ({}): {}", reason, describe(testIdentifier))
+        }
     }
 
-    @Throws(Exception::class)
-    override fun testFailure(failure: Failure?) {
-        val e = failure!!.exception
-        log.error("Test FAILED: $failure", getRootCause(e))
-    }
-
-    override fun testAssumptionFailure(failure: Failure?) {
-        log.error("Test FAILED ASSUMPTION: " + failure!!, failure.exception)
-    }
+    private fun describe(testIdentifier: TestIdentifier): String =
+            "${testIdentifier.displayName} - ${testIdentifier.uniqueId}"
 
     companion object {
-        private val log = org.slf4j.LoggerFactory.getLogger(TestLogger::class.java)
+        private val log = getLogger(TestLogger::class.java)
     }
 }

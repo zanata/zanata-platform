@@ -244,6 +244,7 @@ enum class WebDriverFactory {
         }
     }
 
+    // TODO don't create the driver until we have to
     fun registerScreenshotListener(testName: String) {
         if (!isScreenshotEnabled)
             return

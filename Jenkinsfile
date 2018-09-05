@@ -278,7 +278,7 @@ timestamps {
           // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
-          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv,**/target/dependencies/**,**/target/test-output/**,**/reports/scan_node_modules.xml"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**,target/buildtime.csv,**/target/dependencies/**,**/target/test-output/**,**/reports/scan_node_modules.xml,**/target/surefire-reports/**"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
@@ -477,7 +477,7 @@ void integrationTests(String appserver, def notify) {
             // work from parent directory so that $appserver will appear at the beginning of the archive paths
             dir('..') {
               archive(
-                      includes: '*/server/functional-test/target/**/*.log,*/server/functional-test/target/screenshots/**,*/server/*/target/**/gc.log*,*/server/*/target/**/*.hprof',
+                      includes: '*/server/functional-test/target/**/*.log,*/server/functional-test/target/screenshots/**,*/server/*/target/**/gc.log*,*/server/*/target/**/*.hprof,**/target/failsafe-reports/**',
                       excludes: '**/BACKUP-*.log')
             }
           } else {

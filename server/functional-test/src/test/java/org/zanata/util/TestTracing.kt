@@ -20,58 +20,70 @@
  */
 package org.zanata.util
 
+import com.google.common.base.MoreObjects.firstNonNull
+import org.codehaus.jackson.map.ObjectMapper
+import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.launcher.TestExecutionListener
+import org.junit.platform.launcher.TestIdentifier
+import org.junit.platform.launcher.TestPlan
 import java.io.File
 import java.io.IOException
-
-import org.codehaus.jackson.map.ObjectMapper
-import org.junit.runner.Description
-import org.junit.runner.Result
-import org.junit.runner.notification.Failure
-import org.junit.runner.notification.RunListener
-
-import com.google.common.base.Optional
-import com.google.common.collect.Lists
+import java.util.Optional
 
 /**
  * @author Damian Jansen [djansen@redhat.com](mailto:djansen@redhat.com)
  */
-class TestTracing : RunListener() {
+class TestTracing : TestExecutionListener {
 
     private var fileReport: Boolean = false
     private val currentSpecification = ThreadLocal<Trace>()
     private var report: File? = null
     private val objectMapper = ObjectMapper()
-    private val entries = Lists.newArrayList<TraceEntry>()
+    private val entries = ArrayList<TraceEntry>()
 
-    @Throws(Exception::class)
-    override fun testRunStarted(description: Description?) {
-        super.testRunStarted(description)
+    override fun testPlanExecutionStarted(testPlan: TestPlan) {
         val locationPath = System.getProperty("traceLocation",
-                "./target/test-classes/traceability")
+                "./target/traceability")
         val location = File(locationPath)
-        report = File(location, "traceability.json")
         if (!location.exists() && !location.mkdirs()) {
             throw RuntimeException("Unable to create traceability report dir")
         }
-        if (report!!.exists() && !report!!.delete()) {
-            throw RuntimeException("Unable to remove traceability report")
+        this.report = File(location, "traceability.json").also { report ->
+            if (report.exists() && !report.delete()) {
+                throw RuntimeException("Unable to remove traceability report")
+            }
+            fileReport = report.createNewFile()
         }
-        fileReport = report!!.createNewFile()
     }
 
-    @Throws(Exception::class)
-    override fun testRunFinished(result: Result?) {
-        super.testRunFinished(result)
+    override fun testPlanExecutionFinished(testPlan: TestPlan) {
         objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValue(report, entries)
+        this.report = null
     }
 
-    @Throws(Exception::class)
-    override fun testStarted(description: Description?) {
-        super.testStarted(description)
-        val specOptional = getSpecification(description!!)
-        if (specOptional.isPresent) {
-            currentSpecification.set(specOptional.get())
+    override fun executionStarted(testIdentifier: TestIdentifier) {
+        getSpecification(testIdentifier).ifPresent { spec ->
+            currentSpecification.set(spec)
+        }
+    }
+
+    override fun executionFinished(testIdentifier: TestIdentifier, testExecutionResult: TestExecutionResult) {
+        findTestMethod(testIdentifier).ifPresent { testMethod ->
+            val name = getQualifiedName(testMethod)
+            when (testExecutionResult.status!!) {
+                TestExecutionResult.Status.SUCCESSFUL ->
+                    reportSpecification(TraceEntry.TestResult.Passed, name)
+                TestExecutionResult.Status.FAILED ->
+                    reportSpecification(TraceEntry.TestResult.Failed, name)
+                TestExecutionResult.Status.ABORTED -> {
+                    getSpecification(testIdentifier).ifPresent { spec ->
+                        currentSpecification.set(spec)
+                    }
+                    // technically aborted is not ignored
+                    reportSpecification(TraceEntry.TestResult.Ignored, name)
+                }
+            }
         }
     }
 
@@ -80,37 +92,13 @@ class TestTracing : RunListener() {
      * moment class level annotation will cause multiple entries in the result
      * if there are more than one test methods.
      */
-    private fun getSpecification(description: Description): Optional<Trace> {
-        val testClassTrace = description.testClass.getAnnotation(Trace::class.java)
-        val testMethodTrace = description.getAnnotation(Trace::class.java)
-        return Optional.fromNullable(testMethodTrace).or(
-                Optional.fromNullable(testClassTrace))
-    }
-
-    @Throws(Exception::class)
-    override fun testFinished(description: Description?) {
-        super.testFinished(description)
-        reportSpecification(TraceEntry.TestResult.Passed,
-                description!!.displayName)
-    }
-
-    @Throws(Exception::class)
-    override fun testFailure(failure: Failure?) {
-        super.testFailure(failure)
-        reportSpecification(TraceEntry.TestResult.Failed, failure!!
-                .description
-                .displayName)
-    }
-
-    @Throws(Exception::class)
-    override fun testIgnored(description: Description?) {
-        super.testIgnored(description)
-        val specOptional = getSpecification(description!!)
-        if (specOptional.isPresent) {
-            currentSpecification.set(specOptional.get())
+    private fun getSpecification(testIdentifier: TestIdentifier): Optional<Trace> {
+        return findTestMethod(testIdentifier).flatMap { testMethod ->
+            val testClass = testMethod.declaringClass
+            val testClassTrace = testClass.getAnnotation(Trace::class.java)
+            val testMethodTrace = testMethod.getAnnotation(Trace::class.java)
+            return@flatMap Optional.ofNullable(firstNonNull(testMethodTrace, testClassTrace))
         }
-        reportSpecification(TraceEntry.TestResult.Ignored,
-                description.displayName)
     }
 
     private fun reportSpecification(result: TraceEntry.TestResult,
@@ -122,7 +110,6 @@ class TestTracing : RunListener() {
         val entry = TraceEntry(trace, displayName, result)
         if (fileReport) {
             entries.add(entry)
-
         } else {
             // display to console
             try {

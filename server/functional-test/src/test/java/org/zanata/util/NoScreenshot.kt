@@ -20,14 +20,10 @@
  */
 package org.zanata.util
 
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
-
 /**
  * Annotate on test class or method level to disable screenshot for the target.
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE, AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FILE, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 annotation class NoScreenshot
