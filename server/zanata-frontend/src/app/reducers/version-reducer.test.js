@@ -30,11 +30,11 @@ describe('version-reducer test', () => {
     const initial = versionReducer(undefState, dummyAction)
     const shown = versionReducer(initial, {
       type: TOGGLE_TM_MERGE_MODAL,
-      payload: { show: true }
+      payload: { TMMerge: {show: true}}
     })
     const hidden = versionReducer(shown, {
       type: TOGGLE_TM_MERGE_MODAL,
-      payload: { show: false }
+      payload: { TMMerge: {show: false}}
     })
     expect(initial.TMMerge).toEqual({
       processStatus: undefined,
@@ -290,7 +290,7 @@ describe('version-reducer test', () => {
         MTMerge: {
           processStatus: undefined,
           queryStatus: undefined,
-          showMTMerge: false,
+          show: false,
           triggered: false
         },
         TMMerge: {
@@ -339,7 +339,7 @@ describe('version-reducer test', () => {
       MTMerge: {
         processStatus: undefined,
         queryStatus: undefined,
-        showMTMerge: false,
+        show: false,
         triggered: false
       },
       TMMerge: {
@@ -370,7 +370,7 @@ describe('version-reducer test', () => {
       MTMerge: {
         processStatus: undefined,
         queryStatus: undefined,
-        showMTMerge: false,
+        show: false,
         triggered: false
       },
       TMMerge: {

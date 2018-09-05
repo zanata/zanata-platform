@@ -66,4 +66,23 @@ public interface MachineTranslationService {
     Future<Void> prefillProjectVersionWithMachineTranslation(long versionId,
             MachineTranslationPrefill prefillRequest,
             @Nonnull MachineTranslationPrefillTaskHandle taskHandle);
+
+    /**
+     * Asynchronously fetches machine translations from the default back-end,
+     * for all New/Untranslated TextFlows in the specified document.
+     * Any Fuzzy/Translated/Approved translations will be left as is.
+     * For each TextFlow we only request translation for the singular case.
+     *
+     * @param docId
+     *         HDocument id
+     * @param prefillRequest
+     *         prefill configuration
+     * @param taskHandle
+     *         async task handle
+     * @return future
+     */
+    Future<Void> prefillDocumentWithMachineTranslation(long docId,
+             MachineTranslationPrefill prefillRequest,
+             @Nonnull MachineTranslationPrefillTaskHandle taskHandle);
+
 }

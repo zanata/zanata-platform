@@ -87,6 +87,7 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
+import org.zanata.service.impl.AttributionService;
 import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
@@ -166,6 +167,8 @@ public class VersionHomeAction extends AbstractSortAction
     @Inject
     @MTServiceURL
     private URI mtServiceURL;
+    @Inject
+    private transient AttributionService attributionService;
 
     private List<HLocale> supportedLocale;
     private List<HDocument> documents;
@@ -1416,5 +1419,11 @@ public class VersionHomeAction extends AbstractSortAction
 
     public boolean isMTEnabled() {
         return mtServiceURL != null && identity.hasRole("mt-bulk");
+    }
+
+    public boolean canMTDocument(String docId) {
+        return isMTEnabled() && attributionService.supportsAttribution(
+                documentDAO.getByGlobalId(
+                        new GlobalDocumentId(projectSlug, versionSlug, docId)));
     }
 }

@@ -26,6 +26,8 @@ export type MTMergeOptionsParams = Readonly<{
   allowMultiple: boolean
   projectSlug: string
   versionSlug: string
+  docId?: string
+  localeId?: LocaleId
   availableLocales: Locale[]
   checkedLocales: LocaleId[]
   saveAs: MTTranslationStatus
@@ -46,9 +48,13 @@ export class MTMergeOptions extends Component<Props> {
 
   public render() {
     // are all the boxes checked?
-    const allChecked = this.props.availableLocales.length === this.props.checkedLocales.length
+    const {
+      availableLocales, checkedLocales, allowMultiple, docId, localeId
+    } = this.props
+    const allChecked = availableLocales.length === checkedLocales.length
     // are some of the boxes checked? (not zero, not all)
-    const someChecked = ![0, this.props.availableLocales.length].includes(this.props.checkedLocales.length)
+    const someChecked = ![0, availableLocales.length].includes(checkedLocales.length)
+    const isSingleDocument = docId && localeId
 
     return (
       <React.Fragment>
@@ -57,38 +63,56 @@ export class MTMergeOptions extends Component<Props> {
         <br />
         <Alert message="Only .po (gettext) and .properties files are supported"
           type="info" showIcon/>
-        {/* Select Languages */}
-        <h3 className="txt-info mt4 fw5">
-          <Icon type="global" className="mr2 txt-neutral"/>
-          {this.props.allowMultiple ? "Languages" : "Language"}
-        </h3>
-        {this.props.allowMultiple
-          ? <div>
-            {/*this is the "check all" checkbox*/}
-            <div style={{borderBottom: '1px solid #E9E9E9'}}>
-              <Checkbox
-                checked={allChecked}
-                indeterminate={someChecked}
-                onChange={this.onCheckAllChange}
-              >
-                All languages
-              </Checkbox>
-            </div>
-            <br />
-            <CheckboxGroup
-              onChange={this.onCheckboxGroupChange} value={this.props.checkedLocales}
-            >
-            {this.props.availableLocales.map(loc =>
-              <Checkbox key={loc.localeId} value={loc.localeId}>
-                {loc.displayName}
-              </Checkbox>)}
-            </CheckboxGroup>
-          </div>
-          : <LocaleSelect
-              locales={this.props.availableLocales}
-              onChange={this.onSelectChange}
-              style={{ width: '100%' }}
-            />
+
+        {isSingleDocument &&
+          <React.Fragment>
+            <h3 className="txt-info mt4 fw5">
+              <Icon type="file" className="mr2 txt-neutral"/>
+              Document
+            </h3>
+            <span className='fw5'>{docId}</span>
+
+            <h3 className="txt-info mt4 fw5">
+              <Icon type="global" className="mr2 txt-neutral"/>
+              Language
+            </h3>
+            <span className='fw5'>{localeId}</span>
+          </React.Fragment>
+        }
+
+        {!isSingleDocument &&
+          <React.Fragment>
+            <h3 className="txt-info mt4 fw5">
+              <Icon type="global" className="mr2 txt-neutral"/>
+              {allowMultiple ? "Languages" : "Language"}
+            </h3>
+            {allowMultiple
+              ? <div>
+                {/*this is the "check all" checkbox*/}
+                <div style={{borderBottom: '1px solid #E9E9E9'}}>
+                  <Checkbox
+                    checked={allChecked}
+                    indeterminate={someChecked}
+                    onChange={this.onCheckAllChange}>
+                    All languages
+                  </Checkbox>
+                </div>
+                <br />
+                <CheckboxGroup
+                  onChange={this.onCheckboxGroupChange} value={checkedLocales}
+                >
+                {availableLocales.map(loc =>
+                  <Checkbox key={loc.localeId} value={loc.localeId}>
+                    {loc.displayName}
+                  </Checkbox>)}
+                </CheckboxGroup>
+              </div>
+              : <LocaleSelect
+                  locales={availableLocales}
+                  onChange={this.onSelectChange}
+                  style={{ width: '100%' }} />
+            }
+          </React.Fragment>
         }
 
         {/* Other options */}

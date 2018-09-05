@@ -60,7 +60,7 @@ import {
  */
 
 export const toggleMTMergeModal =
-  createAction(TOGGLE_MT_MERGE_MODAL)
+  createAction(TOGGLE_MT_MERGE_MODAL, toggle => toggle, (args) => ({ args }))
 /** Open or close the TM Merge modal  */
 export const toggleTMMergeModal =
     createAction(TOGGLE_TM_MERGE_MODAL)
@@ -141,7 +141,10 @@ const toProjectVersionString = (projectVersion) => {
  * @returns {APIAction} redux api action object FIXME
  */
 export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
-  const endpoint = `${apiUrl}/mt/project/${projectSlug}/version/${versionSlug}`
+  const api = `${apiUrl}/mt/project/${projectSlug}/version/${versionSlug}` +
+    (mergeOptions.selectedDocId
+      ? `/document?docId=${mergeOptions.selectedDocId}` : '')
+
   /** @type {APITypes} */
   const types = [VERSION_MT_MERGE_REQUEST,
     {
@@ -167,7 +170,7 @@ export function mergeVersionFromMT (projectSlug, versionSlug, mergeOptions) {
     overwriteFuzzy: true, // mergeOptions.overwriteFuzzy
   }
   const apiRequest = buildAPIRequest(
-    endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(serverOptions)
+    api, 'POST', getJsonHeaders(), types, JSON.stringify(serverOptions)
   )
   return {
     [CALL_API]: apiRequest

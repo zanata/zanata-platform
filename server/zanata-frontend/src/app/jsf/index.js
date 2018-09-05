@@ -56,7 +56,8 @@ const enhancedHistory = syncHistoryWithStore(history, store)
 
 export default function mountReactToJsf () {
   // Attaching to window object so modals can be triggered from the JSF page
-  window.toggleMTMergeModal = () => store.dispatch(toggleMTMergeModal())
+  window.toggleMTMergeModal = (show, docId, localeId) =>
+    store.dispatch(toggleMTMergeModal({MTMerge: {show, docId, localeId}}))
   window.toggleTMMergeModal = () => store.dispatch(toggleTMMergeModal())
   window.toggleTMXExportModal = (show) =>
     store.dispatch(showExportTMXModal(show))

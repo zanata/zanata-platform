@@ -43,11 +43,13 @@ import org.zanata.dao.ProjectIterationDAO
 import org.zanata.dao.WebHookDAO
 import org.zanata.exception.AuthorizationException
 import org.zanata.file.FilePersistService
+import org.zanata.file.GlobalDocumentId
 import org.zanata.i18n.Messages
 import org.zanata.model.HDocument
 import org.zanata.model.HLocale
 import org.zanata.model.HProject
 import org.zanata.model.HProjectIteration
+import org.zanata.model.HRawDocument
 import org.zanata.rest.dto.TranslationSourceType
 import org.zanata.rest.service.VirusScanner
 import org.zanata.security.ZanataIdentity
@@ -57,6 +59,7 @@ import org.zanata.service.TranslationFileService
 import org.zanata.service.TranslationService
 import org.zanata.service.TranslationStateCache
 import org.zanata.service.VersionStateCache
+import org.zanata.service.impl.AttributionService
 import org.zanata.service.impl.WebhookServiceImpl
 import org.zanata.test.CdiUnitRunner
 import org.zanata.ui.faces.FacesMessages
@@ -123,6 +126,8 @@ class VersionHomeActionTest {
     private var mtServiceURL = URI.create("nothing")
     @Mock @Produces
     private lateinit var copyVersionHandler: VersionHomeAction.CopyVersionHandler
+    @Mock @Produces
+    private lateinit var attributionService: AttributionService
 
     @Inject
     private lateinit var action: VersionHomeAction
@@ -351,6 +356,42 @@ class VersionHomeActionTest {
         // Assume translationFileServiceImpl.parseTranslationFile and
         // translationServiceImpl.translateAllInDoc are successful
         assertThat(action.uploadTranslationFile(locale)).isEqualTo("success")
+    }
+
+    @Test
+    fun singleDocMTAvailability() {
+        val documentId = "test/mydocument.po"
+        val project = "myproject"
+        val version = "myversion"
+        val globalDocumentId = GlobalDocumentId(project, version, documentId)
+        val hDocument = HDocument().apply {
+            name = "mydocument.po"
+            docId = documentId
+            projectIteration = HProjectIteration().apply {
+                projectType = ProjectType.Gettext
+            }
+        }
+        action.projectSlug = project
+        action.versionSlug = version
+
+        whenever(identity.hasRole("mt-bulk")).thenReturn(true)
+        whenever(documentDAO.getByGlobalId(globalDocumentId)).thenReturn(hDocument)
+        whenever(attributionService.supportsAttribution(hDocument)).thenCallRealMethod()
+        whenever(attributionService.inferDocumentType(hDocument)).thenCallRealMethod()
+        assertThat(action.canMTDocument(documentId)).isEqualTo(true)
+
+        hDocument.projectIteration.projectType = ProjectType.Properties
+        assertThat(action.canMTDocument(documentId)).isEqualTo(true)
+
+        hDocument.rawDocument = HRawDocument()
+        hDocument.projectIteration.projectType = ProjectType.File
+        assertThat(action.canMTDocument(documentId)).isEqualTo(false)
+
+        hDocument.projectIteration.projectType = ProjectType.Properties
+        whenever(identity.hasRole("mt-bulk")).thenReturn(false)
+        assertThat(action.canMTDocument(documentId)).isEqualTo(false)
+
+
     }
 
     fun genericProjectVersion(): HProjectIteration {

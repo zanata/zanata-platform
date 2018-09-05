@@ -19,16 +19,20 @@ const mapReduxStateToProps = (state: RootState): MTMergeModalStateProps => {
     projectVersion: {
       locales,
       MTMerge: {
-        showMTMerge,
+        show,
         processStatus,
+        docId,
+        localeId
         // queryStatus
       }
     }
   } = state
   return {
-    showMTMerge,
+    show,
     availableLocales: locales as Locale[],
     processStatus,
+    docId,
+    localeId
     // queryStatus
   }
 }
@@ -45,7 +49,9 @@ const mapDispatchToProps = (dispatch: any): MTMergeModalDispatchProps => {
       dispatch(currentMTMergeProcessFinished())
     },
     onCancel: () => {
-      dispatch(toggleMTMergeModal())
+      dispatch(toggleMTMergeModal({MTMerge:
+          {show: false, docId: undefined, localeId: undefined}
+      }))
     },
     onSubmit: (projectSlug, versionSlug, mtMergeOptions) => {
       dispatch(mergeVersionFromMT(projectSlug, versionSlug, mtMergeOptions))
