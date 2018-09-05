@@ -160,6 +160,7 @@ class TranslationInfoPanel extends React.Component {
       activityVisible ? activityTabKey
       : glossaryVisible ? glossaryTabKey
       : activityTabKey
+
     return (
       <React.Fragment>
         <h1 className="SidebarEditor-heading">
@@ -184,7 +185,7 @@ class TranslationInfoPanel extends React.Component {
         </div>
 
         <span id="SidebarEditor-tabsPane1">
-          <Tabs defaultActiveKey={activePanelKey}
+          <Tabs activeKey={activePanelKey}
             onTabClick={this.handleSelectTab}>
             <TabPane key={activityTabKey} tab={
               <span>
