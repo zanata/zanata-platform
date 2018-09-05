@@ -43,8 +43,11 @@ class TestTracing : TestExecutionListener {
 
     override fun testPlanExecutionStarted(testPlan: TestPlan) {
         val locationPath = System.getProperty("traceLocation",
-                "./target")
+                "./target/traceability")
         val location = File(locationPath)
+        if (!location.exists() && !location.mkdirs()) {
+            throw RuntimeException("Unable to create traceability report dir")
+        }
         this.report = File(location, "traceability.json").also { report ->
             if (report.exists() && !report.delete()) {
                 throw RuntimeException("Unable to remove traceability report")

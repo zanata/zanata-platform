@@ -830,7 +830,7 @@
               </includes>
               <systemPropertyVariables>
                 <maven.home>${maven.home}</maven.home>
-                <traceLocation>${project.build.directory}/test-classes/traceability</traceLocation>
+                <traceLocation>${project.build.directory}/traceability</traceLocation>
               </systemPropertyVariables>
             </configuration>
           </plugin>
