@@ -12,9 +12,11 @@ jest.mock('antd/lib/checkbox/Group', () => 'CheckboxGroup')
 jest.mock('antd/lib/icon', () => 'Icon')
 jest.mock('antd/lib/modal', () => 'Modal')
 jest.mock('antd/lib/switch', () => 'Switch')
+jest.mock('antd/lib/tabs', () => 'Tabs')
 
 jest.mock('../app/components/Icon', () => 'mock-icon')
 jest.mock('../app/components/Icons', () => 'mock-icons')
+jest.mock('../app/components/Sidebar', () => 'Sidebar')
 
 initStoryshots({
   suite: 'Frontend Storyshots',

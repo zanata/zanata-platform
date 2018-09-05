@@ -1,56 +1,55 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Sidebar from '.'
-import AboutPage from '../../containers/ProjectVersion/AboutPage'
 import PeoplePage from '../../containers/ProjectVersion/PeoplePage'
-import GroupsPage from '../../containers/ProjectVersion/GroupsPage'
+import AboutPage from '../../containers/ProjectVersion/AboutPage'
 import LanguagesPage from '../../containers/ProjectVersion/LanguagesPage'
 import DocumentsPage from '../../containers/ProjectVersion/DocumentsPage'
+import GroupsPage from '../../containers/ProjectVersion/GroupsPage'
+import ProjectSettings from '../../containers/ProjectVersion/ProjectSettings'
+import VersionSettings from '../../containers/ProjectVersion/VersionSettings'
 
-const aboutText = 'This is one rocking project version. This is the best' +
-    ' project version ever.'
-const url = 'https://www.google.com'
-const linkname = 'Our awesome webpage'
+const peoplePage = <PeoplePage />
+const aboutPage = <AboutPage />
+const settingsPage = <ProjectSettings />
+const languagesPage = <LanguagesPage />
+const docsPage = <DocumentsPage />
+const groupsPage = <GroupsPage />
+const versettingsPage = <VersionSettings />
+
+const pages = [peoplePage, aboutPage, settingsPage, languagesPage, docsPage,
+  groupsPage, versettingsPage]
+
+// TODO: implement as redux state
+let active = '1'
+// @ts-ignore
+const onSelect = ({key}) => {
+  active = key
+}
 
 storiesOf('Sidebar', module)
-    .add('default', () => (
-      <React.Fragment>
-        <Sidebar />
-        <div className='flexTab'>
-          <p>This sidebar example has the active tag applied to both the People
-            and Languages pages to provide examples of how this design handles
-            sidebar links.
-          </p>
-        </div>
-      </React.Fragment>
+    .add('all', () => (
+      <Sidebar active='1' content={pages[parseInt(active)]} onSelect={onSelect} />
     ))
-    .add('AboutPage', () => (
-      <React.Fragment>
-        <Sidebar />
-        <AboutPage aboutText={aboutText} aboutLink={url} linkName={linkname} />
-      </React.Fragment>
+    .add('people', () => (
+      <Sidebar active='1' content={peoplePage} onSelect={onSelect} />
     ))
-    .add('PeoplePage', () => (
-      <React.Fragment>
-        <Sidebar />
-        <PeoplePage />
-      </React.Fragment>
+    .add('about', () => (
+      <Sidebar active='2' content={aboutPage} onSelect={onSelect} />
     ))
-    .add('GroupsPage', () => (
-      <React.Fragment>
-        <Sidebar />
-        <GroupsPage />
-      </React.Fragment>
+    .add('settings', () => (
+      <Sidebar active='3' content={settingsPage} onSelect={onSelect} />
     ))
-    .add('LanguagesPage', () => (
-      <React.Fragment>
-        <Sidebar />
-        <LanguagesPage />
-      </React.Fragment>
+    .add('languages', () => (
+      <Sidebar active='4' content={languagesPage} onSelect={onSelect} />
     ))
-    .add('DocumentsPage', () => (
-      <React.Fragment>
-        <Sidebar />
-        <DocumentsPage />
-      </React.Fragment>
+    .add('documents', () => (
+      <Sidebar active='5' content={docsPage} onSelect={onSelect} />
     ))
+    .add('groups', () => (
+      <Sidebar active='6' content={groupsPage} onSelect={onSelect} />
+    ))
+    .add('version settings', () => (
+      <Sidebar active='7' content={versettingsPage} onSelect={onSelect} />
+    ))
+

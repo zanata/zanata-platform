@@ -6889,6 +6889,142 @@ exports[`Frontend Storyshots ProgressBar default 1`] = `
 </div>
 `;
 
+exports[`Frontend Storyshots Sidebar about 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="2"
+    content={<AboutPage />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar all 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="1"
+    content={<AboutPage />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar documents 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="5"
+    content={<DocumentsPage />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar groups 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="6"
+    content={<GroupsPage />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar languages 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="4"
+    content={<LanguagesPage />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar people 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="1"
+    content={<PeoplePage />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar settings 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="3"
+    content={<ProjectSettings />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
+exports[`Frontend Storyshots Sidebar version settings 1`] = `
+<div
+  style={
+    Object {
+      "padding": "2em",
+    }
+  }
+>
+  <mock-icons />
+  <Sidebar
+    active="7"
+    content={<VersionSettings />}
+    onSelect={[Function]}
+  />
+</div>
+`;
+
 exports[`Frontend Storyshots TextInput default 1`] = `
 <div
   style={

@@ -95,14 +95,14 @@
   color: @primary-color;
 }
 
-.ant-pagination-item-active a {
+.ant-pagination-item-active a, .ant-pagination-item-active {
   color: @info-color;
 }
 
 .ant-pagination-item-active,
 .ant-pagination-item:focus,
 .ant-pagination-item:hover {
-  border-color: @info-color;
+  border-color: @info-color !important;
 }
 
 .scrollView {
@@ -206,13 +206,13 @@ h1 {
 
 h2
  {
-  color: @info-color;
   letter-spacing: -0.05em;
 }
 
+h2,
 h3,
 h4 {
-  color: @info-color;
+  color: @processing-color !important;
 }
 
 .blue {
@@ -276,7 +276,8 @@ button.ant-btn.btn-link:focus {
   color: rgba(0, 0, 0, .25);
 }
 
-.ant-btn.ant-btn-primary {
+.ant-btn.ant-btn-primary,
+.ant-radio-button-wrapper-checked {
   background-color: @primary-color !important;
   color: @normal-color !important;
   border: @primary-color !important;
@@ -289,15 +290,41 @@ button.ant-btn.btn-link:focus {
   border: @info-color !important;
 }
 
-.ant-btn.btn-danger {
+.ant-btn.ant-btn-dashed {
+   color: @info-color;
+   background-color: #fff;
+   border: dashed 2px @info-color;
+ }
+
+.ant-btn.ant-btn-dashed:hover {
+  color: #fff;
+  background-color: @info-color;
+}
+
+.ant-btn.btn-danger,
+.btn-danger.ant-radio-button-wrapper-checked {
   color: #f5f5f5 !important;
   background-color: @error-color !important;
   border-color: @error-color;
 }
 
+.ant-btn.btn-warn,
+.btn-warn.ant-radio-button-wrapper-checked {
+  color: #f5f5f5 !important;
+  background-color: @warning-color !important;
+  border-color: @warning-color;
+}
+
 .ant-btn.btn-danger:hover,
 .ant-btn.btn-danger:focus {
   color: @error-color !important;
+  background-color: #f5f5f5 !important;
+  border-color: #d7d7d7;
+}
+
+.ant-btn.btn-warn:hover,
+.ant-btn.btn-warn:focus {
+  color: @warning-color !important;
   background-color: #f5f5f5 !important;
   border-color: #d7d7d7;
 }
@@ -325,6 +352,18 @@ button.ant-btn.btn-link:focus {
   border: none !important;
   color: #f00;
   z-index: 1;
+  padding: @spacing-md !important;
+  outline: none;
+  box-shadow: none;
+}
+
+.ant-btn.close {
+  font-weight: 700;
+  line-height: 1;
+  border: none !important;
+  color: #f00;
+  z-index: 1;
+  float: right;
   padding: @spacing-md !important;
   outline: none;
   box-shadow: none;
@@ -371,6 +410,12 @@ input,
 input.react-autosuggest__input {
   background-color: transparent;
   border-bottom: solid 1px @neutral-color;
+}
+
+.ant-table-thead > tr.ant-table-row-hover > td,
+.ant-table-tbody > tr.ant-table-row-hover > td,
+.ant-table-thead > tr:hover > td, .ant-table-tbody > tr:hover > td {
+  background: transparent !important;
 }
 
 .ant-input.textInput,
@@ -803,7 +848,6 @@ span.svg {
 
 table {
   width: 100% !important;
-  font-size: 1rem;
 }
 
 .table {
@@ -831,7 +875,14 @@ table {
   z-index: 10000 !important;
 }
 
-.ant-switch-checked  {
+.ant-tabs, .ant-form-item-label label {
+  color: @primary-color !important;
+}
+
+.ant-tabs-nav .ant-tabs-tab-active {
+  color: @info-color !important;
+}
+.ant-switch-checked, .ant-tabs-ink-bar  {
   background-color: @info-color !important;
 }
 
@@ -868,9 +919,25 @@ table {
   margin-bottom: 0!important;
 }
 
+.ant-checkbox-checked .ant-checkbox-inner, .ant-checkbox-indeterminate .ant-checkbox-inner {
+  background-color: @primary-color !important;
+  border-color: @primary-color !important;
+}
+
 .checkbox,
 .checkbox svg {
   vertical-align: sub;
+}
+
+.ant-radio-button-wrapper:hover,
+.ant-radio-button-wrapper-focused {
+  color: @info-color;
+  box-shadow: none !important;
+}
+
+.ant-radio-button-wrapper-checked {
+  border-color: #ccc;
+  box-shadow: none !important;
 }
 
 .ant-card {
@@ -1087,6 +1154,10 @@ table {
 
 .d-inh {
   display: inherit;
+}
+
+.v-sub {
+  vertical-align: sub;
 }
 
 // Media queries
