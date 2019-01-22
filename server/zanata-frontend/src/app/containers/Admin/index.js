@@ -66,7 +66,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Admin_Manage_users_home'
                   className='list-group-item'
-                  link='/admin/usermanager' useHref>
+                  link='usermanager' useHref>
                   <Icon name='user' className='s2' />
                   Manage users
                 </Link>
@@ -74,7 +74,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Admin_Manage_roles_home'
                   className='list-group-item'
-                  link='/admin/rolemanager' useHref>
+                  link='rolemanager' useHref>
                   <Icon name='users' className='s2' />
                   Manage roles
                 </Link>
@@ -82,7 +82,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Admin_Manage_search_home'
                   className='list-group-item'
-                  link='/admin/search' useHref>
+                  link='search' useHref>
                   <Icon name='search' className='s2' />
                   Manage search
                 </Link>
@@ -92,7 +92,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Admin_Role_Assignment_Rules_home'
                   className='list-group-item'
-                  link='/admin/rolerules' useHref>
+                  link='rolerules' useHref>
                   <Icon name='assign' className='s2' />
                   Role assignment rules
                 </Link>
@@ -100,7 +100,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Translation_Memory_home'
                   className='list-group-item'
-                  link='/tm' useHref>
+                  link='/zanata/tm' useHref>
                   <Icon name='tm' className='s2' />
                   Translation memory
                 </Link>
@@ -108,7 +108,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Process_Management_home'
                   className='list-group-item'
-                  link='/admin/processmanager' useHref>
+                  link='processmanager' useHref>
                   <Icon name='clock' className='s2 mr2' />
                   Process manager
                 </Link>
@@ -116,7 +116,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Admin_Manage_stats_home'
                   className='list-group-item'
-                  link='/admin/stats' useHref>
+                  link='stats' useHref>
                   <Icon name='piestats' className='s2 mr2' />
                   Overall statistics
                 </Link>
@@ -126,7 +126,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Admin_Monitoring_home'
                   className='list-group-item'
-                  link='/admin/monitoring' useHref>
+                  link='monitoring' useHref>
                   <Icon name='servmon' className='s2 mr2' />
                   Server monitoring
                 </Link>
@@ -134,7 +134,7 @@ class Admin extends Component {
               <Col xs={24} sm={12} lg={6}>
                 <Link id='Cache_Stats_Home'
                   className='list-group-item'
-                  link='/admin/cachestats' useHref>
+                  link='cachestats' useHref>
                   <Icon name='document' className='s2 mr2' />
                   Cache statistics
                 </Link>
