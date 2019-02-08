@@ -76,6 +76,14 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
     private boolean disableSSLCert = false;
 
     public ConfigurableMojo() {
+        // Hack for Java 11 class loading via modules - load all package-info classes here
+        try {
+            Class.forName("org.zanata.client.config.package-info");
+            Class.forName("org.zanata.rest.dto.package-info");
+            Class.forName("org.zanata.rest.dto.resource.package-info");
+        } catch (ClassNotFoundException e) {
+            // ignore class loading failure here
+        }
     }
 
     @Override

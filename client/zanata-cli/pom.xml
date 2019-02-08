@@ -65,9 +65,8 @@
     </dependency>
 
     <dependency>
-    <groupId>org.glassfish.jaxb</groupId>
-    <artifactId>jaxb-runtime</artifactId>
-    <version>2.2.11</version>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
     </dependency>
 
     <!-- Replace the above JAXB dependencies when 2.4.0 is released: -->
