@@ -1,0 +1,6 @@
+language: java
+jdk: openjdk8
+env:
+  - NODE_OPTIONS=--max_old_space_size=4096
+install: true
+script: ./mvnw -e -V --builder singlethreaded -batch-mode -Dstyle.color=never --update-snapshots -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
