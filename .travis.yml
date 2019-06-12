@@ -6,14 +6,18 @@ branches:
   only:
   - master
 env:
-  - NODE_OPTIONS=--max_old_space_size=4096 DOCKER_TAG=master
+  - NODE_OPTIONS=--max_old_space_size=4096 IMAGE_NAME=porscheinformatik/zanata-server
 install: true
 script:
   - ./mvnw -e -V --builder singlethreaded -batch-mode -Dstyle.color=never --update-snapshots -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
   - cp ./server/zanata-war/target/zanata-*.war ./server/docker/zanata.war
-  - docker build -t porscheinformatik/zanata-server:$DOCKER_TAG ./server/docker
+  - docker build -t $IMAGE_NAME ./server/docker
 deploy:
-  provider: script
-  script: bash docker_push
-  on:
-    branch: master
+  - provider: script
+    script: bash docker_push master
+    on:
+      branch: master
+  - provider: script
+    script: bash docker_push ${TRAVIS_TAG#v}
+    on:
+      tags: true
