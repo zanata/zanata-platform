@@ -212,13 +212,13 @@
     <restrict.skip>true</restrict.skip>
 
     <hamcrest.version>1.3</hamcrest.version>
-    <findbugs.maven.version>3.0.1</findbugs.maven.version>
+    <findbugs.maven.version>3.0.5</findbugs.maven.version>
     <!-- Note: Fedora 23 has 2.4.4. -->
     <groovy.version>2.4.4</groovy.version>
     <!-- Fedora 27 is still on 18.0: https://apps.fedoraproject.org/packages/guava -->
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
-    <jaxb.api.version>2.2.12</jaxb.api.version>
+    <jaxb.api.version>2.3.1</jaxb.api.version>
     <!-- Fedora <= 27 still uses maven-javadoc-plugin version 2.9.1 -->
     <maven.javadoc.version>3.0.0</maven.javadoc.version>
     <maven.jxr.version>2.5</maven.jxr.version>
@@ -1449,7 +1449,7 @@
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
-        <version>2.2.11</version>
+        <version>2.3.2</version>
       </dependency>
 
       <dependency>
