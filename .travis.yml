@@ -2,6 +2,9 @@ language: java
 jdk: openjdk8
 services:
   - docker
+branches:
+  only:
+  - master
 env:
   - NODE_OPTIONS=--max_old_space_size=4096 DOCKER_TAG=master
 install: true
