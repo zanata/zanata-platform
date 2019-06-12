@@ -106,8 +106,16 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
         return project;
     }
 
+    public String getProject() {
+        return project;
+    }
+
     @Override
     public void setProj(String project) {
+        this.project = project;
+    }
+
+    public void setProject(String project) {
         this.project = project;
     }
 
