@@ -1,33 +1,43 @@
-# TODO rename Dockerfile to Dockerfile.zanata-base
-
 FROM jboss/wildfly:10.1.0.Final
 
-# MAIL_USERNAME and MAIL_PASSWORD can not be empty as they are used in wildfly standalone-full*.xml.
-# If the smtp server does not require authentication, these single space values will be used
-ENV DB_HOSTNAME=zanatadb MAIL_HOST=localhost MAIL_USERNAME=' ' MAIL_PASSWORD=' '
+EXPOSE 8080
+# Version should be assigned in build time
+# Take care editing the ZANATA_VERSION line: just version numbers,
+# otherwise runapp.sh cannot parse it.
+ARG ZANATA_VERSION=4.7.0-SNAPSHOT
+ARG MYSQL_CONNECTOR_JAVA_VERSION=5.1.26
+ARG ZANATA_CONTEXT=zanata
 
-# create mysql module
+# Database Setup
+ENV DB_HOSTNAME zanatadb
+ENV DB_PORTNUMBER 3306
+
+# MAIL_USERNAME and MAIL_PASSWORD can not be empty as they are used in wildfly standalone-full.xml.
+# If the smtp server does not require authentication, these single space values will be used
+ENV MAIL_HOST=localhost MAIL_USERNAME=' ' MAIL_PASSWORD=' '
+
+# Fedora Containers Packaging may need this
+LABEL Name="zanata-platform"\
+    Version=$ZANATA_VERSION\
+    Release="2"
+
 USER root
-COPY conf/mysql-module/ /opt/jboss/wildfly/modules/
-RUN yum -y install mysql-connector-java && yum clean all && \
-    ln -sf /usr/share/java/mysql-connector-java.jar /opt/jboss/wildfly/modules/com/mysql/main/mysql-connector-java.jar
+
+ENV ZANATA_HOME /var/lib/zanata
+RUN mkdir -p $ZANATA_HOME && chown -R jboss.jboss $ZANATA_HOME
+VOLUME $ZANATA_HOME
+
+# Make the image Openshift compatible by granting root group (not user) access to the necessary directories
+RUN chgrp -R 0 $ZANATA_HOME /opt/jboss/wildfly
+RUN chmod -R g+rw $ZANATA_HOME /opt/jboss/wildfly
+RUN find $ZANATA_HOME -type d -exec chmod g+x {} +
+RUN find /opt/jboss/wildfly -type d -exec chmod g+x {} +
 
 USER jboss
 
-COPY target/jboss-cli-jjs target/configure-app-server.js /tmp/
+RUN curl -L -o /opt/jboss/wildfly/standalone/deployments/mysql-connector-java.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_JAVA_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_JAVA_VERSION}.jar
 
-# Uses JAVA_HOME and JBOSS_HOME vars from base image
-RUN /tmp/jboss-cli-jjs --language=es6 /tmp/configure-app-server.js -- \
-    --auth-internal --auth-openid --auth-saml2 --datasource \
-    --disable-file-logger --oauth --rundev --machine-translation
+COPY conf/standalone.xml /opt/jboss/wildfly/standalone/configuration/
 
-# override the sun jdk module file to support java melody (com.sun.management.* for heap dump)
-# TODO remove this when https://github.com/javamelody/javamelody/issues/585 is resolved
-RUN sed -i '/<\/paths>/ i <path name="com/sun/management"/>' /opt/jboss/wildfly/modules/system/layers/base/sun/jdk/main/module.xml
-
-# Fix for: WFLYCTL0056: Could not rename /opt/jboss/wildfly/standalone/configuration/standalone_xml_history/current to
-RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
-
-# Enable debugging of the appserver: --debug
-# Use standandlone-full: -c standalone-full.xml
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "--debug", "-b", "0.0.0.0", "-c", "standalone-full-ha.xml"]
+# Zanata war
+COPY zanata.war /opt/jboss/wildfly/standalone/deployments/${ZANATA_CONTEXT}.war
