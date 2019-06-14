@@ -124,10 +124,10 @@ public class DashboardAction implements Serializable {
     }
 
     public String getLastTranslatedTimeLapseMessage(HProject project) {
-        Date lastTranslatedDate = projectDAO.getLastTranslatedDate(project);
+        Date lastChanged = project.getLastChanged();
         // TODO i18n needed
-        return lastTranslatedDate == null ? "never"
-                : DateUtil.getHowLongAgoDescription(lastTranslatedDate);
+        return lastChanged == null ? "never"
+                : DateUtil.getHowLongAgoDescription(lastChanged);
     }
 
     public List<String> getUserProjectRoles(HProject project) {
@@ -177,21 +177,7 @@ public class DashboardAction implements Serializable {
     }
 
     public String getLastTranslatorMessage(HProject project) {
-        HPerson lastTrans = projectDAO.getLastTranslator(project);
-        if (lastTrans != null) {
-            String username = lastTrans.getName();
-            if (username == null || username.trim().isEmpty()) {
-                if (lastTrans.getAccount() != null) {
-                    username = lastTrans.getAccount().getUsername();
-                }
-            } else {
-                username = lastTrans.getName();
-            }
-            return msgs.format(
-                    "jsf.dashboard.activity.lastTranslatedBy.message",
-                    username);
-        }
-        return "";
+        return "-";
     }
 
     public boolean canCreateProject() {
