@@ -840,7 +840,7 @@
       </dependency>
 
       <dependency>
-        <groupId>at.porscheinformatik.zanata</groupId>
+        <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
         <version>3.9.1</version>

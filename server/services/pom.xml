@@ -499,7 +499,7 @@
     <!-- Compatibility Dependencies -->
 
     <dependency>
-      <groupId>at.porscheinformatik.zanata</groupId>
+      <groupId>org.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <classifier>compat</classifier>
       <scope>test</scope>
