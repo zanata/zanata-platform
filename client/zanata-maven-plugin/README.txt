@@ -28,7 +28,7 @@ You can edit your project's pom.xml this way:
     <plugins>
       ...
       <plugin>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
       </plugin>
     </plugins>

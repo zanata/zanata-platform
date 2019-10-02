@@ -53,7 +53,7 @@ The following shows a build entry in `pom.xml` that will use version 3.4.0 of th
 <build>
   <plugins>
     <plugin>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-maven-plugin</artifactId>
       <version>3.4.0</version>
       <configuration>

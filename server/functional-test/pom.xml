@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>server</artifactId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>
@@ -111,7 +111,7 @@
         <version>2.11.0</version>
       </dependency>
       <!--<dependency>-->
-        <!--<groupId>org.zanata</groupId>-->
+        <!--<groupId>at.porscheinformatik.zanata</groupId>-->
         <!--<artifactId>zanata-rest-client</artifactId>-->
       <!--</dependency>-->
     </dependencies>
@@ -127,7 +127,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-model</artifactId>
       <scope>test</scope>
       <exclusions>
@@ -139,7 +139,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>services</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
@@ -361,7 +361,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <exclusions>
         <exclusion>
@@ -385,7 +385,7 @@
 
     <!-- to use rest client in test -->
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-rest-client</artifactId>
       <scope>test</scope>
       <exclusions>
@@ -424,12 +424,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-po</artifactId>
       <exclusions>
         <exclusion>

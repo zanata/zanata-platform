@@ -7,7 +7,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
         <version>3.9.1</version>
         <configuration>

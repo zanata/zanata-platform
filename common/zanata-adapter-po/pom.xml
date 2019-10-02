@@ -4,7 +4,7 @@
   <artifactId>zanata-adapter-po</artifactId>
   <name>Zanata Adapter for Gettext PO</name>
   <parent>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>common</artifactId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>
@@ -20,7 +20,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
       <version>${project.version}</version>
     </dependency>

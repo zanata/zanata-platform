@@ -7,7 +7,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
         <configuration>
           <srcDir>pot</srcDir>
