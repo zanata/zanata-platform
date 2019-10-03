@@ -4,7 +4,7 @@
   <artifactId>zanata-common-util</artifactId>
   <name>Zanata Common Utility Code</name>
   <parent>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>common</artifactId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>

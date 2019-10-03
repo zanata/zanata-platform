@@ -4,7 +4,7 @@
   <artifactId>zanata-rest-client</artifactId>
   <name>Zanata Rest client</name>
   <parent>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>client</artifactId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>
@@ -19,7 +19,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <exclusions>
         <exclusion>
@@ -29,12 +29,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-po</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>stub-server</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>server</artifactId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>
@@ -790,7 +790,7 @@
     <!-- Zanata-specific dependencies -->
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <exclusions>
         <exclusion>
@@ -801,33 +801,33 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-frontend</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-liquibase</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-model</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-model-test</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-po</artifactId>
       <exclusions>
         <exclusion>
@@ -838,32 +838,32 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-glossary</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-properties</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-xliff</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>security-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>services</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-shared</artifactId>
     </dependency>
 
@@ -1786,7 +1786,7 @@
     <!-- NB: GWT and anything which depends on it should go last, to
          avoid overriding Java APIs (especially javax.servlet) -->
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-editor</artifactId>
       <classifier>classes</classifier>
     </dependency>
@@ -1847,7 +1847,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-test</artifactId>
     </dependency>
 

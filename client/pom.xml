@@ -5,7 +5,7 @@
   <name>Zanata client modules</name>
   <packaging>pom</packaging>
   <parent>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>parent</artifactId>
     <version>4.7.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
@@ -49,17 +49,17 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-cli</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-client-commands</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <version>${project.version}</version>
         <exclusions>
@@ -70,33 +70,33 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <type>test-jar</type>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-rest-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-adapter-glossary</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-adapter-po</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-adapter-properties</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-adapter-xliff</artifactId>
         <version>${project.version}</version>
         <exclusions>
@@ -107,7 +107,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-common-util</artifactId>
         <version>${project.version}</version>
       </dependency>

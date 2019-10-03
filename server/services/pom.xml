@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>server</artifactId>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>
   <artifactId>services</artifactId>
@@ -424,7 +424,7 @@
     <!-- Zanata-specific dependencies -->
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <exclusions>
         <exclusion>
@@ -435,38 +435,38 @@
     </dependency>
 
     <!--<dependency>-->
-      <!--<groupId>org.zanata</groupId>-->
+      <!--<groupId>at.porscheinformatik.zanata</groupId>-->
       <!--<artifactId>zanata-assets</artifactId>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.zanata</groupId>-->
+      <!--<groupId>at.porscheinformatik.zanata</groupId>-->
       <!--<artifactId>zanata-frontend</artifactId>-->
     <!--</dependency>-->
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-liquibase</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-model</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-model-test</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-po</artifactId>
       <exclusions>
         <exclusion>
@@ -477,22 +477,22 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-glossary</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-properties</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-adapter-xliff</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>security-common</artifactId>
     </dependency>
 
@@ -1516,12 +1516,12 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-shared</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-test</artifactId>
       <scope>test</scope>
     </dependency>

@@ -11,7 +11,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
         <version>${zanata.client.version}</version>
         <configuration>

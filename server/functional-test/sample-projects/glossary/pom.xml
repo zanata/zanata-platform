@@ -11,7 +11,7 @@
           <sourceLang>en-US</sourceLang>
           <transLang>${glossary.lang}</transLang>
         </configuration>
-        <groupId>org.zanata</groupId>
+        <groupId>at.porscheinformatik.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
         <version>${zanata.client.version}</version>
       </plugin>

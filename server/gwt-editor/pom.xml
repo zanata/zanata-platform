@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>server</artifactId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>
@@ -27,23 +27,23 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-shared</artifactId>
     </dependency>
 
     <!-- For GWT compilation -->
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-shared</artifactId>
       <classifier>sources</classifier>
       <scope>provided</scope>
@@ -61,7 +61,7 @@
 
     <!-- For GWT compilation -->
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <classifier>sources</classifier>
       <scope>provided</scope>
@@ -208,7 +208,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>gwt-test</artifactId>
     </dependency>
   </dependencies>

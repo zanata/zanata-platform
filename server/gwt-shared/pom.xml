@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>server</artifactId>
-    <groupId>org.zanata</groupId>
+    <groupId>at.porscheinformatik.zanata</groupId>
     <version>4.7.0-SNAPSHOT</version>
   </parent>
 
@@ -43,7 +43,7 @@
       <artifactId>guava</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <exclusions>
         <exclusion>
@@ -55,7 +55,7 @@
 
     <!-- For GWT compilation -->
     <dependency>
-      <groupId>org.zanata</groupId>
+      <groupId>at.porscheinformatik.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <classifier>sources</classifier>
       <scope>provided</scope>
