@@ -5,7 +5,12 @@
 
   <servers>
     <server>
-      <id>ossrh</id>
+      <id>sonatype-snapshots</id>
+      <username>${env.OSSRH_USERNAME}</username>
+      <password>${env.OSSRH_PASSWORD}</password>
+    </server>
+    <server>
+      <id>sonatype-staging</id>
       <username>${env.OSSRH_USERNAME}</username>
       <password>${env.OSSRH_PASSWORD}</password>
     </server>
