@@ -15,7 +15,7 @@ script:
   - docker build -t $IMAGE_NAME ./server/docker
 deploy:
   - provider: script
-    script: bash docker_push master && cp .travis-settings.xml $HOME/.m2/settings.xml && mvn deploy -pl :zanata-maven-plugin
+    script: bash docker_push master && cp .travis-settings.xml $HOME/.m2/settings.xml && mvn -B deploy -DskipTests -pl :zanata-cli,:zanata-maven-plugin -am
     on:
       branch: master
   - provider: script
