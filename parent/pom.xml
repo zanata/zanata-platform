@@ -228,7 +228,7 @@
     <site-maven-plugin.version>0.12</site-maven-plugin.version>
 
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
-    <checkstyle.version>7.2</checkstyle.version>
+    <checkstyle.version>8.29</checkstyle.version>
     <checkstyle.config.location>zanata-build-tools/checkstyle.xml</checkstyle.config.location>
     <checkstyle.suppressions.location>zanata-build-tools/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <!-- <checkstyle.enable.rules.summary>false</checkstyle.enable.rules.summary> -->
