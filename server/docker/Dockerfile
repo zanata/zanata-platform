@@ -24,7 +24,9 @@ LABEL Name="zanata-platform"\
 USER root
 
 ENV ZANATA_HOME /var/lib/zanata
-RUN mkdir -p $ZANATA_HOME && chown -R jboss.jboss $ZANATA_HOME
+RUN yum update -y \
+ && yum clean all && rm -rf /var/cache/yum \
+ && mkdir -p $ZANATA_HOME && chown -R jboss.jboss $ZANATA_HOME
 VOLUME $ZANATA_HOME
 
 # Make the image Openshift compatible by granting root group (not user) access to the necessary directories
