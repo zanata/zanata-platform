@@ -4,7 +4,7 @@
   <parent>
     <groupId>at.porscheinformatik.zanata</groupId>
     <artifactId>client</artifactId>
-    <version>4.7.1-SNAPSHOT</version>
+    <version>4.7.2-SNAPSHOT</version>
   </parent>
   <artifactId>stub-server</artifactId>
   <name>stub-server</name>
