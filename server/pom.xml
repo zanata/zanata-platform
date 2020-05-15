@@ -110,7 +110,7 @@
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
-    <jackson2.version>2.9.5</jackson2.version>
+    <jackson2.version>2.11.0</jackson2.version>
 
     <!-- Ref: http://blog.sokolenko.me/2014/11/javavm-options-production.html -->
     <server.jvmargs>
