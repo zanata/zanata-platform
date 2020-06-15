@@ -81,7 +81,7 @@
     <hibernate.search.version>5.5.1.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
-    <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
+    <hibernate.validator.version>6.1.5.Final</hibernate.validator.version>
 
     <!-- controls concordion output location-->
     <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
