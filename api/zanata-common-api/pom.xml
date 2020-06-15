@@ -190,7 +190,7 @@
         </exclusion>
       </exclusions>
       <!--this is needed for now. Aftet AS7 upgrade may need to revisit this-->
-      <version>5.2.3.Final</version>
+      <version>5.3.5.Final</version>
     </dependency>
 
     <dependency>
