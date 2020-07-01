@@ -92,7 +92,7 @@
 
     <jdbc.groupId>mysql</jdbc.groupId>
     <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
-    <jdbc.version>5.1.26</jdbc.version>
+    <jdbc.version>8.0.16</jdbc.version>
 
     <!-- TODO try provided -->
     <resteasy.scope>compile</resteasy.scope>
