@@ -544,8 +544,8 @@
                 <http-listener name="default" redirect-socket="https"
                     socket-binding="http" proxy-address-forwarding="true" />
                 <host name="default-host" alias="localhost">
-                    <filter-ref name="limit-connections"/>
-                    <access-log pattern="%h %t &quot;%r&quot; %s &quot;%{i,User-Agent}&quot;" use-server-log="false"/>
+                    <filter-ref name="limit-requests"/>
+                    <access-log pattern="%h \"%{i,X-Forwarded-For}\" %t &quot;%r&quot; %s &quot;%{i,User-Agent}&quot;" use-server-log="false"/>
                 </host>
             </server>
             <servlet-container name="default">
@@ -553,7 +553,7 @@
                 <websockets />
             </servlet-container>
             <filters>
-                <connection-limit name="limit-connections" max-concurrent-requests="100" queue-size="100"/>
+                <request-limit name="limit-requests" max-concurrent-requests="100" queue-size="100"/>
                 <response-header name="server-header" header-value="WildFly/10"
                     header-name="Server" />
                 <response-header name="x-powered-by-header" header-value="Undertow/1"
