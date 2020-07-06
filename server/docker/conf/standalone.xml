@@ -545,7 +545,7 @@
                     socket-binding="http" proxy-address-forwarding="true" />
                 <host name="default-host" alias="localhost">
                     <filter-ref name="limit-requests"/>
-                    <access-log pattern="%h \"%{i,X-Forwarded-For}\" %t &quot;%r&quot; %s &quot;%{i,User-Agent}&quot;" use-server-log="false"/>
+                    <access-log pattern="%h &quot;%{i,X-Forwarded-For}&quot; %t &quot;%r&quot; %s &quot;%{i,User-Agent}&quot;" use-server-log="false"/>
                 </host>
             </server>
             <servlet-container name="default">
