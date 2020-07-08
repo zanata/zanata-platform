@@ -59,10 +59,10 @@ public class JmsResourcesProducer {
     // eg ThreadScoped), instead of multiplexing.
     // See http://stackoverflow.com/a/18630122/14379
 
-    @Resource(lookup = "JmsXA")
+    @Resource(lookup = "java:/JmsXA")
     private QueueConnectionFactory connectionFactory;
 
-    @Resource(lookup = "jms/queue/MailsQueue")
+    @Resource(lookup = "java:/jms/queue/MailsQueue")
     private Queue mailQueue;
 
     @Produces @RequestScoped @InVMJMS
