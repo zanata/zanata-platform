@@ -1,4 +1,4 @@
-FROM jboss/wildfly:16.0.0.Final
+FROM jboss/wildfly:14.0.0.Final
 
 EXPOSE 8080
 # Version should be assigned in build time
