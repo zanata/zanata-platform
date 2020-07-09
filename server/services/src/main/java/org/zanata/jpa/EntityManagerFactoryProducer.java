@@ -42,16 +42,8 @@ public class EntityManagerFactoryProducer {
     @ApplicationScoped
     @Default
     @Zanata
-    protected HibernateEntityManagerFactory create() {
-        return (HibernateEntityManagerFactory) entityManagerFactory;
-    }
-
-    @Produces
-    @ApplicationScoped
-    @Default
-    @Zanata
     protected SessionFactory getSession(@Zanata HibernateEntityManagerFactory factory) {
-        return factory.getSessionFactory();
+        return ((HibernateEntityManagerFactory) entityManagerFactory).getSessionFactory();
     }
 
 }
