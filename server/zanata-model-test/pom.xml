@@ -6,7 +6,7 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>at.porscheinformatik.zanata</groupId>
-    <version>4.7.4-SNAPSHOT</version>
+    <version>4.7.5-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-model-test</artifactId>
   <packaging>jar</packaging>
