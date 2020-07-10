@@ -1,4 +1,4 @@
-FROM jboss/wildfly:14.0.0.Final
+FROM jboss/wildfly:10.1.0.Final
 
 EXPOSE 8080
 # Version should be assigned in build time
@@ -37,7 +37,7 @@ RUN find /opt/jboss/wildfly -type d -exec chmod g+x {} +
 
 USER jboss
 
-RUN curl -L -o /opt/jboss/wildfly/standalone/deployments/mysql-connector-java.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_JAVA_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_JAVA_VERSION}.jar
+RUN curl -k -L -o /opt/jboss/wildfly/standalone/deployments/mysql-connector-java.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_JAVA_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_JAVA_VERSION}.jar
 
 COPY conf/standalone.xml /opt/jboss/wildfly/standalone/configuration/
 

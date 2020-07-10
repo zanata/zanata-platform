@@ -110,7 +110,7 @@
             <console-handler name="CONSOLE">
                 <level name="INFO" />
                 <formatter>
-                    <named-formatter name="COLOR-PATTERN" />
+                  <named-formatter name="PATTERN" />
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="FILE" autoflush="true">
@@ -145,10 +145,14 @@
             <logger category="org.richfaces.log.Components">
                 <level name="ERROR"/>
             </logger>
+            <!-- Disable WARN: "Locale ... is not enabled on this server. Please contact admin." -->
+            <logger category="org.zanata.rest.service.RestSlugValidator">
+              <level name="ERROR"/>
+            </logger>
             <!-- Enable if you want to log all HTTP requests to server.log: -->
             <!--<logger category="org.zanata.requests">-->
                 <!--<level name="DEBUG"/>-->
-                <!--</logger>-->
+            <!--</logger>-->
             <logger category="sun.rmi">
                 <level name="WARN" />
             </logger>
@@ -246,7 +250,9 @@
                         context-service="default" />
                 </managed-thread-factories>
                 <managed-executor-services>
-                    <managed-executor-service name="default" jndi-name="java:jboss/ee/concurrency/executor/default" context-service="default" hung-task-threshold="60000" keepalive-time="5000"/>
+                    <managed-executor-service name="default" jndi-name="java:jboss/ee/concurrency/executor/default"
+                                              context-service="default" hung-task-threshold="60000"
+                                              keepalive-time="5000"/>
                 </managed-executor-services>
                 <managed-scheduled-executor-services>
                     <managed-scheduled-executor-service name="default" jndi-name="java:jboss/ee/concurrency/scheduler/default" context-service="default" hung-task-threshold="60000" keepalive-time="3000"/>
