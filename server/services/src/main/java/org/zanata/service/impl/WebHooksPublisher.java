@@ -22,6 +22,8 @@ package org.zanata.service.impl;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
+import javax.inject.Named;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
@@ -37,23 +39,35 @@ import org.zanata.util.HmacUtil;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@Named("webHooksPublisher")
+@javax.enterprise.context.ApplicationScoped
 public class WebHooksPublisher {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(WebHooksPublisher.class);
 
     public static final String WEBHOOK_HEADER = "X-Zanata-Webhook";
 
-    public static void publish(@Nonnull String callbackURL,
+    private final ResteasyClient client;
+
+    public WebHooksPublisher() {
+        client = new ResteasyClientBuilder().build();
+    }
+
+    @PreDestroy
+    public void cleanup() {
+        client.close();
+    }
+
+    public void publish(@Nonnull String callbackURL,
             @Nonnull WebhookEventType event, Optional<String> secretKey) {
         publish(callbackURL, event.getJSON(), MediaType.APPLICATION_JSON_TYPE,
                 MediaType.APPLICATION_JSON_TYPE, secretKey);
     }
 
-    protected static void publish(@Nonnull String callbackURL,
+    protected void publish(@Nonnull String callbackURL,
             @Nonnull String data, @Nonnull MediaType acceptType,
             @Nonnull MediaType mediaType, Optional<String> secretKey) {
         try {
-            ResteasyClient client = new ResteasyClientBuilder().build();
             ResteasyWebTarget target = client.target(callbackURL);
             Invocation.Builder postBuilder =
                     target.request().accept(acceptType);

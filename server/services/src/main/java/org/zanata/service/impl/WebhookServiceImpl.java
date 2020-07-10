@@ -61,6 +61,8 @@ public class WebhookServiceImpl implements Serializable {
     @Inject
     @ServerPath
     private String serverUrl;
+    @Inject
+    private WebHooksPublisher webHooksPublisher;
 
     /**
      * Need @Async annotation for TransactionPhase.AFTER_SUCCESS event
@@ -68,7 +70,7 @@ public class WebhookServiceImpl implements Serializable {
     @Async
     public void onPublishWebhook(@Observes(
             during = TransactionPhase.AFTER_SUCCESS) WebhookEvent event) {
-        WebHooksPublisher.publish(event.getUrl(), event.getType(),
+        webHooksPublisher.publish(event.getUrl(), event.getType(),
                 Optional.ofNullable(event.getSecret()));
     }
 
