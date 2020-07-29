@@ -26,7 +26,10 @@ import javax.annotation.PreDestroy;
 import javax.inject.Named;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -50,7 +53,7 @@ public class WebHooksPublisher {
     private final ResteasyClient client;
 
     public WebHooksPublisher() {
-        client = new ResteasyClientBuilder().build();
+        client = new ResteasyClientBuilder().connectionPoolSize(50).maxPooledPerRoute(10).build();
     }
 
     @PreDestroy
@@ -77,8 +80,10 @@ public class WebHooksPublisher {
                         signWebhookHeader(data, secretKey.get(), callbackURL);
                 postBuilder.header(WEBHOOK_HEADER, sha);
             }
-            log.debug("firing async webhook: {}:{}", callbackURL, data);
-            postBuilder.async().post(Entity.entity(data, mediaType));
+            log.debug("firing webhook: {}:{}", callbackURL, data);
+            Response response = postBuilder.post(Entity.entity(data, mediaType));
+            log.debug("webhook response: {}:{}", callbackURL, response.getStatus());
+            response.close();
         } catch (Exception e) {
             log.error("Error on webhooks post {}", callbackURL, e);
         }
