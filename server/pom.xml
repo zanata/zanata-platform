@@ -69,7 +69,7 @@
     <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
     <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
     <shrinkwrap.desc.version>2.0.0</shrinkwrap.desc.version>
-    <jetty.version>9.2.15.v20160210</jetty.version>
+    <jetty.version>9.4.34.v20201102</jetty.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
