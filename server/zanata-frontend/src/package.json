@@ -159,7 +159,7 @@
     "babel-plugin-import": "1.7.0",
     "babel-polyfill": "6.9.1",
     "caniuse-lite": "1.0.30000745",
-    "chart.js": "2.7.1",
+    "chart.js": "2.9.4",
     "cli-color": "1.2.0",
     "combokeys": "2.4.6",
     "copy-webpack-plugin": "4.5.1",
