@@ -16,9 +16,9 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 8
-          distribution: adopt
+          distribution: temurin
       - name: Build with Maven
-        run: ./mvnw -e -V --builder singlethreaded -batch-mode -Dstyle.color=never --update-snapshots -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
+        run: mvn -e -V --builder singlethreaded -batch-mode -Dstyle.color=never --update-snapshots -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
       - name: Build Docker image
         run: |
           cp ./server/zanata-war/target/zanata-*.war ./server/docker/zanata.war
