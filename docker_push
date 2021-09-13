@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-docker_tag=$1
-docker tag $IMAGE_NAME $IMAGE_NAME:$docker_tag
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker push $IMAGE_NAME:$docker_tag
