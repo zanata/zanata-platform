@@ -394,6 +394,9 @@
     <dependency>
       <groupId>org.jetbrains.kotlinx</groupId>
       <artifactId>kotlinx-html-jvm</artifactId>
+      <version>0.6.9</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/kotlinx-html-jvm-0.6.9.jar</systemPath>
     </dependency>
 
     <dependency>
