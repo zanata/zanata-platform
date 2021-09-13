@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags: ["v.*"]
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 8
+          distribution: adopt
+          server-id: sonatype-staging
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Set Release Version
+        run: ./mvnw -B versions:set -DnewVersion=${GITHUB_REF:11} -DgenerateBackupPoms=false
+      - name: Build with Maven
+        run: ./mvnw -e -V --builder singlethreaded -batch-mode -Dstyle.color=never --update-snapshots -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
+      - name: Decode GPG Keyring File
+        run: |
+          mkdir ~/.gnupg
+          chmod 0700 ~/.gnupg
+          echo "${{secrets.GPG_PRIVATE_KEY}}" > ~/.gnupg/gpg-key.asc
+          gpg --no-tty --batch --yes --import ~/.gnupg/gpg-key.asc 
+          rm ~/.gnupg/gpg-key.asc
+      - name: Deploy to Maven Central
+        run: ./mvnw -B deploy -DskipTests -pl :zanata-cli,:zanata-maven-plugin -Dgpg.passphrase="${{secrets.GPG_PASSPHRASE}}"
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
