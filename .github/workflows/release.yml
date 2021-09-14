@@ -21,9 +21,9 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Set Release Version
-        run: mvn -B versions:set -DnewVersion=${GITHUB_REF:11} -DgenerateBackupPoms=false
+        run: mvn -e -V --builder singlethreaded -batch-mode versions:set -DnewVersion=${GITHUB_REF:11} -DgenerateBackupPoms=false
       - name: Build with Maven
-        run: mvn -e -V --builder singlethreaded -batch-mode -Dstyle.color=never --update-snapshots -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
+        run: mvn -e -V --builder singlethreaded -batch-mode -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
       - name: Decode GPG Keyring File
         run: |
           mkdir ~/.gnupg
@@ -32,7 +32,7 @@ jobs:
           gpg --no-tty --batch --yes --import ~/.gnupg/gpg-key.asc 
           rm ~/.gnupg/gpg-key.asc
       - name: Deploy to Maven Central
-        run: ./mvnw -B deploy -DskipTests -pl :zanata-cli,:zanata-maven-plugin -Dgpg.passphrase="${{secrets.GPG_PASSPHRASE}}"
+        run: mvn -e -V --builder singlethreaded -batch-mode deploy -DskipTests -pl :zanata-cli,:zanata-maven-plugin -Dgpg.passphrase="${{secrets.GPG_PASSPHRASE}}"
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
