@@ -17,9 +17,13 @@ jobs:
         with:
           java-version: 8
           distribution: temurin
-      - name: Build with Maven
-        run: mvn -e -V --builder singlethreaded -batch-mode -Dstyle.color=never --update-snapshots -Doptimise -Dkotlin.compiler.incremental=false -DskipFuncTests -DskipArqTests -Dappserver=wildfly8 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
-      - name: Build Docker image
+          server-id: sonatype-snapshots
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Deploy SNAPSHOT to Central
         run: |
-          cp ./server/zanata-war/target/zanata-*.war ./server/docker/zanata.war
-          docker build -t $IMAGE_NAME ./server/docker
+          cd deploy-test
+          mvn -e -V --builder singlethreaded -batch-mode deploy -DskipTests -Dgpg.passphrase="${{secrets.GPG_PASSPHRASE}}"
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
