@@ -74,7 +74,7 @@
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
-    <hibernate.version>5.0.7.Final</hibernate.version>
+    <hibernate.version>5.4.24.Final</hibernate.version>
 
     <!-- TODO try provided -->
     <hibernate.search.scope>compile</hibernate.search.scope>
