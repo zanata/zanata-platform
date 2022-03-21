@@ -222,7 +222,7 @@
     <!-- Fedora <= 27 still uses maven-javadoc-plugin version 2.9.1 -->
     <maven.javadoc.version>3.0.0</maven.javadoc.version>
     <maven.jxr.version>2.5</maven.jxr.version>
-    <resteasy.version>3.0.19.Final</resteasy.version>
+    <resteasy.version>4.6.1.Final</resteasy.version>
     <surefire.version>2.21.0</surefire.version>
     <maven.source.version>3.0.1</maven.source.version>
     <site-maven-plugin.version>0.12</site-maven-plugin.version>
