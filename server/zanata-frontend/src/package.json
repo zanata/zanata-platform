@@ -180,7 +180,7 @@
     "less-vars-to-js": "^1.2.1",
     "lodash": "4.17.4",
     "mini-css-extract-plugin": "^0.4.1",
-    "moment": "^2.20.1",
+    "moment": "^2.29.2",
     "moment-range": "^3.1.1",
     "normalize.css": "3.0.1",
     "normalizr": "2.1.0",
